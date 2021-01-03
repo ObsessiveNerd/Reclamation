@@ -21,8 +21,9 @@ public class World : Component
 
     //Temp
     public List<Sprite> m_TempTerrain;
+    public Sprite m_TempSelection;
 
-    public World(IEntity self, GameObject tilePrefab, List<Sprite> tempTerrain)
+    public World(IEntity self, GameObject tilePrefab, List<Sprite> tempTerrain, Sprite tempSelection)
     {
         if (m_Instance == null)
             m_Instance = this;
@@ -33,6 +34,7 @@ public class World : Component
 
         m_TilePrefab = tilePrefab;
         m_TempTerrain = tempTerrain; //temp
+        m_TempSelection = tempSelection;
 
         m_Vertical = (int)Camera.main.orthographicSize;
         m_Horizontal = (int)(m_Vertical * Camera.main.aspect);
@@ -52,6 +54,7 @@ public class World : Component
         RegisteredEvents.Add(GameEventId.SelectNewTileInDirection);
         RegisteredEvents.Add(GameEventId.EndSelection);
         RegisteredEvents.Add(GameEventId.GetActivePlayer);
+        RegisteredEvents.Add(GameEventId.ShowTileInfo);
     }
 
     public void RegisterPlayer(IEntity entity)
@@ -61,6 +64,16 @@ public class World : Component
             m_ActivePlayer = m_Players.First;
         m_PlayerToTimeProgressionMap[entity] = new TimeProgression();
         m_PlayerToTimeProgressionMap[entity].RegisterEntity(entity);
+    }
+
+    public void UnregisterPlayer(IEntity entity)
+    {
+        //May need to rotate to the next active character first
+
+        m_Players.Remove(entity);
+        m_PlayerToTimeProgressionMap.Remove(entity);
+        FireEvent(Self, new GameEvent(GameEventId.Despawn, new KeyValuePair<string, object>(EventParameters.Entity, entity),
+                                                            new KeyValuePair<string, object>(EventParameters.EntityType, EntityType.Creature)));
     }
 
     public void ProgressTime()
@@ -159,11 +172,9 @@ public class World : Component
         if(gameEvent.ID == GameEventId.RotateActiveCharacter)
         {
             m_ActivePlayer.Value.RemoveComponent(typeof(PlayerInputController));
-            //m_ActivePlayer.Value.AddComponent(new SkipTurnController(m_ActivePlayer.Value));
             m_ActivePlayer = m_ActivePlayer.Next;
             if (m_ActivePlayer == null)
                 m_ActivePlayer = m_Players.First;
-            //m_ActivePlayer.Value.RemoveComponent(typeof(SkipTurnController));
             m_ActivePlayer.Value.AddComponent(new PlayerInputController(m_ActivePlayer.Value));
             m_ActivePlayer.Value.CleanupComponents();
         }
@@ -185,11 +196,12 @@ public class World : Component
         if(gameEvent.ID == GameEventId.SelectTile)
         {
             IEntity entity = (IEntity)gameEvent.Paramters[EventParameters.Entity];
-            Point p = m_EntityToPointMap[entity];
-            p.x++;
+            IEntity target = (IEntity)gameEvent.Paramters[EventParameters.Target];
+
+            Point p = m_EntityToPointMap[target == null ? entity : target];
 
             //This should probably move to the tile?
-            m_Tiles[p].AddComponent(new Blue());
+            m_Tiles[p].AddComponent(new SelectedTile(m_TempSelection));
             m_Tiles[p].CleanupComponents();
 
             gameEvent.Paramters[EventParameters.TilePosition] = p;
@@ -200,12 +212,12 @@ public class World : Component
             Point currentTilePos = (Point)gameEvent.Paramters[EventParameters.TilePosition];
             MoveDirection moveDirection = (MoveDirection)gameEvent.Paramters[EventParameters.InputDirection];
 
-            m_Tiles[currentTilePos].RemoveComponent(typeof(Blue));
+            m_Tiles[currentTilePos].RemoveComponent(typeof(SelectedTile));
             m_Tiles[currentTilePos].CleanupComponents();
 
             Point newPoint = GetTilePointInDirection(currentTilePos, moveDirection);
 
-            m_Tiles[newPoint].AddComponent(new Blue());
+            m_Tiles[newPoint].AddComponent(new SelectedTile(m_TempSelection));
             m_Tiles[newPoint].CleanupComponents();
 
             gameEvent.Paramters[EventParameters.TilePosition] = newPoint;
@@ -214,10 +226,21 @@ public class World : Component
         if(gameEvent.ID == GameEventId.EndSelection)
         {
             Point currentTilePos = (Point)gameEvent.Paramters[EventParameters.TilePosition];
-            m_Tiles[currentTilePos].RemoveComponent(typeof(Blue));
+            m_Tiles[currentTilePos].RemoveComponent(typeof(SelectedTile));
             m_Tiles[currentTilePos].CleanupComponents();
             gameEvent.Paramters[EventParameters.TilePosition] = null;
         }
+
+        if(gameEvent.ID == GameEventId.ShowTileInfo)
+        {
+            Point currentTilePos = (Point)gameEvent.Paramters[EventParameters.TilePosition];
+            Debug.Log($"Showing info for tile at {currentTilePos.x}, {currentTilePos.y}");
+        }
+    }
+
+    public IEntity GetClosestEnemyTo(IEntity e)
+    {
+        return null;
     }
 
     void CreateTile(int x, int y)
@@ -226,7 +249,7 @@ public class World : Component
         tile.transform.position = new Vector2(x - (m_Horizontal - 0.5f), y - (m_Vertical - 0.5f));
         tile.transform.parent = UnityEngine.GameObject.Find("World").transform;
 
-        Actor actor = tile.AddComponent<Actor>();
+        Actor actor = new Actor("Tile");
         actor.AddComponent(new Tile(actor, new Point(x, y)));
         actor.AddComponent(new GraphicContainter(UnityEngine.Random.Range(0f, 100f) < 30f ? m_TempTerrain[UnityEngine.Random.Range(0, m_TempTerrain.Count)] : null));
         actor.AddComponent(new Renderer(actor, tile.GetComponent<SpriteRenderer>()));

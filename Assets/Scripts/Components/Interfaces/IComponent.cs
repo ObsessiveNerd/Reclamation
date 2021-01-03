@@ -10,14 +10,18 @@ public interface IComponent
     bool RespondsTo(GameEvent gameEvent);
     GameEvent FireEvent(IEntity target, GameEvent gameEvent);
     void HandleEvent(GameEvent gameEvent);
+    int Priority { get; }
 }
 
 public class Component : IComponent
 {
-    public void Init(IEntity self)
+    public virtual void Init(IEntity self)
     {
         m_Self = self;
     }
+
+    //Priority right now is from 1 to 10
+    public virtual int Priority { get { return 5; } }
 
     IEntity m_Self;
     public IEntity Self { get { return m_Self; } }
@@ -43,3 +47,16 @@ public class Component : IComponent
 
     public virtual void HandleEvent(GameEvent gameEvent) { }
 }
+
+public class ComponentComparer : IComparer<IComponent>
+{
+    public int Compare(IComponent x, IComponent y)
+    {
+        if (x.Priority < y.Priority)
+            return -1;
+        if (x.Priority == y.Priority)
+            return 0;
+        return 1;
+    }
+}
+

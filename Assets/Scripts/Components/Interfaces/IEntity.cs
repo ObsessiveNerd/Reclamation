@@ -11,4 +11,6 @@ public interface IEntity
     void RemoveComponent(IComponent component);
     void RemoveComponent(Type component);
     void CleanupComponents();
+    string Name { get; }
+    string ID { get; }
 }

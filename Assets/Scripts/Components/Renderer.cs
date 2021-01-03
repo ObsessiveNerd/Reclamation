@@ -17,7 +17,8 @@ public class Renderer : Component
     public override void HandleEvent(GameEvent gameEvent)
     {
         m_Image.color = Color.white;
-        FireEvent(Self, new GameEvent(GameEventId.AlterSprite, new KeyValuePair<string, object>(EventParameters.Renderer, m_Image)));
-        m_Image.sprite = (Sprite)gameEvent.Paramters[EventParameters.RenderSprite];
+        GameEvent checkForAlteredSprite = FireEvent(Self, new GameEvent(GameEventId.AlterSprite, new KeyValuePair<string, object>(EventParameters.Renderer, m_Image),
+                                                                new KeyValuePair<string, object>(EventParameters.RenderSprite, gameEvent.Paramters[EventParameters.RenderSprite])));
+        m_Image.sprite = (Sprite)checkForAlteredSprite.Paramters[EventParameters.RenderSprite];
     }
 }

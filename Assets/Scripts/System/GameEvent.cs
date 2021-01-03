@@ -46,13 +46,13 @@ public static class GameEventId
     //Tiles
     public const string UpdateTile = nameof(UpdateTile);
     public const string EndSelection = nameof(EndSelection);
+    public const string ShowTileInfo = nameof(ShowTileInfo);
 
     //Character Selection
     public const string RotateActiveCharacter = nameof(RotateActiveCharacter);
 
     //Input
     public const string MoveKeyPressed = nameof(MoveKeyPressed);
-    public const string HasInputController = nameof(HasInputController);
     public const string PromptForInput = nameof(PromptForInput);
 
     //Energy
@@ -68,7 +68,7 @@ public static class EventParameters
 {
     public const string InputDirection = nameof(InputDirection);
     public const string TakeTurn = nameof(TakeTurn);
-    public const string UpdateWorld = nameof(UpdateWorld);
+    public const string UpdateWorldView = nameof(UpdateWorldView);
     public const string CleanupComponents = nameof(CleanupComponents);
     public const string RemainingEnergy = nameof(RemainingEnergy);
     public const string RequiredEnergy = nameof(RequiredEnergy);
@@ -78,6 +78,7 @@ public static class EventParameters
     public const string Renderer = nameof(Renderer);
     public const string Point = nameof(Point);
     public const string Entity = nameof(Entity);
+    public const string Target = nameof(Target);
     public const string EntityType = nameof(EntityType);
     public const string Creature = nameof(Creature);
     public const string Value = nameof(Value);

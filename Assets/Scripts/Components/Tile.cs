@@ -70,7 +70,8 @@ public class Tile : Component
 
             GameEvent getSprite = new GameEvent(GameEventId.GetSprite, new KeyValuePair<string, object>(EventParameters.RenderSprite, null));
             FireEvent(target, getSprite);
-            FireEvent(Self, new GameEvent(GameEventId.UpdateRenderer, new KeyValuePair<string, object>(EventParameters.RenderSprite, getSprite.Paramters[EventParameters.RenderSprite])));
+            Sprite sprite = (Sprite)getSprite.Paramters[EventParameters.RenderSprite];
+            FireEvent(Self, new GameEvent(GameEventId.UpdateRenderer, new KeyValuePair<string, object>(EventParameters.RenderSprite, sprite)));
         }
 
         if(gameEvent.ID == GameEventId.Spawn)

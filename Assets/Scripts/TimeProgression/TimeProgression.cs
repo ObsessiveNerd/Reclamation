@@ -30,19 +30,19 @@ public class TimeProgression
         }
 
         GameEvent update = new GameEvent(GameEventId.UpdateEntity,  new KeyValuePair<string, object>(EventParameters.TakeTurn, false),
-                                                                    new KeyValuePair<string, object>(EventParameters.UpdateWorld, false),
+                                                                    new KeyValuePair<string, object>(EventParameters.UpdateWorldView, false),
                                                                     new KeyValuePair<string, object>(EventParameters.CleanupComponents, false));
         m_Current.Value.HandleEvent(update);
 
         if ((bool)update.Paramters[EventParameters.CleanupComponents])
             m_Current.Value.CleanupComponents();
 
-        if((bool)update.Paramters[EventParameters.UpdateWorld])
+        if((bool)update.Paramters[EventParameters.UpdateWorldView])
             World.Instance.Self.FireEvent(World.Instance.Self, new GameEvent(GameEventId.UpdateWorldView));
 
         if ((bool)update.Paramters[EventParameters.TakeTurn])
         {
-            Debug.Log($"End turn: {m_Current.Value}");
+            Debug.Log($"End turn: {m_Current.Value.Name}");
             GameEvent endTurn = new GameEvent(GameEventId.EndTurn);
             m_Current.Value.HandleEvent(endTurn);
             m_Current.Value.CleanupComponents();

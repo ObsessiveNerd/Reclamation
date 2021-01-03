@@ -21,7 +21,7 @@ public class Drunk : Component
     public override void HandleEvent(GameEvent gameEvent)
     {
         if (gameEvent.ID == GameEventId.BeforeMoving)
-            gameEvent.Paramters[EventParameters.InputDirection] = GetRandomMoveDirection();
+            gameEvent.Paramters[EventParameters.InputDirection] = InputUtility.GetRandomMoveDirection();
 
         if (gameEvent.ID == GameEventId.EndTurn)
         {
@@ -29,11 +29,5 @@ public class Drunk : Component
             if(m_CurrentDrunkRounds >= m_DrunkRounds)
                 Self.RemoveComponent(this);
         }
-    }
-
-    MoveDirection GetRandomMoveDirection()
-    {
-        int randomDirection = UnityEngine.Random.Range(0, Enum.GetNames(typeof(MoveDirection)).Length - 1);
-        return (MoveDirection)randomDirection;
     }
 }

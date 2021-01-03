@@ -56,8 +56,6 @@ public class Move : Component
             }
         }
         if (gameEvent.ID == GameEventId.GetMinimumEnergyForAction)
-        {
             gameEvent.Paramters[EventParameters.Value] = Mathf.Min((float)gameEvent.Paramters[EventParameters.Value] > 0f ? (float)gameEvent.Paramters[EventParameters.Value] : m_EnergyRequired, m_EnergyRequired);
-        }
     }
 }

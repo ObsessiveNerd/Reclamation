@@ -2,20 +2,23 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RangedAttackController : InputControllerBase
+public class LookController : InputControllerBase
 {
     Point m_TileSelection;
 
-    //Todo: I could probably initialize this with a specifc attack bow/spell/thrown object/whatever and get a lot of reuse out of this
-    public RangedAttackController(IEntity self, Point startTileSelection)
+    public LookController(IEntity self, Point startTileSelection)
     {
         Init(self);
+
         m_TileSelection = startTileSelection;
+
+        GameEvent showTileInfo = new GameEvent(GameEventId.ShowTileInfo, new KeyValuePair<string, object>(EventParameters.TilePosition, m_TileSelection));
+        FireEvent(World.Instance.Self, showTileInfo);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
     {
-        if(gameEvent.ID == GameEventId.UpdateEntity)
+        if (gameEvent.ID == GameEventId.UpdateEntity)
         {
             MoveDirection desiredDirection = InputUtility.GetMoveDirection();
 
@@ -25,10 +28,13 @@ public class RangedAttackController : InputControllerBase
                                                                                                     new KeyValuePair<string, object>(EventParameters.TilePosition, m_TileSelection));
                 FireEvent(World.Instance.Self, moveSelection);
                 m_TileSelection = (Point)moveSelection.Paramters[EventParameters.TilePosition];
+
+                GameEvent showTileInfo = new GameEvent(GameEventId.ShowTileInfo, new KeyValuePair<string, object>(EventParameters.TilePosition, m_TileSelection));
+                FireEvent(World.Instance.Self, showTileInfo);
                 gameEvent.Paramters[EventParameters.UpdateWorldView] = true;
             }
 
-            if(Input.GetKeyDown(KeyCode.Escape))
+            if (Input.GetKeyDown(KeyCode.Escape))
             {
                 Self.RemoveComponent(this);
                 Self.AddComponent(new PlayerInputController(Self));

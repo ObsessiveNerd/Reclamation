@@ -1,13 +1,21 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
-public class Actor : MonoBehaviour, IEntity
+public class Actor : IEntity
 {
-    List<IComponent> m_Components = new List<IComponent>();
+    PriorityQueue<IComponent> m_Components;
     List<IComponent> m_AddQueue = new List<IComponent>();
     List<IComponent> m_RemoveQueue = new List<IComponent>();
+
+    public string Name { get; internal set; }
+    public string ID { get; internal set; }
+
+    public Actor(string name)
+    {
+        Name = name;
+        //TODO: ID = GetID();
+        m_Components = new PriorityQueue<IComponent>(new ComponentComparer());
+    }
 
     public GameEvent FireEvent(IEntity target, GameEvent gameEvent)
     {
@@ -17,7 +25,7 @@ public class Actor : MonoBehaviour, IEntity
 
     public void HandleEvent(GameEvent gameEvent)
     {
-        foreach (IComponent component in m_Components)
+        foreach (IComponent component in m_Components.Values)
         {
             if (component.RespondsTo(gameEvent))
                 component.HandleEvent(gameEvent);
@@ -36,7 +44,7 @@ public class Actor : MonoBehaviour, IEntity
 
     public void RemoveComponent(Type component)
     {
-        IComponent comp = m_Components.Find(c => c.GetType() == component);
+        IComponent comp = m_Components.Values.Find(c => c.GetType() == component);
         m_RemoveQueue.Add(comp);
     }
 

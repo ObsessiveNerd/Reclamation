@@ -24,16 +24,6 @@ public class Energy : Component
         switch (gameEvent.ID)
         {
             case GameEventId.StartTurn:
-                //Not sure if we'll need this in the end.
-                data = new GameEvent(GameEventId.HasInputController, new KeyValuePair<string, object>(EventParameters.Value, false));
-                FireEvent(Self, data);
-                if (!(bool)data.Paramters[EventParameters.Value])
-                {
-                    m_CurrentEnergy = 0;
-                    break;
-                }
-                //
-
                 data = new GameEvent(GameEventId.AlterEnergy, new KeyValuePair<string, object>(EventParameters.EnergyRegen, m_EnergyRegineration));
                 Self.HandleEvent(data);
                 m_CurrentEnergy += (float)data.Paramters[EventParameters.EnergyRegen];
