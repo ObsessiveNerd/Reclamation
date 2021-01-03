@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerInput : Component
+public class PlayerInputController : Component
 {
-    public PlayerInput(IEntity self)
+    public PlayerInputController(IEntity self)
     {
         Init(self);
         RegisteredEvents.Add(GameEventId.UpdateEntity);

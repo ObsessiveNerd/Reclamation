@@ -12,7 +12,7 @@ public class Drunk : Component
     {
         Init(self);
 
-        m_DrunkRounds = 5;
+        m_DrunkRounds = 50;
 
         RegisteredEvents.Add(GameEventId.BeforeMoving);
         RegisteredEvents.Add(GameEventId.EndTurn);

@@ -14,6 +14,7 @@ public class Energy : Component
         RegisteredEvents.Add(GameEventId.HasEnoughEnergyToTakeATurn);
         RegisteredEvents.Add(GameEventId.UseEnergy);
         RegisteredEvents.Add(GameEventId.SkipTurn);
+        RegisteredEvents.Add(GameEventId.GetEnergy);
         m_EnergyRegineration = energyRegenValue;
     }
 
@@ -49,6 +50,9 @@ public class Energy : Component
                 break;
             case GameEventId.SkipTurn:
                 m_CurrentEnergy = 0;
+                break;
+            case GameEventId.GetEnergy:
+                gameEvent.Paramters[EventParameters.Value] = m_CurrentEnergy;
                 break;
         };
     }

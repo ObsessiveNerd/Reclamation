@@ -55,7 +55,7 @@ public class RangedAttackController : Component
             if(Input.GetKeyDown(KeyCode.Escape))
             {
                 Self.RemoveComponent(this);
-                Self.AddComponent(new PlayerInput(Self));
+                Self.AddComponent(new PlayerInputController(Self));
                 FireEvent(World.Instance.Self, new GameEvent(GameEventId.EndSelection, new KeyValuePair<string, object>(EventParameters.TilePosition, m_TileSelection)));
                 gameEvent.Paramters[EventParameters.UpdateWorld] = true;
                 gameEvent.Paramters[EventParameters.CleanupComponents] = true;

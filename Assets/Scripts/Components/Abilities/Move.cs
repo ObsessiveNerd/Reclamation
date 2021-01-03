@@ -32,7 +32,9 @@ public class Move : Component
             FireEvent(World.Instance.Self, beforeMovingCheckWorld);
             float energyRequired = (float)beforeMovingCheckWorld.Paramters[EventParameters.RequiredEnergy];
 
-            if (energyRequired > 0f)
+            //Make sure we have enough energy;
+            float currentEnergy = (float)FireEvent(Self, new GameEvent(GameEventId.GetEnergy, new KeyValuePair<string, object>(EventParameters.Value, 0))).Paramters[EventParameters.Value];
+            if (energyRequired > 0f && currentEnergy >= energyRequired)
             {
                 //See if there's anything on the player that needs to happen when moving
                 GameEvent moving = new GameEvent(GameEventId.ExecuteMove, beforeMovingCheckWorld.Paramters);
@@ -48,12 +50,14 @@ public class Move : Component
                 GameEvent afterMoving = new GameEvent(GameEventId.AfterMoving, moving.Paramters);
                 FireEvent(Self, afterMoving);
 
-                energyRequired = (float)afterMoving.Paramters[EventParameters.RequiredEnergy];
+                //energyRequired = (float)afterMoving.Paramters[EventParameters.RequiredEnergy];
+                GameEvent useEnergy = new GameEvent(GameEventId.UseEnergy, new KeyValuePair<string, object>(EventParameters.Value, energyRequired));
+                FireEvent(Self, useEnergy);
             }
-            GameEvent useEnergy = new GameEvent(GameEventId.UseEnergy, new KeyValuePair<string, object>(EventParameters.Value, energyRequired));
-            FireEvent(Self, useEnergy);
         }
         if (gameEvent.ID == GameEventId.GetMinimumEnergyForAction)
-            gameEvent.Paramters[EventParameters.Value] = m_EnergyRequired;
+        {
+            gameEvent.Paramters[EventParameters.Value] = Mathf.Min((float)gameEvent.Paramters[EventParameters.Value] > 0f ? (float)gameEvent.Paramters[EventParameters.Value] : m_EnergyRequired, m_EnergyRequired);
+        }
     }
 }

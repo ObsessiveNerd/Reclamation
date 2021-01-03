@@ -164,6 +164,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   PlayerSprite: {fileID: 21300000, guid: 1c7dc4b031827d640b2227f87bfc736f, type: 3}
+  Goblin: {fileID: 21300000, guid: 24a2451fb08155b44abb68dec94dfc5a, type: 3}
   Item: {fileID: 21300000, guid: 062f05f9bfb6cc749add360679748968, type: 3}
   Wall: {fileID: 21300000, guid: 307abf883624a2949912db33a1776312, type: 3}
 --- !u!4 &855845759

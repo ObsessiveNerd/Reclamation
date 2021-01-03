@@ -8,7 +8,7 @@ public interface IComponent
     IEntity Self { get; }
     List<string> RegisteredEvents { get; }
     bool RespondsTo(GameEvent gameEvent);
-    void FireEvent(IEntity target, GameEvent gameEvent);
+    GameEvent FireEvent(IEntity target, GameEvent gameEvent);
     void HandleEvent(GameEvent gameEvent);
 }
 
@@ -28,9 +28,10 @@ public class Component : IComponent
         get { return m_RegisteredEvents; }
     }
 
-    public void FireEvent(IEntity target, GameEvent gameEvent)
+    public GameEvent FireEvent(IEntity target, GameEvent gameEvent)
     {
         target.FireEvent(target, gameEvent);
+        return gameEvent;
     }
 
     public bool RespondsTo(GameEvent gameEvent)

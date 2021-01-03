@@ -39,8 +39,6 @@ public class World : Component
         m_Columns = m_Horizontal * 2;
         m_Rows = m_Vertical * 2;
 
-        m_ActivePlayer = m_Players.First;
-
         RegisteredEvents.Add(GameEventId.StartWorld);
         RegisteredEvents.Add(GameEventId.UpdateWorldView);
         RegisteredEvents.Add(GameEventId.Spawn);
@@ -160,13 +158,13 @@ public class World : Component
 
         if(gameEvent.ID == GameEventId.RotateActiveCharacter)
         {
-            m_ActivePlayer.Value.RemoveComponent(typeof(PlayerInput));
+            m_ActivePlayer.Value.RemoveComponent(typeof(PlayerInputController));
             //m_ActivePlayer.Value.AddComponent(new SkipTurnController(m_ActivePlayer.Value));
             m_ActivePlayer = m_ActivePlayer.Next;
             if (m_ActivePlayer == null)
                 m_ActivePlayer = m_Players.First;
             //m_ActivePlayer.Value.RemoveComponent(typeof(SkipTurnController));
-            m_ActivePlayer.Value.AddComponent(new PlayerInput(m_ActivePlayer.Value));
+            m_ActivePlayer.Value.AddComponent(new PlayerInputController(m_ActivePlayer.Value));
             m_ActivePlayer.Value.CleanupComponents();
         }
 
@@ -230,7 +228,7 @@ public class World : Component
 
         Actor actor = tile.AddComponent<Actor>();
         actor.AddComponent(new Tile(actor, new Point(x, y)));
-        actor.AddComponent(new GraphicContainter(m_TempTerrain[UnityEngine.Random.Range(0, m_TempTerrain.Count)]));
+        actor.AddComponent(new GraphicContainter(UnityEngine.Random.Range(0f, 100f) < 30f ? m_TempTerrain[UnityEngine.Random.Range(0, m_TempTerrain.Count)] : null));
         actor.AddComponent(new Renderer(actor, tile.GetComponent<SpriteRenderer>()));
         actor.CleanupComponents();
 

@@ -61,6 +61,7 @@ public static class GameEventId
     public const string AlterEnergy = nameof(AlterEnergy);
     public const string GetMinimumEnergyForAction = nameof(GetMinimumEnergyForAction);
     public const string SkipTurn = nameof(SkipTurn);
+    public const string GetEnergy = nameof(GetEnergy);
 }
 
 public static class EventParameters
