@@ -36,10 +36,24 @@ public class PlayerInput : Component
                 desiredDirection = MoveDirection.NW;
 
             if (desiredDirection != MoveDirection.None)
+            {
                 FireEvent(Self, new GameEvent(GameEventId.MoveKeyPressed, new KeyValuePair<string, object>(EventParameters.InputDirection, desiredDirection)));
+            }
 
             else if (Input.GetKeyDown(KeyCode.I))
                 FireEvent(Self, new GameEvent(GameEventId.OpenInventory));
+
+            else if (Input.GetKeyDown(KeyCode.F))
+            {
+                Self.RemoveComponent(this);
+                GameEvent selectTile = new GameEvent(GameEventId.SelectTile, new KeyValuePair<string, object>(EventParameters.Entity, Self),
+                                                                                new KeyValuePair<string, object>(EventParameters.TilePosition, null));
+                FireEvent(World.Instance.Self, selectTile);
+
+                Self.AddComponent(new RangedAttackController(Self, (Point)selectTile.Paramters[EventParameters.TilePosition]));
+                gameEvent.Paramters[EventParameters.UpdateWorld] = true;
+                gameEvent.Paramters[EventParameters.CleanupComponents] = true;
+            }
 
             else if (Input.GetKeyDown(KeyCode.Space))
                 FireEvent(World.Instance.Self, new GameEvent(GameEventId.Interact, new KeyValuePair<string, object>(EventParameters.Entity, Self)));
@@ -51,13 +65,14 @@ public class PlayerInput : Component
             else if (Input.GetKeyDown(KeyCode.Tab))
             {
                 FireEvent(World.Instance.Self, new GameEvent(GameEventId.RotateActiveCharacter));
-                FireEvent(Self, new GameEvent(GameEventId.SkipTurn));
+                gameEvent.Paramters[EventParameters.UpdateWorld] = true;
+                gameEvent.Paramters[EventParameters.CleanupComponents] = true;
             }
             ///
 
             GameEvent checkForEnergy = new GameEvent(GameEventId.HasEnoughEnergyToTakeATurn, new KeyValuePair<string, object>(EventParameters.TakeTurn, false));
             FireEvent(Self, checkForEnergy);
-            gameEvent.Paramters[EventParameters.TakeTurn] = !(bool)checkForEnergy.Paramters[EventParameters.TakeTurn];
+            gameEvent.Paramters[EventParameters.TakeTurn] = (bool)checkForEnergy.Paramters[EventParameters.TakeTurn];
         }
 
         if (gameEvent.ID == GameEventId.HasInputController)

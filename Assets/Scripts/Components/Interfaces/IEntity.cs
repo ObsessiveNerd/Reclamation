@@ -5,7 +5,7 @@ using UnityEngine;
 
 public interface IEntity
 {
-    void FireEvent(IEntity target, GameEvent gameEvent);
+    GameEvent FireEvent(IEntity target, GameEvent gameEvent);
     void HandleEvent(GameEvent gameEvent);
     void AddComponent(IComponent component);
     void RemoveComponent(IComponent component);

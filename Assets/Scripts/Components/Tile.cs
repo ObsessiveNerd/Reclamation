@@ -50,7 +50,6 @@ public class Tile : Component
         m_GridPoint = gridPoint;
 
         RegisteredEvents.Add(GameEventId.UpdateTile);
-        RegisteredEvents.Add(GameEventId.GetRenderSprite);
         RegisteredEvents.Add(GameEventId.Spawn);
         RegisteredEvents.Add(GameEventId.Despawn);
         RegisteredEvents.Add(GameEventId.Interact);
@@ -60,9 +59,6 @@ public class Tile : Component
     public override void HandleEvent(GameEvent gameEvent)
     {
         if (gameEvent.ID == GameEventId.UpdateTile)
-            FireEvent(Self, new GameEvent(GameEventId.UpdateRenderer));
-
-        if (gameEvent.ID == GameEventId.GetRenderSprite)
         {
             IEntity target = Self;
             if (CreatureSlot != null)
@@ -74,7 +70,7 @@ public class Tile : Component
 
             GameEvent getSprite = new GameEvent(GameEventId.GetSprite, new KeyValuePair<string, object>(EventParameters.RenderSprite, null));
             FireEvent(target, getSprite);
-            gameEvent.Paramters[EventParameters.RenderSprite] = getSprite.Paramters[EventParameters.RenderSprite];
+            FireEvent(Self, new GameEvent(GameEventId.UpdateRenderer, new KeyValuePair<string, object>(EventParameters.RenderSprite, getSprite.Paramters[EventParameters.RenderSprite])));
         }
 
         if(gameEvent.ID == GameEventId.Spawn)

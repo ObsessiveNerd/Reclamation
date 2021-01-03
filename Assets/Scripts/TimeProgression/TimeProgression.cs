@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TimeProgression : MonoBehaviour
+public class TimeProgression
 {
     LinkedList<IEntity> m_EntityList = new LinkedList<IEntity>();
     LinkedListNode<IEntity> m_Previous;
     LinkedListNode<IEntity> m_Current;
-    IEntity m_World;
 
     public void RegisterEntity(IEntity entity)
     {
@@ -17,11 +16,6 @@ public class TimeProgression : MonoBehaviour
     public void RemoveEntity(IEntity entity)
     {
         m_EntityList.Remove(entity);
-    }
-
-    public void RegisterWorld(IEntity world)
-    {
-        m_World = world;
     }
 
     public void Update()
@@ -35,8 +29,16 @@ public class TimeProgression : MonoBehaviour
             m_Current.Value.HandleEvent(startTurn);
         }
 
-        GameEvent update = new GameEvent(GameEventId.UpdateEntity, new KeyValuePair<string, object>(EventParameters.TakeTurn, true));
+        GameEvent update = new GameEvent(GameEventId.UpdateEntity,  new KeyValuePair<string, object>(EventParameters.TakeTurn, false),
+                                                                    new KeyValuePair<string, object>(EventParameters.UpdateWorld, false),
+                                                                    new KeyValuePair<string, object>(EventParameters.CleanupComponents, false));
         m_Current.Value.HandleEvent(update);
+
+        if ((bool)update.Paramters[EventParameters.CleanupComponents])
+            m_Current.Value.CleanupComponents();
+
+        if((bool)update.Paramters[EventParameters.UpdateWorld])
+            World.Instance.Self.FireEvent(World.Instance.Self, new GameEvent(GameEventId.UpdateWorldView));
 
         if ((bool)update.Paramters[EventParameters.TakeTurn])
         {
@@ -53,7 +55,7 @@ public class TimeProgression : MonoBehaviour
                 GameEvent startTurn = new GameEvent(GameEventId.StartTurn);
                 m_Current.Value.HandleEvent(startTurn);
             }
-            m_World.FireEvent(m_World, new GameEvent(GameEventId.UpdateWorld));
+            World.Instance.Self.FireEvent(World.Instance.Self, new GameEvent(GameEventId.UpdateWorldView));
         }
     }
 }

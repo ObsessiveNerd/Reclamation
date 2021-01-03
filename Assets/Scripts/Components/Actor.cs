@@ -9,9 +9,10 @@ public class Actor : MonoBehaviour, IEntity
     List<IComponent> m_AddQueue = new List<IComponent>();
     List<IComponent> m_RemoveQueue = new List<IComponent>();
 
-    public void FireEvent(IEntity target, GameEvent gameEvent)
+    public GameEvent FireEvent(IEntity target, GameEvent gameEvent)
     {
         target.HandleEvent(gameEvent);
+        return gameEvent;
     }
 
     public void HandleEvent(GameEvent gameEvent)

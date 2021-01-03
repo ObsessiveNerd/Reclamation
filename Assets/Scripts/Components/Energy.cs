@@ -41,7 +41,7 @@ public class Energy : Component
                 data = new GameEvent(GameEventId.GetMinimumEnergyForAction, new KeyValuePair<string, object>(EventParameters.Value, 0f));
                 FireEvent(Self, data);
                 float minEnergy = (float)data.Paramters[EventParameters.Value];
-                gameEvent.Paramters[EventParameters.TakeTurn] = (minEnergy == 0 || minEnergy < m_CurrentEnergy);
+                gameEvent.Paramters[EventParameters.TakeTurn] = (minEnergy == 0 || m_CurrentEnergy < minEnergy);
                 break;
             case GameEventId.UseEnergy:
                 float energyUsed = (float)gameEvent.Paramters[EventParameters.Value];
