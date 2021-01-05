@@ -23,6 +23,7 @@ public static class GameEventId
     public const string SelectTile = nameof(SelectTile);
     public const string SelectNewTileInDirection = nameof(SelectNewTileInDirection);
     public const string GetActivePlayer = nameof(GetActivePlayer);
+    public const string ShowInfo = nameof(ShowInfo);
 
     //Moving
     public const string BeforeMoving = nameof(BeforeMoving);
@@ -62,6 +63,9 @@ public static class GameEventId
     public const string GetMinimumEnergyForAction = nameof(GetMinimumEnergyForAction);
     public const string SkipTurn = nameof(SkipTurn);
     public const string GetEnergy = nameof(GetEnergy);
+
+    //Combat
+    public const string Attack = nameof(Attack);
 }
 
 public static class EventParameters
@@ -83,6 +87,7 @@ public static class EventParameters
     public const string Creature = nameof(Creature);
     public const string Value = nameof(Value);
     public const string TilePosition = nameof(TilePosition);
+    public const string Weapon = nameof(Weapon);
 }
 
 public class GameEvent

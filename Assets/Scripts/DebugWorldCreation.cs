@@ -25,6 +25,7 @@ public class DebugWorldCreation : MonoBehaviour
         actor.AddComponent(new GraphicContainter(PlayerSprite));
         actor.AddComponent(new Inventory(actor));
         actor.AddComponent(new Move(actor));
+        actor.AddComponent(new Info(actor, "A stout dwarf."));
         //actor.AddComponent(new Slow(actor));
         //actor.AddComponent(new Drunk(actor));
         actor.CleanupComponents();
@@ -56,6 +57,7 @@ public class DebugWorldCreation : MonoBehaviour
         Actor itemActor = new Actor("Pendant");
         itemActor.AddComponent(new Item(itemActor));
         itemActor.AddComponent(new GraphicContainter(Item));
+        itemActor.AddComponent(new Info(itemActor, "A pendant.  It looks expensive."));
         itemActor.CleanupComponents();
 
         GameObject world = new GameObject("World");
@@ -70,6 +72,7 @@ public class DebugWorldCreation : MonoBehaviour
         Actor wallActor = new Actor("Wall");
         wallActor.AddComponent(new GraphicContainter(Wall));
         wallActor.AddComponent(new Wall(wallActor));
+        wallActor.AddComponent(new Info(wallActor, "It's a stone wall."));
         wallActor.CleanupComponents();
 
         worldActor.FireEvent(worldActor, new GameEvent(GameEventId.StartWorld));

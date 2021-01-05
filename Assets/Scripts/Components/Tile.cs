@@ -54,6 +54,7 @@ public class Tile : Component
         RegisteredEvents.Add(GameEventId.Despawn);
         RegisteredEvents.Add(GameEventId.Interact);
         RegisteredEvents.Add(GameEventId.BeforeMoving);
+        RegisteredEvents.Add(GameEventId.ShowTileInfo);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
@@ -129,6 +130,24 @@ public class Tile : Component
                 foreach (IEntity item in Items)
                     FireEvent(item, gameEvent);
             }
+        }
+
+        if(gameEvent.ID == GameEventId.ShowTileInfo)
+        {
+            IEntity target = Self;
+            if (CreatureSlot != null)
+                target = CreatureSlot;
+            else if (ObjectSlot != null)
+                target = ObjectSlot;
+            else if (Items.Count > 0)
+            {
+                foreach (var item in Items)
+                    FireEvent(item, new GameEvent(GameEventId.ShowInfo));
+                return;
+            }
+
+            GameEvent showInfo = new GameEvent(GameEventId.ShowInfo);
+            FireEvent(target, showInfo);
         }
     }
 }

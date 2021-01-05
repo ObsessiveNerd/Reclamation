@@ -55,6 +55,7 @@ public class World : Component
         RegisteredEvents.Add(GameEventId.EndSelection);
         RegisteredEvents.Add(GameEventId.GetActivePlayer);
         RegisteredEvents.Add(GameEventId.ShowTileInfo);
+        RegisteredEvents.Add(GameEventId.Attack);
     }
 
     public void RegisterPlayer(IEntity entity)
@@ -234,7 +235,16 @@ public class World : Component
         if(gameEvent.ID == GameEventId.ShowTileInfo)
         {
             Point currentTilePos = (Point)gameEvent.Paramters[EventParameters.TilePosition];
-            Debug.Log($"Showing info for tile at {currentTilePos.x}, {currentTilePos.y}");
+            FireEvent(m_Tiles[currentTilePos], gameEvent);
+        }
+
+        if(gameEvent.ID == GameEventId.Attack)
+        {
+            IEntity weapon = (IEntity)gameEvent.Paramters[EventParameters.Weapon];
+            Point currentTilePos = (Point)gameEvent.Paramters[EventParameters.TilePosition];
+
+            string weaponName = weapon == null ? "N/A" : weapon.Name; //is temp.  Attacks shouldn't ever come in without a weapon, even if it's an unarmed strike
+            Debug.Log($"Executed attack on {currentTilePos.x}, {currentTilePos.y} with weapon {weaponName}");
         }
     }
 
@@ -251,8 +261,11 @@ public class World : Component
 
         Actor actor = new Actor("Tile");
         actor.AddComponent(new Tile(actor, new Point(x, y)));
-        actor.AddComponent(new GraphicContainter(UnityEngine.Random.Range(0f, 100f) < 30f ? m_TempTerrain[UnityEngine.Random.Range(0, m_TempTerrain.Count)] : null));
+        bool putGrass = UnityEngine.Random.Range(0f, 100f) < 30f;
+        actor.AddComponent(new GraphicContainter(putGrass ? m_TempTerrain[UnityEngine.Random.Range(0, m_TempTerrain.Count)] : null));
         actor.AddComponent(new Renderer(actor, tile.GetComponent<SpriteRenderer>()));
+        if (putGrass)
+            actor.AddComponent(new Info(actor, "A small patch of grass"));
         actor.CleanupComponents();
 
         m_Tiles.Add(new Point(x, y), actor);

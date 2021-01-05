@@ -12,7 +12,7 @@ public class LookController : InputControllerBase
 
         m_TileSelection = startTileSelection;
 
-        GameEvent showTileInfo = new GameEvent(GameEventId.ShowTileInfo, new KeyValuePair<string, object>(EventParameters.TilePosition, m_TileSelection));
+        GameEvent showTileInfo = new GameEvent(GameEventId.ShowInfo, new KeyValuePair<string, object>(EventParameters.TilePosition, m_TileSelection));
         FireEvent(World.Instance.Self, showTileInfo);
     }
 
@@ -42,9 +42,6 @@ public class LookController : InputControllerBase
                 gameEvent.Paramters[EventParameters.UpdateWorldView] = true;
                 gameEvent.Paramters[EventParameters.CleanupComponents] = true;
             }
-
-            //Todo: implement actual call for attack and then use the energy like normal in the PlayerInput
-            gameEvent.Paramters[EventParameters.TakeTurn] = false;
         }
     }
 }

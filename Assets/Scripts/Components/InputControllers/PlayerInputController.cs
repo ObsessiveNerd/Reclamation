@@ -45,6 +45,10 @@ public class PlayerInputController : InputControllerBase
                 FireEvent(World.Instance.Self, selectTile);
 
                 Self.AddComponent(new LookController(Self, (Point)selectTile.Paramters[EventParameters.TilePosition]));
+
+                GameEvent showTileInfo = new GameEvent(GameEventId.ShowTileInfo, new KeyValuePair<string, object>(EventParameters.TilePosition, selectTile.Paramters[EventParameters.TilePosition]));
+                FireEvent(World.Instance.Self, showTileInfo);
+
                 gameEvent.Paramters[EventParameters.UpdateWorldView] = true;
                 gameEvent.Paramters[EventParameters.CleanupComponents] = true;
             }
