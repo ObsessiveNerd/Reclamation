@@ -14,11 +14,10 @@ public class DebugWorldCreation : MonoBehaviour
     public Sprite Selection;
 
     World m_World;
-    //TimeProgression time;
+    
     // Start is called before the first frame update
     void Start()
     {
-        //GameObject obj = new GameObject("Player");
         Actor actor = new Actor("Dwarf 1");
         actor.AddComponent(new PlayerInputController(actor));
         actor.AddComponent(new Energy(actor, 1f));
@@ -30,18 +29,15 @@ public class DebugWorldCreation : MonoBehaviour
         //actor.AddComponent(new Drunk(actor));
         actor.CleanupComponents();
 
-        //GameObject obj2 = new GameObject("Player2");
         Actor actor2 = new Actor("Dwarf 2");
         actor2.AddComponent(new Energy(actor2, 1f));
         actor2.AddComponent(new GraphicContainter(PlayerSprite));
         actor2.AddComponent(new Inventory(actor2));
         actor2.AddComponent(new Move(actor2));
-        //actor2.AddComponent(new SkipTurnController(actor2));
         //actor2.AddComponent(new Slow(actor2));
-        //actor.AddComponent(new Drunk(actor));
+        //actor.AddComponent(new Drunk(actor2));
         actor2.CleanupComponents();
 
-        //GameObject obj3 = new GameObject("Goblin");
         Actor actor3 = new Actor("Goblin");
         actor3.AddComponent(new AIController(actor3));
         actor3.AddComponent(new Energy(actor3, 1f));
@@ -53,7 +49,6 @@ public class DebugWorldCreation : MonoBehaviour
         //actor3.AddComponent(new Drunk(actor3));
         actor3.CleanupComponents();
 
-        //GameObject item = new GameObject("TestItem");
         Actor itemActor = new Actor("Pendant");
         itemActor.AddComponent(new Item(itemActor));
         itemActor.AddComponent(new GraphicContainter(Item));
@@ -68,7 +63,6 @@ public class DebugWorldCreation : MonoBehaviour
         m_World.RegisterPlayer(actor2);
         worldActor.CleanupComponents();
 
-        //GameObject wall = new GameObject("Wall");
         Actor wallActor = new Actor("Wall");
         wallActor.AddComponent(new GraphicContainter(Wall));
         wallActor.AddComponent(new Wall(wallActor));
@@ -82,6 +76,9 @@ public class DebugWorldCreation : MonoBehaviour
         Spawner.Spawn(actor3, EntityType.Creature, 25, 10);
         for (int i = 8; i < 16; i++)
             Spawner.Spawn(wallActor, EntityType.Object, i, 10);
+
+        for (int i = 8; i < 16; i++)
+            Spawner.Spawn(wallActor, EntityType.Object, 32, i);
     }
 
     private void Update()

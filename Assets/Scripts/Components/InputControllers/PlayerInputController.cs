@@ -16,9 +16,7 @@ public class PlayerInputController : InputControllerBase
             MoveDirection desiredDirection = InputUtility.GetMoveDirection();
 
             if (desiredDirection != MoveDirection.None)
-            {
                 FireEvent(Self, new GameEvent(GameEventId.MoveKeyPressed, new KeyValuePair<string, object>(EventParameters.InputDirection, desiredDirection)));
-            }
 
             else if (Input.GetKeyDown(KeyCode.I))
                 FireEvent(Self, new GameEvent(GameEventId.OpenInventory));
@@ -26,12 +24,7 @@ public class PlayerInputController : InputControllerBase
             else if (Input.GetKeyDown(KeyCode.F))
             {
                 Self.RemoveComponent(this);
-                GameEvent selectTile = new GameEvent(GameEventId.SelectTile, new KeyValuePair<string, object>(EventParameters.Entity, Self),
-                                                                                new KeyValuePair<string, object>(EventParameters.Target, World.Instance.GetClosestEnemyTo(Self)),
-                                                                                new KeyValuePair<string, object>(EventParameters.TilePosition, null));
-                FireEvent(World.Instance.Self, selectTile);
-
-                Self.AddComponent(new RangedAttackController(Self, (Point)selectTile.Paramters[EventParameters.TilePosition]));
+                Self.AddComponent(new RangedAttackController(Self));
                 gameEvent.Paramters[EventParameters.UpdateWorldView] = true;
                 gameEvent.Paramters[EventParameters.CleanupComponents] = true;
             }
@@ -39,15 +32,7 @@ public class PlayerInputController : InputControllerBase
             else if (Input.GetKeyDown(KeyCode.L))
             {
                 Self.RemoveComponent(this);
-                GameEvent selectTile = new GameEvent(GameEventId.SelectTile, new KeyValuePair<string, object>(EventParameters.Entity, Self),
-                                                                                new KeyValuePair<string, object>(EventParameters.Target, null),
-                                                                                new KeyValuePair<string, object>(EventParameters.TilePosition, null));
-                FireEvent(World.Instance.Self, selectTile);
-
-                Self.AddComponent(new LookController(Self, (Point)selectTile.Paramters[EventParameters.TilePosition]));
-
-                GameEvent showTileInfo = new GameEvent(GameEventId.ShowTileInfo, new KeyValuePair<string, object>(EventParameters.TilePosition, selectTile.Paramters[EventParameters.TilePosition]));
-                FireEvent(World.Instance.Self, showTileInfo);
+                Self.AddComponent(new LookController(Self));
 
                 gameEvent.Paramters[EventParameters.UpdateWorldView] = true;
                 gameEvent.Paramters[EventParameters.CleanupComponents] = true;

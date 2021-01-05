@@ -6,13 +6,18 @@ public class LookController : InputControllerBase
 {
     Point m_TileSelection;
 
-    public LookController(IEntity self, Point startTileSelection)
+    public LookController(IEntity self)
     {
         Init(self);
 
-        m_TileSelection = startTileSelection;
+        GameEvent selectTile = new GameEvent(GameEventId.SelectTile, new KeyValuePair<string, object>(EventParameters.Entity, Self),
+                                                                                new KeyValuePair<string, object>(EventParameters.Target, null),
+                                                                                new KeyValuePair<string, object>(EventParameters.TilePosition, null));
+        FireEvent(World.Instance.Self, selectTile);
 
-        GameEvent showTileInfo = new GameEvent(GameEventId.ShowInfo, new KeyValuePair<string, object>(EventParameters.TilePosition, m_TileSelection));
+        m_TileSelection = (Point)selectTile.Paramters[EventParameters.TilePosition];
+
+        GameEvent showTileInfo = new GameEvent(GameEventId.ShowTileInfo, new KeyValuePair<string, object>(EventParameters.TilePosition, m_TileSelection));
         FireEvent(World.Instance.Self, showTileInfo);
     }
 

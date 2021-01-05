@@ -186,7 +186,12 @@ public class World : Component
             MoveDirection moveDirection = (MoveDirection)gameEvent.Paramters[EventParameters.InputDirection];
             Point currentPoint = m_EntityToPointMap[entity];
             Point newPoint = GetTilePointInDirection(currentPoint, moveDirection);
-            FireEvent(m_Tiles[newPoint], gameEvent);
+            if(m_Tiles.TryGetValue(newPoint, out Actor tile))
+                FireEvent(tile, gameEvent);
+            else
+            {
+                //Move to a new part of the map.  For now do nothing
+            }
         }
 
         if(gameEvent.ID == GameEventId.GetActivePlayer)
@@ -240,7 +245,7 @@ public class World : Component
 
         if(gameEvent.ID == GameEventId.Attack)
         {
-            IEntity weapon = (IEntity)gameEvent.Paramters[EventParameters.Weapon];
+            IEntity weapon = (IEntity)gameEvent.Paramters[EventParameters.Attack];
             Point currentTilePos = (Point)gameEvent.Paramters[EventParameters.TilePosition];
 
             string weaponName = weapon == null ? "N/A" : weapon.Name; //is temp.  Attacks shouldn't ever come in without a weapon, even if it's an unarmed strike

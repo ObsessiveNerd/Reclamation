@@ -87,7 +87,7 @@ public static class EventParameters
     public const string Creature = nameof(Creature);
     public const string Value = nameof(Value);
     public const string TilePosition = nameof(TilePosition);
-    public const string Weapon = nameof(Weapon);
+    public const string Attack = nameof(Attack);
 }
 
 public class GameEvent
