@@ -128,6 +128,7 @@ public class World : Component
         if(gameEvent.ID == GameEventId.MoveEntity)
         {
             IEntity entity = (IEntity)gameEvent.Paramters[EventParameters.Entity];
+            if (!m_EntityToPointMap.ContainsKey(entity)) return;
             Point currentPoint = m_EntityToPointMap[entity];
             EntityType entityType = (EntityType)gameEvent.Paramters[EventParameters.EntityType];
             MoveDirection moveDirection = (MoveDirection)gameEvent.Paramters[EventParameters.InputDirection];
@@ -184,6 +185,8 @@ public class World : Component
         {
             IEntity entity = (IEntity)gameEvent.Paramters[EventParameters.Entity];
             MoveDirection moveDirection = (MoveDirection)gameEvent.Paramters[EventParameters.InputDirection];
+            if (!m_EntityToPointMap.ContainsKey(entity)) return;
+
             Point currentPoint = m_EntityToPointMap[entity];
             Point newPoint = GetTilePointInDirection(currentPoint, moveDirection);
             if(m_Tiles.TryGetValue(newPoint, out Actor tile))
@@ -245,11 +248,12 @@ public class World : Component
 
         if(gameEvent.ID == GameEventId.Attack)
         {
-            IEntity weapon = (IEntity)gameEvent.Paramters[EventParameters.Attack];
             Point currentTilePos = (Point)gameEvent.Paramters[EventParameters.TilePosition];
+            int damage = (int)gameEvent.Paramters[EventParameters.Damage];
+            DamageType damageType = (DamageType)gameEvent.Paramters[EventParameters.DamageType];
 
-            string weaponName = weapon == null ? "N/A" : weapon.Name; //is temp.  Attacks shouldn't ever come in without a weapon, even if it's an unarmed strike
-            Debug.Log($"Executed attack on {currentTilePos.x}, {currentTilePos.y} with weapon {weaponName}");
+            FireEvent(m_Tiles[currentTilePos], new GameEvent(GameEventId.TakeDamage, new KeyValuePair<string, object>(EventParameters.Damage, damage),
+                                                                                    new KeyValuePair<string, object>(EventParameters.DamageType, damageType)));
         }
     }
 
@@ -266,8 +270,8 @@ public class World : Component
 
         Actor actor = new Actor("Tile");
         actor.AddComponent(new Tile(actor, new Point(x, y)));
-        bool putGrass = UnityEngine.Random.Range(0f, 100f) < 30f;
-        actor.AddComponent(new GraphicContainter(putGrass ? m_TempTerrain[UnityEngine.Random.Range(0, m_TempTerrain.Count)] : null));
+        bool putGrass = RecRandom.Instance.GetRandomValue(0f, 100f) < 30f;
+        actor.AddComponent(new GraphicContainter(putGrass ? m_TempTerrain[RecRandom.Instance.GetRandomValue(0, m_TempTerrain.Count)] : null));
         actor.AddComponent(new Renderer(actor, tile.GetComponent<SpriteRenderer>()));
         if (putGrass)
             actor.AddComponent(new Info(actor, "A small patch of grass"));

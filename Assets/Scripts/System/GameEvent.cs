@@ -66,6 +66,8 @@ public static class GameEventId
 
     //Combat
     public const string Attack = nameof(Attack);
+    public const string TakeDamage = nameof(TakeDamage);
+    public const string RestoreHealth = nameof(RestoreHealth);
 }
 
 public static class EventParameters
@@ -88,6 +90,11 @@ public static class EventParameters
     public const string Value = nameof(Value);
     public const string TilePosition = nameof(TilePosition);
     public const string Attack = nameof(Attack);
+    public const string Color = nameof(Color);
+    public const string Damage = nameof(Damage);
+    public const string DamageMap = nameof(DamageMap);
+    public const string Healing = nameof(Healing);
+    public const string DamageType = nameof(DamageType);
 }
 
 public class GameEvent

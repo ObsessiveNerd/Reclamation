@@ -55,6 +55,7 @@ public class Tile : Component
         RegisteredEvents.Add(GameEventId.Interact);
         RegisteredEvents.Add(GameEventId.BeforeMoving);
         RegisteredEvents.Add(GameEventId.ShowTileInfo);
+        RegisteredEvents.Add(GameEventId.TakeDamage);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
@@ -70,9 +71,8 @@ public class Tile : Component
                 target = Items[0];
 
             GameEvent getSprite = new GameEvent(GameEventId.GetSprite, new KeyValuePair<string, object>(EventParameters.RenderSprite, null));
-            FireEvent(target, getSprite);
-            Sprite sprite = (Sprite)getSprite.Paramters[EventParameters.RenderSprite];
-            FireEvent(Self, new GameEvent(GameEventId.UpdateRenderer, new KeyValuePair<string, object>(EventParameters.RenderSprite, sprite)));
+            GameEvent getSpriteEvent = FireEvent(target, getSprite);
+            FireEvent(Self, new GameEvent(GameEventId.UpdateRenderer, getSpriteEvent.Paramters));
         }
 
         if(gameEvent.ID == GameEventId.Spawn)
@@ -148,6 +148,23 @@ public class Tile : Component
 
             GameEvent showInfo = new GameEvent(GameEventId.ShowInfo);
             FireEvent(target, showInfo);
+        }
+
+        if(gameEvent.ID == GameEventId.TakeDamage)
+        {
+            IEntity target = null;
+            if (CreatureSlot != null)
+                target = CreatureSlot;
+            else if (ObjectSlot != null)
+                target = ObjectSlot;
+            else if (Items.Count > 0)
+            {
+                foreach (var item in Items)
+                    FireEvent(item, gameEvent);
+                return;
+            }
+            if(target != null)
+                FireEvent(target, gameEvent);
         }
     }
 }

@@ -32,7 +32,7 @@ public class InputUtility
 
     public static MoveDirection GetRandomMoveDirection()
     {
-        int randomDirection = UnityEngine.Random.Range(0, Enum.GetNames(typeof(MoveDirection)).Length - 1);
+        int randomDirection = RecRandom.Instance.GetRandomValue(0, Enum.GetNames(typeof(MoveDirection)).Length - 1);
         return (MoveDirection)randomDirection;
     }
 }

@@ -40,11 +40,12 @@ public class DebugWorldCreation : MonoBehaviour
 
         Actor actor3 = new Actor("Goblin");
         actor3.AddComponent(new AIController(actor3));
-        actor3.AddComponent(new Energy(actor3, 1f));
+        actor3.AddComponent(new Energy(actor3, 0.9f));
         actor3.AddComponent(new GraphicContainter(Goblin));
         actor3.AddComponent(new Inventory(actor3));
         actor3.AddComponent(new Move(actor3));
         actor3.AddComponent(new RegisterWithTimeSystem(actor3));
+        actor3.AddComponent(new Health(actor3, EntityType.Creature, 10));
         //actor.AddComponent(new Slow(actor3));
         //actor3.AddComponent(new Drunk(actor3));
         actor3.CleanupComponents();
@@ -67,13 +68,14 @@ public class DebugWorldCreation : MonoBehaviour
         wallActor.AddComponent(new GraphicContainter(Wall));
         wallActor.AddComponent(new Wall(wallActor));
         wallActor.AddComponent(new Info(wallActor, "It's a stone wall."));
+
         wallActor.CleanupComponents();
 
         worldActor.FireEvent(worldActor, new GameEvent(GameEventId.StartWorld));
         Spawner.Spawn(actor, EntityType.Creature, 3, 3);
         Spawner.Spawn(itemActor, EntityType.Item, 10, 12);
         Spawner.Spawn(actor2, EntityType.Creature, 20, 20);
-        Spawner.Spawn(actor3, EntityType.Creature, 25, 10);
+        Spawner.Spawn(actor3, EntityType.Creature, 4, 5);
         for (int i = 8; i < 16; i++)
             Spawner.Spawn(wallActor, EntityType.Object, i, 10);
 

@@ -7,11 +7,10 @@ public class RangedAttackController : InputControllerBase
     Point m_TileSelection;
     IEntity m_Attack;
 
-    //Todo: I could probably initialize this with a specifc attack bow/spell/thrown object/whatever and get a lot of reuse out of this
-    public RangedAttackController(IEntity self/*, IEntity attack*/)
+    public RangedAttackController(IEntity self, IEntity attack)
     {
         Init(self);
-        //m_Attack = attack;
+        m_Attack = attack;
 
         GameEvent selectTile = new GameEvent(GameEventId.SelectTile, new KeyValuePair<string, object>(EventParameters.Entity, Self),
                                                                                 new KeyValuePair<string, object>(EventParameters.Target, World.Instance.GetClosestEnemyTo(Self)),
@@ -37,9 +36,8 @@ public class RangedAttackController : InputControllerBase
 
             if(Input.GetKeyDown(KeyCode.Return))
             {
-                //weapon here could also mean a spell, we also need to run the components on Self and ensure that there are no modifiers that need to apply.  Attack should come in as the base attack, no mods
-                FireEvent(World.Instance.Self, new GameEvent(GameEventId.Attack, new KeyValuePair<string, object>(EventParameters.TilePosition, m_TileSelection),
-                                                                                    new KeyValuePair<string, object>(EventParameters.Attack, m_Attack)));
+                FireEvent(m_Attack, new GameEvent(GameEventId.Attack, new KeyValuePair<string, object>(EventParameters.TilePosition, m_TileSelection),
+                                                                        new KeyValuePair<string, object>(EventParameters.Attack, m_Attack)));
                 EndSelection(gameEvent);
 
                 //Very temporary, we need to use the energy costs and blah blah blah

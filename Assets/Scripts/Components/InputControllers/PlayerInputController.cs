@@ -23,8 +23,14 @@ public class PlayerInputController : InputControllerBase
 
             else if (Input.GetKeyDown(KeyCode.F))
             {
+                //Temp, need to actually get the equiped ranged weapon
+                Actor bow = new Actor("Bow");
+                bow.AddComponent(new DealDamage(bow, DamageType.Piercing, new Dice("1d8")));
+                bow.CleanupComponents();
+                //////////////////
+
                 Self.RemoveComponent(this);
-                Self.AddComponent(new RangedAttackController(Self));
+                Self.AddComponent(new RangedAttackController(Self, bow));
                 gameEvent.Paramters[EventParameters.UpdateWorldView] = true;
                 gameEvent.Paramters[EventParameters.CleanupComponents] = true;
             }
