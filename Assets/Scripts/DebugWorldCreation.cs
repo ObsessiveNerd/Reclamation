@@ -24,6 +24,7 @@ public class DebugWorldCreation : MonoBehaviour
         actor.AddComponent(new GraphicContainter(PlayerSprite));
         actor.AddComponent(new Inventory(actor));
         actor.AddComponent(new Move(actor));
+        actor.AddComponent(new Stats(actor, 11, 13, 10, 10, 11, 14));
         actor.AddComponent(new Info(actor, "A stout dwarf."));
         //actor.AddComponent(new Slow(actor));
         //actor.AddComponent(new Drunk(actor));
@@ -46,6 +47,8 @@ public class DebugWorldCreation : MonoBehaviour
         actor3.AddComponent(new Move(actor3));
         actor3.AddComponent(new RegisterWithTimeSystem(actor3));
         actor3.AddComponent(new Health(actor3, EntityType.Creature, 10));
+        actor3.AddComponent(new Defence(actor3));
+        //actor3.AddComponent(new Armor(3));
         //actor.AddComponent(new Slow(actor3));
         //actor3.AddComponent(new Drunk(actor3));
         actor3.CleanupComponents();

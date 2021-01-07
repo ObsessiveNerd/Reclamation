@@ -25,4 +25,9 @@ public class Dice
         total += m_Modifiers;
         return total;
     }
+
+    public static int Roll(string dice)
+    {
+        return new Dice(dice).Roll();
+    }
 }

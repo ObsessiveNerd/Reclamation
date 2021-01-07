@@ -36,8 +36,17 @@ public class RangedAttackController : InputControllerBase
 
             if(Input.GetKeyDown(KeyCode.Return))
             {
-                FireEvent(m_Attack, new GameEvent(GameEventId.Attack, new KeyValuePair<string, object>(EventParameters.TilePosition, m_TileSelection),
-                                                                        new KeyValuePair<string, object>(EventParameters.Attack, m_Attack)));
+                TypeWeapon weaponType = (TypeWeapon)FireEvent(m_Attack, new GameEvent(GameEventId.GetWeaponType, new KeyValuePair<string, object>(EventParameters.WeaponType, null)))
+                    .Paramters[EventParameters.WeaponType];
+
+                int rollToHit = (int)FireEvent(Self, new GameEvent(GameEventId.RollToHit, new KeyValuePair<string, object>(EventParameters.RollToHit, 0),
+                                                                                          new KeyValuePair<string, object>(EventParameters.WeaponType, weaponType))).Paramters[EventParameters.RollToHit];
+
+                Debug.Log($"{Self.Name} rolled to hit with a {rollToHit}");
+
+                FireEvent(m_Attack, new GameEvent(GameEventId.Attack, new KeyValuePair<string, object>(EventParameters.RollToHit, rollToHit),
+                                                                      new KeyValuePair<string, object>(EventParameters.TilePosition, m_TileSelection),
+                                                                      new KeyValuePair<string, object>(EventParameters.Attack, m_Attack)));
                 EndSelection(gameEvent);
 
                 //Very temporary, we need to use the energy costs and blah blah blah

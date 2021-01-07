@@ -18,8 +18,13 @@ public class DealDamage : Component
 
     public override void HandleEvent(GameEvent gameEvent)
     {
-        FireEvent(World.Instance.Self, new GameEvent(GameEventId.Attack, new KeyValuePair<string, object>(EventParameters.Damage, m_Dice.Roll()),
+        int rollToHit = Dice.Roll("1d20");
+        if (gameEvent.Paramters.ContainsKey(EventParameters.RollToHit))
+            rollToHit = (int)gameEvent.Paramters[EventParameters.RollToHit];
+
+        FireEvent(World.Instance.Self, new GameEvent(GameEventId.Attack, new KeyValuePair<string, object>(EventParameters.RollToHit, rollToHit),
+                                                                            new KeyValuePair<string, object>(EventParameters.Damage, m_Dice.Roll()),
                                                                             new KeyValuePair<string, object>(EventParameters.DamageType, m_DamageType),
-                                                                            new KeyValuePair<string, object> (EventParameters.TilePosition, gameEvent.Paramters[EventParameters.TilePosition])));
+                                                                            new KeyValuePair<string, object>(EventParameters.TilePosition, gameEvent.Paramters[EventParameters.TilePosition])));
     }
 }

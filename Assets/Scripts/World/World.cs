@@ -249,10 +249,12 @@ public class World : Component
         if(gameEvent.ID == GameEventId.Attack)
         {
             Point currentTilePos = (Point)gameEvent.Paramters[EventParameters.TilePosition];
+            int rollToHit = (int)gameEvent.Paramters[EventParameters.RollToHit];
             int damage = (int)gameEvent.Paramters[EventParameters.Damage];
             DamageType damageType = (DamageType)gameEvent.Paramters[EventParameters.DamageType];
 
             FireEvent(m_Tiles[currentTilePos], new GameEvent(GameEventId.TakeDamage, new KeyValuePair<string, object>(EventParameters.Damage, damage),
+                                                                                    new KeyValuePair<string, object>(EventParameters.RollToHit, rollToHit),
                                                                                     new KeyValuePair<string, object>(EventParameters.DamageType, damageType)));
         }
     }

@@ -66,8 +66,11 @@ public static class GameEventId
 
     //Combat
     public const string Attack = nameof(Attack);
+    public const string RollToHit = nameof(RollToHit);
     public const string TakeDamage = nameof(TakeDamage);
     public const string RestoreHealth = nameof(RestoreHealth);
+    public const string GetWeaponType = nameof(GetWeaponType);
+    public const string GetArmor = nameof(GetArmor);
 }
 
 public static class EventParameters
@@ -95,6 +98,8 @@ public static class EventParameters
     public const string DamageMap = nameof(DamageMap);
     public const string Healing = nameof(Healing);
     public const string DamageType = nameof(DamageType);
+    public const string RollToHit = nameof(RollToHit);
+    public const string WeaponType = nameof(WeaponType);
 }
 
 public class GameEvent

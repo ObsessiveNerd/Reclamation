@@ -25,7 +25,9 @@ public class PlayerInputController : InputControllerBase
             {
                 //Temp, need to actually get the equiped ranged weapon
                 Actor bow = new Actor("Bow");
+                bow.AddComponent(new WeaponType(bow, TypeWeapon.Ranged));
                 bow.AddComponent(new DealDamage(bow, DamageType.Piercing, new Dice("1d8")));
+                bow.AddComponent(new DealDamage(bow, DamageType.Ice, new Dice("1d4")));
                 bow.CleanupComponents();
                 //////////////////
 
