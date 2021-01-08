@@ -53,23 +53,16 @@ public class Tile : Component
         RegisteredEvents.Add(GameEventId.Spawn);
         RegisteredEvents.Add(GameEventId.Despawn);
         RegisteredEvents.Add(GameEventId.Interact);
-        RegisteredEvents.Add(GameEventId.BeforeMoving);
         RegisteredEvents.Add(GameEventId.ShowTileInfo);
-        RegisteredEvents.Add(GameEventId.TakeDamage);
+        RegisteredEvents.Add(GameEventId.ApplyEventToTile);
+        RegisteredEvents.Add(GameEventId.AddComponentToTile);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
     {
         if (gameEvent.ID == GameEventId.UpdateTile)
         {
-            IEntity target = Self;
-            if (CreatureSlot != null)
-                target = CreatureSlot;
-            else if (ObjectSlot != null)
-                target = ObjectSlot;
-            else if (Items.Count > 0)
-                target = Items[0];
-
+            IEntity target = GetTarget()[0];
             GameEvent getSprite = new GameEvent(GameEventId.GetSprite, new KeyValuePair<string, object>(EventParameters.RenderSprite, null));
             GameEvent getSpriteEvent = FireEvent(target, getSprite);
             FireEvent(Self, new GameEvent(GameEventId.UpdateRenderer, getSpriteEvent.Paramters));
@@ -119,52 +112,36 @@ public class Tile : Component
             Items.Clear();
         }
 
-        if(gameEvent.ID == GameEventId.BeforeMoving)
+        if (gameEvent.ID == GameEventId.ShowTileInfo)
         {
-            if (CreatureSlot != null)
-                FireEvent(CreatureSlot, gameEvent);
-            else if (ObjectSlot != null)
-                FireEvent(ObjectSlot, gameEvent);
-            else if (Items.Count > 0)
-            {
-                foreach (IEntity item in Items)
-                    FireEvent(item, gameEvent);
-            }
-        }
-
-        if(gameEvent.ID == GameEventId.ShowTileInfo)
-        {
-            IEntity target = Self;
-            if (CreatureSlot != null)
-                target = CreatureSlot;
-            else if (ObjectSlot != null)
-                target = ObjectSlot;
-            else if (Items.Count > 0)
-            {
-                foreach (var item in Items)
-                    FireEvent(item, new GameEvent(GameEventId.ShowInfo));
-                return;
-            }
-
             GameEvent showInfo = new GameEvent(GameEventId.ShowInfo);
-            FireEvent(target, showInfo);
+            foreach(var e in GetTarget())
+                FireEvent(e, showInfo);
         }
 
-        if(gameEvent.ID == GameEventId.TakeDamage)
+        if (gameEvent.ID == GameEventId.ApplyEventToTile)
         {
-            IEntity target = null;
-            if (CreatureSlot != null)
-                target = CreatureSlot;
-            else if (ObjectSlot != null)
-                target = ObjectSlot;
-            else if (Items.Count > 0)
-            {
-                foreach (var item in Items)
-                    FireEvent(item, gameEvent);
-                return;
-            }
-            if(target != null)
-                FireEvent(target, gameEvent);
+            GameEvent effectEvent = (GameEvent)gameEvent.Paramters[EventParameters.Value];
+            foreach (var e in GetTarget())
+                FireEvent(e, effectEvent);
         }
+
+        if (gameEvent.ID == GameEventId.AddComponentToTile)
+        {
+            //Todo
+        }
+
+        List<IEntity> GetTarget()
+        {
+            if (CreatureSlot != null)
+                return new List<IEntity>() { CreatureSlot };
+            else if (ObjectSlot != null)
+                return new List<IEntity>() { ObjectSlot };
+            else if (Items.Count > 0)
+                return Items;
+
+            return new List<IEntity>() { Self };
+        }
+
     }
 }

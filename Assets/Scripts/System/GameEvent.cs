@@ -10,6 +10,8 @@ public static class GameEventId
     public const string AddToInventory = nameof(AddToInventory);
     public const string RemoveFromInventory = nameof(RemoveFromInventory);
     public const string EmptyBag = nameof(EmptyBag);
+    public const string Equip = nameof(Equip);
+    public const string Unequip = nameof(Unequip);
 
     //Item
     public const string Pickup = nameof(Pickup);
@@ -24,6 +26,8 @@ public static class GameEventId
     public const string SelectNewTileInDirection = nameof(SelectNewTileInDirection);
     public const string GetActivePlayer = nameof(GetActivePlayer);
     public const string ShowInfo = nameof(ShowInfo);
+    public const string ApplyEventToTile = nameof(ApplyEventToTile);
+    public const string AddComponentToTile = nameof(AddComponentToTile);
 
     //Moving
     public const string BeforeMoving = nameof(BeforeMoving);
@@ -71,6 +75,9 @@ public static class GameEventId
     public const string RestoreHealth = nameof(RestoreHealth);
     public const string GetWeaponType = nameof(GetWeaponType);
     public const string GetArmor = nameof(GetArmor);
+    public const string Sharpness = nameof(Sharpness);
+    public const string SeverBodyPart = nameof(SeverBodyPart);
+    
 }
 
 public static class EventParameters

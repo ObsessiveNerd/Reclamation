@@ -16,7 +16,6 @@ public class World : Component
     Dictionary<IEntity, Point> m_EntityToPointMap = new Dictionary<IEntity, Point>();
     LinkedList<IEntity> m_Players = new LinkedList<IEntity>();
     LinkedListNode<IEntity> m_ActivePlayer;
-
     int m_Vertical, m_Horizontal, m_Columns, m_Rows;
 
     //Temp
@@ -49,13 +48,17 @@ public class World : Component
         RegisteredEvents.Add(GameEventId.Interact);
         RegisteredEvents.Add(GameEventId.Drop);
         RegisteredEvents.Add(GameEventId.RotateActiveCharacter);
-        RegisteredEvents.Add(GameEventId.BeforeMoving);
         RegisteredEvents.Add(GameEventId.SelectTile);
         RegisteredEvents.Add(GameEventId.SelectNewTileInDirection);
         RegisteredEvents.Add(GameEventId.EndSelection);
         RegisteredEvents.Add(GameEventId.GetActivePlayer);
         RegisteredEvents.Add(GameEventId.ShowTileInfo);
-        RegisteredEvents.Add(GameEventId.Attack);
+        RegisteredEvents.Add(GameEventId.ApplyEventToTile);
+        RegisteredEvents.Add(GameEventId.AddComponentToTile);
+        RegisteredEvents.Add(GameEventId.BeforeMoving);
+
+        //RegisteredEvents.Add(GameEventId.Attack);
+
     }
 
     public void RegisterPlayer(IEntity entity)
@@ -70,7 +73,6 @@ public class World : Component
     public void UnregisterPlayer(IEntity entity)
     {
         //May need to rotate to the next active character first
-
         m_Players.Remove(entity);
         m_PlayerToTimeProgressionMap.Remove(entity);
         FireEvent(Self, new GameEvent(GameEventId.Despawn, new KeyValuePair<string, object>(EventParameters.Entity, entity),
@@ -123,6 +125,14 @@ public class World : Component
                                                                    new KeyValuePair<string, object>(EventParameters.EntityType, entityType));
             FireEvent(m_Tiles[currentPoint], despawn);
             m_EntityToPointMap.Remove(entity);
+            foreach(var timeProgression in m_PlayerToTimeProgressionMap.Values)
+            {
+                if(timeProgression.ContainsEntity(entity))
+                {
+                    timeProgression.RemoveEntity(entity);
+                    break;
+                }
+            }
         }
 
         if(gameEvent.ID == GameEventId.MoveEntity)
@@ -136,6 +146,9 @@ public class World : Component
 
             if (m_Tiles.ContainsKey(newPoint))
             {
+                //Just as a note, doing it this way isn't terribly efficient since despawn is going to remove things from the time progression
+                //This also means turn order is going to get fucked, so really we should do this proper and just event to the correct tiles here.
+                //I mean I guess things are despawning and spawning in order so maybe turn order won't get fucked.
                 GameEvent despawn = new GameEvent(GameEventId.Despawn, new KeyValuePair<string, object>(EventParameters.Entity, entity),
                                                                    new KeyValuePair<string, object>(EventParameters.EntityType, entityType));
                 FireEvent(m_Tiles[currentPoint], despawn);
@@ -189,8 +202,12 @@ public class World : Component
 
             Point currentPoint = m_EntityToPointMap[entity];
             Point newPoint = GetTilePointInDirection(currentPoint, moveDirection);
-            if(m_Tiles.TryGetValue(newPoint, out Actor tile))
-                FireEvent(tile, gameEvent);
+            if (m_Tiles.TryGetValue(newPoint, out Actor tile))
+            {
+                GameEvent beforeMovingTile = new GameEvent(GameEventId.ApplyEventToTile);
+                beforeMovingTile.Paramters.Add(EventParameters.Value, gameEvent);
+                FireEvent(tile, beforeMovingTile);
+            }
             else
             {
                 //Move to a new part of the map.  For now do nothing
@@ -209,9 +226,10 @@ public class World : Component
 
             Point p = m_EntityToPointMap[target == null ? entity : target];
 
-            //This should probably move to the tile?
+            //Temp for UI, should really not cover up selection with this component.
             m_Tiles[p].AddComponent(new SelectedTile(m_TempSelection));
             m_Tiles[p].CleanupComponents();
+            /////////////////////
 
             gameEvent.Paramters[EventParameters.TilePosition] = p;
         }
@@ -246,16 +264,15 @@ public class World : Component
             FireEvent(m_Tiles[currentTilePos], gameEvent);
         }
 
-        if(gameEvent.ID == GameEventId.Attack)
+        if(gameEvent.ID == GameEventId.ApplyEventToTile)
         {
             Point currentTilePos = (Point)gameEvent.Paramters[EventParameters.TilePosition];
-            int rollToHit = (int)gameEvent.Paramters[EventParameters.RollToHit];
-            int damage = (int)gameEvent.Paramters[EventParameters.Damage];
-            DamageType damageType = (DamageType)gameEvent.Paramters[EventParameters.DamageType];
+            FireEvent(m_Tiles[currentTilePos], gameEvent);
+        }
 
-            FireEvent(m_Tiles[currentTilePos], new GameEvent(GameEventId.TakeDamage, new KeyValuePair<string, object>(EventParameters.Damage, damage),
-                                                                                    new KeyValuePair<string, object>(EventParameters.RollToHit, rollToHit),
-                                                                                    new KeyValuePair<string, object>(EventParameters.DamageType, damageType)));
+        if (gameEvent.ID == GameEventId.AddComponentToTile)
+        {
+            //Todo
         }
     }
 

@@ -22,9 +22,11 @@ public class DealDamage : Component
         if (gameEvent.Paramters.ContainsKey(EventParameters.RollToHit))
             rollToHit = (int)gameEvent.Paramters[EventParameters.RollToHit];
 
-        FireEvent(World.Instance.Self, new GameEvent(GameEventId.Attack, new KeyValuePair<string, object>(EventParameters.RollToHit, rollToHit),
+        GameEvent attack = new GameEvent(GameEventId.TakeDamage, new KeyValuePair<string, object>(EventParameters.RollToHit, rollToHit),
                                                                             new KeyValuePair<string, object>(EventParameters.Damage, m_Dice.Roll()),
-                                                                            new KeyValuePair<string, object>(EventParameters.DamageType, m_DamageType),
-                                                                            new KeyValuePair<string, object>(EventParameters.TilePosition, gameEvent.Paramters[EventParameters.TilePosition])));
+                                                                            new KeyValuePair<string, object>(EventParameters.DamageType, m_DamageType));
+
+        FireEvent(World.Instance.Self, new GameEvent(GameEventId.ApplyEventToTile, new KeyValuePair<string, object>(EventParameters.Value, attack),
+                                                                                    new KeyValuePair<string, object>(EventParameters.TilePosition, gameEvent.Paramters[EventParameters.TilePosition])));
     }
 }

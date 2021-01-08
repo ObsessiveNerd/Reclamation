@@ -18,6 +18,11 @@ public class TimeProgression
         m_EntityList.Remove(entity);
     }
 
+    public bool ContainsEntity(IEntity entity)
+    {
+        return m_EntityList.Contains(entity);
+    }
+
     public void Update()
     {
         if (m_EntityList.Count == 0)

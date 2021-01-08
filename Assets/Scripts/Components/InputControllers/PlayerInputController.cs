@@ -28,6 +28,7 @@ public class PlayerInputController : InputControllerBase
                 bow.AddComponent(new WeaponType(bow, TypeWeapon.Ranged));
                 bow.AddComponent(new DealDamage(bow, DamageType.Piercing, new Dice("1d8")));
                 bow.AddComponent(new DealDamage(bow, DamageType.Ice, new Dice("1d4")));
+                bow.AddComponent(new Sharpness(bow));
                 bow.CleanupComponents();
                 //////////////////
 

@@ -18,6 +18,16 @@ public class DebugWorldCreation : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        //Make a chestplate
+        Actor chestPlate = new Actor("Chestplate");
+        chestPlate.AddComponent(new Armor(3));
+        chestPlate.CleanupComponents();
+
+        //Make a chest for the body
+        Actor chest = new Actor("Chest");
+        chest.AddComponent(new EquipmentSlot(chest, chestPlate));
+        chest.CleanupComponents();
+
         Actor actor = new Actor("Dwarf 1");
         actor.AddComponent(new PlayerInputController(actor));
         actor.AddComponent(new Energy(actor, 1f));
@@ -48,7 +58,7 @@ public class DebugWorldCreation : MonoBehaviour
         actor3.AddComponent(new RegisterWithTimeSystem(actor3));
         actor3.AddComponent(new Health(actor3, EntityType.Creature, 10));
         actor3.AddComponent(new Defence(actor3));
-        //actor3.AddComponent(new Armor(3));
+        actor3.AddComponent(new Body(actor3, chest));
         //actor.AddComponent(new Slow(actor3));
         //actor3.AddComponent(new Drunk(actor3));
         actor3.CleanupComponents();
