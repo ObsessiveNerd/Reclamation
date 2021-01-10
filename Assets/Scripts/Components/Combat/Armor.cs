@@ -9,7 +9,7 @@ public class Armor : Component
     public Armor(int armor)
     {
         m_Armor = armor;
-        RegisteredEvents.Add(GameEventId.GetArmor);
+        RegisteredEvents.Add(GameEventId.AddArmorValue);
     }
 
     public override void HandleEvent(GameEvent gameEvent)

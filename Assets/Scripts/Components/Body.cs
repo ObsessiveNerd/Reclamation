@@ -20,7 +20,9 @@ public class Body : Component
         if(legs != null)
             m_Legs = legs;
         RegisteredEvents.Add(GameEventId.SeverBodyPart);
-        RegisteredEvents.Add(GameEventId.GetArmor);
+        RegisteredEvents.Add(GameEventId.AddArmorValue);
+        RegisteredEvents.Add(GameEventId.PerformAttack);
+        RegisteredEvents.Add(GameEventId.GetRangedWeapon);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
@@ -28,10 +30,10 @@ public class Body : Component
         if (gameEvent.ID == GameEventId.SeverBodyPart)
         {
             //todo
-            Debug.Log("Body part severed");
+            RecLog.Log("Body part severed");
         }
 
-        if(gameEvent.ID == GameEventId.GetArmor)
+        if(gameEvent.ID == GameEventId.AddArmorValue)
         {
             FireEvent(m_Body, gameEvent);
             foreach(var head in m_Head)
@@ -40,6 +42,35 @@ public class Body : Component
                 FireEvent(arm, gameEvent);
             foreach (var leg in m_Legs)
                 FireEvent(leg, gameEvent);
+        }
+
+        if (gameEvent.ID == GameEventId.GetRangedWeapon)
+        {
+            foreach (IEntity hand in m_Arms)
+            {
+                IEntity equipment = (IEntity)FireEvent(hand, new GameEvent(GameEventId.GetEquipment, new KeyValuePair<string, object>(EventParameters.Entity, null))).Paramters[EventParameters.Entity];
+                if (equipment != null)
+                {
+                    TypeWeapon weaponType = (TypeWeapon)FireEvent(equipment, new GameEvent(GameEventId.GetWeaponType,
+                           new KeyValuePair<string, object>(EventParameters.WeaponType, null))).Paramters[EventParameters.WeaponType];
+                    if (weaponType == TypeWeapon.Ranged)
+                    {
+                        gameEvent.Paramters[EventParameters.Value] = equipment;
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (gameEvent.ID == GameEventId.PerformAttack)
+        {
+            TypeWeapon desiredWeaponToAttack = (TypeWeapon)gameEvent.Paramters[EventParameters.WeaponType];
+            foreach (IEntity hand in m_Arms)
+            {
+                IEntity equipment = (IEntity)FireEvent(hand, new GameEvent(GameEventId.GetEquipment, new KeyValuePair<string, object>(EventParameters.Entity, null))).Paramters[EventParameters.Entity];
+                if (equipment != null && CombatUtility.GetWeaponType(equipment).HasFlag(desiredWeaponToAttack))
+                    CombatUtility.Attack(Self, (IEntity)gameEvent.Paramters[EventParameters.Target], equipment);
+            }
         }
     }
 }

@@ -17,7 +17,7 @@ public class RecRandom
 
     public RecRandom(int seed = 0)
     {
-        m_Seed = 0;
+        //m_Seed = seed;
     }
 
     public int GetRandomValue(int low, int high)

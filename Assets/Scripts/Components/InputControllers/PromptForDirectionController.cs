@@ -13,12 +13,12 @@ public class PromptForDirectionController : InputControllerBase
     {
         if (gameEvent.ID == GameEventId.UpdateEntity)
         {
-            Debug.Log("Waiting for input");
+            RecLog.Log("Waiting for input");
             MoveDirection desiredDirection = InputUtility.GetMoveDirection();
 
             if (desiredDirection != MoveDirection.None)
             {
-                Debug.Log($"{desiredDirection} pressed");
+                RecLog.Log($"{desiredDirection} pressed");
 
                 //Need to fire the correct event, whatever that may be
                 //FireEvent(Self, new GameEvent(GameEventId.MoveKeyPressed, new KeyValuePair<string, object>(EventParameters.InputDirection, desiredDirection)));

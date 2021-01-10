@@ -4,6 +4,9 @@ using UnityEngine;
 
 public static class GameEventId
 {
+    //Factions
+    public const string GetFaction = nameof(GetFaction);
+
     //Inventory
     public const string OpenInventory = nameof(OpenInventory);
     public const string CloseInventory = nameof(CloseInventory);
@@ -12,6 +15,7 @@ public static class GameEventId
     public const string EmptyBag = nameof(EmptyBag);
     public const string Equip = nameof(Equip);
     public const string Unequip = nameof(Unequip);
+    public const string GetRangedWeapon = nameof(GetRangedWeapon);
 
     //Item
     public const string Pickup = nameof(Pickup);
@@ -25,6 +29,7 @@ public static class GameEventId
     public const string SelectTile = nameof(SelectTile);
     public const string SelectNewTileInDirection = nameof(SelectNewTileInDirection);
     public const string GetActivePlayer = nameof(GetActivePlayer);
+    public const string GetEntityOnTile = nameof(GetEntityOnTile);
     public const string ShowInfo = nameof(ShowInfo);
     public const string ApplyEventToTile = nameof(ApplyEventToTile);
     public const string AddComponentToTile = nameof(AddComponentToTile);
@@ -69,12 +74,14 @@ public static class GameEventId
     public const string GetEnergy = nameof(GetEnergy);
 
     //Combat
-    public const string Attack = nameof(Attack);
+    public const string AmAttacking = nameof(AmAttacking);
+    public const string PerformAttack = nameof(PerformAttack);
     public const string RollToHit = nameof(RollToHit);
     public const string TakeDamage = nameof(TakeDamage);
     public const string RestoreHealth = nameof(RestoreHealth);
     public const string GetWeaponType = nameof(GetWeaponType);
-    public const string GetArmor = nameof(GetArmor);
+    public const string GetEquipment = nameof(GetEquipment);
+    public const string AddArmorValue = nameof(AddArmorValue);
     public const string Sharpness = nameof(Sharpness);
     public const string SeverBodyPart = nameof(SeverBodyPart);
     
@@ -102,15 +109,18 @@ public static class EventParameters
     public const string Attack = nameof(Attack);
     public const string Color = nameof(Color);
     public const string Damage = nameof(Damage);
-    public const string DamageMap = nameof(DamageMap);
+    public const string DamageList = nameof(DamageList);
     public const string Healing = nameof(Healing);
     public const string DamageType = nameof(DamageType);
     public const string RollToHit = nameof(RollToHit);
     public const string WeaponType = nameof(WeaponType);
+    public const string AdditionalGameEvents = nameof(AdditionalGameEvents);
+    public const string Enemy = nameof(Enemy);
 }
 
 public class GameEvent
 {
+    public bool ContinueProcessing = true;
     public string ID { get { return m_ID; } }
     string m_ID { get; }
 

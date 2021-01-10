@@ -14,10 +14,32 @@ public class DebugWorldCreation : MonoBehaviour
     public Sprite Selection;
 
     World m_World;
-    
+
     // Start is called before the first frame update
     void Start()
     {
+        Actor bow = new Actor("Bow");
+        bow.AddComponent(new WeaponType(bow, TypeWeapon.Ranged));
+        bow.AddComponent(new DealDamage(bow, DamageType.Piercing, new Dice("1d8")));
+        bow.AddComponent(new DealDamage(bow, DamageType.Ice, new Dice("1d4")));
+        bow.AddComponent(new Sharpness(bow));
+        bow.CleanupComponents();
+
+        //Make a sword
+        Actor sword = new Actor("Sword");
+        sword.AddComponent(new WeaponType(sword, TypeWeapon.Melee));
+        sword.AddComponent(new DealDamage(sword, DamageType.Slashing, new Dice("1d6")));
+        sword.CleanupComponents();
+
+        //Hand
+        Actor hand = new Actor("Hand");
+        hand.AddComponent(new EquipmentSlot(hand, bow));
+        hand.CleanupComponents();
+
+        Actor hand2 = new Actor("Hand");
+        hand2.AddComponent(new EquipmentSlot(hand2, sword));
+        hand2.CleanupComponents();
+
         //Make a chestplate
         Actor chestPlate = new Actor("Chestplate");
         chestPlate.AddComponent(new Armor(3));
@@ -36,6 +58,8 @@ public class DebugWorldCreation : MonoBehaviour
         actor.AddComponent(new Move(actor));
         actor.AddComponent(new Stats(actor, 11, 13, 10, 10, 11, 14));
         actor.AddComponent(new Info(actor, "A stout dwarf."));
+        actor.AddComponent(new Faction(actor, Factions.DwarvenCompany));
+        actor.AddComponent(new Body(actor, new Actor("Body"), null, new List<IEntity>() { hand, hand2 }));
         //actor.AddComponent(new Slow(actor));
         //actor.AddComponent(new Drunk(actor));
         actor.CleanupComponents();
@@ -59,6 +83,7 @@ public class DebugWorldCreation : MonoBehaviour
         actor3.AddComponent(new Health(actor3, EntityType.Creature, 10));
         actor3.AddComponent(new Defence(actor3));
         actor3.AddComponent(new Body(actor3, chest));
+        actor3.AddComponent(new Faction(actor3, Factions.Goblins));
         //actor.AddComponent(new Slow(actor3));
         //actor3.AddComponent(new Drunk(actor3));
         actor3.CleanupComponents();

@@ -17,6 +17,6 @@ public class Info : Component
 
     public override void HandleEvent(GameEvent gameEvent)
     {
-        Debug.Log(m_Info);
+        RecLog.Log(m_Info);
     }
 }

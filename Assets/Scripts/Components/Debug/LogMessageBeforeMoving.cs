@@ -11,6 +11,6 @@ public class LogMessageBeforeMoving : Component
 
     public override void HandleEvent(GameEvent gameEvent)
     {
-        Debug.Log("something moved");
+        RecLog.Log("something moved");
     }
 }

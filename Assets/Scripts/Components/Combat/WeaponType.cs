@@ -4,6 +4,7 @@ using UnityEngine;
 
 public enum TypeWeapon
 {
+    None,
     Melee,
     Ranged,
     Wand,

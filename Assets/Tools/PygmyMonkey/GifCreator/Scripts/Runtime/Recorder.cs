@@ -201,7 +201,7 @@ namespace PygmyMonkey.GifCreator
 		{
 			if (State == RecorderState.PreProcessing)
 			{
-				Debug.LogWarning("Attempting to resume recording during the pre-processing step.");
+                Debug.LogWarning("Attempting to resume recording during the pre-processing step.");
 				return;
 			}
 
@@ -215,7 +215,7 @@ namespace PygmyMonkey.GifCreator
 		{
 			if (State == RecorderState.PreProcessing)
 			{
-				Debug.LogWarning("Attempting to flush memory during the pre-processing step.");
+                Debug.LogWarning("Attempting to flush memory during the pre-processing step.");
 				return;
 			}
 
@@ -250,13 +250,13 @@ namespace PygmyMonkey.GifCreator
 		{
 			if (State == RecorderState.PreProcessing)
 			{
-				Debug.LogWarning("Attempting to save during the pre-processing step.");
+                Debug.LogWarning("Attempting to save during the pre-processing step.");
 				return;
 			}
 
 			if (FrameList.Count == 0)
 			{
-				Debug.LogWarning("Nothing to save. Maybe you forgot to start the recorder ?");
+                Debug.LogWarning("Nothing to save. Maybe you forgot to start the recorder ?");
 				return;
 			}
 

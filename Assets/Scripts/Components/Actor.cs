@@ -29,6 +29,9 @@ public class Actor : IEntity
         {
             if (component.RespondsTo(gameEvent))
                 component.HandleEvent(gameEvent);
+
+            if (!gameEvent.ContinueProcessing)
+                break;
         }
     }
 

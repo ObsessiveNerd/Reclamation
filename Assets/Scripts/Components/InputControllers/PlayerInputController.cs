@@ -23,19 +23,17 @@ public class PlayerInputController : InputControllerBase
 
             else if (Input.GetKeyDown(KeyCode.F))
             {
-                //Temp, need to actually get the equiped ranged weapon
-                Actor bow = new Actor("Bow");
-                bow.AddComponent(new WeaponType(bow, TypeWeapon.Ranged));
-                bow.AddComponent(new DealDamage(bow, DamageType.Piercing, new Dice("1d8")));
-                bow.AddComponent(new DealDamage(bow, DamageType.Ice, new Dice("1d4")));
-                bow.AddComponent(new Sharpness(bow));
-                bow.CleanupComponents();
-                //////////////////
-
-                Self.RemoveComponent(this);
-                Self.AddComponent(new RangedAttackController(Self, bow));
-                gameEvent.Paramters[EventParameters.UpdateWorldView] = true;
-                gameEvent.Paramters[EventParameters.CleanupComponents] = true;
+                GameEvent getRangedWeapon = FireEvent(Self, new GameEvent(GameEventId.GetRangedWeapon, new KeyValuePair<string, object>(EventParameters.Value, null)));
+                IEntity rangedWeapon = (IEntity)getRangedWeapon.Paramters[EventParameters.Value];
+                if (rangedWeapon != null)
+                {
+                    Self.RemoveComponent(this);
+                    Self.AddComponent(new RangedPlayerAttackController(Self, rangedWeapon));
+                    gameEvent.Paramters[EventParameters.UpdateWorldView] = true;
+                    gameEvent.Paramters[EventParameters.CleanupComponents] = true;
+                }
+                else
+                    RecLog.Log("No ranged weapon equiped");
             }
 
             else if (Input.GetKeyDown(KeyCode.L))

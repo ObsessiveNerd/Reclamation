@@ -10,15 +10,19 @@ public class EquipmentSlot : Component
     {
         Init(self);
         m_Equipment = equipment;
-        RegisteredEvents.Add(GameEventId.GetArmor);
+        RegisteredEvents.Add(GameEventId.AddArmorValue);
+        RegisteredEvents.Add(GameEventId.GetEquipment);
         RegisteredEvents.Add(GameEventId.Equip);
         RegisteredEvents.Add(GameEventId.Unequip);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
     {
-        if (gameEvent.ID == GameEventId.GetArmor)
+        if (gameEvent.ID == GameEventId.AddArmorValue)
             FireEvent(m_Equipment, gameEvent);
+
+        if (gameEvent.ID == GameEventId.GetEquipment)
+            gameEvent.Paramters[EventParameters.Entity] = m_Equipment;
 
         if (gameEvent.ID == GameEventId.Equip)
         {

@@ -12,7 +12,7 @@ public class Wall : Component
 
     public override void HandleEvent(GameEvent gameEvent)
     {
-        Debug.Log("OUCH!  You bumped into a wall.");
+        RecLog.Log("OUCH!  You bumped into a wall.");
         gameEvent.Paramters[EventParameters.RequiredEnergy] = 0f;
         gameEvent.Paramters[EventParameters.InputDirection] = MoveDirection.None;
     }

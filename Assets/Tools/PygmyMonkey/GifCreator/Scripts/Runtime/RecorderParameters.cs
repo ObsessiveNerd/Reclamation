@@ -63,7 +63,7 @@ namespace PygmyMonkey.GifCreator
 
             /*foreach (MethodInfo methodInfo in gameViewType.GetMethods(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static))
             {
-				Debug.LogWarning(methodInfo.Name);
+				RecLog.LogWarning(methodInfo.Name);
             }*/
 
             getSizeOfMainGameViewMethod = gameViewType.GetMethod("GetSizeOfMainGameView", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);

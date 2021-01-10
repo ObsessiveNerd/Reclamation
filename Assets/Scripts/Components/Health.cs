@@ -24,13 +24,17 @@ public class Health : Component
     {
         if (gameEvent.ID == GameEventId.TakeDamage)
         {
-            Debug.Log($"{Self.Name} took {(int)gameEvent.Paramters[EventParameters.Damage]} damage of type {(DamageType)gameEvent.Paramters[EventParameters.DamageType]}");
-            m_CurrentHealth -= (int)gameEvent.Paramters[EventParameters.Damage];
-            if (m_CurrentHealth <= 0)
+            foreach (var damage in (List<Damage>)gameEvent.Paramters[EventParameters.DamageList])
             {
-                FireEvent(World.Instance.Self, new GameEvent(GameEventId.Despawn, new KeyValuePair<string, object>(EventParameters.Entity, Self),
-                                                                                    new KeyValuePair<string, object>(EventParameters.EntityType, m_Type)));
-                Debug.Log("...and died");
+                RecLog.Log($"{Self.Name} took {damage.DamageAmount} damage of type {damage.DamageType}");
+                m_CurrentHealth -= damage.DamageAmount;
+                if (m_CurrentHealth <= 0)
+                {
+                    FireEvent(World.Instance.Self, new GameEvent(GameEventId.Despawn, new KeyValuePair<string, object>(EventParameters.Entity, Self),
+                                                                                        new KeyValuePair<string, object>(EventParameters.EntityType, m_Type)));
+                    RecLog.Log("...and died");
+                    break;
+                }
             }
         }
 

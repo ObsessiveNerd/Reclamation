@@ -13,20 +13,11 @@ public class DealDamage : Component
         m_DamageType = damageType;
         m_Dice = dice;
 
-        RegisteredEvents.Add(GameEventId.Attack);
+        RegisteredEvents.Add(GameEventId.AmAttacking);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
     {
-        int rollToHit = Dice.Roll("1d20");
-        if (gameEvent.Paramters.ContainsKey(EventParameters.RollToHit))
-            rollToHit = (int)gameEvent.Paramters[EventParameters.RollToHit];
-
-        GameEvent attack = new GameEvent(GameEventId.TakeDamage, new KeyValuePair<string, object>(EventParameters.RollToHit, rollToHit),
-                                                                            new KeyValuePair<string, object>(EventParameters.Damage, m_Dice.Roll()),
-                                                                            new KeyValuePair<string, object>(EventParameters.DamageType, m_DamageType));
-
-        FireEvent(World.Instance.Self, new GameEvent(GameEventId.ApplyEventToTile, new KeyValuePair<string, object>(EventParameters.Value, attack),
-                                                                                    new KeyValuePair<string, object>(EventParameters.TilePosition, gameEvent.Paramters[EventParameters.TilePosition])));
+        ((List<Damage>)gameEvent.Paramters[EventParameters.DamageList]).Add(new Damage(m_Dice.Roll(), m_DamageType));
     }
 }

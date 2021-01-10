@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RangedAttackController : InputControllerBase
+public class RangedPlayerAttackController : InputControllerBase
 {
     Point m_TileSelection;
     IEntity m_Attack;
 
-    public RangedAttackController(IEntity self, IEntity attack)
+    public RangedPlayerAttackController(IEntity self, IEntity attack)
     {
         Init(self);
         m_Attack = attack;
@@ -36,23 +36,16 @@ public class RangedAttackController : InputControllerBase
 
             if(Input.GetKeyDown(KeyCode.Return))
             {
-                TypeWeapon weaponType = (TypeWeapon)FireEvent(m_Attack, new GameEvent(GameEventId.GetWeaponType, new KeyValuePair<string, object>(EventParameters.WeaponType, null)))
-                    .Paramters[EventParameters.WeaponType];
+                TypeWeapon weaponType = CombatUtility.GetWeaponType(m_Attack);
+                IEntity target = WorldUtility.GetEntityAtPosition(Self, m_TileSelection);
 
-                int rollToHit = (int)FireEvent(Self, new GameEvent(GameEventId.RollToHit, new KeyValuePair<string, object>(EventParameters.RollToHit, 0),
-                                                                                          new KeyValuePair<string, object>(EventParameters.WeaponType, weaponType))).Paramters[EventParameters.RollToHit];
+                CombatUtility.Attack(Self, target, m_Attack);
 
-                Debug.Log($"{Self.Name} rolled to hit with a {rollToHit}");
-
-                FireEvent(m_Attack, new GameEvent(GameEventId.Attack, new KeyValuePair<string, object>(EventParameters.RollToHit, rollToHit),
-                                                                      new KeyValuePair<string, object>(EventParameters.TilePosition, m_TileSelection),
-                                                                      new KeyValuePair<string, object>(EventParameters.Attack, m_Attack)));
                 EndSelection(gameEvent);
 
-                //Very temporary, we need to use the energy costs and blah blah blah
-                FireEvent(Self, new GameEvent(GameEventId.SkipTurn));
-                gameEvent.Paramters[EventParameters.TakeTurn] = true;
-                ////////////////////////////////////////////////////////////////////
+                GameEvent checkForEnergy = new GameEvent(GameEventId.HasEnoughEnergyToTakeATurn, new KeyValuePair<string, object>(EventParameters.TakeTurn, false));
+                FireEvent(Self, checkForEnergy);
+                gameEvent.Paramters[EventParameters.TakeTurn] = (bool)checkForEnergy.Paramters[EventParameters.TakeTurn];
             }
 
             if (Input.GetKeyDown(KeyCode.Escape))

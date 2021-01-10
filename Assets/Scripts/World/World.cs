@@ -52,13 +52,11 @@ public class World : Component
         RegisteredEvents.Add(GameEventId.SelectNewTileInDirection);
         RegisteredEvents.Add(GameEventId.EndSelection);
         RegisteredEvents.Add(GameEventId.GetActivePlayer);
+        RegisteredEvents.Add(GameEventId.GetEntityOnTile);
         RegisteredEvents.Add(GameEventId.ShowTileInfo);
         RegisteredEvents.Add(GameEventId.ApplyEventToTile);
         RegisteredEvents.Add(GameEventId.AddComponentToTile);
         RegisteredEvents.Add(GameEventId.BeforeMoving);
-
-        //RegisteredEvents.Add(GameEventId.Attack);
-
     }
 
     public void RegisterPlayer(IEntity entity)
@@ -273,6 +271,12 @@ public class World : Component
         if (gameEvent.ID == GameEventId.AddComponentToTile)
         {
             //Todo
+        }
+
+        if(gameEvent.ID == GameEventId.GetEntityOnTile)
+        {
+            Point currentTilePos = (Point)gameEvent.Paramters[EventParameters.TilePosition];
+            FireEvent(m_Tiles[currentTilePos], gameEvent);
         }
     }
 

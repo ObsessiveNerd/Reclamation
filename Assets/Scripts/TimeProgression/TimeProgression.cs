@@ -47,7 +47,7 @@ public class TimeProgression
 
         if ((bool)update.Paramters[EventParameters.TakeTurn])
         {
-            Debug.Log($"End turn: {m_Current.Value.Name}");
+            RecLog.Log($"End turn: {m_Current.Value.Name}");
             GameEvent endTurn = new GameEvent(GameEventId.EndTurn);
             m_Current.Value.HandleEvent(endTurn);
             m_Current.Value.CleanupComponents();

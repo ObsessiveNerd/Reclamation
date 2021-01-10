@@ -20,7 +20,7 @@ namespace PygmyMonkey.GifCreator.Utils
 
 			AssetDatabase.ExportPackage("Assets/PygmyMonkey", outputDirectory + packageFileName, ExportPackageOptions.Recurse);
 			
-			Debug.Log(".unitypackage " + packageFileName + " created!");
+			RecLog.Log(".unitypackage " + packageFileName + " created!");
 		}
 	}
 }

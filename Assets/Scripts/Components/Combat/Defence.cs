@@ -18,24 +18,24 @@ public class Defence : Component
     {
         //Todo: we need to check what the weapon type is and decide if we need to get armor/resistances/other...
         int rollToHit = (int)gameEvent.Paramters[EventParameters.RollToHit];
-        GameEvent getArmor = new GameEvent(GameEventId.GetArmor, new KeyValuePair<string, object>(EventParameters.Value, 0));
+        GameEvent getArmor = new GameEvent(GameEventId.AddArmorValue, new KeyValuePair<string, object>(EventParameters.Value, 0));
         int armorBonus = (int)FireEvent(Self, getArmor).Paramters[EventParameters.Value];
 
         if (gameEvent.ID == GameEventId.TakeDamage)
         {
             if (rollToHit >= kBaseAC + armorBonus)
-                Debug.Log($"{Self.Name} was hit!");
+                RecLog.Log($"{Self.Name} was hit!");
             else
             {
-                Debug.Log($"Attack missed because armor was {kBaseAC + armorBonus}!");
-                gameEvent.Paramters[EventParameters.Damage] = 0;
+                RecLog.Log($"Attack missed because armor was {kBaseAC + armorBonus}!");
+                gameEvent.ContinueProcessing = false;
             }
         }
 
         if (gameEvent.ID == GameEventId.Sharpness)
         {
             if (rollToHit < kBaseAC + armorBonus)
-                Debug.Log("Nothing was severed.");
+                RecLog.Log("Nothing was severed.");
             else
                 FireEvent(Self, new GameEvent(GameEventId.SeverBodyPart));
         }

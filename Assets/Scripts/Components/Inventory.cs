@@ -23,7 +23,7 @@ public class Inventory : Component
         if (gameEvent.ID == GameEventId.OpenInventory)
         {
             foreach (var i in m_Inventory)
-                Debug.Log(i);
+                RecLog.Log(i);
         }
 
         if(gameEvent.ID == GameEventId.AddToInventory)

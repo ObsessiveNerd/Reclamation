@@ -56,6 +56,7 @@ public class Tile : Component
         RegisteredEvents.Add(GameEventId.ShowTileInfo);
         RegisteredEvents.Add(GameEventId.ApplyEventToTile);
         RegisteredEvents.Add(GameEventId.AddComponentToTile);
+        RegisteredEvents.Add(GameEventId.GetEntityOnTile);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
@@ -131,17 +132,21 @@ public class Tile : Component
             //Todo
         }
 
-        List<IEntity> GetTarget()
+        if(gameEvent.ID == GameEventId.GetEntityOnTile)
         {
-            if (CreatureSlot != null)
-                return new List<IEntity>() { CreatureSlot };
-            else if (ObjectSlot != null)
-                return new List<IEntity>() { ObjectSlot };
-            else if (Items.Count > 0)
-                return Items;
-
-            return new List<IEntity>() { Self };
+            gameEvent.Paramters[EventParameters.Entity] = GetTarget()[0];
         }
+    }
 
+    List<IEntity> GetTarget()
+    {
+        if (CreatureSlot != null)
+            return new List<IEntity>() { CreatureSlot };
+        else if (ObjectSlot != null)
+            return new List<IEntity>() { ObjectSlot };
+        else if (Items.Count > 0)
+            return Items;
+
+        return new List<IEntity>() { Self };
     }
 }

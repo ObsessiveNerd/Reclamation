@@ -136,7 +136,7 @@ namespace PygmyMonkey.GifCreator
 		{
 			if (triggerSaveCallbackOnMainThread)
 			{
-				Debug.Log("Gif file has been saved to: " + lastSavedFilePath);
+				RecLog.Log("Gif file has been saved to: " + lastSavedFilePath);
 				if (gifCreatorWindow.Parameters.openFolderAfterSave)
 				{
 					EditorUtility.RevealInFinder(lastSavedFilePath);
@@ -235,7 +235,7 @@ namespace PygmyMonkey.GifCreator
 				if (!result.success)
 				{
 					gifCreatorWindow.ProgressRenderer.UpdateProgress("Error uploading to imgur.com", 0.0f);
-					Debug.LogError("An error occured while uploading to imgur.com: " + result.data.error + "\n" + webRequest.downloadHandler.text);
+                    Debug.LogError("An error occured while uploading to imgur.com: " + result.data.error + "\n" + webRequest.downloadHandler.text);
 				}
 				else
 				{
@@ -247,7 +247,7 @@ namespace PygmyMonkey.GifCreator
 					gifCreatorWindow.ProgressRenderer.UpdateProgress("Upload done (URL is in your clipboard)! See console for info", 1.0f);
 					gifCreatorWindow.Repaint();
 
-					Debug.Log("Your gif have successfully been uploaded to imgur.com (and copied to your clipboard): " + url);
+					RecLog.Log("Your gif have successfully been uploaded to imgur.com (and copied to your clipboard): " + url);
 				}
 			}
 		}
