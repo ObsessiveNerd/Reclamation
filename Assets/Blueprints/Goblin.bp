@@ -1,0 +1,11 @@
+Creature<Goblin> (
+	Health:10
+	Body:Head=1[<Helmet>], Arm=2[<Short Sword>], Leg=2[]
+	Inventory
+	GraphicContainer:Textures/td_monsters_goblin_captain_l1
+	Move
+	Stats:Str=10, Agi=12, Con=10, Wis=9, Int=7, Cha=8
+	Energy:Regen=1
+	Faction:<Goblins>
+	Info:"It's a nasty little goblin.  Its slimy green skin reeks with the pungent odor of dirt and mold."
+)

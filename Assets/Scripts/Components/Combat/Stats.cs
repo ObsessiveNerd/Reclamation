@@ -11,17 +11,9 @@ public class Stats : Component
     private int m_Int;
     private int m_Cha;
 
-    public Stats(IEntity self, int Str, int Agi, int Con, int Wis, int Int, int Cha)
+    public Stats(int Str, int Agi, int Con, int Wis, int Int, int Cha)
     {
-        Init(self);
         SetStats(Str, Agi, Con, Wis, Int, Cha);
-        RegisteredEvents.Add(GameEventId.RollToHit);
-    }
-
-    public Stats(IEntity self)
-    {
-        Init(self);
-        SetStats(Dice.Roll("1d20"), Dice.Roll("1d20"), Dice.Roll("1d20"), Dice.Roll("1d20"), Dice.Roll("1d20"), Dice.Roll("1d20"));
         RegisteredEvents.Add(GameEventId.RollToHit);
     }
 
@@ -70,5 +62,48 @@ public class Stats : Component
     int GetModifier(int value)
     {
         return (value - 10) / 2;
+    }
+}
+
+public class DTO_Stats : IDataTransferComponent
+{
+    public IComponent Component { get; set; }
+
+    int Str;
+    int Agi;
+    int Wis;
+    int Con;
+    int Int;
+    int Cha;
+
+    public void CreateComponent(string data)
+    {
+        string[] statsParse = data.Split(',');
+        foreach(var stat in statsParse)
+        {
+            string[] statValue = stat.Split('=');
+            switch(statValue[0])
+            {
+                case nameof(Str):
+                    Str = int.Parse(statValue[1]);
+                    break;
+                case nameof(Agi):
+                    Agi = int.Parse(statValue[1]);
+                    break;
+                case nameof(Wis):
+                    Wis = int.Parse(statValue[1]);
+                    break;
+                case nameof(Con):
+                    Con = int.Parse(statValue[1]);
+                    break;
+                case nameof(Int):
+                    Int = int.Parse(statValue[1]);
+                    break;
+                case nameof(Cha):
+                    Cha = int.Parse(statValue[1]);
+                    break;
+            }
+        }
+        Component = new Stats(Str, Agi, Con, Wis, Int, Cha);
     }
 }

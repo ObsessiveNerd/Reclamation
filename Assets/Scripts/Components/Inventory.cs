@@ -7,10 +7,8 @@ public class Inventory : Component
     List<IEntity> m_Inventory = new List<IEntity>();
     bool m_EmptyBag = false;
 
-    public Inventory(IEntity self)
+    public Inventory()
     {
-        Init(self);
-
         RegisteredEvents.Add(GameEventId.OpenInventory);
         RegisteredEvents.Add(GameEventId.CloseInventory);
         RegisteredEvents.Add(GameEventId.AddToInventory);
@@ -46,6 +44,22 @@ public class Inventory : Component
                 FireEvent(item, new GameEvent(GameEventId.Drop, new KeyValuePair<string, object>(EventParameters.Entity, Self)));
             m_EmptyBag = false;
             m_Inventory.Clear();
+        }
+    }
+}
+
+
+public class DTO_Inventory : IDataTransferComponent
+{
+    public IComponent Component { get; set; }
+
+    public void CreateComponent(string data)
+    {
+        Component = new Inventory();
+        if(!string.IsNullOrEmpty(data))
+        {
+            string[] parameters = data.Split(',');
+
         }
     }
 }

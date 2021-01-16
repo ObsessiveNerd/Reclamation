@@ -1,0 +1,4 @@
+Item<Short Bow>(
+	WeaponType:Ranged
+	DealDamage:DamageType=Piercing, Damage=1d8
+)

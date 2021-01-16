@@ -27,7 +27,7 @@ public static class CombatUtility
     public static TypeWeapon GetWeaponType(IEntity weapon)
     {
         TypeWeapon weaponType = (TypeWeapon)weapon.FireEvent(weapon, new GameEvent(GameEventId.GetWeaponType,
-            new KeyValuePair<string, object>(EventParameters.WeaponType, null))).Paramters[EventParameters.WeaponType];
+            new KeyValuePair<string, object>(EventParameters.WeaponType, TypeWeapon.None))).Paramters[EventParameters.WeaponType];
         return weaponType;
     }
 }

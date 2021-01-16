@@ -6,10 +6,9 @@ public class EquipmentSlot : Component
 {
     IEntity m_Equipment;
 
-    public EquipmentSlot(IEntity self, IEntity equipment = null)
+    public EquipmentSlot()
     {
-        Init(self);
-        m_Equipment = equipment;
+        //m_Equipment = equipment;
         RegisteredEvents.Add(GameEventId.AddArmorValue);
         RegisteredEvents.Add(GameEventId.GetEquipment);
         RegisteredEvents.Add(GameEventId.Equip);
@@ -22,13 +21,13 @@ public class EquipmentSlot : Component
             FireEvent(m_Equipment, gameEvent);
 
         if (gameEvent.ID == GameEventId.GetEquipment)
-            gameEvent.Paramters[EventParameters.Entity] = m_Equipment;
+            gameEvent.Paramters[EventParameters.Equipment] = m_Equipment;
 
         if (gameEvent.ID == GameEventId.Equip)
         {
             if (m_Equipment != null)
                 FireEvent(Self, new GameEvent(GameEventId.Unequip));
-            m_Equipment = (IEntity)gameEvent.Paramters[EventParameters.Entity];
+            m_Equipment = (IEntity)gameEvent.Paramters[EventParameters.Equipment];
         }
 
         if(gameEvent.ID == GameEventId.Unequip)

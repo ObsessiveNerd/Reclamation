@@ -35,4 +35,9 @@ public class PriorityQueue<T>
     {
         m_List.Sort(m_Comparer);
     }
+
+    public List<T> ToList()
+    {
+        return m_List;
+    }
 }

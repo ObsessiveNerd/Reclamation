@@ -7,9 +7,8 @@ public class Energy : Component
     private float m_EnergyRegineration;
     private float m_CurrentEnergy;
 
-    public Energy(IEntity self, float energyRegenValue)
+    public Energy(float energyRegenValue)
     {
-        Init(self);
         RegisteredEvents.Add(GameEventId.StartTurn);
         RegisteredEvents.Add(GameEventId.HasEnoughEnergyToTakeATurn);
         RegisteredEvents.Add(GameEventId.UseEnergy);
@@ -45,5 +44,16 @@ public class Energy : Component
                 gameEvent.Paramters[EventParameters.Value] = m_CurrentEnergy;
                 break;
         };
+    }
+}
+
+public class DTO_Energy : IDataTransferComponent
+{
+    public IComponent Component { get; set; }
+
+    public void CreateComponent(string data)
+    {
+        string[] parameters = data.Split('=');
+        Component = new Energy(int.Parse(parameters[1]));
     }
 }

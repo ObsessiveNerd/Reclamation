@@ -4,11 +4,6 @@ using UnityEngine;
 
 public class AIController : InputControllerBase
 {
-    public AIController(IEntity self)
-    {
-        Init(self);
-    }
-
     public override void HandleEvent(GameEvent gameEvent)
     {
         if (gameEvent.ID == GameEventId.UpdateEntity)
@@ -26,5 +21,15 @@ public class AIController : InputControllerBase
             FireEvent(Self, checkForEnergy);
             gameEvent.Paramters[EventParameters.TakeTurn] = (bool)checkForEnergy.Paramters[EventParameters.TakeTurn];
         }
+    }
+}
+
+public class DTO_AIController : IDataTransferComponent
+{
+    public IComponent Component { get; set; }
+
+    public void CreateComponent(string data)
+    {
+        Component = new AIController();
     }
 }

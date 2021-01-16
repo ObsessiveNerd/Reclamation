@@ -1,0 +1,7 @@
+Creature(
+	Defence
+	EntityTypeContainer: Creature
+	RegisterWithTimeSystem
+	AIController
+	InteractsWithWorld
+)

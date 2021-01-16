@@ -45,7 +45,7 @@ public class World : Component
         RegisteredEvents.Add(GameEventId.Spawn);
         RegisteredEvents.Add(GameEventId.Despawn);
         RegisteredEvents.Add(GameEventId.MoveEntity);
-        RegisteredEvents.Add(GameEventId.Interact);
+        //RegisteredEvents.Add(GameEventId.Interact);
         RegisteredEvents.Add(GameEventId.Drop);
         RegisteredEvents.Add(GameEventId.RotateActiveCharacter);
         RegisteredEvents.Add(GameEventId.SelectTile);
@@ -62,10 +62,17 @@ public class World : Component
     public void RegisterPlayer(IEntity entity)
     {
         m_Players.AddLast(entity);
+        entity.RemoveComponent(typeof(InputControllerBase));
+        entity.RemoveComponent(typeof(RegisterWithTimeSystem));
         if (m_ActivePlayer == null)
+        {
             m_ActivePlayer = m_Players.First;
+            entity.AddComponent(new PlayerInputController());
+        }
+        entity.CleanupComponents();
         m_PlayerToTimeProgressionMap[entity] = new TimeProgression();
         m_PlayerToTimeProgressionMap[entity].RegisterEntity(entity);
+        
     }
 
     public void UnregisterPlayer(IEntity entity)
@@ -93,6 +100,7 @@ public class World : Component
                     CreateTile(i, j);
                 }
             }
+            Factions.Initialize();
             FireEvent(Self, new GameEvent(GameEventId.UpdateWorldView));
         }
 
@@ -164,12 +172,12 @@ public class World : Component
             }
         }
 
-        if(gameEvent.ID == GameEventId.Interact)
-        {
-            IEntity entity = (IEntity)gameEvent.Paramters[EventParameters.Entity];
-            Point currentPoint = m_EntityToPointMap[entity];
-            FireEvent(m_Tiles[currentPoint], new GameEvent(GameEventId.Interact, new KeyValuePair<string, object>(EventParameters.Entity, entity)));
-        }
+        //if(gameEvent.ID == GameEventId.Interact)
+        //{
+        //    IEntity entity = (IEntity)gameEvent.Paramters[EventParameters.Entity];
+        //    Point currentPoint = m_EntityToPointMap[entity];
+        //    FireEvent(m_Tiles[currentPoint], new GameEvent(GameEventId.Interact, new KeyValuePair<string, object>(EventParameters.Entity, entity)));
+        //}
 
         if(gameEvent.ID == GameEventId.Drop)
         {
@@ -188,7 +196,7 @@ public class World : Component
             m_ActivePlayer = m_ActivePlayer.Next;
             if (m_ActivePlayer == null)
                 m_ActivePlayer = m_Players.First;
-            m_ActivePlayer.Value.AddComponent(new PlayerInputController(m_ActivePlayer.Value));
+            m_ActivePlayer.Value.AddComponent(new PlayerInputController());
             m_ActivePlayer.Value.CleanupComponents();
         }
 
@@ -205,6 +213,7 @@ public class World : Component
                 GameEvent beforeMovingTile = new GameEvent(GameEventId.ApplyEventToTile);
                 beforeMovingTile.Paramters.Add(EventParameters.Value, gameEvent);
                 FireEvent(tile, beforeMovingTile);
+                gameEvent.Paramters.Add(EventParameters.Target, WorldUtility.GetEntityAtPosition(Self, newPoint));
             }
             else
             {
@@ -280,9 +289,11 @@ public class World : Component
         }
     }
 
-    public IEntity GetClosestEnemyTo(IEntity e)
+    public Point GetPointWhereEntityIs(IEntity e)
     {
-        return null;
+        if(m_EntityToPointMap.ContainsKey(e))
+            return m_EntityToPointMap[e];
+        return new Point(-1, -1);
     }
 
     void CreateTile(int x, int y)
@@ -294,10 +305,10 @@ public class World : Component
         Actor actor = new Actor("Tile");
         actor.AddComponent(new Tile(actor, new Point(x, y)));
         bool putGrass = RecRandom.Instance.GetRandomValue(0f, 100f) < 30f;
-        actor.AddComponent(new GraphicContainter(putGrass ? m_TempTerrain[RecRandom.Instance.GetRandomValue(0, m_TempTerrain.Count)] : null));
+        actor.AddComponent(new GraphicContainer(putGrass ? m_TempTerrain[RecRandom.Instance.GetRandomValue(0, m_TempTerrain.Count)] : null));
         actor.AddComponent(new Renderer(actor, tile.GetComponent<SpriteRenderer>()));
         if (putGrass)
-            actor.AddComponent(new Info(actor, "A small patch of grass"));
+            actor.AddComponent(new Info("A small patch of grass"));
         actor.CleanupComponents();
 
         m_Tiles.Add(new Point(x, y), actor);

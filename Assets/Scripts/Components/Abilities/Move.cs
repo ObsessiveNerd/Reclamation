@@ -6,10 +6,8 @@ public class Move : Component
 {
     float m_EnergyRequired = 1f;
 
-    public Move(IEntity self)
+    public Move()
     {
-        Init(self);
-
         RegisteredEvents.Add(GameEventId.MoveKeyPressed);
         RegisteredEvents.Add(GameEventId.GetMinimumEnergyForAction);
     }
@@ -30,41 +28,65 @@ public class Move : Component
                                                                             new KeyValuePair<string, object>(EventParameters.InputDirection, beforeMoving.Paramters[EventParameters.InputDirection]),
                                                                             requiredEnergy);
             FireEvent(World.Instance.Self, beforeMovingCheckWorld);
-            if (beforeMovingCheckWorld.Paramters.ContainsKey(EventParameters.Enemy))
-            {
-                IEntity target = (IEntity)beforeMovingCheckWorld.Paramters[EventParameters.Enemy];
-                FireEvent(Self, new GameEvent(GameEventId.PerformAttack, new KeyValuePair<string, object>(EventParameters.Target, target),
-                                                                         new KeyValuePair<string, object>(EventParameters.WeaponType, TypeWeapon.Melee & TypeWeapon.Finesse)));
-            }
-            else
-            {
-                float energyRequired = (float)beforeMovingCheckWorld.Paramters[EventParameters.RequiredEnergy];
 
-                //Make sure we have enough energy;
-                float currentEnergy = (float)FireEvent(Self, new GameEvent(GameEventId.GetEnergy, new KeyValuePair<string, object>(EventParameters.Value, 0))).Paramters[EventParameters.Value];
-                if (energyRequired > 0f && currentEnergy >= energyRequired)
+            if (beforeMovingCheckWorld.Paramters.ContainsKey(EventParameters.Target))
+            {
+                IEntity target = (IEntity)beforeMovingCheckWorld.Paramters[EventParameters.Target];
+                Demeanor demeanor = Factions.GetDemeanorForTarget(Self, target);
+
+                if (demeanor != Demeanor.None)
                 {
-                    //See if there's anything on the player that needs to happen when moving
-                    GameEvent moving = new GameEvent(GameEventId.ExecuteMove, beforeMovingCheckWorld.Paramters);
-                    FireEvent(Self, moving);
-
-                    GameEvent moveWorld = new GameEvent(GameEventId.MoveEntity, new KeyValuePair<string, object>(EventParameters.Entity, Self),
-                                                                                    new KeyValuePair<string, object>(EventParameters.EntityType, EntityType.Creature),
-                                                                                    new KeyValuePair<string, object>(EventParameters.InputDirection, moving.Paramters[EventParameters.InputDirection]),
-                                                                                    requiredEnergy);
-                    FireEvent(World.Instance.Self, moveWorld);
-
-                    //Check if there are any effects that need to occur after moving
-                    GameEvent afterMoving = new GameEvent(GameEventId.AfterMoving, moving.Paramters);
-                    FireEvent(Self, afterMoving);
-
-                    //energyRequired = (float)afterMoving.Paramters[EventParameters.RequiredEnergy];
-                    GameEvent useEnergy = new GameEvent(GameEventId.UseEnergy, new KeyValuePair<string, object>(EventParameters.Value, energyRequired));
-                    FireEvent(Self, useEnergy);
+                    switch (demeanor)
+                    {
+                        case Demeanor.Friendly:
+                        case Demeanor.Neutral:
+                            FireEvent(target, new GameEvent(GameEventId.Interact));
+                            break;
+                        case Demeanor.Hostile:
+                            FireEvent(Self, new GameEvent(GameEventId.PerformAttack, new KeyValuePair<string, object>(EventParameters.Target, target),
+                                                                                     new KeyValuePair<string, object>(EventParameters.WeaponType, TypeWeapon.Melee & TypeWeapon.Finesse)));
+                            break;
+                    }
+                    return;
                 }
+            }
+
+            float energyRequired = (float)beforeMovingCheckWorld.Paramters[EventParameters.RequiredEnergy];
+
+            //Make sure we have enough energy;
+            float currentEnergy = (float)FireEvent(Self, new GameEvent(GameEventId.GetEnergy, new KeyValuePair<string, object>(EventParameters.Value, 0))).Paramters[EventParameters.Value];
+            if (energyRequired > 0f && currentEnergy >= energyRequired)
+            {
+                //See if there's anything on the player that needs to happen when moving
+                GameEvent moving = new GameEvent(GameEventId.ExecuteMove, beforeMovingCheckWorld.Paramters);
+                FireEvent(Self, moving);
+
+                GameEvent moveWorld = new GameEvent(GameEventId.MoveEntity, new KeyValuePair<string, object>(EventParameters.Entity, Self),
+                                                                                new KeyValuePair<string, object>(EventParameters.EntityType, EntityType.Creature),
+                                                                                new KeyValuePair<string, object>(EventParameters.InputDirection, moving.Paramters[EventParameters.InputDirection]),
+                                                                                requiredEnergy);
+                FireEvent(World.Instance.Self, moveWorld);
+
+                //Check if there are any effects that need to occur after moving
+                GameEvent afterMoving = new GameEvent(GameEventId.AfterMoving, moving.Paramters);
+                FireEvent(Self, afterMoving);
+
+                //energyRequired = (float)afterMoving.Paramters[EventParameters.RequiredEnergy];
+                GameEvent useEnergy = new GameEvent(GameEventId.UseEnergy, new KeyValuePair<string, object>(EventParameters.Value, energyRequired));
+                FireEvent(Self, useEnergy);
             }
         }
         if (gameEvent.ID == GameEventId.GetMinimumEnergyForAction)
             gameEvent.Paramters[EventParameters.Value] = Mathf.Min((float)gameEvent.Paramters[EventParameters.Value] > 0f ? (float)gameEvent.Paramters[EventParameters.Value] : m_EnergyRequired, m_EnergyRequired);
+    }
+}
+
+public class DTO_Move : IDataTransferComponent
+{
+    public IComponent Component { get; set; }
+
+    public void CreateComponent(string data)
+    {
+        Component = new Move();
     }
 }

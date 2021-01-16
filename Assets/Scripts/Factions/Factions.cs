@@ -6,9 +6,8 @@ public class Faction : Component
 {
     public string ID { get; internal set; }
 
-    public Faction(IEntity self, string faction)
+    public Faction(string faction)
     {
-        Init(self);
         ID = faction;
         RegisteredEvents.Add(GameEventId.GetFaction);
     }
@@ -19,8 +18,21 @@ public class Faction : Component
     }
 }
 
+public class DTO_Faction : IDataTransferComponent
+{
+    public IComponent Component { get; set; }
+
+    public void CreateComponent(string data)
+    {
+        string name = data.Substring(data.IndexOf('<') + 1, data.IndexOf('>') - (data.IndexOf('<') + 1));
+        Component = new Faction(name);
+    }
+}
+
+
 public enum Demeanor
 {
+    None = 0,
     Neutral,
     Friendly,
     Hostile,
@@ -55,9 +67,14 @@ public static class Factions
 
     public static Demeanor GetDemeanorForTarget(IEntity source, IEntity target)
     {
-        GameEvent getFaction = new GameEvent(GameEventId.GetFaction, new KeyValuePair<string, object>(EventParameters.Value, null));
-        Faction sourceFaction = (Faction)source.FireEvent(source, getFaction).Paramters[EventParameters.Value];
-        Faction targetFaction = (Faction)target.FireEvent(target, getFaction).Paramters[EventParameters.Value];
+        GameEvent getSourceFaction = new GameEvent(GameEventId.GetFaction, new KeyValuePair<string, object>(EventParameters.Value, null));
+        Faction sourceFaction = (Faction)source.FireEvent(source, getSourceFaction).Paramters[EventParameters.Value];
+
+        GameEvent getTargetFaction = new GameEvent(GameEventId.GetFaction, new KeyValuePair<string, object>(EventParameters.Value, null));
+        Faction targetFaction = (Faction)target.FireEvent(target, getTargetFaction).Paramters[EventParameters.Value];
+
+        if (sourceFaction == null || targetFaction == null)
+            return Demeanor.None;
 
         return m_DemeanorMap[sourceFaction.ID][targetFaction.ID];
     }

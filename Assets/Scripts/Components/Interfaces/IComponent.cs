@@ -20,6 +20,8 @@ public class Component : IComponent
         m_Self = self;
     }
 
+    public Component() { }
+
     //Priority right now is from 1 to 10
     public virtual int Priority { get { return 5; } }
 
@@ -34,7 +36,9 @@ public class Component : IComponent
 
     public GameEvent FireEvent(IEntity target, GameEvent gameEvent)
     {
-        target.FireEvent(target, gameEvent);
+        if(target != null)
+            target.FireEvent(target, gameEvent);
+
         return gameEvent;
     }
 

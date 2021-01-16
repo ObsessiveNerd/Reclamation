@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GraphicContainter : Component
+public class GraphicContainer : Component
 {
     private Sprite m_Sprite;
 
-    public GraphicContainter(Sprite sprite)
+    public GraphicContainer(Sprite sprite)
     {
         m_Sprite = sprite;
         RegisteredEvents.Add(GameEventId.GetSprite);
@@ -15,5 +15,16 @@ public class GraphicContainter : Component
     public override void HandleEvent(GameEvent gameEvent)
     {
         gameEvent.Paramters[EventParameters.RenderSprite] = m_Sprite;
+    }
+}
+
+public class DTO_GraphicContainer : IDataTransferComponent
+{
+    public IComponent Component { get; set; }
+
+    public void CreateComponent(string data)
+    {
+        Sprite sprite = Resources.Load<Sprite>(data);
+        Component = new GraphicContainer(sprite);
     }
 }

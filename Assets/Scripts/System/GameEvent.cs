@@ -40,6 +40,7 @@ public static class GameEventId
     public const string AfterMoving = nameof(AfterMoving);
     public const string MoveEntity = nameof(MoveEntity);
     public const string Interact = nameof(Interact);
+    public const string InteractWithTarget = nameof(InteractWithTarget);
 
     //Time progression
     public const string StartTurn = nameof(StartTurn);
@@ -84,6 +85,9 @@ public static class GameEventId
     public const string AddArmorValue = nameof(AddArmorValue);
     public const string Sharpness = nameof(Sharpness);
     public const string SeverBodyPart = nameof(SeverBodyPart);
+
+    //Body
+    public const string GrowBodyPart = nameof(GrowBodyPart);
     
 }
 
@@ -116,6 +120,7 @@ public static class EventParameters
     public const string WeaponType = nameof(WeaponType);
     public const string AdditionalGameEvents = nameof(AdditionalGameEvents);
     public const string Enemy = nameof(Enemy);
+    public const string Equipment = nameof(Equipment);
 }
 
 public class GameEvent

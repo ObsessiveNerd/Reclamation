@@ -6,15 +6,12 @@ public class Health : Component
 {
     private int m_MaxHealth;
     private int m_CurrentHealth;
-    EntityType m_Type;
 
     public override int Priority { get { return 10; } }
 
-    public Health(IEntity self, EntityType type, int maxHealth)
+    public Health(int maxHealth)
     {
-        Init(self);
         m_MaxHealth = m_CurrentHealth = maxHealth;
-        m_Type = type;
 
         RegisteredEvents.Add(GameEventId.TakeDamage);
         RegisteredEvents.Add(GameEventId.RestoreHealth);
@@ -30,8 +27,9 @@ public class Health : Component
                 m_CurrentHealth -= damage.DamageAmount;
                 if (m_CurrentHealth <= 0)
                 {
-                    FireEvent(World.Instance.Self, new GameEvent(GameEventId.Despawn, new KeyValuePair<string, object>(EventParameters.Entity, Self),
-                                                                                        new KeyValuePair<string, object>(EventParameters.EntityType, m_Type)));
+                    GameEvent ge = FireEvent(Self, new GameEvent(GameEventId.Despawn, new KeyValuePair<string, object>(EventParameters.Entity, Self),
+                                                                                        new KeyValuePair<string, object>(EventParameters.EntityType, EntityType.None)));
+                    FireEvent(World.Instance.Self, ge);
                     RecLog.Log("...and died");
                     break;
                 }
@@ -43,5 +41,16 @@ public class Health : Component
             int healAmount = (int)gameEvent.Paramters[EventParameters.Healing];
             m_CurrentHealth = Mathf.Min(m_CurrentHealth + healAmount, m_MaxHealth);
         }
+    }
+}
+
+
+public class DTO_Health : IDataTransferComponent
+{
+    public IComponent Component { get; set; }
+    public void CreateComponent(string data)
+    {
+        int health = int.Parse(data);
+        Component = new Health(health);
     }
 }

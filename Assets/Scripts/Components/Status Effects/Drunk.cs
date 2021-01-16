@@ -8,10 +8,8 @@ public class Drunk : Component
     int m_DrunkRounds;
     int m_CurrentDrunkRounds;
 
-    public Drunk(IEntity self)
+    public Drunk()
     {
-        Init(self);
-
         m_DrunkRounds = 50;
 
         RegisteredEvents.Add(GameEventId.BeforeMoving);
@@ -29,5 +27,15 @@ public class Drunk : Component
             if(m_CurrentDrunkRounds >= m_DrunkRounds)
                 Self.RemoveComponent(this);
         }
+    }
+}
+
+public class DTO_Drunk : IDataTransferComponent
+{
+    public IComponent Component { get; set; }
+
+    public void CreateComponent(string data)
+    {
+        Component = new Drunk();
     }
 }

@@ -4,9 +4,8 @@ using UnityEngine;
 
 public class RegisterWithTimeSystem : Component
 {
-    public RegisterWithTimeSystem(IEntity self)
+    public RegisterWithTimeSystem()
     {
-        Init(self);
         RegisteredEvents.Add(GameEventId.RegisterWithTimeSystem);
     }
 
@@ -14,5 +13,15 @@ public class RegisterWithTimeSystem : Component
     {
         TimeProgression time = (TimeProgression)gameEvent.Paramters[EventParameters.Value];
         time.RegisterEntity(Self);
+    }
+}
+
+public class DTO_RegisterWithTimeSystem : IDataTransferComponent
+{
+    public IComponent Component { get; set; }
+
+    public void CreateComponent(string data)
+    {
+        Component = new RegisterWithTimeSystem();
     }
 }

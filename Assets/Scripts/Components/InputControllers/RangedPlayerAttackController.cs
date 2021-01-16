@@ -7,13 +7,16 @@ public class RangedPlayerAttackController : InputControllerBase
     Point m_TileSelection;
     IEntity m_Attack;
 
-    public RangedPlayerAttackController(IEntity self, IEntity attack)
+    public RangedPlayerAttackController(IEntity attack)
     {
-        Init(self);
         m_Attack = attack;
+    }
 
+    public override void Init(IEntity self)
+    {
+        base.Init(self);
         GameEvent selectTile = new GameEvent(GameEventId.SelectTile, new KeyValuePair<string, object>(EventParameters.Entity, Self),
-                                                                                new KeyValuePair<string, object>(EventParameters.Target, World.Instance.GetClosestEnemyTo(Self)),
+                                                                                new KeyValuePair<string, object>(EventParameters.Target, WorldUtility.GetClosestEnemyTo(Self)),
                                                                                 new KeyValuePair<string, object>(EventParameters.TilePosition, null));
         FireEvent(World.Instance.Self, selectTile);
         m_TileSelection = (Point)selectTile.Paramters[EventParameters.TilePosition];
@@ -56,9 +59,20 @@ public class RangedPlayerAttackController : InputControllerBase
     void EndSelection(GameEvent gameEvent)
     {
         Self.RemoveComponent(this);
-        Self.AddComponent(new PlayerInputController(Self));
+        Self.AddComponent(new PlayerInputController());
         FireEvent(World.Instance.Self, new GameEvent(GameEventId.EndSelection, new KeyValuePair<string, object>(EventParameters.TilePosition, m_TileSelection)));
         gameEvent.Paramters[EventParameters.UpdateWorldView] = true;
         gameEvent.Paramters[EventParameters.CleanupComponents] = true;
+    }
+}
+
+public class DTO_RangedPlayerAttackController : IDataTransferComponent
+{
+    public IComponent Component { get; set; }
+
+    public void CreateComponent(string data)
+    {
+        IEntity attack = EntityFactory.CreateEntity(data);
+        Component = new RangedPlayerAttackController(attack);
     }
 }

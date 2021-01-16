@@ -10,6 +10,7 @@ public interface IEntity
     void AddComponent(IComponent component);
     void RemoveComponent(IComponent component);
     void RemoveComponent(Type component);
+    List<IComponent> GetComponents();
     void CleanupComponents();
     string Name { get; }
     string ID { get; }

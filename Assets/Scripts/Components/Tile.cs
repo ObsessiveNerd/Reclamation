@@ -52,7 +52,6 @@ public class Tile : Component
         RegisteredEvents.Add(GameEventId.UpdateTile);
         RegisteredEvents.Add(GameEventId.Spawn);
         RegisteredEvents.Add(GameEventId.Despawn);
-        RegisteredEvents.Add(GameEventId.Interact);
         RegisteredEvents.Add(GameEventId.ShowTileInfo);
         RegisteredEvents.Add(GameEventId.ApplyEventToTile);
         RegisteredEvents.Add(GameEventId.AddComponentToTile);
@@ -103,14 +102,6 @@ public class Tile : Component
                     Items.Remove(entity);
                     break;
             }
-        }
-
-        if(gameEvent.ID == GameEventId.Interact)
-        {
-            //Todo need to be able to interact with neighbors and with the create/object slots
-            foreach (IEntity item in Items)
-                FireEvent(item, new GameEvent(GameEventId.Pickup, new KeyValuePair<string, object>(EventParameters.Entity, gameEvent.Paramters[EventParameters.Entity])));
-            Items.Clear();
         }
 
         if (gameEvent.ID == GameEventId.ShowTileInfo)

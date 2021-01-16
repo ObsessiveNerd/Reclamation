@@ -6,13 +6,12 @@ public class LookController : InputControllerBase
 {
     Point m_TileSelection;
 
-    public LookController(IEntity self)
+    public override void Init(IEntity self)
     {
-        Init(self);
-
+        base.Init(self);
         GameEvent selectTile = new GameEvent(GameEventId.SelectTile, new KeyValuePair<string, object>(EventParameters.Entity, Self),
-                                                                                new KeyValuePair<string, object>(EventParameters.Target, null),
-                                                                                new KeyValuePair<string, object>(EventParameters.TilePosition, null));
+                                                                               new KeyValuePair<string, object>(EventParameters.Target, null),
+                                                                               new KeyValuePair<string, object>(EventParameters.TilePosition, null));
         FireEvent(World.Instance.Self, selectTile);
 
         m_TileSelection = (Point)selectTile.Paramters[EventParameters.TilePosition];
@@ -42,11 +41,21 @@ public class LookController : InputControllerBase
             if (Input.GetKeyDown(KeyCode.Escape))
             {
                 Self.RemoveComponent(this);
-                Self.AddComponent(new PlayerInputController(Self));
+                Self.AddComponent(new PlayerInputController());
                 FireEvent(World.Instance.Self, new GameEvent(GameEventId.EndSelection, new KeyValuePair<string, object>(EventParameters.TilePosition, m_TileSelection)));
                 gameEvent.Paramters[EventParameters.UpdateWorldView] = true;
                 gameEvent.Paramters[EventParameters.CleanupComponents] = true;
             }
         }
+    }
+}
+
+public class DTO_LookController : IDataTransferComponent
+{
+    public IComponent Component { get; set; }
+
+    public void CreateComponent(string data)
+    {
+        Component = new LookController();
     }
 }

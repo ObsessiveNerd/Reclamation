@@ -35,9 +35,21 @@ public class Actor : IEntity
         }
     }
 
+    public void AddComponentRange(List<IComponent> components)
+    {
+        foreach (var c in components)
+            AddComponent(c);
+    }
+
     public void AddComponent(IComponent component)
     {
         m_AddQueue.Add(component);
+        component.Init(this);
+    }
+
+    public List<IComponent> GetComponents()
+    {
+        return m_Components.ToList();
     }
 
     public void RemoveComponent(IComponent component)
@@ -47,7 +59,7 @@ public class Actor : IEntity
 
     public void RemoveComponent(Type component)
     {
-        IComponent comp = m_Components.Values.Find(c => c.GetType() == component);
+        IComponent comp = m_Components.Values.Find(c => component.IsAssignableFrom(c.GetType()));
         m_RemoveQueue.Add(comp);
     }
 

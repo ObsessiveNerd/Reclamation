@@ -4,11 +4,6 @@ using UnityEngine;
 
 public class PlayerInputController : InputControllerBase
 {
-    public PlayerInputController(IEntity self)
-    {
-        Init(self);
-    }
-
     public override void HandleEvent(GameEvent gameEvent)
     {
         if (gameEvent.ID == GameEventId.UpdateEntity)
@@ -28,7 +23,7 @@ public class PlayerInputController : InputControllerBase
                 if (rangedWeapon != null)
                 {
                     Self.RemoveComponent(this);
-                    Self.AddComponent(new RangedPlayerAttackController(Self, rangedWeapon));
+                    Self.AddComponent(new RangedPlayerAttackController(rangedWeapon));
                     gameEvent.Paramters[EventParameters.UpdateWorldView] = true;
                     gameEvent.Paramters[EventParameters.CleanupComponents] = true;
                 }
@@ -39,14 +34,28 @@ public class PlayerInputController : InputControllerBase
             else if (Input.GetKeyDown(KeyCode.L))
             {
                 Self.RemoveComponent(this);
-                Self.AddComponent(new LookController(Self));
+                Self.AddComponent(new LookController());
 
                 gameEvent.Paramters[EventParameters.UpdateWorldView] = true;
                 gameEvent.Paramters[EventParameters.CleanupComponents] = true;
             }
 
+            else if(Input.GetKeyDown(KeyCode.T))
+            {
+                //Throw an equiped weapon
+            }
+
+            else if(Input.GetKeyDown(KeyCode.C))
+            {
+                //Cast spell
+            }
+
             else if (Input.GetKeyDown(KeyCode.Space))
+            {
+                //TODO: we need to query the world for nearby interactable objects, if there's more than 1 give those to the input selection controller with an event callback
+                //If there's only 1 we can fire the event off directly to the target entity, which we should get back from our query
                 FireEvent(World.Instance.Self, new GameEvent(GameEventId.Interact, new KeyValuePair<string, object>(EventParameters.Entity, Self)));
+            }
 
             //This is temporary, we can keep this functionality but right now it's just to test dropping items from your bag
             else if (Input.GetKeyDown(KeyCode.D))
@@ -59,10 +68,10 @@ public class PlayerInputController : InputControllerBase
                 gameEvent.Paramters[EventParameters.CleanupComponents] = true;
             }
 
-            else if(Input.GetKeyDown(KeyCode.Y))
+            else if (Input.GetKeyDown(KeyCode.Y))
             {
                 Self.RemoveComponent(this);
-                Self.AddComponent(new PromptForDirectionController(Self));
+                Self.AddComponent(new PromptForDirectionController());
                 gameEvent.Paramters[EventParameters.CleanupComponents] = true;
             }
             ///
@@ -71,5 +80,15 @@ public class PlayerInputController : InputControllerBase
             FireEvent(Self, checkForEnergy);
             gameEvent.Paramters[EventParameters.TakeTurn] = (bool)checkForEnergy.Paramters[EventParameters.TakeTurn];
         }
+    }
+}
+
+public class DTO_PlayerInputController : IDataTransferComponent
+{
+    public IComponent Component { get; set; }
+
+    public void CreateComponent(string data)
+    {
+        Component = new PlayerInputController();
     }
 }

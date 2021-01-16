@@ -4,11 +4,6 @@ using UnityEngine;
 
 public class PromptForDirectionController : InputControllerBase
 {
-    public PromptForDirectionController(IEntity self)
-    {
-        Init(self);
-    }
-
     public override void HandleEvent(GameEvent gameEvent)
     {
         if (gameEvent.ID == GameEventId.UpdateEntity)
@@ -20,20 +15,29 @@ public class PromptForDirectionController : InputControllerBase
             {
                 RecLog.Log($"{desiredDirection} pressed");
 
-                //Need to fire the correct event, whatever that may be
-                //FireEvent(Self, new GameEvent(GameEventId.MoveKeyPressed, new KeyValuePair<string, object>(EventParameters.InputDirection, desiredDirection)));
+                FireEvent(Self, new GameEvent(GameEventId.PromptForInput, new KeyValuePair<string, object>(EventParameters.InputDirection, desiredDirection)));
 
                 Self.RemoveComponent(this);
-                Self.AddComponent(new PlayerInputController(Self));
+                Self.AddComponent(new PlayerInputController());
                 gameEvent.Paramters[EventParameters.CleanupComponents] = true;
             }
 
             if(Input.GetKeyDown(KeyCode.Escape))
             {
                 Self.RemoveComponent(this);
-                Self.AddComponent(new PlayerInputController(Self));
+                Self.AddComponent(new PlayerInputController());
                 gameEvent.Paramters[EventParameters.CleanupComponents] = true;
             }
         }
+    }
+}
+
+public class DTO_PromptForDirectionController : IDataTransferComponent
+{
+    public IComponent Component { get; set; }
+
+    public void CreateComponent(string data)
+    {
+        Component = new PromptForDirectionController();
     }
 }

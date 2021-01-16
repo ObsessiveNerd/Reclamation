@@ -17,3 +17,14 @@ public class Armor : Component
         gameEvent.Paramters[EventParameters.Value] = (int)gameEvent.Paramters[EventParameters.Value] + m_Armor;
     }
 }
+
+public class DTO_Armor : IDataTransferComponent
+{
+    public IComponent Component { get; set; }
+
+    public void CreateComponent(string data)
+    {
+        int armor = int.Parse(data);
+        Component = new Armor(armor);
+    }
+}
