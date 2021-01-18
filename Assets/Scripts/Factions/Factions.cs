@@ -27,6 +27,12 @@ public class DTO_Faction : IDataTransferComponent
         string name = data.Substring(data.IndexOf('<') + 1, data.IndexOf('>') - (data.IndexOf('<') + 1));
         Component = new Faction(name);
     }
+
+    public string CreateSerializableData(IComponent component)
+    {
+        Faction f = (Faction)component;
+        return $"{nameof(Faction)}:<{f.ID}>";
+    }
 }
 
 

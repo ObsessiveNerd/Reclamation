@@ -49,4 +49,9 @@ public class DTO_Defense : IDataTransferComponent
     {
         Component = new Defense();
     }
+
+    public string CreateSerializableData(IComponent comp)
+    {
+        return nameof(Defense);
+    }
 }

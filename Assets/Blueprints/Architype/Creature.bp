@@ -1,7 +1,8 @@
-Creature(
+Creature<Architype>(
 	Defense
 	EntityTypeContainer: Creature
 	RegisterWithTimeSystem
 	AIController
 	InteractsWithWorld
+	Position
 )

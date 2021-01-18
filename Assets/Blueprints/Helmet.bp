@@ -1,3 +1,4 @@
-Item<Helmet>(
+<Helmet>(
+	Inherits:Item
 	Armor:1
 )

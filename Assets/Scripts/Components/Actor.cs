@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 
 public class Actor : IEntity
 {
@@ -9,11 +10,17 @@ public class Actor : IEntity
 
     public string Name { get; internal set; }
     public string ID { get; internal set; }
-
+    public bool NeedsCleanup
+    {
+        get
+        {
+            return m_AddQueue.Count > 0 || m_RemoveQueue.Count > 0;
+        }
+    }
     public Actor(string name)
     {
         Name = name;
-        //TODO: ID = GetID();
+        ID = Guid.NewGuid().ToString();
         m_Components = new PriorityQueue<IComponent>(new ComponentComparer());
     }
 
@@ -70,5 +77,29 @@ public class Actor : IEntity
         m_Components.AddRange(m_AddQueue);
         m_RemoveQueue.Clear();
         m_AddQueue.Clear();
+    }
+
+    public string Serialize()
+    {
+        CleanupComponents();
+
+        StringBuilder sb = new StringBuilder();
+        sb.AppendLine($"<{Name}>(");
+
+        foreach(IComponent comp in m_Components.ToList())
+        {
+            string dtoName = $"DTO_{comp.GetType()}";
+            Type t = Type.GetType(dtoName);
+            if(t == null)
+            {
+                RecLog.Log($"Can't find type: {dtoName}");
+                continue;
+            }
+            IDataTransferComponent dtc = (IDataTransferComponent)Activator.CreateInstance(t);
+            sb.AppendLine($"\t{dtc.CreateSerializableData(comp)}");
+        }
+
+        sb.AppendLine(")");
+        return sb.ToString();
     }
 }

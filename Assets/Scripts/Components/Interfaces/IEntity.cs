@@ -14,4 +14,6 @@ public interface IEntity
     void CleanupComponents();
     string Name { get; }
     string ID { get; }
+    bool NeedsCleanup { get; }
+    string Serialize();
 }

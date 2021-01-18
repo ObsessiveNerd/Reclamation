@@ -24,4 +24,9 @@ public class DTO_Sharpness : IDataTransferComponent
     {
         Component = new Sharpness();
     }
+
+    public string CreateSerializableData(IComponent component)
+    {
+        return nameof(Sharpness);
+    }
 }

@@ -25,7 +25,7 @@ public class PlayerInputController : InputControllerBase
                     Self.RemoveComponent(this);
                     Self.AddComponent(new RangedPlayerAttackController(rangedWeapon));
                     gameEvent.Paramters[EventParameters.UpdateWorldView] = true;
-                    gameEvent.Paramters[EventParameters.CleanupComponents] = true;
+                    //gameEvent.Paramters[EventParameters.CleanupComponents] = true;
                 }
                 else
                     RecLog.Log("No ranged weapon equiped");
@@ -37,15 +37,15 @@ public class PlayerInputController : InputControllerBase
                 Self.AddComponent(new LookController());
 
                 gameEvent.Paramters[EventParameters.UpdateWorldView] = true;
-                gameEvent.Paramters[EventParameters.CleanupComponents] = true;
+                //gameEvent.Paramters[EventParameters.CleanupComponents] = true;
             }
 
-            else if(Input.GetKeyDown(KeyCode.T))
+            else if (Input.GetKeyDown(KeyCode.T))
             {
                 //Throw an equiped weapon
             }
 
-            else if(Input.GetKeyDown(KeyCode.C))
+            else if (Input.GetKeyDown(KeyCode.C))
             {
                 //Cast spell
             }
@@ -65,15 +65,18 @@ public class PlayerInputController : InputControllerBase
             {
                 FireEvent(World.Instance.Self, new GameEvent(GameEventId.RotateActiveCharacter));
                 gameEvent.Paramters[EventParameters.UpdateWorldView] = true;
-                gameEvent.Paramters[EventParameters.CleanupComponents] = true;
+                //gameEvent.Paramters[EventParameters.CleanupComponents] = true;
             }
 
             else if (Input.GetKeyDown(KeyCode.Y))
             {
                 Self.RemoveComponent(this);
                 Self.AddComponent(new PromptForDirectionController());
-                gameEvent.Paramters[EventParameters.CleanupComponents] = true;
+                //gameEvent.Paramters[EventParameters.CleanupComponents] = true;
             }
+
+            else if (Input.GetKeyDown(KeyCode.Escape))
+                GameObject.FindObjectOfType<SaveSystem>().Save();
             ///
 
             GameEvent checkForEnergy = new GameEvent(GameEventId.HasEnoughEnergyToTakeATurn, new KeyValuePair<string, object>(EventParameters.TakeTurn, false));
@@ -90,5 +93,10 @@ public class DTO_PlayerInputController : IDataTransferComponent
     public void CreateComponent(string data)
     {
         Component = new PlayerInputController();
+    }
+
+    public string CreateSerializableData(IComponent component)
+    {
+        return nameof(PlayerInputController);
     }
 }

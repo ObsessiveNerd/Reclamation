@@ -4,14 +4,15 @@ using UnityEngine;
 
 public class Health : Component
 {
-    private int m_MaxHealth;
-    private int m_CurrentHealth;
+    public int MaxHealth;
+    public int CurrentHealth;
 
     public override int Priority { get { return 10; } }
 
-    public Health(int maxHealth)
+    public Health(int maxHealth, int currentHealth = -1)
     {
-        m_MaxHealth = m_CurrentHealth = maxHealth;
+        MaxHealth = maxHealth;
+        CurrentHealth = currentHealth > 0 ? currentHealth : maxHealth;
 
         RegisteredEvents.Add(GameEventId.TakeDamage);
         RegisteredEvents.Add(GameEventId.RestoreHealth);
@@ -24,12 +25,10 @@ public class Health : Component
             foreach (var damage in (List<Damage>)gameEvent.Paramters[EventParameters.DamageList])
             {
                 RecLog.Log($"{Self.Name} took {damage.DamageAmount} damage of type {damage.DamageType}");
-                m_CurrentHealth -= damage.DamageAmount;
-                if (m_CurrentHealth <= 0)
+                CurrentHealth -= damage.DamageAmount;
+                if (CurrentHealth <= 0)
                 {
-                    GameEvent ge = FireEvent(Self, new GameEvent(GameEventId.Despawn, new KeyValuePair<string, object>(EventParameters.Entity, Self),
-                                                                                        new KeyValuePair<string, object>(EventParameters.EntityType, EntityType.None)));
-                    FireEvent(World.Instance.Self, ge);
+                    Spawner.Despawn(Self); //Todo: temp - we need to just send a "I'm dead event" to Self and then have a death handler handle it (that way a goblin dying doesn't trigger a save delete and all that
                     RecLog.Log("...and died");
                     break;
                 }
@@ -39,7 +38,7 @@ public class Health : Component
         if(gameEvent.ID == GameEventId.RestoreHealth)
         {
             int healAmount = (int)gameEvent.Paramters[EventParameters.Healing];
-            m_CurrentHealth = Mathf.Min(m_CurrentHealth + healAmount, m_MaxHealth);
+            CurrentHealth = Mathf.Min(CurrentHealth + healAmount, MaxHealth);
         }
     }
 }
@@ -50,7 +49,15 @@ public class DTO_Health : IDataTransferComponent
     public IComponent Component { get; set; }
     public void CreateComponent(string data)
     {
-        int health = int.Parse(data);
-        Component = new Health(health);
+        string[] parameters = data.Split(',');
+        int maxHealth = int.Parse(parameters[0]);
+        int currentHealth = parameters.Length > 1 ? int.Parse(parameters[1]) : maxHealth;
+        Component = new Health(maxHealth, currentHealth);
+    }
+
+    public string CreateSerializableData(IComponent component)
+    {
+        Health health = (Health)component;
+        return $"{nameof(Health)}:{health.MaxHealth},{health.CurrentHealth}";
     }
 }

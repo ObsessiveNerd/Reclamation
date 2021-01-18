@@ -21,17 +21,17 @@ public enum TypeWeapon
 
 public class WeaponType : Component
 {
-    TypeWeapon m_TypeWeapon;
+    public TypeWeapon TypeWeapon;
 
     public WeaponType(TypeWeapon type)
     {
-        m_TypeWeapon = type;
+        TypeWeapon = type;
         RegisteredEvents.Add(GameEventId.GetWeaponType);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
     {
-        gameEvent.Paramters[EventParameters.WeaponType] = m_TypeWeapon;
+        gameEvent.Paramters[EventParameters.WeaponType] = TypeWeapon;
     }
 }
 
@@ -43,5 +43,11 @@ public class DTO_WeaponType : IDataTransferComponent
     {
         TypeWeapon tw = (TypeWeapon)Enum.Parse(typeof(TypeWeapon), data);
         Component = new WeaponType(tw);
+    }
+
+    public string CreateSerializableData(IComponent component)
+    {
+        WeaponType wt = (WeaponType)component;
+        return $"{nameof(WeaponType)}:{wt.TypeWeapon}";
     }
 }

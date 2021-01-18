@@ -1,4 +1,5 @@
-Item<Short Bow>(
+<Short Bow>(
+	Inherits:Item
 	WeaponType:Ranged
 	DealDamage:DamageType=Piercing, Damage=1d8
 )

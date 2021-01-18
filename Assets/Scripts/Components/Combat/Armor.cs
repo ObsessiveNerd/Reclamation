@@ -5,16 +5,16 @@ using UnityEngine;
 //This will need to be re-worked some as there should be armor (and weapon) slots instead of adding some of these components directly to the entity
 public class Armor : Component
 {
-    int m_Armor;
+    public int ArmorAmount;
     public Armor(int armor)
     {
-        m_Armor = armor;
+        ArmorAmount = armor;
         RegisteredEvents.Add(GameEventId.AddArmorValue);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
     {
-        gameEvent.Paramters[EventParameters.Value] = (int)gameEvent.Paramters[EventParameters.Value] + m_Armor;
+        gameEvent.Paramters[EventParameters.Value] = (int)gameEvent.Paramters[EventParameters.Value] + ArmorAmount;
     }
 }
 
@@ -26,5 +26,11 @@ public class DTO_Armor : IDataTransferComponent
     {
         int armor = int.Parse(data);
         Component = new Armor(armor);
+    }
+
+    public string CreateSerializableData(IComponent component)
+    {
+        Armor a = (Armor)component;
+        return $"{nameof(Armor)}:{a.ArmorAmount}";
     }
 }

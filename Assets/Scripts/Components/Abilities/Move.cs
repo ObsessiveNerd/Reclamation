@@ -89,4 +89,9 @@ public class DTO_Move : IDataTransferComponent
     {
         Component = new Move();
     }
+
+    public string CreateSerializableData(IComponent component)
+    {
+        return nameof(Move);
+    }
 }

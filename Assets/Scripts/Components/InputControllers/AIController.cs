@@ -32,4 +32,9 @@ public class DTO_AIController : IDataTransferComponent
     {
         Component = new AIController();
     }
+
+    public string CreateSerializableData(IComponent component)
+    {
+        return nameof(AIController);
+    }
 }

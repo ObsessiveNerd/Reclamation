@@ -42,6 +42,8 @@ public static class GameEventId
     public const string ExecuteMove = nameof(ExecuteMove);
     public const string AfterMoving = nameof(AfterMoving);
     public const string MoveEntity = nameof(MoveEntity);
+    public const string SetPoint = nameof(SetPoint);
+    public const string GetPoint = nameof(GetPoint);
     public const string Interact = nameof(Interact);
     public const string InteractWithTarget = nameof(InteractWithTarget);
 
@@ -50,6 +52,7 @@ public static class GameEventId
     public const string UpdateEntity = nameof(UpdateEntity);
     public const string EndTurn = nameof(EndTurn);
     public const string RegisterWithTimeSystem = nameof(RegisterWithTimeSystem);
+    public const string RegisterPlayableCharacter = nameof(RegisterPlayableCharacter);
 
     //Rendering
     public const string UpdateRenderer = nameof(UpdateRenderer);

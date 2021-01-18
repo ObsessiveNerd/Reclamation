@@ -37,4 +37,9 @@ public class DTO_InteractsWithWorld : IDataTransferComponent
     {
         Component = new InteractsWithWorld();
     }
+
+    public string CreateSerializableData(IComponent component)
+    {
+        return nameof(InteractsWithWorld);
+    }
 }

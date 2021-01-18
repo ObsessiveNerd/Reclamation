@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
 using UnityEngine;
 
 public enum BodyPart
@@ -13,17 +15,17 @@ public enum BodyPart
 
 public class Body : Component
 {
-    IEntity m_Body;
-    List<IEntity> m_Head = new List<IEntity>();
-    List<IEntity> m_Arms = new List<IEntity>();
-    List<IEntity> m_Legs = new List<IEntity>();
+    public IEntity Torso;
+    public List<IEntity> Heads = new List<IEntity>();
+    public List<IEntity> Arms = new List<IEntity>();
+    public List<IEntity> Legs = new List<IEntity>();
 
     public Body(int numHeads, int numArms = 0, int numLegs = 0)
     {
         Actor body = new Actor("Body");
         body.AddComponent(new EquipmentSlot());
         body.CleanupComponents();
-        m_Body = body;
+        Torso = body;
 
         for (int i = 0; i < numHeads; i++)
             GrowBodyPart(BodyPart.Head);
@@ -58,30 +60,30 @@ public class Body : Component
             switch (bp)
             {
                 case BodyPart.Head:
-                    if (m_Head.Count > 0)
+                    if (Heads.Count > 0)
                     {
-                        dropTarget = m_Head[0];
-                        m_Head.RemoveAt(0);
+                        dropTarget = Heads[0];
+                        Heads.RemoveAt(0);
                     }
                     break;
                 case BodyPart.Arm:
-                    if (m_Arms.Count > 0)
+                    if (Arms.Count > 0)
                     {
-                        dropTarget = m_Arms[0];
-                        m_Arms.RemoveAt(0);
+                        dropTarget = Arms[0];
+                        Arms.RemoveAt(0);
                     }
                     break;
                 case BodyPart.Leg:
-                    if (m_Legs.Count > 0)
+                    if (Legs.Count > 0)
                     {
-                        dropTarget = m_Legs[0];
-                        m_Legs.RemoveAt(0);
+                        dropTarget = Legs[0];
+                        Legs.RemoveAt(0);
                     }
                     break;
             }
 
             if(dropTarget != null)
-                Spawner.Spawn(dropTarget, EntityType.Item, World.Instance.GetPointWhereEntityIs(Self));
+                Spawner.Spawn(dropTarget, World.Instance.GetPointWhereEntityIs(Self));
         }
 
         if(gameEvent.ID == GameEventId.Equip)
@@ -92,16 +94,16 @@ public class Body : Component
             {
                 //todo: all of this is temp.  we'll have to iterate through and see what open slots are avalible
                 case BodyPart.Head:
-                    target = m_Head;
+                    target = Heads;
                     break;
                 case BodyPart.Arm:
-                    target = m_Arms;
+                    target = Arms;
                     break;
                 case BodyPart.Leg:
-                    target = m_Legs;
+                    target = Legs;
                     break;
                 case BodyPart.Torso:
-                    target = new List<IEntity>() { m_Body };
+                    target = new List<IEntity>() { Torso };
                     break;
             }
 
@@ -123,18 +125,18 @@ public class Body : Component
 
         if(gameEvent.ID == GameEventId.AddArmorValue)
         {
-            FireEvent(m_Body, gameEvent);
-            foreach(var head in m_Head)
+            FireEvent(Torso, gameEvent);
+            foreach(var head in Heads)
                 FireEvent(head, gameEvent);
-            foreach (var arm in m_Arms)
+            foreach (var arm in Arms)
                 FireEvent(arm, gameEvent);
-            foreach (var leg in m_Legs)
+            foreach (var leg in Legs)
                 FireEvent(leg, gameEvent);
         }
 
         if (gameEvent.ID == GameEventId.GetRangedWeapon)
         {
-            foreach (IEntity hand in m_Arms)
+            foreach (IEntity hand in Arms)
             {
                 IEntity equipment = (IEntity)FireEvent(hand, new GameEvent(GameEventId.GetEquipment, new KeyValuePair<string, object>(EventParameters.Equipment, null))).Paramters[EventParameters.Equipment];
                 if (equipment != null)
@@ -153,7 +155,7 @@ public class Body : Component
         if (gameEvent.ID == GameEventId.PerformAttack)
         {
             TypeWeapon desiredWeaponToAttack = (TypeWeapon)gameEvent.Paramters[EventParameters.WeaponType];
-            foreach (IEntity hand in m_Arms)
+            foreach (IEntity hand in Arms)
             {
                 IEntity equipment = (IEntity)FireEvent(hand, new GameEvent(GameEventId.GetEquipment, new KeyValuePair<string, object>(EventParameters.Equipment, null))).Paramters[EventParameters.Equipment];
                 if (equipment != null && CombatUtility.GetWeaponType(equipment).HasFlag(desiredWeaponToAttack))
@@ -176,19 +178,19 @@ public class Body : Component
                 Actor head = new Actor("Head");
                 head.AddComponent(new EquipmentSlot());
                 head.CleanupComponents();
-                m_Head.Add(head);
+                Heads.Add(head);
                 break;
             case BodyPart.Arm:
                 Actor arm = new Actor("Arm");
                 arm.AddComponent(new EquipmentSlot());
                 arm.CleanupComponents();
-                m_Arms.Add(arm);
+                Arms.Add(arm);
                 break;
             case BodyPart.Leg:
                 Actor leg = new Actor("Leg");
                 leg.AddComponent(new EquipmentSlot());
                 leg.CleanupComponents();
-                m_Legs.Add(leg);
+                Legs.Add(leg);
                 break;
         }
     }
@@ -237,5 +239,35 @@ public class DTO_Body : IDataTransferComponent
                 Component.HandleEvent(new GameEvent(GameEventId.Equip, new KeyValuePair<string, object>(EventParameters.EntityType, key),
                                                                         new KeyValuePair<string, object>(EventParameters.Equipment, e)));
         }
+    }
+
+    public string CreateSerializableData(IComponent component)
+    {
+        Body body = (Body)component;
+
+        string headEquipment = GetSerializedEquipment(body.Heads);
+        string torsoEquipment = GetSerializedEquipment(new List<IEntity>() { body.Torso });
+        string armEquipment = GetSerializedEquipment(body.Arms);
+        string legEquipment = GetSerializedEquipment(body.Legs);
+
+        return $"Body:Head={body.Heads.Count}[{headEquipment}], Torso=1[{torsoEquipment}], Arm={body.Arms.Count}[{armEquipment}], Leg={body.Legs.Count}[{legEquipment}]";
+    }
+
+    string GetSerializedEquipment(IList<IEntity> bodyParts)
+    {
+        StringBuilder sb = new StringBuilder();
+        foreach (var bp in bodyParts)
+        {
+            GameEvent getEquipment = new GameEvent(GameEventId.GetEquipment, new KeyValuePair<string, object>(EventParameters.Equipment, null));
+            bp.HandleEvent(getEquipment);
+            IEntity equipment = (IEntity)getEquipment.Paramters[EventParameters.Equipment];
+            if (equipment != null)
+            {
+                sb.Append($"<{equipment.ID}>&");
+                EntityFactory.CreateTemporaryBlueprint(World.Instance.Seed, equipment.ID, equipment.Serialize());
+            }
+        }
+        string value = sb.ToString().TrimEnd('&');
+        return value;
     }
 }

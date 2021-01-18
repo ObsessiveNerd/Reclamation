@@ -16,18 +16,18 @@ public class BasicDungeonGenerator : IDungeonGenerator
         m_Rows = m_Vertical * 2;
     }
 
-    public virtual void GenerateDungeon(Dictionary<Point, Actor> pointToTileMap, Dictionary<IEntity, GameObject> tileToGameObjectMap)
+    public virtual void GenerateDungeon(Dictionary<Point, Actor> pointToTileMap)
     {
         for (int i = 0; i < m_Columns; i++)
         {
             for (int j = 0; j < m_Rows; j++)
             {
-                CreateTile(i, j, m_Horizontal, m_Vertical, pointToTileMap, tileToGameObjectMap);
+                CreateTile(i, j, m_Horizontal, m_Vertical, pointToTileMap);
             }
         }
     }
 
-    protected void CreateTile(int x, int y, float screenHorizontal, float screenVertical, Dictionary<Point, Actor> pointToTileMap, Dictionary<IEntity, GameObject> tileToGameObjectMap)
+    protected void CreateTile(int x, int y, float screenHorizontal, float screenVertical, Dictionary<Point, Actor> pointToTileMap)
     {
         GameObject tile = UnityEngine.GameObject.Instantiate(m_TilePrefab);
         tile.transform.position = new Vector2(x - (screenHorizontal - 0.5f), y - (screenVertical - 0.5f));
@@ -38,7 +38,6 @@ public class BasicDungeonGenerator : IDungeonGenerator
         actor.AddComponent(new Renderer(tile.GetComponent<SpriteRenderer>()));
         actor.CleanupComponents();
 
-        tileToGameObjectMap.Add(actor, tile);
         pointToTileMap.Add(new Point(x, y), actor);
     }
 }

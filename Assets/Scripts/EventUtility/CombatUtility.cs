@@ -5,7 +5,7 @@ public static class CombatUtility
     public static void Attack(IEntity source, IEntity target, IEntity weapon)
     {
         TypeWeapon weaponType = GetWeaponType(weapon);
-        RecLog.Log($"{source.Name} is performing a {weaponType} attack");
+        RecLog.Log($"{source.Name} is performing a {weaponType} attack with {weapon.Name}");
         if (weaponType == TypeWeapon.None)
             return;
         int rollToHit = (int)source.FireEvent(source, new GameEvent(GameEventId.RollToHit, new KeyValuePair<string, object>(EventParameters.RollToHit, 0),

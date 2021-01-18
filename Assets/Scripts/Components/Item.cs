@@ -38,4 +38,9 @@ public class DTO_Item : IDataTransferComponent
     {
         Component = new Item();
     }
+
+    public string CreateSerializableData(IComponent component)
+    {
+        return nameof(Item);
+    }
 }

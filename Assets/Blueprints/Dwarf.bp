@@ -1,4 +1,5 @@
-Creature<Dwarf> (
+<Dwarf> (
+	Inherits:Creature
 	Health:10
 	Body:Head=1[<Helmet>], Arm=2[<Short Sword>&<Short Bow>], Leg=2[]
 	Inventory

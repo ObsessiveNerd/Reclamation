@@ -35,11 +35,10 @@ public class TimeProgression
         }
 
         GameEvent update = new GameEvent(GameEventId.UpdateEntity,  new KeyValuePair<string, object>(EventParameters.TakeTurn, false),
-                                                                    new KeyValuePair<string, object>(EventParameters.UpdateWorldView, false),
-                                                                    new KeyValuePair<string, object>(EventParameters.CleanupComponents, false));
+                                                                    new KeyValuePair<string, object>(EventParameters.UpdateWorldView, false));
         m_Current.Value.HandleEvent(update);
 
-        if ((bool)update.Paramters[EventParameters.CleanupComponents])
+        if (m_Current.Value.NeedsCleanup)
             m_Current.Value.CleanupComponents();
 
         if((bool)update.Paramters[EventParameters.UpdateWorldView])

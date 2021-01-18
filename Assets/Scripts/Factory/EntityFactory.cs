@@ -11,33 +11,41 @@ public static class EntityFactory
     {
         Actor a = new Actor("<empty>");
         string path = $"{m_BluePrintPath}/{blueprintName}.bp";
+        if(!File.Exists(path))
+            path = $"{m_BluePrintPath}/{World.Instance.Seed}/{blueprintName}.bp";
+        if (!File.Exists(path))
+            return null;
+        return GetEntity(path);
+    }
+
+    public static IEntity GetEntity(string path)
+    {
+        Actor a = null;
         using (var stream = new StreamReader(path))
         {
             string header = stream.ReadLine();
             int firstIndex = header.IndexOf('<');
             int lastIndex = header.IndexOf('>');
-            IEntity archiType = null;
-            string architype = header.Substring(0, firstIndex > 0 ? firstIndex : header.IndexOf('('));
-            string name = architype;
 
-            if (firstIndex > 0 && lastIndex > 0)
-            {
-                int nameStart = firstIndex + 1;
-                int nameLength = lastIndex - firstIndex - 1;
-                name = header.Substring(nameStart, nameLength);
-
-                archiType = CreateEntity($"Architype/{architype}");
-            }
+            int nameStart = firstIndex + 1;
+            int nameLength = lastIndex - firstIndex - 1;
+            string name = header.Substring(nameStart, nameLength);
 
             a = new Actor(name);
 
             string line;
-            while((line = stream.ReadLine()) != null && line != ")")
+            while ((line = stream.ReadLine()) != null && line != ")")
             {
                 string[] componentToValues = line.Split(':');
                 string dtoComponentName = $"DTO_{componentToValues[0].Replace("\t", string.Empty)}";
                 Type componentType = Type.GetType(dtoComponentName);
-                if (componentType != null)
+                if (componentType == typeof(DTO_Inherits))
+                {
+                    string data = componentToValues[1].Replace(" ", string.Empty);
+                    DTO_Inherits inherit = new DTO_Inherits();
+                    a.AddComponentRange(inherit.CreateComponents($"{m_BluePrintPath}/Architype", data));
+                }
+                else if (componentType != null)
                 {
                     IDataTransferComponent dtc = (IDataTransferComponent)Activator.CreateInstance(componentType);
                     if (componentToValues.Length == 1)
@@ -45,7 +53,7 @@ public static class EntityFactory
                     else
                     {
                         string data = componentToValues[1];
-                        if(!data.StartsWith("\"") && !data.EndsWith("\""))
+                        if (!data.StartsWith("\"") && !data.EndsWith("\""))
                             data = componentToValues[1].Replace(" ", string.Empty);
                         dtc.CreateComponent(data);
                     }
@@ -54,10 +62,56 @@ public static class EntityFactory
                 else
                     Debug.LogError($"Couldn't find componentType for {dtoComponentName}");
             }
-            if (archiType != null)
-                a.AddComponentRange(archiType.GetComponents());
         }
+        a.CleanupComponents();
+        return a;
+    }
 
+    public static IEntity ParseEntityData(string entityData)
+    {
+        Actor a = null;
+        using (var stream = new StringReader(entityData))
+        {
+            string header = stream.ReadLine();
+            int firstIndex = header.IndexOf('<');
+            int lastIndex = header.IndexOf('>');
+
+            int nameStart = firstIndex + 1;
+            int nameLength = lastIndex - firstIndex - 1;
+            string name = header.Substring(nameStart, nameLength);
+
+            a = new Actor(name);
+
+            string line;
+            while ((line = stream.ReadLine()) != null && line != ")")
+            {
+                string[] componentToValues = line.Split(':');
+                string dtoComponentName = $"DTO_{componentToValues[0].Replace("\t", string.Empty)}";
+                Type componentType = Type.GetType(dtoComponentName);
+                if (componentType == typeof(DTO_Inherits))
+                {
+                    string data = componentToValues[1].Replace(" ", string.Empty);
+                    DTO_Inherits inherit = new DTO_Inherits();
+                    a.AddComponentRange(inherit.CreateComponents($"{m_BluePrintPath}/Architype", data));
+                }
+                else if (componentType != null)
+                {
+                    IDataTransferComponent dtc = (IDataTransferComponent)Activator.CreateInstance(componentType);
+                    if (componentToValues.Length == 1)
+                        dtc.CreateComponent("");
+                    else
+                    {
+                        string data = componentToValues[1];
+                        if (!data.StartsWith("\"") && !data.EndsWith("\""))
+                            data = componentToValues[1].Replace(" ", string.Empty);
+                        dtc.CreateComponent(data);
+                    }
+                    a.AddComponent(dtc.Component);
+                }
+                else
+                    Debug.LogError($"Couldn't find componentType for {dtoComponentName}");
+            }
+        }
         a.CleanupComponents();
         return a;
     }
@@ -83,5 +137,28 @@ public static class EntityFactory
         int start = bpFormatting.IndexOf('<') + 1;
         int length = bpFormatting.IndexOf('>') - start;
         return bpFormatting.Substring(start, length);
+    }
+
+    public static void CreateTemporaryBlueprint(string tempPath, string blueprintName, string data)
+    {
+        string path = $"{m_BluePrintPath}/{tempPath}/{blueprintName}.bp";
+        Directory.CreateDirectory(Path.GetDirectoryName(path));
+        File.WriteAllText(path, data);
+    }
+}
+
+public class DTO_Inherits
+{
+    public List<IComponent> CreateComponents(string architypePath, string data)
+    {
+        List<IComponent> retValue = new List<IComponent>();
+        string[] parameters = data.Split(',');
+        foreach(string parameter in parameters)
+        {
+            string fullArchitypePath = $"{architypePath}/{parameter}.bp";
+            IEntity e = EntityFactory.GetEntity(fullArchitypePath);
+            retValue.AddRange(e.GetComponents());
+        }
+        return retValue;
     }
 }

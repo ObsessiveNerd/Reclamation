@@ -25,4 +25,9 @@ public class DTO_Wall : IDataTransferComponent
     {
         Component = new Wall();
     }
+
+    public string CreateSerializableData(IComponent component)
+    {
+        return nameof(Wall);
+    }
 }

@@ -5,20 +5,20 @@ using UnityEngine;
 
 public class DealDamage : Component
 {
-    DamageType m_DamageType;
-    Dice m_Dice;
+    public DamageType DamageType;
+    public Dice Dice;
 
     public DealDamage(DamageType damageType, Dice dice)
     {
-        m_DamageType = damageType;
-        m_Dice = dice;
+        DamageType = damageType;
+        Dice = dice;
 
         RegisteredEvents.Add(GameEventId.AmAttacking);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
     {
-        ((List<Damage>)gameEvent.Paramters[EventParameters.DamageList]).Add(new Damage(m_Dice.Roll(), m_DamageType));
+        ((List<Damage>)gameEvent.Paramters[EventParameters.DamageList]).Add(new Damage(Dice.Roll(), DamageType));
     }
 }
 
@@ -46,5 +46,11 @@ public class DTO_DealDamage : IDataTransferComponent
             }
         }
         Component = new DealDamage(type, new Dice(damageDice));
+    }
+
+    public string CreateSerializableData(IComponent component)
+    {
+        DealDamage dd = (DealDamage)component;
+        return $"{nameof(DealDamage)}: DamageType={dd.DamageType}, Damage={dd.Dice.GetNotation()}";
     }
 }

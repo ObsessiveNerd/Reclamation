@@ -44,7 +44,7 @@ public class LookController : InputControllerBase
                 Self.AddComponent(new PlayerInputController());
                 FireEvent(World.Instance.Self, new GameEvent(GameEventId.EndSelection, new KeyValuePair<string, object>(EventParameters.TilePosition, m_TileSelection)));
                 gameEvent.Paramters[EventParameters.UpdateWorldView] = true;
-                gameEvent.Paramters[EventParameters.CleanupComponents] = true;
+                //gameEvent.Paramters[EventParameters.CleanupComponents] = true;
             }
         }
     }
@@ -57,5 +57,10 @@ public class DTO_LookController : IDataTransferComponent
     public void CreateComponent(string data)
     {
         Component = new LookController();
+    }
+
+    public string CreateSerializableData(IComponent component)
+    {
+        return nameof(PlayerInputController);
     }
 }

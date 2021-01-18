@@ -23,4 +23,9 @@ public class DTO_Slow : IDataTransferComponent
     {
         Component = new Slow();
     }
+
+    public string CreateSerializableData(IComponent comp)
+    {
+        return nameof(Slow);
+    }
 }

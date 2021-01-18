@@ -62,4 +62,10 @@ public class DTO_Inventory : IDataTransferComponent
 
         }
     }
+
+    public string CreateSerializableData(IComponent component)
+    {
+        //Todo: need to collect everything in the inventory first
+        return nameof(Inventory);
+    }
 }

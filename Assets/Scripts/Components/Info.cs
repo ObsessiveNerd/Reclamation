@@ -4,18 +4,18 @@ using UnityEngine;
 
 public class Info : Component
 {
-    string m_Info;
+    public string InfoMessage;
     public override int Priority { get { return 6; } }
 
     public Info(string info)
     {
-        m_Info = info;
+        InfoMessage = info;
         RegisteredEvents.Add(GameEventId.ShowInfo);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
     {
-        RecLog.Log(m_Info);
+        RecLog.Log(InfoMessage);
     }
 }
 
@@ -26,5 +26,11 @@ public class DTO_Info : IDataTransferComponent
     public void CreateComponent(string data)
     {
         Component = new Info(data);
+    }
+
+    public string CreateSerializableData(IComponent component)
+    {
+        Info info = (Info)component;
+        return $"{nameof(Info)}: {info.InfoMessage}";
     }
 }

@@ -1,3 +1,4 @@
-Item<Shield>(
+<Shield>(
+	Inherits:Item
 	Armor:2
 )

@@ -24,4 +24,9 @@ public class DTO_RegisterWithTimeSystem : IDataTransferComponent
     {
         Component = new RegisterWithTimeSystem();
     }
+
+    public string CreateSerializableData(IComponent component)
+    {
+       return nameof(RegisterWithTimeSystem);
+    }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,6 +9,7 @@ public class World : Component
 {
     private static World m_Instance;
     public static World Instance { get { return m_Instance; } }
+    public string Seed;
 
     GameObject m_TilePrefab;
 
@@ -18,11 +20,9 @@ public class World : Component
     LinkedListNode<IEntity> m_ActivePlayer;
     int m_Vertical, m_Horizontal, m_Columns, m_Rows;
 
-    //Temp
-    public List<Sprite> m_TempTerrain;
-    public Sprite m_TempSelection;
+    IDungeonGenerator m_DungeonGenerator;
 
-    public World(IEntity self, GameObject tilePrefab, List<Sprite> tempTerrain, Sprite tempSelection)
+    public World(IEntity self, GameObject tilePrefab, int seed = 0)
     {
         if (m_Instance == null)
             m_Instance = this;
@@ -32,13 +32,14 @@ public class World : Component
         Init(self);
 
         m_TilePrefab = tilePrefab;
-        m_TempTerrain = tempTerrain; //temp
-        m_TempSelection = tempSelection;
 
         m_Vertical = (int)Camera.main.orthographicSize;
         m_Horizontal = (int)(m_Vertical * Camera.main.aspect);
         m_Columns = m_Horizontal * 2;
         m_Rows = m_Vertical * 2;
+
+        Seed = seed.ToString();
+        m_DungeonGenerator = new BasicDungeonGenerator(seed, m_TilePrefab);
 
         RegisteredEvents.Add(GameEventId.StartWorld);
         RegisteredEvents.Add(GameEventId.UpdateWorldView);
@@ -59,20 +60,34 @@ public class World : Component
         RegisteredEvents.Add(GameEventId.BeforeMoving);
     }
 
+    public List<IEntity> GetEntities()
+    {
+        return m_EntityToPointMap.Keys.ToList();
+    }
+
     public void RegisterPlayer(IEntity entity)
     {
+        if (!entity.GetComponents().Any(c => c.GetType() == typeof(RegisterPlayableCharacter)))
+            ConvertToPlayableEntity(entity);
+
         m_Players.AddLast(entity);
-        entity.RemoveComponent(typeof(InputControllerBase));
-        entity.RemoveComponent(typeof(RegisterWithTimeSystem));
         if (m_ActivePlayer == null)
         {
             m_ActivePlayer = m_Players.First;
             entity.AddComponent(new PlayerInputController());
         }
-        entity.CleanupComponents();
         m_PlayerToTimeProgressionMap[entity] = new TimeProgression();
         m_PlayerToTimeProgressionMap[entity].RegisterEntity(entity);
-        
+    }
+
+    public void ConvertToPlayableEntity(IEntity entity)
+    {
+        entity.RemoveComponent(typeof(InputControllerBase));
+        entity.RemoveComponent(typeof(RegisterWithTimeSystem));
+
+        entity.AddComponent(new RegisterPlayableCharacter());
+
+        entity.CleanupComponents();
     }
 
     public void UnregisterPlayer(IEntity entity)
@@ -84,22 +99,18 @@ public class World : Component
                                                             new KeyValuePair<string, object>(EventParameters.EntityType, EntityType.Creature)));
     }
 
+    public bool StopTime = false;
     public void ProgressTime()
     {
-        m_PlayerToTimeProgressionMap[m_ActivePlayer.Value].Update();
+        if (!StopTime)
+            m_PlayerToTimeProgressionMap[m_ActivePlayer.Value].Update();
     }
 
     public override void HandleEvent(GameEvent gameEvent)
     {
         if(gameEvent.ID == GameEventId.StartWorld)
         {
-            for (int i = 0; i < m_Columns; i++)
-            {
-                for (int j = 0; j < m_Rows; j++)
-                {
-                    CreateTile(i, j);
-                }
-            }
+            m_DungeonGenerator.GenerateDungeon(m_Tiles);
             Factions.Initialize();
             FireEvent(Self, new GameEvent(GameEventId.UpdateWorldView));
         }
@@ -114,11 +125,13 @@ public class World : Component
         {
             IEntity entity = (IEntity)gameEvent.Paramters[EventParameters.Entity];
             Point spawnPoint = (Point)gameEvent.Paramters[EventParameters.Point];
+            FireEvent(entity, new GameEvent(GameEventId.SetPoint, new KeyValuePair<string, object>(EventParameters.TilePosition, spawnPoint)));
             FireEvent(m_Tiles[spawnPoint], gameEvent);
             FireEvent(Self, new GameEvent(GameEventId.UpdateWorldView));
             m_EntityToPointMap[entity] = spawnPoint;
 
             //Todo: we'll need to make sure we find which player is closest before picking their time system
+            FireEvent(entity, new GameEvent(GameEventId.RegisterPlayableCharacter));
             FireEvent(entity, new GameEvent(GameEventId.RegisterWithTimeSystem, new KeyValuePair<string, object>(EventParameters.Value, m_PlayerToTimeProgressionMap[m_ActivePlayer.Value])));
         }
 
@@ -152,6 +165,8 @@ public class World : Component
 
             if (m_Tiles.ContainsKey(newPoint))
             {
+                FireEvent(entity, new GameEvent(GameEventId.SetPoint, new KeyValuePair<string, object>(EventParameters.TilePosition, newPoint)));
+
                 //Just as a note, doing it this way isn't terribly efficient since despawn is going to remove things from the time progression
                 //This also means turn order is going to get fucked, so really we should do this proper and just event to the correct tiles here.
                 //I mean I guess things are despawning and spawning in order so maybe turn order won't get fucked.
@@ -228,13 +243,14 @@ public class World : Component
 
         if(gameEvent.ID == GameEventId.SelectTile)
         {
+            throw new NotImplementedException();
             IEntity entity = (IEntity)gameEvent.Paramters[EventParameters.Entity];
             IEntity target = (IEntity)gameEvent.Paramters[EventParameters.Target];
 
             Point p = m_EntityToPointMap[target == null ? entity : target];
 
             //Temp for UI, should really not cover up selection with this component.
-            m_Tiles[p].AddComponent(new SelectedTile(m_TempSelection));
+            //m_Tiles[p].AddComponent(new SelectedTile(m_TempSelection));
             m_Tiles[p].CleanupComponents();
             /////////////////////
 
@@ -243,6 +259,7 @@ public class World : Component
 
         if(gameEvent.ID == GameEventId.SelectNewTileInDirection)
         {
+            throw new NotImplementedException();
             Point currentTilePos = (Point)gameEvent.Paramters[EventParameters.TilePosition];
             MoveDirection moveDirection = (MoveDirection)gameEvent.Paramters[EventParameters.InputDirection];
 
@@ -251,7 +268,7 @@ public class World : Component
 
             Point newPoint = GetTilePointInDirection(currentTilePos, moveDirection);
 
-            m_Tiles[newPoint].AddComponent(new SelectedTile(m_TempSelection));
+            //m_Tiles[newPoint].AddComponent(new SelectedTile(m_TempSelection));
             m_Tiles[newPoint].CleanupComponents();
 
             gameEvent.Paramters[EventParameters.TilePosition] = newPoint;
@@ -294,24 +311,6 @@ public class World : Component
         if(m_EntityToPointMap.ContainsKey(e))
             return m_EntityToPointMap[e];
         return new Point(-1, -1);
-    }
-
-    void CreateTile(int x, int y)
-    {
-        GameObject tile = UnityEngine.GameObject.Instantiate(m_TilePrefab);
-        tile.transform.position = new Vector2(x - (m_Horizontal - 0.5f), y - (m_Vertical - 0.5f));
-        tile.transform.parent = UnityEngine.GameObject.Find("World").transform;
-
-        Actor actor = new Actor("Tile");
-        actor.AddComponent(new Tile(actor, new Point(x, y)));
-        bool putGrass = RecRandom.Instance.GetRandomValue(0f, 100f) < 30f;
-        actor.AddComponent(new GraphicContainer(putGrass ? m_TempTerrain[RecRandom.Instance.GetRandomValue(0, m_TempTerrain.Count)] : null));
-        actor.AddComponent(new Renderer(tile.GetComponent<SpriteRenderer>()));
-        if (putGrass)
-            actor.AddComponent(new Info("A small patch of grass"));
-        actor.CleanupComponents();
-
-        m_Tiles.Add(new Point(x, y), actor);
     }
 
     Point GetTilePointInDirection(Point basePoint, MoveDirection direction)

@@ -13,17 +13,17 @@ public enum EntityType
 
 public class EntityTypeContainer : Component
 {
-    private EntityType m_Type;
+    public EntityType Type;
 
     public EntityTypeContainer(EntityType type)
     {
-        m_Type = type;
+        Type = type;
         RegisteredEvents.Add(GameEventId.GetEntityType);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
     {
-        gameEvent.Paramters[EventParameters.EntityType] = m_Type;
+        gameEvent.Paramters[EventParameters.EntityType] = Type;
     }
 }
 
@@ -35,5 +35,11 @@ public class DTO_EntityTypeContainer : IDataTransferComponent
     {
         EntityType t = (EntityType)Enum.Parse(typeof(EntityType), data);
         Component = new EntityTypeContainer(t);
+    }
+
+    public string CreateSerializableData(IComponent component)
+    {
+        EntityTypeContainer etc = (EntityTypeContainer)component;
+        return $"{nameof(EntityTypeContainer)}:{etc.Type}";
     }
 }

@@ -19,14 +19,14 @@ public class PromptForDirectionController : InputControllerBase
 
                 Self.RemoveComponent(this);
                 Self.AddComponent(new PlayerInputController());
-                gameEvent.Paramters[EventParameters.CleanupComponents] = true;
+                //gameEvent.Paramters[EventParameters.CleanupComponents] = true;
             }
 
             if(Input.GetKeyDown(KeyCode.Escape))
             {
                 Self.RemoveComponent(this);
                 Self.AddComponent(new PlayerInputController());
-                gameEvent.Paramters[EventParameters.CleanupComponents] = true;
+                //gameEvent.Paramters[EventParameters.CleanupComponents] = true;
             }
         }
     }
@@ -39,5 +39,10 @@ public class DTO_PromptForDirectionController : IDataTransferComponent
     public void CreateComponent(string data)
     {
         Component = new PromptForDirectionController();
+    }
+
+    public string CreateSerializableData(IComponent comp)
+    {
+        return nameof(PromptForDirectionController);
     }
 }

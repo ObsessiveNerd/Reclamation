@@ -62,7 +62,7 @@ public class RangedPlayerAttackController : InputControllerBase
         Self.AddComponent(new PlayerInputController());
         FireEvent(World.Instance.Self, new GameEvent(GameEventId.EndSelection, new KeyValuePair<string, object>(EventParameters.TilePosition, m_TileSelection)));
         gameEvent.Paramters[EventParameters.UpdateWorldView] = true;
-        gameEvent.Paramters[EventParameters.CleanupComponents] = true;
+        //gameEvent.Paramters[EventParameters.CleanupComponents] = true;
     }
 }
 
@@ -74,5 +74,10 @@ public class DTO_RangedPlayerAttackController : IDataTransferComponent
     {
         IEntity attack = EntityFactory.CreateEntity(data);
         Component = new RangedPlayerAttackController(attack);
+    }
+
+    public string CreateSerializableData(IComponent component)
+    {
+        return nameof(PlayerInputController);
     }
 }

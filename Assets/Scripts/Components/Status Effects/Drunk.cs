@@ -5,12 +5,13 @@ using UnityEngine;
 
 public class Drunk : Component
 {
-    int m_DrunkRounds;
-    int m_CurrentDrunkRounds;
+    public int DrunkRounds;
+    public int CurrentDrunkRounds;
 
     public Drunk()
     {
-        m_DrunkRounds = 50;
+        //Todo: this should be affected by a creatures con score
+        DrunkRounds = 12;
 
         RegisteredEvents.Add(GameEventId.BeforeMoving);
         RegisteredEvents.Add(GameEventId.EndTurn);
@@ -23,8 +24,8 @@ public class Drunk : Component
 
         if (gameEvent.ID == GameEventId.EndTurn)
         {
-            m_CurrentDrunkRounds++;
-            if(m_CurrentDrunkRounds >= m_DrunkRounds)
+            CurrentDrunkRounds++;
+            if(CurrentDrunkRounds >= DrunkRounds)
                 Self.RemoveComponent(this);
         }
     }
@@ -37,5 +38,11 @@ public class DTO_Drunk : IDataTransferComponent
     public void CreateComponent(string data)
     {
         Component = new Drunk();
+    }
+
+    public string CreateSerializableData(IComponent component)
+    {
+        //todo: need to take current and max drunk rounds into account
+        return nameof(Drunk);
     }
 }
