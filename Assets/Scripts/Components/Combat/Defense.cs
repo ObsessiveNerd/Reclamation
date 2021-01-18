@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Defence : Component
+public class Defense : Component
 {
     const int kBaseAC = 10;
     public override int Priority => 1;
 
-    public Defence()
+    public Defense()
     {
         RegisteredEvents.Add(GameEventId.TakeDamage);
         RegisteredEvents.Add(GameEventId.Sharpness);
@@ -41,12 +41,12 @@ public class Defence : Component
     }
 }
 
-public class DTO_Defence : IDataTransferComponent
+public class DTO_Defense : IDataTransferComponent
 {
     public IComponent Component { get; set; }
 
     public void CreateComponent(string data)
     {
-        Component = new Defence();
+        Component = new Defense();
     }
 }

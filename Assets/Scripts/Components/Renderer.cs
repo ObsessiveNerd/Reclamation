@@ -7,9 +7,8 @@ public class Renderer : Component
 {
     SpriteRenderer m_Image;
 
-    public Renderer(IEntity self, SpriteRenderer image)
+    public Renderer(SpriteRenderer image)
     {
-        Init(self);
         m_Image = image;
         RegisteredEvents.Add(GameEventId.UpdateRenderer);
     }

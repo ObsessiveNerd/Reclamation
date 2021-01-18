@@ -1,12 +1,11 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Item : Component
 {
-    public Item(IEntity self)
+    public Item()
     {
-        Init(self);
         RegisteredEvents.Add(GameEventId.Pickup);
         RegisteredEvents.Add(GameEventId.Drop);
     }
@@ -28,5 +27,15 @@ public class Item : Component
 
             FireEvent(droppingEntity, new GameEvent(GameEventId.RemoveFromInventory, new KeyValuePair<string, object>(EventParameters.Entity, Self)));
         }
+    }
+}
+
+public class DTO_Item : IDataTransferComponent
+{
+    public IComponent Component { get; set; }
+
+    public void CreateComponent(string data)
+    {
+        Component = new Item();
     }
 }

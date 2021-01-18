@@ -1,5 +1,5 @@
 Creature(
-	Defence
+	Defense
 	EntityTypeContainer: Creature
 	RegisterWithTimeSystem
 	AIController

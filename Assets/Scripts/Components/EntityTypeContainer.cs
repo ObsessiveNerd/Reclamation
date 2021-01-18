@@ -18,6 +18,12 @@ public class EntityTypeContainer : Component
     public EntityTypeContainer(EntityType type)
     {
         m_Type = type;
+        RegisteredEvents.Add(GameEventId.GetEntityType);
+    }
+
+    public override void HandleEvent(GameEvent gameEvent)
+    {
+        gameEvent.Paramters[EventParameters.EntityType] = m_Type;
     }
 }
 

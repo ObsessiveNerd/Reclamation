@@ -1,0 +1,5 @@
+Object<Wall>(
+	GraphicContainer:Textures/td_world_floor_tile3_b
+	Wall
+	Info: "It's a stone wall."
+)

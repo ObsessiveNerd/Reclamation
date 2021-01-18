@@ -4,6 +4,9 @@ using UnityEngine;
 
 public static class GameEventId
 {
+    //Entity Info
+    public const string GetEntityType = nameof(GetEntityType);
+
     //Factions
     public const string GetFaction = nameof(GetFaction);
 
