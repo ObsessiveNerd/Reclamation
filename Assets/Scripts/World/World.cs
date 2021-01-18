@@ -306,7 +306,7 @@ public class World : Component
         actor.AddComponent(new Tile(actor, new Point(x, y)));
         bool putGrass = RecRandom.Instance.GetRandomValue(0f, 100f) < 30f;
         actor.AddComponent(new GraphicContainer(putGrass ? m_TempTerrain[RecRandom.Instance.GetRandomValue(0, m_TempTerrain.Count)] : null));
-        actor.AddComponent(new Renderer(actor, tile.GetComponent<SpriteRenderer>()));
+        actor.AddComponent(new Renderer(tile.GetComponent<SpriteRenderer>()));
         if (putGrass)
             actor.AddComponent(new Info("A small patch of grass"));
         actor.CleanupComponents();
