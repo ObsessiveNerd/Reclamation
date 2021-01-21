@@ -1,334 +1,53 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
-using UnityEngine.UI;
+﻿using UnityEngine;
 
-public class World : Component
+public class World : MonoBehaviour
 {
     private static World m_Instance;
-    public static World Instance { get { return m_Instance; } }
-    public string Seed;
+    public static World Instance => m_Instance;
+    public IEntity Self => m_World;
 
-    GameObject m_TilePrefab;
+    public GameObject TilePrefab;
+    public bool StartNew;
+    IEntity m_World;
 
-    Dictionary<IEntity, TimeProgression> m_PlayerToTimeProgressionMap = new Dictionary<IEntity, TimeProgression>();
-    Dictionary<Point, Actor> m_Tiles = new Dictionary<Point, Actor>();
-    Dictionary<IEntity, Point> m_EntityToPointMap = new Dictionary<IEntity, Point>();
-    LinkedList<IEntity> m_Players = new LinkedList<IEntity>();
-    LinkedListNode<IEntity> m_ActivePlayer;
-    int m_Vertical, m_Horizontal, m_Columns, m_Rows;
-
-    IDungeonGenerator m_DungeonGenerator;
-
-    public World(IEntity self, GameObject tilePrefab, int seed = 0)
+    // Start is called before the first frame update
+    void Start()
     {
         if (m_Instance == null)
             m_Instance = this;
         else
             return;
 
-        Init(self);
+        IEntity player = EntityFactory.CreateEntity("Dwarf");
+        IEntity goblin = EntityFactory.CreateEntity("Goblin");
 
-        m_TilePrefab = tilePrefab;
+        m_World = new Actor("World");
 
-        m_Vertical = (int)Camera.main.orthographicSize;
-        m_Horizontal = (int)(m_Vertical * Camera.main.aspect);
-        m_Columns = m_Horizontal * 2;
-        m_Rows = m_Vertical * 2;
+        m_World.AddComponent(new WorldSpawner());
+        m_World.AddComponent(new WorldInitialization());
+        m_World.AddComponent(new WorldUpdate());
+        m_World.AddComponent(new TileSelection());
+        m_World.AddComponent(new TileInteractions());
+        m_World.AddComponent(new PlayerManager());
+        m_World.AddComponent(new EntityMovement());
+        m_World.AddComponent(new WorldDataQuery());
 
-        Seed = seed.ToString();
-        m_DungeonGenerator = new BasicDungeonGenerator(seed, m_TilePrefab);
+        m_World.CleanupComponents();
+        m_World.FireEvent(m_World, new GameEvent(GameEventId.StartWorld, new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.Seed, "0"),
+                                                                            new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.GameObject, TilePrefab)));
 
-        RegisteredEvents.Add(GameEventId.StartWorld);
-        RegisteredEvents.Add(GameEventId.UpdateWorldView);
-        RegisteredEvents.Add(GameEventId.Spawn);
-        RegisteredEvents.Add(GameEventId.Despawn);
-        RegisteredEvents.Add(GameEventId.MoveEntity);
-        //RegisteredEvents.Add(GameEventId.Interact);
-        RegisteredEvents.Add(GameEventId.Drop);
-        RegisteredEvents.Add(GameEventId.RotateActiveCharacter);
-        RegisteredEvents.Add(GameEventId.SelectTile);
-        RegisteredEvents.Add(GameEventId.SelectNewTileInDirection);
-        RegisteredEvents.Add(GameEventId.EndSelection);
-        RegisteredEvents.Add(GameEventId.GetActivePlayer);
-        RegisteredEvents.Add(GameEventId.GetEntityOnTile);
-        RegisteredEvents.Add(GameEventId.ShowTileInfo);
-        RegisteredEvents.Add(GameEventId.ApplyEventToTile);
-        RegisteredEvents.Add(GameEventId.AddComponentToTile);
-        RegisteredEvents.Add(GameEventId.BeforeMoving);
+        if (StartNew)
+        {
+            m_World.FireEvent(m_World, new GameEvent(GameEventId.ConvertToPlayableCharacter, new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.Entity, player)));
+            Spawner.Spawn(player, 3, 3);
+            Spawner.Spawn(goblin, 10, 12);
+        }
+        else
+            SaveSystem.Load($"{SaveSystem.kSaveDataPath}/{0}/data.save");
     }
 
-    public List<IEntity> GetEntities()
+    private void Update()
     {
-        return m_EntityToPointMap.Keys.ToList();
-    }
-
-    public void RegisterPlayer(IEntity entity)
-    {
-        if (!entity.GetComponents().Any(c => c.GetType() == typeof(RegisterPlayableCharacter)))
-            ConvertToPlayableEntity(entity);
-
-        m_Players.AddLast(entity);
-        if (m_ActivePlayer == null)
-        {
-            m_ActivePlayer = m_Players.First;
-            entity.AddComponent(new PlayerInputController());
-        }
-        m_PlayerToTimeProgressionMap[entity] = new TimeProgression();
-        m_PlayerToTimeProgressionMap[entity].RegisterEntity(entity);
-    }
-
-    public void ConvertToPlayableEntity(IEntity entity)
-    {
-        entity.RemoveComponent(typeof(InputControllerBase));
-        entity.RemoveComponent(typeof(RegisterWithTimeSystem));
-
-        entity.AddComponent(new RegisterPlayableCharacter());
-
-        entity.CleanupComponents();
-    }
-
-    public void UnregisterPlayer(IEntity entity)
-    {
-        //May need to rotate to the next active character first
-        m_Players.Remove(entity);
-        m_PlayerToTimeProgressionMap.Remove(entity);
-        FireEvent(Self, new GameEvent(GameEventId.Despawn, new KeyValuePair<string, object>(EventParameters.Entity, entity),
-                                                            new KeyValuePair<string, object>(EventParameters.EntityType, EntityType.Creature)));
-    }
-
-    public bool StopTime = false;
-    public void ProgressTime()
-    {
-        if (!StopTime)
-            m_PlayerToTimeProgressionMap[m_ActivePlayer.Value].Update();
-    }
-
-    public override void HandleEvent(GameEvent gameEvent)
-    {
-        if(gameEvent.ID == GameEventId.StartWorld)
-        {
-            m_DungeonGenerator.GenerateDungeon(m_Tiles);
-            Factions.Initialize();
-            FireEvent(Self, new GameEvent(GameEventId.UpdateWorldView));
-        }
-
-        if (gameEvent.ID == GameEventId.UpdateWorldView)
-        {
-            foreach (var tile in m_Tiles)
-                tile.Value.FireEvent(tile.Value, new GameEvent(GameEventId.UpdateTile));
-        }
-
-        if(gameEvent.ID == GameEventId.Spawn)
-        {
-            IEntity entity = (IEntity)gameEvent.Paramters[EventParameters.Entity];
-            Point spawnPoint = (Point)gameEvent.Paramters[EventParameters.Point];
-            FireEvent(entity, new GameEvent(GameEventId.SetPoint, new KeyValuePair<string, object>(EventParameters.TilePosition, spawnPoint)));
-            FireEvent(m_Tiles[spawnPoint], gameEvent);
-            FireEvent(Self, new GameEvent(GameEventId.UpdateWorldView));
-            m_EntityToPointMap[entity] = spawnPoint;
-
-            //Todo: we'll need to make sure we find which player is closest before picking their time system
-            FireEvent(entity, new GameEvent(GameEventId.RegisterPlayableCharacter));
-            FireEvent(entity, new GameEvent(GameEventId.RegisterWithTimeSystem, new KeyValuePair<string, object>(EventParameters.Value, m_PlayerToTimeProgressionMap[m_ActivePlayer.Value])));
-        }
-
-        if(gameEvent.ID == GameEventId.Despawn)
-        {
-            IEntity entity = (IEntity)gameEvent.Paramters[EventParameters.Entity];
-            EntityType entityType = (EntityType)gameEvent.Paramters[EventParameters.EntityType];
-            Point currentPoint = m_EntityToPointMap[entity];
-            GameEvent despawn = new GameEvent(GameEventId.Despawn, new KeyValuePair<string, object>(EventParameters.Entity, entity),
-                                                                   new KeyValuePair<string, object>(EventParameters.EntityType, entityType));
-            FireEvent(m_Tiles[currentPoint], despawn);
-            m_EntityToPointMap.Remove(entity);
-            foreach(var timeProgression in m_PlayerToTimeProgressionMap.Values)
-            {
-                if(timeProgression.ContainsEntity(entity))
-                {
-                    timeProgression.RemoveEntity(entity);
-                    break;
-                }
-            }
-        }
-
-        if(gameEvent.ID == GameEventId.MoveEntity)
-        {
-            IEntity entity = (IEntity)gameEvent.Paramters[EventParameters.Entity];
-            if (!m_EntityToPointMap.ContainsKey(entity)) return;
-            Point currentPoint = m_EntityToPointMap[entity];
-            EntityType entityType = (EntityType)gameEvent.Paramters[EventParameters.EntityType];
-            MoveDirection moveDirection = (MoveDirection)gameEvent.Paramters[EventParameters.InputDirection];
-            Point newPoint = GetTilePointInDirection(currentPoint, moveDirection);
-
-            if (m_Tiles.ContainsKey(newPoint))
-            {
-                FireEvent(entity, new GameEvent(GameEventId.SetPoint, new KeyValuePair<string, object>(EventParameters.TilePosition, newPoint)));
-
-                //Just as a note, doing it this way isn't terribly efficient since despawn is going to remove things from the time progression
-                //This also means turn order is going to get fucked, so really we should do this proper and just event to the correct tiles here.
-                //I mean I guess things are despawning and spawning in order so maybe turn order won't get fucked.
-                GameEvent despawn = new GameEvent(GameEventId.Despawn, new KeyValuePair<string, object>(EventParameters.Entity, entity),
-                                                                   new KeyValuePair<string, object>(EventParameters.EntityType, entityType));
-                FireEvent(m_Tiles[currentPoint], despawn);
-
-                GameEvent spawn = new GameEvent(GameEventId.Spawn, new KeyValuePair<string, object>(EventParameters.Entity, entity),
-                                                                       new KeyValuePair<string, object>(EventParameters.EntityType, entityType));
-
-                FireEvent(m_Tiles[newPoint], spawn);
-                FireEvent(Self, new GameEvent(GameEventId.UpdateWorldView));
-                m_EntityToPointMap[entity] = newPoint;
-            }
-            else
-            {
-                //Todo move to a new section of the map
-            }
-        }
-
-        //if(gameEvent.ID == GameEventId.Interact)
-        //{
-        //    IEntity entity = (IEntity)gameEvent.Paramters[EventParameters.Entity];
-        //    Point currentPoint = m_EntityToPointMap[entity];
-        //    FireEvent(m_Tiles[currentPoint], new GameEvent(GameEventId.Interact, new KeyValuePair<string, object>(EventParameters.Entity, entity)));
-        //}
-
-        if(gameEvent.ID == GameEventId.Drop)
-        {
-            IEntity entity = (IEntity)gameEvent.Paramters[EventParameters.Entity];
-            IEntity droppingEntity = (IEntity)gameEvent.Paramters[EventParameters.Creature];
-            EntityType entityType = (EntityType)gameEvent.Paramters[EventParameters.EntityType];
-
-            Point p = m_EntityToPointMap[droppingEntity];
-            FireEvent(m_Tiles[p], new GameEvent(GameEventId.Spawn, new KeyValuePair<string, object>(EventParameters.Entity, entity),
-                                                                    new KeyValuePair<string, object>(EventParameters.EntityType, entityType)));
-        }
-
-        if(gameEvent.ID == GameEventId.RotateActiveCharacter)
-        {
-            m_ActivePlayer.Value.RemoveComponent(typeof(PlayerInputController));
-            m_ActivePlayer = m_ActivePlayer.Next;
-            if (m_ActivePlayer == null)
-                m_ActivePlayer = m_Players.First;
-            m_ActivePlayer.Value.AddComponent(new PlayerInputController());
-            m_ActivePlayer.Value.CleanupComponents();
-        }
-
-        if(gameEvent.ID == GameEventId.BeforeMoving)
-        {
-            IEntity entity = (IEntity)gameEvent.Paramters[EventParameters.Entity];
-            MoveDirection moveDirection = (MoveDirection)gameEvent.Paramters[EventParameters.InputDirection];
-            if (!m_EntityToPointMap.ContainsKey(entity)) return;
-
-            Point currentPoint = m_EntityToPointMap[entity];
-            Point newPoint = GetTilePointInDirection(currentPoint, moveDirection);
-            if (m_Tiles.TryGetValue(newPoint, out Actor tile))
-            {
-                GameEvent beforeMovingTile = new GameEvent(GameEventId.ApplyEventToTile);
-                beforeMovingTile.Paramters.Add(EventParameters.Value, gameEvent);
-                FireEvent(tile, beforeMovingTile);
-                gameEvent.Paramters.Add(EventParameters.Target, WorldUtility.GetEntityAtPosition(Self, newPoint));
-            }
-            else
-            {
-                //Move to a new part of the map.  For now do nothing
-            }
-        }
-
-        if(gameEvent.ID == GameEventId.GetActivePlayer)
-        {
-            gameEvent.Paramters[EventParameters.Entity] = m_ActivePlayer.Value;
-        }
-
-        if(gameEvent.ID == GameEventId.SelectTile)
-        {
-            throw new NotImplementedException();
-            IEntity entity = (IEntity)gameEvent.Paramters[EventParameters.Entity];
-            IEntity target = (IEntity)gameEvent.Paramters[EventParameters.Target];
-
-            Point p = m_EntityToPointMap[target == null ? entity : target];
-
-            //Temp for UI, should really not cover up selection with this component.
-            //m_Tiles[p].AddComponent(new SelectedTile(m_TempSelection));
-            m_Tiles[p].CleanupComponents();
-            /////////////////////
-
-            gameEvent.Paramters[EventParameters.TilePosition] = p;
-        }
-
-        if(gameEvent.ID == GameEventId.SelectNewTileInDirection)
-        {
-            throw new NotImplementedException();
-            Point currentTilePos = (Point)gameEvent.Paramters[EventParameters.TilePosition];
-            MoveDirection moveDirection = (MoveDirection)gameEvent.Paramters[EventParameters.InputDirection];
-
-            m_Tiles[currentTilePos].RemoveComponent(typeof(SelectedTile));
-            m_Tiles[currentTilePos].CleanupComponents();
-
-            Point newPoint = GetTilePointInDirection(currentTilePos, moveDirection);
-
-            //m_Tiles[newPoint].AddComponent(new SelectedTile(m_TempSelection));
-            m_Tiles[newPoint].CleanupComponents();
-
-            gameEvent.Paramters[EventParameters.TilePosition] = newPoint;
-        }
-
-        if(gameEvent.ID == GameEventId.EndSelection)
-        {
-            Point currentTilePos = (Point)gameEvent.Paramters[EventParameters.TilePosition];
-            m_Tiles[currentTilePos].RemoveComponent(typeof(SelectedTile));
-            m_Tiles[currentTilePos].CleanupComponents();
-            gameEvent.Paramters[EventParameters.TilePosition] = null;
-        }
-
-        if(gameEvent.ID == GameEventId.ShowTileInfo)
-        {
-            Point currentTilePos = (Point)gameEvent.Paramters[EventParameters.TilePosition];
-            FireEvent(m_Tiles[currentTilePos], gameEvent);
-        }
-
-        if(gameEvent.ID == GameEventId.ApplyEventToTile)
-        {
-            Point currentTilePos = (Point)gameEvent.Paramters[EventParameters.TilePosition];
-            FireEvent(m_Tiles[currentTilePos], gameEvent);
-        }
-
-        if (gameEvent.ID == GameEventId.AddComponentToTile)
-        {
-            //Todo
-        }
-
-        if(gameEvent.ID == GameEventId.GetEntityOnTile)
-        {
-            Point currentTilePos = (Point)gameEvent.Paramters[EventParameters.TilePosition];
-            FireEvent(m_Tiles[currentTilePos], gameEvent);
-        }
-    }
-
-    public Point GetPointWhereEntityIs(IEntity e)
-    {
-        if(m_EntityToPointMap.ContainsKey(e))
-            return m_EntityToPointMap[e];
-        return new Point(-1, -1);
-    }
-
-    Point GetTilePointInDirection(Point basePoint, MoveDirection direction)
-    {
-        if (direction == MoveDirection.None)
-            return basePoint;
-
-        int x = basePoint.x;
-        int y = basePoint.y;
-        string name = Enum.GetName(typeof(MoveDirection), direction);
-        if (name.Contains("N"))
-            y++;
-        if (name.Contains("S"))
-            y--;
-        if (name.Contains("E"))
-            x++;
-        if (name.Contains("W"))
-            x--;
-        return new Point(x, y);
+        m_World.FireEvent(m_World, new GameEvent(GameEventId.ProgressTime));
     }
 }

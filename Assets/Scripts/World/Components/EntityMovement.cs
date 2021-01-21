@@ -1,0 +1,67 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class EntityMovement : WorldComponent
+{
+    public override void Init(IEntity self)
+    {
+        base.Init(self);
+        RegisteredEvents.Add(GameEventId.BeforeMoving);
+        RegisteredEvents.Add(GameEventId.MoveEntity);
+    }
+
+    public override void HandleEvent(GameEvent gameEvent)
+    {
+        if (gameEvent.ID == GameEventId.BeforeMoving)
+        {
+            IEntity entity = (IEntity)gameEvent.Paramters[EventParameters.Entity];
+            MoveDirection moveDirection = (MoveDirection)gameEvent.Paramters[EventParameters.InputDirection];
+            if (!m_EntityToPointMap.ContainsKey(entity)) return;
+
+            Point currentPoint = m_EntityToPointMap[entity];
+            Point newPoint = GetTilePointInDirection(currentPoint, moveDirection);
+            if (m_Tiles.TryGetValue(newPoint, out Actor tile))
+            {
+                FireEvent(tile, gameEvent);
+            }
+            else
+            {
+                //Move to a new part of the map.  For now do nothing
+            }
+        }
+
+        if (gameEvent.ID == GameEventId.MoveEntity)
+        {
+            IEntity entity = (IEntity)gameEvent.Paramters[EventParameters.Entity];
+            if (!m_EntityToPointMap.ContainsKey(entity)) return;
+            Point currentPoint = m_EntityToPointMap[entity];
+            EntityType entityType = (EntityType)gameEvent.Paramters[EventParameters.EntityType];
+            MoveDirection moveDirection = (MoveDirection)gameEvent.Paramters[EventParameters.InputDirection];
+            Point newPoint = GetTilePointInDirection(currentPoint, moveDirection);
+
+            if (m_Tiles.ContainsKey(newPoint))
+            {
+                FireEvent(entity, new GameEvent(GameEventId.SetPoint, new KeyValuePair<string, object>(EventParameters.TilePosition, newPoint)));
+
+                //Just as a note, doing it this way isn't terribly efficient since despawn is going to remove things from the time progression
+                //This also means turn order is going to get fucked, so really we should do this proper and just event to the correct tiles here.
+                //I mean I guess things are despawning and spawning in order so maybe turn order won't get fucked.
+                GameEvent despawn = new GameEvent(GameEventId.Despawn, new KeyValuePair<string, object>(EventParameters.Entity, entity),
+                                                                   new KeyValuePair<string, object>(EventParameters.EntityType, entityType));
+                FireEvent(m_Tiles[currentPoint], despawn);
+
+                GameEvent spawn = new GameEvent(GameEventId.Spawn, new KeyValuePair<string, object>(EventParameters.Entity, entity),
+                                                                       new KeyValuePair<string, object>(EventParameters.EntityType, entityType));
+
+                FireEvent(m_Tiles[newPoint], spawn);
+                FireEvent(Self, new GameEvent(GameEventId.UpdateWorldView));
+                m_EntityToPointMap[entity] = newPoint;
+            }
+            else
+            {
+                //Todo move to a new section of the map
+            }
+        }
+    }
+}

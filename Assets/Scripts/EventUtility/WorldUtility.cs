@@ -12,8 +12,8 @@ public static class WorldUtility
         return (IEntity)result.Paramters[EventParameters.Entity];
     }
 
-    public static IEntity GetClosestEnemyTo(IEntity e)
-    {
-        return null;
-    }
+    //public static IEntity GetClosestEnemyTo(IEntity e)
+    //{
+    //    return null;
+    //}
 }

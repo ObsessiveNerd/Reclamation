@@ -29,28 +29,6 @@ public class Move : Component
                                                                             requiredEnergy);
             FireEvent(World.Instance.Self, beforeMovingCheckWorld);
 
-            if (beforeMovingCheckWorld.Paramters.ContainsKey(EventParameters.Target))
-            {
-                IEntity target = (IEntity)beforeMovingCheckWorld.Paramters[EventParameters.Target];
-                Demeanor demeanor = Factions.GetDemeanorForTarget(Self, target);
-
-                if (demeanor != Demeanor.None)
-                {
-                    switch (demeanor)
-                    {
-                        case Demeanor.Friendly:
-                        case Demeanor.Neutral:
-                            FireEvent(target, new GameEvent(GameEventId.Interact));
-                            break;
-                        case Demeanor.Hostile:
-                            FireEvent(Self, new GameEvent(GameEventId.PerformAttack, new KeyValuePair<string, object>(EventParameters.Target, target),
-                                                                                     new KeyValuePair<string, object>(EventParameters.WeaponType, TypeWeapon.Melee & TypeWeapon.Finesse)));
-                            break;
-                    }
-                    return;
-                }
-            }
-
             float energyRequired = (float)beforeMovingCheckWorld.Paramters[EventParameters.RequiredEnergy];
 
             //Make sure we have enough energy;

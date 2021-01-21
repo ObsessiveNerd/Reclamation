@@ -11,7 +11,7 @@ public class RegisterPlayableCharacter : Component
 
     public override void HandleEvent(GameEvent gameEvent)
     {
-        World.Instance.RegisterPlayer(Self);
+        FireEvent(World.Instance.Self, new GameEvent(GameEventId.RegisterPlayableCharacter, new KeyValuePair<string, object>(EventParameters.Entity, Self)));
     }
 }
 

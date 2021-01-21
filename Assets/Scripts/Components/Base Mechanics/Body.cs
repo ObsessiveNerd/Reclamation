@@ -82,8 +82,12 @@ public class Body : Component
                     break;
             }
 
-            if(dropTarget != null)
-                Spawner.Spawn(dropTarget, World.Instance.GetPointWhereEntityIs(Self));
+            if (dropTarget != null)
+            {
+                FireEvent(World.Instance.Self, new GameEvent(GameEventId.Drop, new KeyValuePair<string, object>(EventParameters.Entity, dropTarget),
+                                                                                new KeyValuePair<string, object>(EventParameters.Creature, Self),
+                                                                                new KeyValuePair<string, object>(EventParameters.EntityType, EntityType.Item)));
+            }
         }
 
         if(gameEvent.ID == GameEventId.Equip)
@@ -264,7 +268,7 @@ public class DTO_Body : IDataTransferComponent
             if (equipment != null)
             {
                 sb.Append($"<{equipment.ID}>&");
-                EntityFactory.CreateTemporaryBlueprint(World.Instance.Seed, equipment.ID, equipment.Serialize());
+                EntityFactory.CreateTemporaryBlueprint("0", equipment.ID, equipment.Serialize()); //todo: feed proper seed
             }
         }
         string value = sb.ToString().TrimEnd('&');

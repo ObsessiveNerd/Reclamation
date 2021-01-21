@@ -4,5 +4,6 @@ Creature<Architype>(
 	RegisterWithTimeSystem
 	AIController
 	InteractsWithWorld
+	InteractOnTileOvertake
 	Position
 )

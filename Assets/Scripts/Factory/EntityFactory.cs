@@ -12,7 +12,7 @@ public static class EntityFactory
         Actor a = new Actor("<empty>");
         string path = $"{m_BluePrintPath}/{blueprintName}.bp";
         if(!File.Exists(path))
-            path = $"{m_BluePrintPath}/{World.Instance.Seed}/{blueprintName}.bp";
+            path = $"{SaveSystem.kSaveDataPath}/{0}/Blueprints/{blueprintName}.bp"; //todo: need proper seed
         if (!File.Exists(path))
             return null;
         return GetEntity(path);
@@ -141,7 +141,7 @@ public static class EntityFactory
 
     public static void CreateTemporaryBlueprint(string tempPath, string blueprintName, string data)
     {
-        string path = $"{m_BluePrintPath}/{tempPath}/{blueprintName}.bp";
+        string path = $"{SaveSystem.kSaveDataPath}/{tempPath}/Blueprints/{blueprintName}.bp";
         Directory.CreateDirectory(Path.GetDirectoryName(path));
         File.WriteAllText(path, data);
     }

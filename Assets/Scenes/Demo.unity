@@ -133,7 +133,7 @@ GameObject:
   - component: {fileID: 855845758}
   - component: {fileID: 855845760}
   m_Layer: 0
-  m_Name: DebugWorldBootstrap
+  m_Name: World
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -153,7 +153,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TilePrefab: {fileID: 6901715319108000600, guid: bf8a7134af4c2944cba826274e0f314d,
     type: 3}
-  StartNew: 0
+  StartNew: 1
 --- !u!4 &855845759
 Transform:
   m_ObjectHideFlags: 0

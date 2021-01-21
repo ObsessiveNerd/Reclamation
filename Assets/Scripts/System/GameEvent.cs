@@ -31,13 +31,17 @@ public static class GameEventId
     public const string Despawn = nameof(Despawn);
     public const string SelectTile = nameof(SelectTile);
     public const string SelectNewTileInDirection = nameof(SelectNewTileInDirection);
-    public const string GetActivePlayer = nameof(GetActivePlayer);
+    //public const string GetActivePlayer = nameof(GetActivePlayer);
     public const string GetEntityOnTile = nameof(GetEntityOnTile);
     public const string ShowInfo = nameof(ShowInfo);
-    public const string ApplyEventToTile = nameof(ApplyEventToTile);
+    //public const string ApplyEventToTile = nameof(ApplyEventToTile);
     public const string AddComponentToTile = nameof(AddComponentToTile);
+    public const string ProgressTime = nameof(ProgressTime);
+    public const string PauseTime = nameof(PauseTime);
+    public const string UnPauseTime = nameof(UnPauseTime);
 
     //Moving
+    public const string EntityOvertaking = nameof(EntityOvertaking);
     public const string BeforeMoving = nameof(BeforeMoving);
     public const string ExecuteMove = nameof(ExecuteMove);
     public const string AfterMoving = nameof(AfterMoving);
@@ -53,6 +57,7 @@ public static class GameEventId
     public const string EndTurn = nameof(EndTurn);
     public const string RegisterWithTimeSystem = nameof(RegisterWithTimeSystem);
     public const string RegisterPlayableCharacter = nameof(RegisterPlayableCharacter);
+    public const string UnRegisterPlayer = nameof(UnRegisterPlayer);
 
     //Rendering
     public const string UpdateRenderer = nameof(UpdateRenderer);
@@ -67,6 +72,7 @@ public static class GameEventId
 
     //Character Selection
     public const string RotateActiveCharacter = nameof(RotateActiveCharacter);
+    public const string ConvertToPlayableCharacter = nameof(ConvertToPlayableCharacter);
 
     //Input
     public const string MoveKeyPressed = nameof(MoveKeyPressed);
@@ -94,7 +100,10 @@ public static class GameEventId
 
     //Body
     public const string GrowBodyPart = nameof(GrowBodyPart);
-    
+
+    //Data Request
+    public const string GetEntities = nameof(GetEntities);
+
 }
 
 public static class EventParameters
@@ -127,6 +136,8 @@ public static class EventParameters
     public const string AdditionalGameEvents = nameof(AdditionalGameEvents);
     public const string Enemy = nameof(Enemy);
     public const string Equipment = nameof(Equipment);
+    public const string Seed = nameof(Seed);
+    public const string GameObject = nameof(GameObject);
 }
 
 public class GameEvent
