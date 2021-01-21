@@ -1,11 +1,14 @@
-﻿using UnityEngine;
+﻿using System.IO;
+using System.Linq;
+using UnityEngine;
 
 public class World : MonoBehaviour
 {
     private static World m_Instance;
     public static World Instance => m_Instance;
     public IEntity Self => m_World;
-
+    [HideInInspector]
+    public int Seed;
     public GameObject TilePrefab;
     public bool StartNew;
     IEntity m_World;
@@ -20,6 +23,9 @@ public class World : MonoBehaviour
 
         IEntity player = EntityFactory.CreateEntity("Dwarf");
         IEntity goblin = EntityFactory.CreateEntity("Goblin");
+
+        Seed = RecRandom.Instance.GetRandomValue(0, int.MaxValue);
+        SaveSystem.Instance.SetSaveDataSeed(Seed);
 
         m_World = new Actor("World");
 
@@ -43,7 +49,9 @@ public class World : MonoBehaviour
             Spawner.Spawn(goblin, 10, 12);
         }
         else
-            SaveSystem.Load($"{SaveSystem.kSaveDataPath}/{0}/data.save");
+        {
+            SaveSystem.Load($"{Directory.EnumerateDirectories(SaveSystem.kSaveDataPath).ToList()[0]}/data.save");
+        }
     }
 
     private void Update()

@@ -8,57 +8,89 @@ using UnityEngine;
 [Serializable]
 public class LevelInfo
 {
-    public string Info;
     public List<string> Entites = new List<string>();
-    public LevelInfo(string info)
+    public LevelInfo(List<string> entities)
     {
-        Info = info;
+        Entites = entities;
     }
 }
 
 [Serializable]
 public class SaveData
 {
-    public string Seed;
-    public LevelInfo LevelInfo;
+    public int Seed;
+    public int CurrentLevelIndex;
+    public List<LevelInfo> LevelInfo = new List<LevelInfo>();
 
-    public SaveData(string seed, string levelInfo)
+    public SaveData(int seed)
     {
         Seed = seed;
-        LevelInfo = new LevelInfo(levelInfo);
     }
 }
 
 public class SaveSystem : MonoBehaviour
 {
     public const string kSaveDataPath = "SaveData";
+    SaveData m_Data;
+
+    public static SaveSystem Instance { get; set; }
+
+    private void Awake()
+    {
+        Instance = this;
+    }
+
     public void Save()
     {
         StartCoroutine(SaveAsync());
     }
 
-    IEnumerator SaveAsync()
+    public void SetSaveDataSeed(int seed)
+    {
+        m_Data = new SaveData(seed);
+    }
+
+    public void StoreLevelInfo(List<string> entities)
+    {
+        m_Data.LevelInfo.Add(new LevelInfo(entities));
+    }
+
+    int m_LevelIndex = 0;
+    public void MovingToNewLevel()
+    {
+        m_LevelIndex++;
+        m_Data.CurrentLevelIndex = m_LevelIndex;
+    }
+
+    IEnumerator SaveAsync(bool movingToNewLevel = false)
     {
         World.Instance.Self.FireEvent(World.Instance.Self, new GameEvent(GameEventId.PauseTime));
         yield return null;
-        SaveData data = new SaveData("0", "[0]");
 
         List<IEntity> entities = (List<IEntity>)World.Instance.Self.FireEvent(World.Instance.Self, new GameEvent(GameEventId.GetEntities, new KeyValuePair<string, object>(EventParameters.Value, new List<IEntity>()))).
                                     Paramters[EventParameters.Value];
 
+        List<string> serializedEntities = new List<string>();
         foreach (IEntity entity in entities)
-            data.LevelInfo.Entites.Add(entity.Serialize());
+            serializedEntities.Add(entity.Serialize());
 
-        string jsonData = JsonUtility.ToJson(data, true);
-        string path = $"{kSaveDataPath}/{data.Seed}/data.save";
+        StoreLevelInfo(serializedEntities);
+
+        string jsonData = JsonUtility.ToJson(m_Data, true);
+        string path = $"{kSaveDataPath}/{m_Data.Seed}/data.save";
+        Directory.CreateDirectory(Path.GetDirectoryName(path));
         File.WriteAllText(path, jsonData);
         World.Instance.Self.FireEvent(World.Instance.Self, new GameEvent(GameEventId.UnPauseTime));
+
+        if (movingToNewLevel)
+            MovingToNewLevel();
     }
 
     public static void Load(string path)
     {
         SaveData data = JsonUtility.FromJson<SaveData>(File.ReadAllText(path));
-        foreach (var entity in data.LevelInfo.Entites)
+        foreach (var entity in data.LevelInfo[data.CurrentLevelIndex].Entites)
             Spawner.Restore(EntityFactory.ParseEntityData(entity));
+        Instance.SetSaveDataSeed(data.Seed);
     }
 }
