@@ -54,10 +54,10 @@ public class Tile : Component
         RegisteredEvents.Add(GameEventId.Spawn);
         RegisteredEvents.Add(GameEventId.Despawn);
         RegisteredEvents.Add(GameEventId.ShowTileInfo);
-        //RegisteredEvents.Add(GameEventId.ApplyEventToTile);
         RegisteredEvents.Add(GameEventId.AddComponentToTile);
         RegisteredEvents.Add(GameEventId.GetEntityOnTile);
         RegisteredEvents.Add(GameEventId.BeforeMoving);
+        RegisteredEvents.Add(GameEventId.Pickup);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
@@ -100,6 +100,14 @@ public class Tile : Component
             }
         }
 
+        if(gameEvent.ID == GameEventId.Pickup)
+        {
+            IEntity entity = (IEntity)gameEvent.Paramters[EventParameters.Entity];
+            foreach (var item in Items)
+                FireEvent(entity, new GameEvent(GameEventId.AddToInventory, new KeyValuePair<string, object>(EventParameters.Entity, item)));
+            Items.Clear();
+        }
+
         if(gameEvent.ID == GameEventId.Despawn)
         {
             IEntity entity = (IEntity)gameEvent.Paramters[EventParameters.Entity];
@@ -124,13 +132,6 @@ public class Tile : Component
             foreach(var e in GetTarget())
                 FireEvent(e, showInfo);
         }
-
-        //if (gameEvent.ID == GameEventId.ApplyEventToTile)
-        //{
-        //    GameEvent effectEvent = (GameEvent)gameEvent.Paramters[EventParameters.Value];
-        //    foreach (var e in GetTarget())
-        //        FireEvent(e, effectEvent);
-        //}
 
         if (gameEvent.ID == GameEventId.AddComponentToTile)
         {

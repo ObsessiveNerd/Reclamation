@@ -2,7 +2,7 @@
 	Inherits:Creature
 	Health:10
 	Body:Head=1[<Helmet>], Arm=2[<Short Sword>&<Short Bow>], Leg=2[]
-	Inventory
+	Inventory: []
 	GraphicContainer:Textures/td_monsters_dwarf_d2
 	Move
 	Stats:Str=10, Agi=9, Con=13, Wis=11, Int=12, Cha=10

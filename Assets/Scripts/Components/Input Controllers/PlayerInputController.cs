@@ -14,7 +14,11 @@ public class PlayerInputController : InputControllerBase
                 FireEvent(Self, new GameEvent(GameEventId.MoveKeyPressed, new KeyValuePair<string, object>(EventParameters.InputDirection, desiredDirection)));
 
             else if (Input.GetKeyDown(KeyCode.I))
+            {
                 FireEvent(Self, new GameEvent(GameEventId.OpenInventory));
+                Self.RemoveComponent(this);
+                Self.AddComponent(new PlayerUIController());
+            }
 
             else if (Input.GetKeyDown(KeyCode.F))
             {
@@ -43,6 +47,12 @@ public class PlayerInputController : InputControllerBase
             else if (Input.GetKeyDown(KeyCode.T))
             {
                 //Throw an equiped weapon
+            }
+
+            else if (Input.GetKeyDown(KeyCode.G))
+            {
+                FireEvent(World.Instance.Self, new GameEvent(GameEventId.Pickup, new KeyValuePair<string, object>(EventParameters.Entity, Self)));
+                gameEvent.Paramters[EventParameters.UpdateWorldView] = true;
             }
 
             else if (Input.GetKeyDown(KeyCode.C))

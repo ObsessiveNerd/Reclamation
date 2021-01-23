@@ -24,6 +24,7 @@ public class World : MonoBehaviour
         IEntity player = EntityFactory.CreateEntity("Dwarf");
         IEntity player2 = EntityFactory.CreateEntity("Dwarf");
         IEntity goblin = EntityFactory.CreateEntity("Goblin");
+        IEntity helm = EntityFactory.CreateEntity("Helmet");
 
         Seed = RecRandom.Instance.GetRandomValue(0, int.MaxValue);
         SaveSystem.Instance.SetSaveDataSeed(Seed);
@@ -37,6 +38,7 @@ public class World : MonoBehaviour
         m_World.AddComponent(new TileInteractions());
         m_World.AddComponent(new PlayerManager());
         m_World.AddComponent(new EntityMovement());
+        m_World.AddComponent(new WorldUIController());
         m_World.AddComponent(new WorldDataQuery());
 
         m_World.CleanupComponents();
@@ -51,6 +53,7 @@ public class World : MonoBehaviour
             Spawner.Spawn(player, 3, 3);
             Spawner.Spawn(player2, 5, 9);
             Spawner.Spawn(goblin, 10, 12);
+            Spawner.Spawn(helm, 5, 5);
         }
         else
         {

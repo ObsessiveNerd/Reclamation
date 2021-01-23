@@ -103,7 +103,12 @@ public static class GameEventId
 
     //Data Request
     public const string GetEntities = nameof(GetEntities);
+    public const string GetEntityLocation = nameof(GetEntityLocation);
 
+    //UI
+    public const string UIInput = nameof(UIInput);
+    public const string CloseUI = nameof(CloseUI);
+    public const string OpenInventoryUI = nameof(OpenInventoryUI);
 }
 
 public static class EventParameters

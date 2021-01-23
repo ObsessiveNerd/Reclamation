@@ -11,6 +11,7 @@ public class WorldDataQuery : WorldComponent
         base.Init(self);
         RegisteredEvents.Add(GameEventId.GetEntities);
         RegisteredEvents.Add(GameEventId.GetEntityOnTile);
+        RegisteredEvents.Add(GameEventId.GetEntityLocation);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
@@ -22,6 +23,12 @@ public class WorldDataQuery : WorldComponent
         {
             Point currentTilePos = (Point)gameEvent.Paramters[EventParameters.TilePosition];
             FireEvent(m_Tiles[currentTilePos], gameEvent);
+        }
+
+        if(gameEvent.ID == GameEventId.GetEntityLocation)
+        {
+            if (m_EntityToPointMap.TryGetValue((IEntity)gameEvent.Paramters[EventParameters.Entity], out Point result))
+                gameEvent.Paramters[EventParameters.TilePosition] = result;
         }
     }
 
