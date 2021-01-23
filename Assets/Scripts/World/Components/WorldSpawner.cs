@@ -27,7 +27,7 @@ public class WorldSpawner : WorldComponent
 
             //Todo: we'll need to make sure we find which player is closest before picking their time system
             FireEvent(entity, new GameEvent(GameEventId.RegisterPlayableCharacter));
-            FireEvent(entity, new GameEvent(GameEventId.RegisterWithTimeSystem, new KeyValuePair<string, object>(EventParameters.Value, m_PlayerToTimeProgressionMap[m_ActivePlayer.Value])));
+            FireEvent(entity, new GameEvent(GameEventId.RegisterWithTimeSystem, new KeyValuePair<string, object>(EventParameters.Value, m_TimeProgression /*m_PlayerToTimeProgressionMap[m_ActivePlayer.Value]*/)));
         }
 
         if(gameEvent.ID == GameEventId.Despawn)
@@ -39,14 +39,15 @@ public class WorldSpawner : WorldComponent
                                                                    new KeyValuePair<string, object>(EventParameters.EntityType, entityType));
             FireEvent(m_Tiles[currentPoint], despawn);
             m_EntityToPointMap.Remove(entity);
-            foreach(var timeProgression in m_PlayerToTimeProgressionMap.Values)
-            {
-                if(timeProgression.ContainsEntity(entity))
-                {
-                    timeProgression.RemoveEntity(entity);
-                    break;
-                }
-            }
+            m_TimeProgression.RemoveEntity(entity);
+            //foreach(var timeProgression in m_PlayerToTimeProgressionMap.Values)
+            //{
+            //    if(timeProgression.ContainsEntity(entity))
+            //    {
+            //        timeProgression.RemoveEntity(entity);
+            //        break;
+            //    }
+            //}
         }
     }
 }

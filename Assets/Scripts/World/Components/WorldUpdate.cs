@@ -36,6 +36,7 @@ public class WorldUpdate : WorldComponent
     public void ProgressTime()
     {
         if (!StopTime)
-            m_PlayerToTimeProgressionMap[m_ActivePlayer.Value].Update();
+            m_TimeProgression.Update();
+            //m_PlayerToTimeProgressionMap[m_ActivePlayer.Value].Update();
     }
 }

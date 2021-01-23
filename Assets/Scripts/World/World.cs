@@ -22,6 +22,7 @@ public class World : MonoBehaviour
             return;
 
         IEntity player = EntityFactory.CreateEntity("Dwarf");
+        IEntity player2 = EntityFactory.CreateEntity("Dwarf");
         IEntity goblin = EntityFactory.CreateEntity("Goblin");
 
         Seed = RecRandom.Instance.GetRandomValue(0, int.MaxValue);
@@ -45,7 +46,10 @@ public class World : MonoBehaviour
         if (StartNew)
         {
             m_World.FireEvent(m_World, new GameEvent(GameEventId.ConvertToPlayableCharacter, new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.Entity, player)));
+            m_World.FireEvent(m_World, new GameEvent(GameEventId.ConvertToPlayableCharacter, new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.Entity, player2)));
+
             Spawner.Spawn(player, 3, 3);
+            Spawner.Spawn(player2, 5, 9);
             Spawner.Spawn(goblin, 10, 12);
         }
         else

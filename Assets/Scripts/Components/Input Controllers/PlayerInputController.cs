@@ -65,14 +65,14 @@ public class PlayerInputController : InputControllerBase
             {
                 FireEvent(World.Instance.Self, new GameEvent(GameEventId.RotateActiveCharacter));
                 gameEvent.Paramters[EventParameters.UpdateWorldView] = true;
-                //gameEvent.Paramters[EventParameters.CleanupComponents] = true;
+                FireEvent(Self, new GameEvent(GameEventId.SkipTurn));
+                return;
             }
 
             else if (Input.GetKeyDown(KeyCode.Y))
             {
                 Self.RemoveComponent(this);
                 Self.AddComponent(new PromptForDirectionController());
-                //gameEvent.Paramters[EventParameters.CleanupComponents] = true;
             }
 
             else if (Input.GetKeyDown(KeyCode.Escape))

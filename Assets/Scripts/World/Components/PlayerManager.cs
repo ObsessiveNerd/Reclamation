@@ -18,12 +18,23 @@ public class PlayerManager : WorldComponent
     {
         if (gameEvent.ID == GameEventId.RotateActiveCharacter)
         {
+            if (m_Players.Count == 1)
+                return;
+
             m_ActivePlayer.Value.RemoveComponent(typeof(PlayerInputController));
+            m_ActivePlayer.Value.AddComponent(new AIController());
+            //m_ActivePlayer.Value.CleanupComponents();
+
             m_ActivePlayer = m_ActivePlayer.Next;
             if (m_ActivePlayer == null)
                 m_ActivePlayer = m_Players.First;
+
+            m_ActivePlayer.Value.CleanupComponents();
+            m_ActivePlayer.Value.RemoveComponent(typeof(AIController));
             m_ActivePlayer.Value.AddComponent(new PlayerInputController());
             m_ActivePlayer.Value.CleanupComponents();
+
+            m_TimeProgression.SetActiveEntity(m_ActivePlayer.Value);
         }
 
         //if(gameEvent.ID == GameEventId.GetActivePlayer)
@@ -56,11 +67,20 @@ public class PlayerManager : WorldComponent
         if (m_ActivePlayer == null)
         {
             m_ActivePlayer = m_Players.First;
-            if(!entity.GetComponents().Any(c => c.GetType() == typeof(PlayerInputController)))
+            if (!entity.GetComponents().Any(c => c.GetType() == typeof(PlayerInputController)))
                 entity.AddComponent(new PlayerInputController());
         }
-        m_PlayerToTimeProgressionMap[entity] = new TimeProgression();
-        m_PlayerToTimeProgressionMap[entity].RegisterEntity(entity);
+        else if (!entity.GetComponents().Any(c => c.GetType() == typeof(AIController)))
+        {
+            entity.AddComponent(new AIController());
+        }
+
+        if (m_TimeProgression == null)
+            m_TimeProgression = new TimeProgression();
+        m_TimeProgression.RegisterEntity(entity);
+
+        //m_PlayerToTimeProgressionMap[entity] = new TimeProgression();
+        //m_PlayerToTimeProgressionMap[entity].RegisterEntity(entity);
     }
 
     public void ConvertToPlayableEntity(IEntity entity)
@@ -77,7 +97,8 @@ public class PlayerManager : WorldComponent
     {
         //May need to rotate to the next active character first
         m_Players.Remove(entity);
-        m_PlayerToTimeProgressionMap.Remove(entity);
+        m_TimeProgression.RemoveEntity(entity);
+        //m_PlayerToTimeProgressionMap.Remove(entity);
         FireEvent(Self, new GameEvent(GameEventId.Despawn, new KeyValuePair<string, object>(EventParameters.Entity, entity),
                                                             new KeyValuePair<string, object>(EventParameters.EntityType, EntityType.Creature)));
     }

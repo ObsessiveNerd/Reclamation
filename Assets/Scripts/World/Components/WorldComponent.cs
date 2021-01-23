@@ -3,7 +3,8 @@ using System.Collections.Generic;
 
 public abstract class WorldComponent : Component
 {
-    protected static Dictionary<IEntity, TimeProgression> m_PlayerToTimeProgressionMap = new Dictionary<IEntity, TimeProgression>();
+    //protected static Dictionary<IEntity, TimeProgression> m_PlayerToTimeProgressionMap = new Dictionary<IEntity, TimeProgression>();
+    protected static TimeProgression m_TimeProgression = new TimeProgression();
     protected static Dictionary<Point, Actor> m_Tiles = new Dictionary<Point, Actor>();
     protected static Dictionary<IEntity, Point> m_EntityToPointMap = new Dictionary<IEntity, Point>();
     protected static LinkedList<IEntity> m_Players = new LinkedList<IEntity>();
