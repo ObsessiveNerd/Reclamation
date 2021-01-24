@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Text;
 using UnityEngine;
 
 public static class EntityFactory
@@ -12,7 +13,7 @@ public static class EntityFactory
         Actor a = new Actor("<empty>");
         string path = $"{m_BluePrintPath}/{blueprintName}.bp";
         if(!File.Exists(path))
-            path = $"{SaveSystem.kSaveDataPath}/{0}/Blueprints/{blueprintName}.bp"; //todo: need proper seed
+            path = $"{SaveSystem.kSaveDataPath}/{World.Instance.Seed}/Blueprints/{blueprintName}.bp"; //todo: need proper seed
         if (!File.Exists(path))
             return null;
         return GetEntity(path);
@@ -130,6 +131,14 @@ public static class EntityFactory
             result.Add(CreateEntity(entityName));
         }
         return result;
+    }
+
+    public static string ConvertEntitiesToStringArray(List<IEntity> entities)
+    {
+        StringBuilder sb = new StringBuilder();
+        foreach (var entity in entities)
+            sb.Append($"<{entity.ID}>&");
+        return sb.ToString().TrimEnd('&');
     }
 
     public static string GetEntityNameFromBlueprintFormatting(string bpFormatting)

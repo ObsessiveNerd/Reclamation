@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 public class Actor : IEntity
@@ -68,6 +69,11 @@ public class Actor : IEntity
     {
         IComponent comp = m_Components.Values.Find(c => component.IsAssignableFrom(c.GetType()));
         m_RemoveQueue.Add(comp);
+    }
+
+    public bool HasComponent(Type component)
+    {
+        return m_Components.Values.Any(c => component.IsAssignableFrom(c.GetType()));
     }
 
     public void CleanupComponents()

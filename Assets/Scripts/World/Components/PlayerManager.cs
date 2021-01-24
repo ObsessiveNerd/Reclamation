@@ -8,6 +8,7 @@ public class PlayerManager : WorldComponent
     public override void Init(IEntity self)
     {
         base.Init(self);
+        RegisteredEvents.Add(GameEventId.StartWorld);
         RegisteredEvents.Add(GameEventId.RotateActiveCharacter);
         RegisteredEvents.Add(GameEventId.ConvertToPlayableCharacter);
         RegisteredEvents.Add(GameEventId.RegisterPlayableCharacter);
@@ -16,6 +17,11 @@ public class PlayerManager : WorldComponent
 
     public override void HandleEvent(GameEvent gameEvent)
     {
+        if(gameEvent.ID == GameEventId.StartWorld)
+        {
+            m_TimeProgression = new TimeProgression();
+        }
+
         if (gameEvent.ID == GameEventId.RotateActiveCharacter)
         {
             if (m_Players.Count == 1)
@@ -60,23 +66,34 @@ public class PlayerManager : WorldComponent
 
     public void RegisterPlayer(IEntity entity)
     {
-        if (!entity.GetComponents().Any(c => c.GetType() == typeof(RegisterPlayableCharacter)))
-            ConvertToPlayableEntity(entity);
+        ConvertToPlayableEntity(entity);
+        var addedNode = m_Players.AddLast(entity);
 
-        m_Players.AddLast(entity);
-        if (m_ActivePlayer == null)
+        if (entity.HasComponent(typeof(PlayerInputController)))
+            m_ActivePlayer = addedNode;
+        else if (m_ActivePlayer == null && !entity.HasComponent(typeof(InputControllerBase)))
         {
-            m_ActivePlayer = m_Players.First;
-            if (!entity.GetComponents().Any(c => c.GetType() == typeof(PlayerInputController)))
-                entity.AddComponent(new PlayerInputController());
+            entity.AddComponent(new PlayerInputController());
+            m_ActivePlayer = addedNode;
         }
-        else if (!entity.GetComponents().Any(c => c.GetType() == typeof(AIController)))
-        {
+        else if (!entity.HasComponent(typeof(InputControllerBase)))
             entity.AddComponent(new AIController());
-        }
 
-        if (m_TimeProgression == null)
-            m_TimeProgression = new TimeProgression();
+        //if (m_ActivePlayer == null && !entity.GetComponents().Any(c => typeof(InputControllerBase).IsAssignableFrom(c.GetType())))
+        //    entity.AddComponent(new PlayerInputController());
+        
+
+        //if (entity.GetComponents().Any(c => c.GetType() == typeof(PlayerInputController)))
+        //{
+        //    m_ActivePlayer = newNode;
+        //    //if (!entity.GetComponents().Any(c => c.GetType() == typeof(PlayerInputController)))
+        //    //    entity.AddComponent(new PlayerInputController());
+        //}
+        //else if (!entity.GetComponents().Any(c => c.GetType() == typeof(AIController)))
+        //{
+        //    //entity.AddComponent(new AIController());
+        //}
+
         m_TimeProgression.RegisterEntity(entity);
 
         //m_PlayerToTimeProgressionMap[entity] = new TimeProgression();
@@ -85,12 +102,13 @@ public class PlayerManager : WorldComponent
 
     public void ConvertToPlayableEntity(IEntity entity)
     {
-        entity.RemoveComponent(typeof(InputControllerBase));
-        entity.RemoveComponent(typeof(RegisterWithTimeSystem));
-
-        entity.AddComponent(new RegisterPlayableCharacter());
-
-        entity.CleanupComponents();
+        if (!entity.HasComponent(typeof(RegisterPlayableCharacter)))
+        {
+            entity.RemoveComponent(typeof(AIController));
+            entity.RemoveComponent(typeof(RegisterWithTimeSystem));
+            entity.AddComponent(new RegisterPlayableCharacter());
+            entity.CleanupComponents();
+        }
     }
 
     public void UnregisterPlayer(IEntity entity)

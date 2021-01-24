@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Inventory : Component
 {
-    List<IEntity> m_Inventory = new List<IEntity>();
+    public List<IEntity> InventoryItems = new List<IEntity>();
     bool m_EmptyBag = false;
 
     public Inventory()
@@ -18,39 +18,39 @@ public class Inventory : Component
 
     public void AddToInventory(IEntity e)
     {
-        m_Inventory.Add(e);
+        InventoryItems.Add(e);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
     {
         if (gameEvent.ID == GameEventId.OpenInventory)
         {
-            FireEvent(World.Instance.Self, new GameEvent(GameEventId.OpenInventoryUI, new KeyValuePair<string, object>(EventParameters.Value, m_Inventory),
+            FireEvent(World.Instance.Self, new GameEvent(GameEventId.OpenInventoryUI, new KeyValuePair<string, object>(EventParameters.Value, InventoryItems),
                                                                                         new KeyValuePair<string, object>(EventParameters.Entity, Self)));
         }
 
         if(gameEvent.ID == GameEventId.AddToInventory)
         {
             IEntity item = (IEntity)gameEvent.Paramters[EventParameters.Entity];
-            m_Inventory.Add(item);
+            InventoryItems.Add(item);
         }
 
         if(gameEvent.ID == GameEventId.RemoveFromInventory)
         {
             IEntity item = (IEntity)gameEvent.Paramters[EventParameters.Entity];
             if (!m_EmptyBag)
-                m_Inventory.Remove(item);
+                InventoryItems.Remove(item);
         }
 
         if(gameEvent.ID == GameEventId.EmptyBag)
         {
             m_EmptyBag = true;
-            foreach (IEntity item in m_Inventory)
+            foreach (IEntity item in InventoryItems)
                 FireEvent(World.Instance.Self, new GameEvent(GameEventId.Drop, new KeyValuePair<string, object>(EventParameters.Entity, item),
                                                                                 new KeyValuePair<string, object>(EventParameters.Creature, Self),
                                                                                 new KeyValuePair<string, object>(EventParameters.EntityType, EntityType.Item)));
             m_EmptyBag = false;
-            m_Inventory.Clear();
+            InventoryItems.Clear();
         }
     }
 }
@@ -73,7 +73,10 @@ public class DTO_Inventory : IDataTransferComponent
 
     public string CreateSerializableData(IComponent component)
     {
-        //Todo: need to collect everything in the inventory first
-        return nameof(Inventory);
+        Inventory inventory = (Inventory)component;
+        foreach(var item in inventory.InventoryItems)
+            EntityFactory.CreateTemporaryBlueprint($"{World.Instance.Seed}", item.ID, item.Serialize()); //todo: feed proper seed
+
+        return $"{nameof(Inventory)}: [{EntityFactory.ConvertEntitiesToStringArray(inventory.InventoryItems)}]";
     }
 }

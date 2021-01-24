@@ -89,6 +89,8 @@ public class SaveSystem : MonoBehaviour
     public static void Load(string path)
     {
         SaveData data = JsonUtility.FromJson<SaveData>(File.ReadAllText(path));
+        World.Instance.Seed = data.Seed;
+
         foreach (var entity in data.LevelInfo[data.CurrentLevelIndex].Entites)
             Spawner.Restore(EntityFactory.ParseEntityData(entity));
         Instance.SetSaveDataSeed(data.Seed);

@@ -103,9 +103,15 @@ public class Tile : Component
         if(gameEvent.ID == GameEventId.Pickup)
         {
             IEntity entity = (IEntity)gameEvent.Paramters[EventParameters.Entity];
+            List<IEntity> itemsPickedup = new List<IEntity>();
             foreach (var item in Items)
+            {
                 FireEvent(entity, new GameEvent(GameEventId.AddToInventory, new KeyValuePair<string, object>(EventParameters.Entity, item)));
-            Items.Clear();
+                itemsPickedup.Add(item);
+            }
+
+            foreach (var item in itemsPickedup)
+                Spawner.Despawn(item);
         }
 
         if(gameEvent.ID == GameEventId.Despawn)

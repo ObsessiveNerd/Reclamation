@@ -31,6 +31,12 @@ public class TimeProgression
         {
             m_Previous = m_Current;
             m_Current = m_EntityList.Find(entity);
+
+            if (m_Current != null)
+            {
+                GameEvent characterRotated = new GameEvent(GameEventId.CharacterRotated);
+                m_Current.Value.HandleEvent(characterRotated);
+            }
         };
     }
 
@@ -76,11 +82,6 @@ public class TimeProgression
         {
             m_PostFrameCallback.Invoke();
             m_PostFrameCallback = null;
-            if (m_Current != null)
-            {
-                GameEvent characterRotated = new GameEvent(GameEventId.CharacterRotated);
-                m_Current.Value.HandleEvent(characterRotated);
-            }
         }
     }
 }
