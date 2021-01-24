@@ -75,7 +75,6 @@ public class PlayerInputController : InputControllerBase
             {
                 FireEvent(World.Instance.Self, new GameEvent(GameEventId.RotateActiveCharacter));
                 gameEvent.Paramters[EventParameters.UpdateWorldView] = true;
-                FireEvent(Self, new GameEvent(GameEventId.SkipTurn));
                 return;
             }
 

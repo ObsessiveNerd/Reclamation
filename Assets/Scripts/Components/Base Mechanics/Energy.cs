@@ -6,16 +6,20 @@ public class Energy : Component
 {
     public float EnergyRegineration;
     public float CurrentEnergy;
+    public bool HasHadTurnStarted;
 
-    public Energy(float energyRegenValue, float currentEnergy = 0)
+    public Energy(float energyRegenValue, float currentEnergy = 0, bool turnStarted = false)
     {
         RegisteredEvents.Add(GameEventId.StartTurn);
+        RegisteredEvents.Add(GameEventId.EndTurn);
+        RegisteredEvents.Add(GameEventId.CharacterRotated);
         RegisteredEvents.Add(GameEventId.HasEnoughEnergyToTakeATurn);
         RegisteredEvents.Add(GameEventId.UseEnergy);
         RegisteredEvents.Add(GameEventId.SkipTurn);
         RegisteredEvents.Add(GameEventId.GetEnergy);
         EnergyRegineration = energyRegenValue;
         CurrentEnergy = currentEnergy;
+        HasHadTurnStarted = turnStarted;
     }
 
     public override void HandleEvent(GameEvent gameEvent)
@@ -24,15 +28,20 @@ public class Energy : Component
         switch (gameEvent.ID)
         {
             case GameEventId.StartTurn:
-                data = new GameEvent(GameEventId.AlterEnergy, new KeyValuePair<string, object>(EventParameters.EnergyRegen, EnergyRegineration));
-                Self.HandleEvent(data);
-                CurrentEnergy += (float)data.Paramters[EventParameters.EnergyRegen];
+                if (!HasHadTurnStarted)
+                {
+                    data = new GameEvent(GameEventId.AlterEnergy, new KeyValuePair<string, object>(EventParameters.EnergyRegen, EnergyRegineration));
+                    Self.HandleEvent(data);
+                    CurrentEnergy += (float)data.Paramters[EventParameters.EnergyRegen];
+                    HasHadTurnStarted = true;
+                }
                 break;
             case GameEventId.HasEnoughEnergyToTakeATurn:
                 data = new GameEvent(GameEventId.GetMinimumEnergyForAction, new KeyValuePair<string, object>(EventParameters.Value, 0f));
                 FireEvent(Self, data);
                 float minEnergy = (float)data.Paramters[EventParameters.Value];
-                gameEvent.Paramters[EventParameters.TakeTurn] = (minEnergy == 0 || CurrentEnergy < minEnergy);
+                bool takeTurn = (minEnergy == 0 || CurrentEnergy < minEnergy);
+                gameEvent.Paramters[EventParameters.TakeTurn] = takeTurn;
                 break;
             case GameEventId.UseEnergy:
                 float energyUsed = (float)gameEvent.Paramters[EventParameters.Value];
@@ -43,6 +52,13 @@ public class Energy : Component
                 break;
             case GameEventId.GetEnergy:
                 gameEvent.Paramters[EventParameters.Value] = CurrentEnergy;
+                break;
+            case GameEventId.EndTurn:
+                HasHadTurnStarted = false;
+                break;
+            case GameEventId.CharacterRotated:
+                if(!HasHadTurnStarted)
+                    FireEvent(Self, new GameEvent(GameEventId.StartTurn));
                 break;
         };
     }
@@ -57,6 +73,7 @@ public class DTO_Energy : IDataTransferComponent
         string[] parameters = data.Split(',');
         int energyRegen = 0;
         int currentEnergy = 0;
+        bool turnStarted = false;
         foreach(string param in parameters)
         {
             string[] values = param.Split('=');
@@ -68,14 +85,17 @@ public class DTO_Energy : IDataTransferComponent
                 case "Current":
                     currentEnergy = int.Parse(values[1]);
                     break;
+                case "TurnStarted":
+                    turnStarted = bool.Parse(values[1]);
+                    break;
             }
         }
-        Component = new Energy(energyRegen, currentEnergy);
+        Component = new Energy(energyRegen, currentEnergy, turnStarted);
     }
 
     public string CreateSerializableData(IComponent component)
     {
         Energy e = (Energy)component;
-        return $"{nameof(Energy)}:Regen={e.EnergyRegineration}, Current={e.CurrentEnergy}";
+        return $"{nameof(Energy)}:Regen={e.EnergyRegineration}, Current={e.CurrentEnergy}, TurnStarted={e.HasHadTurnStarted}";
     }
 }

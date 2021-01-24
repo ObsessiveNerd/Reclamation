@@ -78,8 +78,8 @@ public class TimeProgression
             m_PostFrameCallback = null;
             if (m_Current != null)
             {
-                GameEvent startTurn = new GameEvent(GameEventId.StartTurn);
-                m_Current.Value.HandleEvent(startTurn);
+                GameEvent characterRotated = new GameEvent(GameEventId.CharacterRotated);
+                m_Current.Value.HandleEvent(characterRotated);
             }
         }
     }

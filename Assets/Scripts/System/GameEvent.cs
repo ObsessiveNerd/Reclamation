@@ -53,6 +53,7 @@ public static class GameEventId
 
     //Time progression
     public const string StartTurn = nameof(StartTurn);
+    public const string CharacterRotated = nameof(CharacterRotated);
     public const string UpdateEntity = nameof(UpdateEntity);
     public const string EndTurn = nameof(EndTurn);
     public const string RegisterWithTimeSystem = nameof(RegisterWithTimeSystem);
