@@ -63,12 +63,21 @@ public class Actor : IEntity
     public void RemoveComponent(IComponent component)
     {
         m_RemoveQueue.Add(component);
+        if (m_AddQueue.Contains(component))
+            m_AddQueue.Remove(component);
     }
 
     public void RemoveComponent(Type component)
     {
         IComponent comp = m_Components.Values.Find(c => component.IsAssignableFrom(c.GetType()));
-        m_RemoveQueue.Add(comp);
+        if (comp != null)
+            m_RemoveQueue.Add(comp);
+        else
+        {
+            comp = m_AddQueue.Find(c => component.IsAssignableFrom(c.GetType()));
+            if(comp != null)
+                m_AddQueue.Remove(comp);
+        }
     }
 
     public bool HasComponent(Type component)

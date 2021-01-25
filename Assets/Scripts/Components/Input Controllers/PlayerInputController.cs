@@ -62,9 +62,25 @@ public class PlayerInputController : InputControllerBase
 
             else if (Input.GetKeyDown(KeyCode.Space))
             {
-                //TODO: we need to query the world for nearby interactable objects, if there's more than 1 give those to the input selection controller with an event callback
-                //If there's only 1 we can fire the event off directly to the target entity, which we should get back from our query
-                FireEvent(World.Instance.Self, new GameEvent(GameEventId.Interact, new KeyValuePair<string, object>(EventParameters.Entity, Self)));
+
+                var getInteractableObjectsPositions = FireEvent(World.Instance.Self, new GameEvent(GameEventId.GetInteractableObjects, new KeyValuePair<string, object>(EventParameters.Value, new List<Point>())));
+                var result = (List<Point>)getInteractableObjectsPositions.Paramters[EventParameters.Value];
+                if (result.Count == 0)
+                    return;
+                if(result.Count == 1)
+                    FireEvent(World.Instance.Self, new GameEvent(GameEventId.Interact, new KeyValuePair<string, object>(EventParameters.Entity, Self),
+                                                                                        new KeyValuePair<string, object>(EventParameters.TilePosition, result[0])));
+                else
+                {
+                    Self.RemoveComponent(this);
+                    Self.AddComponent(new PromptForDirectionController((dir) =>
+                    {
+                        Self.RemoveComponent(typeof(PromptForDirectionController));
+                        Self.AddComponent(new PlayerInputController());
+                        FireEvent(World.Instance.Self, new GameEvent(GameEventId.InteractInDirection, new KeyValuePair<string, object>(EventParameters.Entity, Self),
+                                                                                                        new KeyValuePair<string, object>(EventParameters.InputDirection, dir)));
+                    }));
+                }
             }
 
             //This is temporary, we can keep this functionality but right now it's just to test dropping items from your bag
@@ -75,13 +91,8 @@ public class PlayerInputController : InputControllerBase
             {
                 FireEvent(World.Instance.Self, new GameEvent(GameEventId.RotateActiveCharacter));
                 gameEvent.Paramters[EventParameters.UpdateWorldView] = true;
+                gameEvent.ContinueProcessing = false;
                 return;
-            }
-
-            else if (Input.GetKeyDown(KeyCode.Y))
-            {
-                Self.RemoveComponent(this);
-                Self.AddComponent(new PromptForDirectionController());
             }
 
             else if (Input.GetKeyDown(KeyCode.Escape))
