@@ -43,6 +43,7 @@ public class Tile : Component
     public List<IEntity> Items = new List<IEntity>();
 
     bool m_HasEntity { get { return CreatureSlot != null || ObjectSlot != null || Items.Count > 0; } }
+    bool m_IsVisible = false;
     Point m_GridPoint;
 
     public Tile(IEntity self, Point gridPoint)
@@ -58,6 +59,7 @@ public class Tile : Component
         RegisteredEvents.Add(GameEventId.GetEntityOnTile);
         RegisteredEvents.Add(GameEventId.BeforeMoving);
         RegisteredEvents.Add(GameEventId.Pickup);
+        RegisteredEvents.Add(GameEventId.VisibilityUpdated);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
@@ -68,6 +70,11 @@ public class Tile : Component
             GameEvent getSprite = new GameEvent(GameEventId.GetSprite, new KeyValuePair<string, object>(EventParameters.RenderSprite, null));
             GameEvent getSpriteEvent = FireEvent(target, getSprite);
             FireEvent(Self, new GameEvent(GameEventId.UpdateRenderer, getSpriteEvent.Paramters));
+        }
+
+        if(gameEvent.ID == GameEventId.VisibilityUpdated)
+        {
+            m_IsVisible = (bool)gameEvent.Paramters[EventParameters.Value];
         }
 
         if (gameEvent.ID == GameEventId.BeforeMoving)
@@ -152,12 +159,15 @@ public class Tile : Component
 
     List<IEntity> GetTarget()
     {
-        if (CreatureSlot != null)
-            return new List<IEntity>() { CreatureSlot };
-        else if (ObjectSlot != null)
-            return new List<IEntity>() { ObjectSlot };
-        else if (Items.Count > 0)
-            return Items;
+        if (m_IsVisible)
+        {
+            if (CreatureSlot != null)
+                return new List<IEntity>() { CreatureSlot };
+            else if (ObjectSlot != null)
+                return new List<IEntity>() { ObjectSlot };
+            else if (Items.Count > 0)
+                return Items;
+        }
 
         return new List<IEntity>() { Self };
     }

@@ -35,6 +35,7 @@ public class BasicDungeonGenerator : IDungeonGenerator
 
         Actor actor = new Actor("Tile");
         actor.AddComponent(new Tile(actor, new Point(x, y)));
+        actor.AddComponent(new Visible(false));
         actor.AddComponent(new Renderer(tile.GetComponent<SpriteRenderer>()));
         actor.CleanupComponents();
 

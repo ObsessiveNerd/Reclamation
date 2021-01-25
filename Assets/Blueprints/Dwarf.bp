@@ -8,4 +8,5 @@
 	Stats:Str=10, Agi=9, Con=13, Wis=11, Int=12, Cha=10
 	Energy:Regen=1
 	Faction:<DwarvenCompany>
+	FOV: VisibleRange=5
 )

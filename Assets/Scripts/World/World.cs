@@ -40,6 +40,7 @@ public class World : MonoBehaviour
         m_World.AddComponent(new EntityMovement());
         m_World.AddComponent(new WorldUIController());
         m_World.AddComponent(new WorldDataQuery());
+        m_World.AddComponent(new WorldFov());
 
         m_World.CleanupComponents();
         m_World.FireEvent(m_World, new GameEvent(GameEventId.StartWorld, new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.Seed, "0"),

@@ -4,6 +4,12 @@ using UnityEngine;
 
 public static class GameEventId
 {
+    //FOV
+    public const string FOVRecalculated = nameof(FOVRecalculated);
+    public const string SetVisibility = nameof(SetVisibility);
+    public const string VisibilityUpdated = nameof(VisibilityUpdated);
+    public const string CheckVisibility = nameof(CheckVisibility);
+
     //Entity Info
     public const string GetEntityType = nameof(GetEntityType);
 
@@ -49,6 +55,7 @@ public static class GameEventId
     public const string SetPoint = nameof(SetPoint);
     public const string GetPoint = nameof(GetPoint);
     public const string Interact = nameof(Interact);
+    public const string InteractInDirection = nameof(InteractInDirection);
     public const string InteractWithTarget = nameof(InteractWithTarget);
 
     //Time progression
@@ -105,6 +112,7 @@ public static class GameEventId
     //Data Request
     public const string GetEntities = nameof(GetEntities);
     public const string GetEntityLocation = nameof(GetEntityLocation);
+    public const string GetInteractableObjects = nameof(GetInteractableObjects);
 
     //UI
     public const string UIInput = nameof(UIInput);
@@ -144,6 +152,8 @@ public static class EventParameters
     public const string Equipment = nameof(Equipment);
     public const string Seed = nameof(Seed);
     public const string GameObject = nameof(GameObject);
+    public const string TileInSight = nameof(TileInSight);
+    public const string VisibleTiles = nameof(VisibleTiles);
 }
 
 public class GameEvent

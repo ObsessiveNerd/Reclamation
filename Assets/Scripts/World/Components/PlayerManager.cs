@@ -79,21 +79,6 @@ public class PlayerManager : WorldComponent
         else if (!entity.HasComponent(typeof(InputControllerBase)))
             entity.AddComponent(new AIController());
 
-        //if (m_ActivePlayer == null && !entity.GetComponents().Any(c => typeof(InputControllerBase).IsAssignableFrom(c.GetType())))
-        //    entity.AddComponent(new PlayerInputController());
-        
-
-        //if (entity.GetComponents().Any(c => c.GetType() == typeof(PlayerInputController)))
-        //{
-        //    m_ActivePlayer = newNode;
-        //    //if (!entity.GetComponents().Any(c => c.GetType() == typeof(PlayerInputController)))
-        //    //    entity.AddComponent(new PlayerInputController());
-        //}
-        //else if (!entity.GetComponents().Any(c => c.GetType() == typeof(AIController)))
-        //{
-        //    //entity.AddComponent(new AIController());
-        //}
-
         m_TimeProgression.RegisterEntity(entity);
 
         //m_PlayerToTimeProgressionMap[entity] = new TimeProgression();
