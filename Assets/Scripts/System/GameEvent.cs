@@ -9,6 +9,7 @@ public static class GameEventId
     public const string SetVisibility = nameof(SetVisibility);
     public const string VisibilityUpdated = nameof(VisibilityUpdated);
     public const string CheckVisibility = nameof(CheckVisibility);
+    public const string IsTileBlocking = nameof(IsTileBlocking);
 
     //Entity Info
     public const string GetEntityType = nameof(GetEntityType);

@@ -3,13 +3,13 @@
     public override void Init(IEntity self)
     {
         base.Init(self);
-        RegisteredEvents.Add(GameEventId.CheckVisibility);
+        RegisteredEvents.Add(GameEventId.IsTileBlocking);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
     {
-        if (gameEvent.ID == GameEventId.CheckVisibility)
-            gameEvent.Paramters[EventParameters.Value] = false;
+        if (gameEvent.ID == GameEventId.IsTileBlocking)
+            gameEvent.Paramters[EventParameters.Value] = true;
     }
 }
 

@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using System.Collections.Generic;
 
 public class FOV : Component
 {
@@ -18,10 +16,8 @@ public class FOV : Component
         RegisteredEvents.Add(GameEventId.ExecuteMove);
         m_Fov = new Shadowcasting();
 
-        //TODO: we may want to gather visible tiles and run a self check to make sure we don't have some kind of true sight or anything to alter the visible tiles
-
-        FireEvent(World.Instance.Self, new GameEvent(GameEventId.FOVRecalculated, new KeyValuePair<string, object>(EventParameters.Entity, Self),
-                                                                                        new KeyValuePair<string, object>(EventParameters.VisibleTiles, m_Fov.GetVisibleTiles(Self, FOVRange))));
+        //FireEvent(World.Instance.Self, new GameEvent(GameEventId.FOVRecalculated, new KeyValuePair<string, object>(EventParameters.Entity, Self),
+        //                                                                                new KeyValuePair<string, object>(EventParameters.VisibleTiles, m_Fov.GetVisibleTiles(Self, FOVRange))));
     }
 
     public override void HandleEvent(GameEvent gameEvent)

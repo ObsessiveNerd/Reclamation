@@ -10,6 +10,7 @@ public class WorldFov : WorldComponent
     {
         base.Init(self);
         RegisteredEvents.Add(GameEventId.FOVRecalculated);
+        RegisteredEvents.Add(GameEventId.IsTileBlocking);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
@@ -25,6 +26,13 @@ public class WorldFov : WorldComponent
             ClearTiles(m_PlayerToVisibleTiles[source]);
             UpdateTiles(newVisibleTiles);
             m_PlayerToVisibleTiles[source] = newVisibleTiles;
+            FireEvent(Self, new GameEvent(GameEventId.UpdateWorldView));
+        }
+
+        if(gameEvent.ID == GameEventId.IsTileBlocking)
+        {
+            Point p = (Point)gameEvent.Paramters[EventParameters.TilePosition];
+            FireEvent(m_Tiles[p], gameEvent);
         }
     }
 

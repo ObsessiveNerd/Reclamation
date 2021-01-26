@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Visible : Component
+public class TileVisible : Component
 {
     public bool IsVisible;
     public bool HasBeenVisited;
 
     public override int Priority => 1;
 
-    public Visible(bool hasBeenVisited)
+    public TileVisible(bool hasBeenVisited)
     {
         HasBeenVisited = hasBeenVisited;
     }
@@ -63,12 +63,12 @@ public class DTO_Visible : IDataTransferComponent
             }
         }
 
-        Component = new Visible(hasBeenVisited);
+        Component = new TileVisible(hasBeenVisited);
     }
 
     public string CreateSerializableData(IComponent component)
     {
-        Visible v = (Visible)component;
-        return $"{nameof(Visible)}: HasBeenVisited={v.HasBeenVisited}";
+        TileVisible v = (TileVisible)component;
+        return $"{nameof(TileVisible)}: HasBeenVisited={v.HasBeenVisited}";
     }
 }

@@ -66,7 +66,6 @@ public class PlayerManager : WorldComponent
 
     public void RegisterPlayer(IEntity entity)
     {
-        ConvertToPlayableEntity(entity);
         var addedNode = m_Players.AddLast(entity);
 
         if (entity.HasComponent(typeof(PlayerInputController)))

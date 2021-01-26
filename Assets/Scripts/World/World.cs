@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using System.Linq;
 using UnityEngine;
 
@@ -12,6 +12,7 @@ public class World : MonoBehaviour
     public GameObject TilePrefab;
     public bool StartNew;
     IEntity m_World;
+    public int MapColumns, MapRows;
 
     // Start is called before the first frame update
     void Start()
@@ -20,6 +21,11 @@ public class World : MonoBehaviour
             m_Instance = this;
         else
             return;
+
+        int m_Vertical = (int)Camera.main.orthographicSize;
+        int m_Horizontal = (int)(m_Vertical * Camera.main.aspect);
+        MapColumns = m_Horizontal * 2;
+        MapRows = m_Vertical * 2;
 
         IEntity player = EntityFactory.CreateEntity("Dwarf");
         IEntity player2 = EntityFactory.CreateEntity("Dwarf");
