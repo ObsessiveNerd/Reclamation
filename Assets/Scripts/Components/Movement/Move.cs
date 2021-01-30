@@ -35,8 +35,6 @@ public class Move : Component
             float currentEnergy = (float)FireEvent(Self, new GameEvent(GameEventId.GetEnergy, new KeyValuePair<string, object>(EventParameters.Value, 0))).Paramters[EventParameters.Value];
             if (energyRequired > 0f && currentEnergy >= energyRequired)
             {
-                
-
                 GameEvent moveWorld = new GameEvent(GameEventId.MoveEntity, new KeyValuePair<string, object>(EventParameters.Entity, Self),
                                                                                 new KeyValuePair<string, object>(EventParameters.EntityType, EntityType.Creature),
                                                                                 new KeyValuePair<string, object>(EventParameters.InputDirection, beforeMovingCheckWorld.Paramters[EventParameters.InputDirection]),

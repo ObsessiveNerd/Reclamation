@@ -31,6 +31,9 @@ public static class GameEventId
     public const string Pickup = nameof(Pickup);
     public const string Drop = nameof(Drop);
 
+    //Debug
+    public const string RevealAllTiles = nameof(RevealAllTiles);
+
     //World
     public const string StartWorld = nameof(StartWorld);
     public const string UpdateWorldView = nameof(UpdateWorldView);

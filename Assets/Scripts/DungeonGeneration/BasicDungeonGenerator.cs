@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -36,6 +36,7 @@ public class BasicDungeonGenerator : IDungeonGenerator
         Actor actor = new Actor("Tile");
         actor.AddComponent(new Tile(actor, new Point(x, y)));
         actor.AddComponent(new TileVisible(false));
+        actor.AddComponent(new GraphicContainer("Textures/td_world_floor_cobble_b-120"));
         actor.AddComponent(new Renderer(tile.GetComponent<SpriteRenderer>()));
         actor.CleanupComponents();
 

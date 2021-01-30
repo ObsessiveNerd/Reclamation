@@ -37,8 +37,10 @@ public class TileVisible : Component
             SpriteRenderer sr = (SpriteRenderer)gameEvent.Paramters[EventParameters.Renderer];
             if (!IsVisible && !HasBeenVisited)
                 sr.color = new Color(0, 0, 0, 0);
-            if (!IsVisible && HasBeenVisited)
+            else if (!IsVisible && HasBeenVisited)
                 sr.color = new Color(0.5f, 0.5f, 0.5f, 0.5f);
+            else
+                sr.color = Color.white;
         }
     }
 }

@@ -13,7 +13,7 @@ public class FOV : Component
     public override void Init(IEntity self)
     {
         base.Init(self);
-        RegisteredEvents.Add(GameEventId.ExecuteMove);
+        RegisteredEvents.Add(GameEventId.AfterMoving);
         m_Fov = new Shadowcasting();
 
         //FireEvent(World.Instance.Self, new GameEvent(GameEventId.FOVRecalculated, new KeyValuePair<string, object>(EventParameters.Entity, Self),
@@ -22,7 +22,7 @@ public class FOV : Component
 
     public override void HandleEvent(GameEvent gameEvent)
     {
-        if(gameEvent.ID == GameEventId.ExecuteMove)
+        if(gameEvent.ID == GameEventId.AfterMoving)
             FireEvent(World.Instance.Self, new GameEvent(GameEventId.FOVRecalculated, new KeyValuePair<string, object>(EventParameters.Entity, Self),
                                                                                         new KeyValuePair<string, object>(EventParameters.VisibleTiles, m_Fov.GetVisibleTiles(Self, FOVRange))));
     }

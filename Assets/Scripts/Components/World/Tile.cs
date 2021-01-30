@@ -2,6 +2,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public class PointComparer : IEqualityComparer<Point>
+{
+    public bool Equals(Point x, Point y)
+    {
+        return x == y;
+    }
+
+    public int GetHashCode(Point obj)
+    {
+        return obj.GetHashCode();
+    }
+}
+
 public struct Point
 {
     public int x;
@@ -60,19 +73,21 @@ public class Tile : Component
         RegisteredEvents.Add(GameEventId.BeforeMoving);
         RegisteredEvents.Add(GameEventId.Pickup);
         RegisteredEvents.Add(GameEventId.VisibilityUpdated);
+        RegisteredEvents.Add(GameEventId.IsTileBlocking);
+        RegisteredEvents.Add(GameEventId.BeforeMoving);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
     {
         if (gameEvent.ID == GameEventId.UpdateTile)
         {
-            IEntity target = GetTarget()[0];
+            IEntity target = m_IsVisible ? GetTarget()[0] : ObjectSlot == null ? Self : ObjectSlot;
             GameEvent getSprite = new GameEvent(GameEventId.GetSprite, new KeyValuePair<string, object>(EventParameters.RenderSprite, null));
             GameEvent getSpriteEvent = FireEvent(target, getSprite);
             FireEvent(Self, new GameEvent(GameEventId.UpdateRenderer, getSpriteEvent.Paramters));
         }
 
-        if(gameEvent.ID == GameEventId.VisibilityUpdated)
+        if (gameEvent.ID == GameEventId.VisibilityUpdated)
         {
             m_IsVisible = (bool)gameEvent.Paramters[EventParameters.Value];
         }
@@ -85,6 +100,7 @@ public class Tile : Component
                 {
                     GameEvent entityOvertaking = new GameEvent(GameEventId.EntityOvertaking, new KeyValuePair<string, object>(EventParameters.Entity, gameEvent.Paramters[EventParameters.Entity]));
                     FireEvent(target, entityOvertaking);
+                    FireEvent(target, gameEvent);
                 }
             }
         }
@@ -155,11 +171,20 @@ public class Tile : Component
         {
             gameEvent.Paramters[EventParameters.Entity] = GetTarget()[0];
         }
+
+        if(gameEvent.ID == GameEventId.IsTileBlocking)
+        {
+            if (GetTarget()[0] != Self)
+            {
+                foreach (IEntity e in GetTarget())
+                    FireEvent(e, gameEvent);
+            }
+        }
     }
 
     List<IEntity> GetTarget()
     {
-        if (m_IsVisible)
+        //if (m_IsVisible)
         {
             if (CreatureSlot != null)
                 return new List<IEntity>() { CreatureSlot };

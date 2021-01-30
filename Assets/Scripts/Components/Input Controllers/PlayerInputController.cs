@@ -20,6 +20,11 @@ public class PlayerInputController : InputControllerBase
                 Self.AddComponent(new PlayerUIController());
             }
 
+            else if(Input.GetKeyDown(KeyCode.M))
+            {
+                FireEvent(World.Instance.Self, new GameEvent(GameEventId.RevealAllTiles));
+            }
+
             else if (Input.GetKeyDown(KeyCode.F))
             {
                 GameEvent getRangedWeapon = FireEvent(Self, new GameEvent(GameEventId.GetRangedWeapon, new KeyValuePair<string, object>(EventParameters.Value, null)));

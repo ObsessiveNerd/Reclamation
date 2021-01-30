@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Shadowcasting : IFovAlgorithm
@@ -9,7 +10,7 @@ public class Shadowcasting : IFovAlgorithm
     IEntity m_Source;
     Point m_SourcePoint;
     List<Point> m_VisiblePoints;
-    List<int> m_VisibleOctants = new List<int>() { 1, /*2, 3, 4, 5, 6, 7, 8*/ };
+    List<int> m_VisibleOctants = new List<int>() { 1,2,3,4,5,6,7,8 };
 
     public List<Point> GetVisibleTiles(IEntity source, int range)
     {
@@ -22,38 +23,45 @@ public class Shadowcasting : IFovAlgorithm
         m_VisiblePoints.Add(m_SourcePoint);
         foreach (int octant in m_VisibleOctants)
             ScanOctant(1, octant, 1.0, 0.0);
+        m_VisiblePoints = m_VisiblePoints.Distinct(new PointComparer()).ToList();
         return m_VisiblePoints;
     }
 
-    void ScanOctant(int depth, int octant, double startSlope, double endSlope)
+    //TODO: we might need another implementation of this, at the very least we need to figure out something to let us mark the wall tiles as visible
+    protected void ScanOctant(int pDepth, int pOctant, double pStartSlope, double pEndSlope)
     {
-        int visSquared = m_Range * m_Range;
+        int visrange2 = m_Range * m_Range;
         int x = 0;
         int y = 0;
 
-        switch(octant)
+        switch (pOctant)
         {
-            case 1:
-                y = m_SourcePoint.y - depth;
-                if (y < 0)
-                    return;
-                x = m_SourcePoint.x - Convert.ToInt32(startSlope * Convert.ToDouble(depth));
-                if (x < 0)
-                    x = 0;
 
-                while(GetSlope(x, y, m_SourcePoint.x, m_SourcePoint.y, false) >= endSlope)
+            case 1: //nnw
+                y = m_SourcePoint.y - pDepth;
+                if (y < 0) return;
+
+                x = m_SourcePoint.x - Convert.ToInt32((pStartSlope * Convert.ToDouble(pDepth)));
+                if (x < 0) x = 0;
+
+                while (GetSlope(x, y, m_SourcePoint.x, m_SourcePoint.y, false) >= pEndSlope)
                 {
-                    if(GetDistance(x, y, m_SourcePoint.x, m_SourcePoint.y) <= visSquared)
+                    if (GetDistance(x, y, m_SourcePoint.x, m_SourcePoint.y) <= visrange2)
                     {
-                        if(TileIsBlocking(x, y))
+                        if (TileIsBlocking(x, y)) //current cell blocked
                         {
-                            if (x - 1 >= 0 && !TileIsBlocking(x - 1, y))
-                                ScanOctant(depth + 1, octant, startSlope, GetSlope(x - 0.5, y - 0.5, m_SourcePoint.x, m_SourcePoint.y, false));
+                            if (x - 1 >= 0 && !TileIsBlocking(x - 1, y)) //prior cell within range AND open...
+                                ScanOctant(pDepth + 1, pOctant, pStartSlope, GetSlope(x - 0.5, y + 0.5, m_SourcePoint.x, m_SourcePoint.y, false));
+                            //else
+                                m_VisiblePoints.Add(new Point(x, y));
                         }
                         else
                         {
-                            if (x - 1 >= 0 && TileIsBlocking(x - 1, y))
-                                startSlope = GetSlope(x - 0.5, y - 0.5, m_SourcePoint.x, m_SourcePoint.y, false);
+
+                            if (x - 1 >= 0 && TileIsBlocking(x - 1, y)) //prior cell within range AND open...
+                                                                  //..adjust the startslope
+                                pStartSlope = GetSlope(x - 0.5, y - 0.5, m_SourcePoint.x, m_SourcePoint.y, false);
+
                             m_VisiblePoints.Add(new Point(x, y));
                         }
                     }
@@ -61,7 +69,245 @@ public class Shadowcasting : IFovAlgorithm
                 }
                 x--;
                 break;
+
+            case 2: //nne
+
+                y = m_SourcePoint.y - pDepth;
+                if (y < 0) return;
+
+                x = m_SourcePoint.x + Convert.ToInt32((pStartSlope * Convert.ToDouble(pDepth)));
+                if (x >= World.Instance.MapColumns) x = World.Instance.MapColumns - 1;
+
+                while (GetSlope(x, y, m_SourcePoint.x, m_SourcePoint.y, false) <= pEndSlope)
+                {
+                    if (GetDistance(x, y, m_SourcePoint.x, m_SourcePoint.y) <= visrange2)
+                    {
+                        if (TileIsBlocking(x, y))
+                        {
+                            if (x + 1 < World.Instance.MapColumns && !TileIsBlocking(x + 1, y))
+                                ScanOctant(pDepth + 1, pOctant, pStartSlope, GetSlope(x + 0.5, y + 0.5, m_SourcePoint.x, m_SourcePoint.y, false));
+                            else
+                                m_VisiblePoints.Add(new Point(x, y));
+                        }
+                        else
+                        {
+                            if (x + 1 < World.Instance.MapColumns && TileIsBlocking(x + 1, y))
+                                pStartSlope = -GetSlope(x + 0.5, y - 0.5, m_SourcePoint.x, m_SourcePoint.y, false);
+
+                            m_VisiblePoints.Add(new Point(x, y));
+                        }
+                    }
+                    x--;
+                }
+                x++;
+                break;
+
+            case 3:
+
+                x = m_SourcePoint.x + pDepth;
+                if (x >= World.Instance.MapColumns) return;
+
+                y = m_SourcePoint.y - Convert.ToInt32((pStartSlope * Convert.ToDouble(pDepth)));
+                if (y < 0) y = 0;
+
+                while (GetSlope(x, y, m_SourcePoint.x, m_SourcePoint.y, true) <= pEndSlope)
+                {
+
+                    if (GetDistance(x, y, m_SourcePoint.x, m_SourcePoint.y) <= visrange2)
+                    {
+
+                        if (TileIsBlocking(x, y))
+                        {
+                            if (y - 1 >= 0 && !TileIsBlocking(x, y - 1))
+                                ScanOctant(pDepth + 1, pOctant, pStartSlope, GetSlope(x - 0.5, y - 0.5, m_SourcePoint.x, m_SourcePoint.y, true));
+                            //else
+                                m_VisiblePoints.Add(new Point(x, y));
+                        }
+                        else
+                        {
+                            if (y - 1 >= 0 && TileIsBlocking(x, y - 1))
+                                pStartSlope = -GetSlope(x + 0.5, y - 0.5, m_SourcePoint.x, m_SourcePoint.y, true);
+
+                            m_VisiblePoints.Add(new Point(x, y));
+                        }
+                    }
+                    y++;
+                }
+                y--;
+                break;
+
+            case 4:
+
+                x = m_SourcePoint.x + pDepth;
+                if (x >= World.Instance.MapColumns) return;
+
+                y = m_SourcePoint.y + Convert.ToInt32((pStartSlope * Convert.ToDouble(pDepth)));
+                if (y >= World.Instance.MapRows) y = World.Instance.MapRows - 1;
+
+                while (GetSlope(x, y, m_SourcePoint.x, m_SourcePoint.y, true) >= pEndSlope)
+                {
+
+                    if (GetDistance(x, y, m_SourcePoint.x, m_SourcePoint.y) <= visrange2)
+                    {
+
+                        if (TileIsBlocking(x, y))
+                        {
+                            if (y + 1 < World.Instance.MapRows && !TileIsBlocking(x, y + 1))
+                                ScanOctant(pDepth + 1, pOctant, pStartSlope, GetSlope(x - 0.5, y + 0.5, m_SourcePoint.x, m_SourcePoint.y, true));
+                            else
+                                m_VisiblePoints.Add(new Point(x, y));
+                        }
+                        else
+                        {
+                            if (y + 1 < World.Instance.MapRows && TileIsBlocking(x, y + 1))
+                                pStartSlope = GetSlope(x + 0.5, y + 0.5, m_SourcePoint.x, m_SourcePoint.y, true);
+
+                            m_VisiblePoints.Add(new Point(x, y));
+                        }
+                    }
+                    y--;
+                }
+                y++;
+                break;
+
+            case 5:
+
+                y = m_SourcePoint.y + pDepth;
+                if (y >= World.Instance.MapRows) return;
+
+                x = m_SourcePoint.x + Convert.ToInt32((pStartSlope * Convert.ToDouble(pDepth)));
+                if (x >= World.Instance.MapColumns) x = World.Instance.MapColumns - 1;
+
+                while (GetSlope(x, y, m_SourcePoint.x, m_SourcePoint.y, false) >= pEndSlope)
+                {
+                    if (GetDistance(x, y, m_SourcePoint.x, m_SourcePoint.y) <= visrange2)
+                    {
+
+                        if (TileIsBlocking(x, y))
+                        {
+                            if (x + 1 < World.Instance.MapRows && !TileIsBlocking(x + 1, y))
+                                ScanOctant(pDepth + 1, pOctant, pStartSlope, GetSlope(x + 0.5, y - 0.5, m_SourcePoint.x, m_SourcePoint.y, false));
+                            //else
+                                m_VisiblePoints.Add(new Point(x, y));
+                        }
+                        else
+                        {
+                            if (x + 1 < World.Instance.MapRows
+                                    && TileIsBlocking(x + 1, y))
+                                pStartSlope = GetSlope(x + 0.5, y + 0.5, m_SourcePoint.x, m_SourcePoint.y, false);
+
+                            m_VisiblePoints.Add(new Point(x, y));
+                        }
+                    }
+                    x--;
+                }
+                x++;
+                break;
+
+            case 6:
+
+                y = m_SourcePoint.y + pDepth;
+                if (y >= World.Instance.MapRows) return;
+
+                x = m_SourcePoint.x - Convert.ToInt32((pStartSlope * Convert.ToDouble(pDepth)));
+                if (x < 0) x = 0;
+
+                while (GetSlope(x, y, m_SourcePoint.x, m_SourcePoint.y, false) <= pEndSlope)
+                {
+                    if (GetDistance(x, y, m_SourcePoint.x, m_SourcePoint.y) <= visrange2)
+                    {
+
+                        if (TileIsBlocking(x, y))
+                        {
+                            if (x - 1 >= 0 && !TileIsBlocking(x - 1, y))
+                                ScanOctant(pDepth + 1, pOctant, pStartSlope, GetSlope(x - 0.5, y - 0.5, m_SourcePoint.x, m_SourcePoint.y, false));
+                            else
+                                m_VisiblePoints.Add(new Point(x, y));
+                        }
+                        else
+                        {
+                            if (x - 1 >= 0
+                                    && TileIsBlocking(x - 1, y))
+                                pStartSlope = -GetSlope(x - 0.5, y + 0.5, m_SourcePoint.x, m_SourcePoint.y, false);
+
+                            m_VisiblePoints.Add(new Point(x, y));
+                        }
+                    }
+                    x++;
+                }
+                x--;
+                break;
+
+            case 7:
+
+                x = m_SourcePoint.x - pDepth;
+                if (x < 0) return;
+
+                y = m_SourcePoint.y + Convert.ToInt32((pStartSlope * Convert.ToDouble(pDepth)));
+                if (y >= World.Instance.MapRows) y = World.Instance.MapRows - 1;
+
+                while (GetSlope(x, y, m_SourcePoint.x, m_SourcePoint.y, true) <= pEndSlope)
+                {
+
+                    if (GetDistance(x, y, m_SourcePoint.x, m_SourcePoint.y) <= visrange2)
+                    {
+
+                        if (TileIsBlocking(x, y))
+                        {
+                            if (y + 1 < World.Instance.MapRows && !TileIsBlocking(x, y + 1))
+                                ScanOctant(pDepth + 1, pOctant, pStartSlope, GetSlope(x + 0.5, y + 0.5, m_SourcePoint.x, m_SourcePoint.y, true));
+                            //else
+                                m_VisiblePoints.Add(new Point(x, y));
+                        }
+                        else
+                        {
+                            if (y + 1 < World.Instance.MapRows && TileIsBlocking(x, y + 1))
+                                pStartSlope = -GetSlope(x - 0.5, y + 0.5, m_SourcePoint.x, m_SourcePoint.y, true);
+
+                            m_VisiblePoints.Add(new Point(x, y));
+                        }
+                    }
+                    y--;
+                }
+                y++;
+                break;
+
+            case 8: //wnw
+
+                x = m_SourcePoint.x - pDepth;
+                if (x < 0) return;
+
+                y = m_SourcePoint.y - Convert.ToInt32((pStartSlope * Convert.ToDouble(pDepth)));
+                if (y < 0) y = 0;
+
+                while (GetSlope(x, y, m_SourcePoint.x, m_SourcePoint.y, true) >= pEndSlope)
+                {
+
+                    if (GetDistance(x, y, m_SourcePoint.x, m_SourcePoint.y) <= visrange2)
+                    {
+
+                        if (TileIsBlocking(x, y))
+                        {
+                            if (y - 1 >= 0 && !TileIsBlocking(x, y - 1))
+                                ScanOctant(pDepth + 1, pOctant, pStartSlope, GetSlope(x + 0.5, y - 0.5, m_SourcePoint.x, m_SourcePoint.y, true));
+                            else
+                                m_VisiblePoints.Add(new Point(x, y));
+
+                        }
+                        else
+                        {
+                            if (y - 1 >= 0 && TileIsBlocking(x, y - 1))
+                                pStartSlope = GetSlope(x - 0.5, y - 0.5, m_SourcePoint.x, m_SourcePoint.y, true);
+
+                            m_VisiblePoints.Add(new Point(x, y));
+                        }
+                    }
+                    y++;
+                }
+                y--;
+                break;
         }
+
 
         if (x < 0)
             x = 0;
@@ -73,8 +319,9 @@ public class Shadowcasting : IFovAlgorithm
         else if (y >= World.Instance.MapRows)
             y = World.Instance.MapRows - 1;
 
-        if (depth < m_Range && !TileIsBlocking(x, y))
-            ScanOctant(depth + 1, octant, startSlope, endSlope);
+        if (pDepth < m_Range & !TileIsBlocking(x, y))
+            ScanOctant(pDepth + 1, pOctant, pStartSlope, pEndSlope);
+
     }
 
     double GetSlope(double x, double y, int sourceX, int sourceY, bool invert)
