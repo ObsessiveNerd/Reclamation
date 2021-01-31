@@ -19,7 +19,7 @@ public class Actor : IEntity
         }
     }
 
-    public Action Destroyed
+    public Action<IEntity> Destroyed
     {
         get;
         set;
@@ -33,7 +33,7 @@ public class Actor : IEntity
         Destroyed = OnDestroy;
     }
 
-    public virtual void OnDestroy()
+    public virtual void OnDestroy(IEntity entity)
     {
 
     }

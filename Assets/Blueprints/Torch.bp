@@ -1,5 +1,6 @@
 <Torch>(
 	Inherits: Item
 	FOVModifier: Modifier=4
+	ActiveWhileEquiped
 	DestroyAfterTurns: DestroyAfterTurnCount=30
 )

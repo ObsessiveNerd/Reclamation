@@ -17,5 +17,5 @@ public interface IEntity
     string ID { get; }
     bool NeedsCleanup { get; }
     string Serialize();
-    Action Destroyed { get; set; }
+    Action<IEntity> Destroyed { get; set; }
 }

@@ -6,30 +6,42 @@ public class DestroyAfterTurns : Component
 {
     public int CurrentTurnCount;
     public int DestroyAfterTurnCount;
+    public bool Active;
 
     public override int Priority => 10;
 
-    public DestroyAfterTurns(int currentTurnCount, int destroyAfterCount)
+    public DestroyAfterTurns(int currentTurnCount, int destroyAfterCount, bool isActive = false)
     {
         CurrentTurnCount = currentTurnCount;
         DestroyAfterTurnCount = destroyAfterCount;
+        Active = isActive;
     }
 
     public override void Init(IEntity self)
     {
         base.Init(self);
+        RegisteredEvents.Add(GameEventId.ActivateObject);
+        RegisteredEvents.Add(GameEventId.DeactivateObject);
         RegisteredEvents.Add(GameEventId.EndTurn);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
     {
-        if(gameEvent.ID == GameEventId.EndTurn)
+        if (gameEvent.ID == GameEventId.ActivateObject)
+            Active = true;
+
+        if (gameEvent.ID == GameEventId.DeactivateObject)
+            Active = false;
+
+        if (gameEvent.ID == GameEventId.EndTurn)
         {
-            CurrentTurnCount++;
+            if(Active)
+                CurrentTurnCount++;
+
             if (CurrentTurnCount >= DestroyAfterTurnCount)
             {
                 Spawner.Despawn(Self);
-                Self.Destroyed(); //TODO: probably will need to use this callback in more places or something
+                Self.Destroyed(Self);
             }
         }
     }
@@ -43,6 +55,7 @@ public class DTO_DestroyAfterTurns : IDataTransferComponent
     {
         int current = 0;
         int destAfter = 0;
+        bool active = false;
         string[] parameters = data.Split(',');
         foreach(string param in parameters)
         {
@@ -55,14 +68,17 @@ public class DTO_DestroyAfterTurns : IDataTransferComponent
                 case "DestroyAfterTurnCount":
                     destAfter = int.Parse(keyToValue[1]);
                     break;
+                case "Active":
+                    active = bool.Parse(keyToValue[1]);
+                    break;
             }
         }
-        Component = new DestroyAfterTurns(current, destAfter);
+        Component = new DestroyAfterTurns(current, destAfter, active);
     }
 
     public string CreateSerializableData(IComponent component)
     {
         DestroyAfterTurns dafc = (DestroyAfterTurns)component;
-        return $"{nameof(DestroyAfterTurns)}: CurrentTurnCount={dafc.CurrentTurnCount}, DestroyAfterTurnCount={dafc.DestroyAfterTurnCount}";
+        return $"{nameof(DestroyAfterTurns)}: CurrentTurnCount={dafc.CurrentTurnCount}, DestroyAfterTurnCount={dafc.DestroyAfterTurnCount}, Active={dafc.Active}";
     }
 }

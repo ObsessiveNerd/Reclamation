@@ -5,7 +5,6 @@ using UnityEngine;
 public class Inventory : Component
 {
     public List<IEntity> InventoryItems = new List<IEntity>();
-    bool m_EmptyBag = false;
 
     public Inventory()
     {
@@ -16,9 +15,19 @@ public class Inventory : Component
         RegisteredEvents.Add(GameEventId.EmptyBag);
     }
 
+    void EntityDestroyed(IEntity e)
+    {
+        if (InventoryItems.Contains(e))
+        {
+            e.Destroyed -= EntityDestroyed;
+            InventoryItems.Remove(e);
+        }
+    }
+
     public void AddToInventory(IEntity e)
     {
         InventoryItems.Add(e);
+        e.Destroyed += EntityDestroyed;
     }
 
     public override void HandleEvent(GameEvent gameEvent)
@@ -38,20 +47,21 @@ public class Inventory : Component
         if(gameEvent.ID == GameEventId.RemoveFromInventory)
         {
             IEntity item = (IEntity)gameEvent.Paramters[EventParameters.Entity];
-            if (!m_EmptyBag)
+            if (InventoryItems.Contains(item))
+            {
+                item.Destroyed -= EntityDestroyed;
                 InventoryItems.Remove(item);
+            }
         }
 
-        if(gameEvent.ID == GameEventId.EmptyBag)
-        {
-            m_EmptyBag = true;
-            foreach (IEntity item in InventoryItems)
-                FireEvent(World.Instance.Self, new GameEvent(GameEventId.Drop, new KeyValuePair<string, object>(EventParameters.Entity, item),
-                                                                                new KeyValuePair<string, object>(EventParameters.Creature, Self),
-                                                                                new KeyValuePair<string, object>(EventParameters.EntityType, EntityType.Item)));
-            m_EmptyBag = false;
-            InventoryItems.Clear();
-        }
+        //if(gameEvent.ID == GameEventId.EmptyBag)
+        //{
+        //    foreach (IEntity item in InventoryItems)
+        //        FireEvent(World.Instance.Self, new GameEvent(GameEventId.Drop, new KeyValuePair<string, object>(EventParameters.Entity, item),
+        //                                                                        new KeyValuePair<string, object>(EventParameters.Creature, Self),
+        //                                                                        new KeyValuePair<string, object>(EventParameters.EntityType, EntityType.Item)));
+        //    InventoryItems.Clear();
+        //}
     }
 }
 

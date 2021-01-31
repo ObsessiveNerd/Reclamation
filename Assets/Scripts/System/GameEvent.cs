@@ -24,6 +24,8 @@ public static class GameEventId
     public const string AddToInventory = nameof(AddToInventory);
     public const string RemoveFromInventory = nameof(RemoveFromInventory);
     public const string EmptyBag = nameof(EmptyBag);
+    public const string ItemEquipped = nameof(ItemEquipped);
+    public const string ItemUnequipped = nameof(ItemUnequipped);
     public const string Equip = nameof(Equip);
     public const string Unequip = nameof(Unequip);
     public const string GetRangedWeapon = nameof(GetRangedWeapon);
@@ -67,6 +69,8 @@ public static class GameEventId
     public const string StartTurn = nameof(StartTurn);
     public const string CharacterRotated = nameof(CharacterRotated);
     public const string UpdateEntity = nameof(UpdateEntity);
+    public const string ActivateObject = nameof(ActivateObject);
+    public const string DeactivateObject = nameof(DeactivateObject);
     public const string EndTurn = nameof(EndTurn);
     public const string RegisterWithTimeSystem = nameof(RegisterWithTimeSystem);
     public const string RegisterPlayableCharacter = nameof(RegisterPlayableCharacter);
