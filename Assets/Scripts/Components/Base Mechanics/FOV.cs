@@ -22,9 +22,16 @@ public class FOV : Component
 
     public override void HandleEvent(GameEvent gameEvent)
     {
-        if(gameEvent.ID == GameEventId.AfterMoving)
-            FireEvent(World.Instance.Self, new GameEvent(GameEventId.FOVRecalculated, new KeyValuePair<string, object>(EventParameters.Entity, Self),
+        if (gameEvent.ID == GameEventId.AfterMoving)
+        {
+            int baseRange = FOVRange;
+            GameEvent beforeFOVCalculated = new GameEvent(GameEventId.BeforeFOVRecalculated, new KeyValuePair<string, object>(EventParameters.FOVRange, FOVRange));
+            beforeFOVCalculated = (GameEvent)FireEvent(Self, new GameEvent(GameEventId.CheckEquipment, new KeyValuePair<string, object>(EventParameters.GameEvent, beforeFOVCalculated))).Paramters[EventParameters.GameEvent];
+            FOVRange = (int)beforeFOVCalculated.Paramters[EventParameters.FOVRange];
+            FireEvent(Self, new GameEvent(GameEventId.FOVRecalculated, new KeyValuePair<string, object>(EventParameters.Entity, Self),
                                                                                         new KeyValuePair<string, object>(EventParameters.VisibleTiles, m_Fov.GetVisibleTiles(Self, FOVRange))));
+            FOVRange = baseRange;
+        }
     }
 }
 

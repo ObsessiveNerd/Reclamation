@@ -12,6 +12,7 @@ public class World : MonoBehaviour
     public GameObject TilePrefab;
     public bool StartNew;
     IEntity m_World;
+    [HideInInspector]
     public int MapColumns, MapRows;
 
     // Start is called before the first frame update

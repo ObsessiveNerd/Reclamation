@@ -3,6 +3,7 @@ Creature<Architype>(
 	EntityTypeContainer: Creature
 	RegisterWithTimeSystem
 	AIController
+	AIFOVHandler
 	InteractsWithWorld
 	InteractOnTileOvertake
 	Position

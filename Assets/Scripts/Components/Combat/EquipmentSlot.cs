@@ -8,11 +8,20 @@ public class EquipmentSlot : Component
 
     public EquipmentSlot()
     {
-        //m_Equipment = equipment;
         RegisteredEvents.Add(GameEventId.AddArmorValue);
         RegisteredEvents.Add(GameEventId.GetEquipment);
         RegisteredEvents.Add(GameEventId.Equip);
         RegisteredEvents.Add(GameEventId.Unequip);
+        RegisteredEvents.Add(GameEventId.CheckEquipment);
+    }
+
+    void EquipmentDestroyed()
+    {
+        if(m_Equipment != null)
+        {
+            m_Equipment.Destroyed -= EquipmentDestroyed;
+            m_Equipment = null;
+        }
     }
 
     public override void HandleEvent(GameEvent gameEvent)
@@ -28,12 +37,19 @@ public class EquipmentSlot : Component
             if (m_Equipment != null)
                 FireEvent(Self, new GameEvent(GameEventId.Unequip));
             m_Equipment = (IEntity)gameEvent.Paramters[EventParameters.Equipment];
+            m_Equipment.Destroyed += EquipmentDestroyed;
         }
 
         if(gameEvent.ID == GameEventId.Unequip)
         {
             FireEvent(Self, new GameEvent(GameEventId.AddToInventory, new KeyValuePair<string, object>(EventParameters.Entity, m_Equipment)));
             m_Equipment = null;
+        }
+
+        if(gameEvent.ID == GameEventId.CheckEquipment)
+        {
+            GameEvent ge = (GameEvent)gameEvent.Paramters[EventParameters.GameEvent];
+            FireEvent(m_Equipment, ge);
         }
     }
 }

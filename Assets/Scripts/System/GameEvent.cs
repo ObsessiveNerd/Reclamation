@@ -6,6 +6,7 @@ public static class GameEventId
 {
     //FOV
     public const string FOVRecalculated = nameof(FOVRecalculated);
+    public const string BeforeFOVRecalculated = nameof(BeforeFOVRecalculated);
     public const string SetVisibility = nameof(SetVisibility);
     public const string VisibilityUpdated = nameof(VisibilityUpdated);
     public const string CheckVisibility = nameof(CheckVisibility);
@@ -112,6 +113,7 @@ public static class GameEventId
 
     //Body
     public const string GrowBodyPart = nameof(GrowBodyPart);
+    public const string CheckEquipment = nameof(CheckEquipment);
 
     //Data Request
     public const string GetEntities = nameof(GetEntities);
@@ -152,12 +154,14 @@ public static class EventParameters
     public const string RollToHit = nameof(RollToHit);
     public const string WeaponType = nameof(WeaponType);
     public const string AdditionalGameEvents = nameof(AdditionalGameEvents);
+    public const string GameEvent = nameof(GameEvent);
     public const string Enemy = nameof(Enemy);
     public const string Equipment = nameof(Equipment);
     public const string Seed = nameof(Seed);
     public const string GameObject = nameof(GameObject);
     public const string TileInSight = nameof(TileInSight);
     public const string VisibleTiles = nameof(VisibleTiles);
+    public const string FOVRange = nameof(FOVRange);
 }
 
 public class GameEvent

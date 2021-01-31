@@ -89,8 +89,10 @@ public class PlayerManager : WorldComponent
         if (!entity.HasComponent(typeof(RegisterPlayableCharacter)))
         {
             entity.RemoveComponent(typeof(AIController));
+            entity.RemoveComponent(typeof(AIFOVHandler));
             entity.RemoveComponent(typeof(RegisterWithTimeSystem));
             entity.AddComponent(new RegisterPlayableCharacter());
+            entity.AddComponent(new PlayerFOVHandler());
             entity.CleanupComponents();
         }
     }

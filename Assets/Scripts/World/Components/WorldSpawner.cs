@@ -34,6 +34,8 @@ public class WorldSpawner : WorldComponent
         {
             IEntity entity = (IEntity)gameEvent.Paramters[EventParameters.Entity];
             EntityType entityType = (EntityType)gameEvent.Paramters[EventParameters.EntityType];
+            if (!m_EntityToPointMap.ContainsKey(entity)) return;
+
             Point currentPoint = m_EntityToPointMap[entity];
             GameEvent despawn = new GameEvent(GameEventId.Despawn, new KeyValuePair<string, object>(EventParameters.Entity, entity),
                                                                    new KeyValuePair<string, object>(EventParameters.EntityType, entityType));

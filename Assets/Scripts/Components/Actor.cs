@@ -18,11 +18,24 @@ public class Actor : IEntity
             return m_AddQueue.Count > 0 || m_RemoveQueue.Count > 0;
         }
     }
+
+    public Action Destroyed
+    {
+        get;
+        set;
+    }
+
     public Actor(string name)
     {
         Name = name;
         ID = Guid.NewGuid().ToString();
         m_Components = new PriorityQueue<IComponent>(new ComponentComparer());
+        Destroyed = OnDestroy;
+    }
+
+    public virtual void OnDestroy()
+    {
+
     }
 
     public GameEvent FireEvent(IEntity target, GameEvent gameEvent)

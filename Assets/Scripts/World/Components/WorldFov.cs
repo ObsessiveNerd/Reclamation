@@ -32,8 +32,9 @@ public class WorldFov : WorldComponent
             if (!m_PlayerToVisibleTiles.ContainsKey(source))
                 m_PlayerToVisibleTiles.Add(source, newVisibleTiles);
 
-            UpdateTiles(newVisibleTiles);
+            List<Point> oldVisibleTiles = m_PlayerToVisibleTiles[source];
             m_PlayerToVisibleTiles[source] = newVisibleTiles;
+            UpdateTiles(oldVisibleTiles);
         }
 
         if(gameEvent.ID == GameEventId.IsTileBlocking)
@@ -53,11 +54,15 @@ public class WorldFov : WorldComponent
         }
     }
 
-    void UpdateTiles(List<Point> visibleTiles)
+    void UpdateTiles(List<Point> oldTiles)
     {
-        foreach (Point tile in m_Tiles.Keys)
+        List<Point> allVisibleTiles = new List<Point>();
+        foreach (var key in m_PlayerToVisibleTiles.Keys)
+            allVisibleTiles.AddRange(m_PlayerToVisibleTiles[key]);
+
+        foreach (Point tile in oldTiles)
         {
-            if(visibleTiles.Contains(tile))
+            if(allVisibleTiles.Contains(tile))
                 FireEvent(m_Tiles[tile], new GameEvent(GameEventId.SetVisibility, new KeyValuePair<string, object>(EventParameters.TileInSight, true)));
             else
                 FireEvent(m_Tiles[tile], new GameEvent(GameEventId.SetVisibility, new KeyValuePair<string, object>(EventParameters.TileInSight, false)));

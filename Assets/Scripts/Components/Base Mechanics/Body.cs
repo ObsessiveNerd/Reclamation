@@ -20,6 +20,19 @@ public class Body : Component
     public List<IEntity> Arms = new List<IEntity>();
     public List<IEntity> Legs = new List<IEntity>();
 
+    private List<IEntity> m_AllBodyParts
+    {
+        get
+        {
+            List<IEntity> list = new List<IEntity>();
+            list.Add(Torso);
+            list.AddRange(Heads);
+            list.AddRange(Arms);
+            list.AddRange(Legs);
+            return list;
+        }
+    }
+
     public Body(int numHeads, int numArms = 0, int numLegs = 0)
     {
         Actor body = new Actor("Body");
@@ -43,6 +56,8 @@ public class Body : Component
         RegisteredEvents.Add(GameEventId.GetRangedWeapon);
         RegisteredEvents.Add(GameEventId.Equip);
         RegisteredEvents.Add(GameEventId.Unequip);
+        RegisteredEvents.Add(GameEventId.CheckEquipment);
+        RegisteredEvents.Add(GameEventId.EndTurn);
     }
 
     bool HasEquipment(IEntity e)
@@ -90,7 +105,7 @@ public class Body : Component
             }
         }
 
-        if(gameEvent.ID == GameEventId.Equip)
+        else if(gameEvent.ID == GameEventId.Equip)
         {
             BodyPart bp = (BodyPart)gameEvent.Paramters[EventParameters.EntityType];
             List<IEntity> target = new List<IEntity>();
@@ -127,7 +142,7 @@ public class Body : Component
             }
         }
 
-        if(gameEvent.ID == GameEventId.AddArmorValue)
+        else if (gameEvent.ID == GameEventId.AddArmorValue)
         {
             FireEvent(Torso, gameEvent);
             foreach(var head in Heads)
@@ -138,7 +153,7 @@ public class Body : Component
                 FireEvent(leg, gameEvent);
         }
 
-        if (gameEvent.ID == GameEventId.GetRangedWeapon)
+        else if (gameEvent.ID == GameEventId.GetRangedWeapon)
         {
             foreach (IEntity hand in Arms)
             {
@@ -156,7 +171,7 @@ public class Body : Component
             }
         }
 
-        if (gameEvent.ID == GameEventId.PerformAttack)
+        else if (gameEvent.ID == GameEventId.PerformAttack)
         {
             TypeWeapon desiredWeaponToAttack = (TypeWeapon)gameEvent.Paramters[EventParameters.WeaponType];
             foreach (IEntity hand in Arms)
@@ -167,10 +182,23 @@ public class Body : Component
             }
         }
 
-        if(gameEvent.ID == GameEventId.GrowBodyPart)
+        else if (gameEvent.ID == GameEventId.GrowBodyPart)
         {
             BodyPart bodyPartType = (BodyPart)gameEvent.Paramters[EventParameters.EntityType];
             GrowBodyPart(bodyPartType);
+        }
+
+        else if (gameEvent.ID == GameEventId.CheckEquipment)
+        {
+            foreach(IEntity bodyPart in m_AllBodyParts)
+                FireEvent(bodyPart, gameEvent);
+        }
+
+        else if (gameEvent.ID == GameEventId.EndTurn)
+        {
+            GameEvent ge = new GameEvent(GameEventId.CheckEquipment, new KeyValuePair<string, object>(EventParameters.GameEvent, gameEvent));
+            foreach (IEntity bodyPart in m_AllBodyParts)
+                FireEvent(bodyPart, ge);
         }
     }
 
