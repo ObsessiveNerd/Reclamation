@@ -52,6 +52,9 @@ public static class GameEventId
     public const string ProgressTime = nameof(ProgressTime);
     public const string PauseTime = nameof(PauseTime);
     public const string UnPauseTime = nameof(UnPauseTime);
+    public const string RegisterEntity = nameof(RegisterEntity);
+    public const string DestroyEntity = nameof(DestroyEntity);
+    public const string GetEntity = nameof(GetEntity);
 
     //Moving
     public const string EntityOvertaking = nameof(EntityOvertaking);

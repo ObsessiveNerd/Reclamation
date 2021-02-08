@@ -20,6 +20,8 @@ public class WorldSpawner : WorldComponent
         {
             IEntity entity = (IEntity)gameEvent.Paramters[EventParameters.Entity];
             Point spawnPoint = (Point)gameEvent.Paramters[EventParameters.Point];
+            if (!m_Tiles.ContainsKey(spawnPoint)) return;
+
             FireEvent(entity, new GameEvent(GameEventId.SetPoint, new KeyValuePair<string, object>(EventParameters.TilePosition, spawnPoint)));
             FireEvent(m_Tiles[spawnPoint], gameEvent);
             FireEvent(Self, new GameEvent(GameEventId.UpdateWorldView));

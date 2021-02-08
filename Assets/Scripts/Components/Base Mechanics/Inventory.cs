@@ -15,19 +15,19 @@ public class Inventory : Component
         RegisteredEvents.Add(GameEventId.EmptyBag);
     }
 
-    void EntityDestroyed(IEntity e)
-    {
-        if (InventoryItems.Contains(e))
-        {
-            e.Destroyed -= EntityDestroyed;
-            InventoryItems.Remove(e);
-        }
-    }
+    //void EntityDestroyed(IEntity e)
+    //{
+    //    if (InventoryItems.Contains(e))
+    //    {
+    //        e.Destroyed -= EntityDestroyed;
+    //        InventoryItems.Remove(e);
+    //    }
+    //}
 
     public void AddToInventory(IEntity e)
     {
         InventoryItems.Add(e);
-        e.Destroyed += EntityDestroyed;
+        //e.Destroyed += EntityDestroyed;
     }
 
     public override void HandleEvent(GameEvent gameEvent)
@@ -49,7 +49,7 @@ public class Inventory : Component
             IEntity item = (IEntity)gameEvent.Paramters[EventParameters.Entity];
             if (InventoryItems.Contains(item))
             {
-                item.Destroyed -= EntityDestroyed;
+                //item.Destroyed -= EntityDestroyed;
                 InventoryItems.Remove(item);
             }
         }

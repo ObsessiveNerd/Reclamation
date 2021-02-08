@@ -41,7 +41,7 @@ public class DestroyAfterTurns : Component
             if (CurrentTurnCount >= DestroyAfterTurnCount)
             {
                 Spawner.Despawn(Self);
-                Self.Destroyed(Self);
+                //Self.Destroyed(Self);
             }
         }
     }

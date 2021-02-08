@@ -4,5 +4,5 @@ using UnityEngine;
 
 public interface IDungeonGenerator
 {
-    void GenerateDungeon(Dictionary<Point, Actor> pointToTileMap);
+    void GenerateDungeon(Dictionary<Point, Actor> pointToTileMap, out Point spawnPoint);
 }

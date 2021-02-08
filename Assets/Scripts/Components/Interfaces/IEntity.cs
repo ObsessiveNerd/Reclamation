@@ -6,6 +6,7 @@ using UnityEngine;
 public interface IEntity
 {
     GameEvent FireEvent(IEntity target, GameEvent gameEvent);
+    GameEvent FireEvent(GameEvent gameEvent);
     void HandleEvent(GameEvent gameEvent);
     void AddComponent(IComponent component);
     void RemoveComponent(IComponent component);
@@ -17,5 +18,5 @@ public interface IEntity
     string ID { get; }
     bool NeedsCleanup { get; }
     string Serialize();
-    Action<IEntity> Destroyed { get; set; }
+    //Action<IEntity> Destroyed { get; set; }
 }

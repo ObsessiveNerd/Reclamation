@@ -19,28 +19,44 @@ public class Actor : IEntity
         }
     }
 
-    public Action<IEntity> Destroyed
-    {
-        get;
-        set;
-    }
+    //public Action<IEntity> Destroyed
+    //{
+    //    get;
+    //    set;
+    //}
 
     public Actor(string name)
     {
         Name = name;
         ID = Guid.NewGuid().ToString();
         m_Components = new PriorityQueue<IComponent>(new ComponentComparer());
-        Destroyed = OnDestroy;
+        //Destroyed = OnDestroy;
+        FireEvent(World.Instance.Self, new GameEvent(GameEventId.RegisterEntity, new KeyValuePair<string, object>(EventParameters.Entity, this)));
     }
 
-    public virtual void OnDestroy(IEntity entity)
+    public Actor(string name, string id)
     {
-
+        Name = name;
+        ID = id;
+        m_Components = new PriorityQueue<IComponent>(new ComponentComparer());
+        //Destroyed = OnDestroy;
+        FireEvent(World.Instance.Self, new GameEvent(GameEventId.RegisterEntity, new KeyValuePair<string, object>(EventParameters.Entity, this)));
     }
+
+    //public virtual void OnDestroy(IEntity entity)
+    //{
+
+    //}
 
     public GameEvent FireEvent(IEntity target, GameEvent gameEvent)
     {
         target.HandleEvent(gameEvent);
+        return gameEvent;
+    }
+
+    public GameEvent FireEvent(GameEvent gameEvent)
+    {
+        HandleEvent(gameEvent);
         return gameEvent;
     }
 

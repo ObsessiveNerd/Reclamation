@@ -23,7 +23,7 @@ public class WorldInitialization : WorldComponent
 
             m_DungeonGenerator = new BasicDungeonGenerator(int.Parse(Seed), m_TilePrefab);
 
-            m_DungeonGenerator.GenerateDungeon(m_Tiles);
+            m_DungeonGenerator.GenerateDungeon(m_Tiles, out Point spawnPoint);
             Factions.Initialize();
             FireEvent(Self, new GameEvent(GameEventId.UpdateWorldView));
         }
