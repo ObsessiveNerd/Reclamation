@@ -54,50 +54,25 @@ public class SaveSystem : MonoBehaviour
         File.AppendAllText(path, "\n");
     }
 
-    //public void SetSaveDataSeed(int seed)
-    //{
-       
-    //}
-
-    //public void StoreLevelInfo(List<string> entities)
-    //{
-    //    m_Data.LevelInfo.Add(new LevelInfo(entities));
-    //}
-
-    //int m_LevelIndex = 0;
-    //public void MovingToNewLevel()
-    //{
-    //    m_LevelIndex++;
-    //    m_Data.CurrentLevelIndex = m_LevelIndex;
-    //}
-
-    //IEnumerator SaveAsync(bool movingToNewLevel = false)
-    //{
-    //    World.Instance.Self.FireEvent(World.Instance.Self, new GameEvent(GameEventId.PauseTime));
-    //    yield return null;
-
-    //    List<IEntity> entities = (List<IEntity>)World.Instance.Self.FireEvent(World.Instance.Self, new GameEvent(GameEventId.GetEntities, new KeyValuePair<string, object>(EventParameters.Value, new List<IEntity>()))).
-    //                                Paramters[EventParameters.Value];
-
-    //    List<string> serializedEntities = new List<string>();
-    //    foreach (IEntity entity in entities)
-    //        serializedEntities.Add(entity.Serialize());
-
-    //    StoreLevelInfo(serializedEntities);
-
-    //    string jsonData = JsonUtility.ToJson(m_Data, true);
-    //    string path = $"{kSaveDataPath}/{m_Data.Seed}/data.save";
-    //    Directory.CreateDirectory(Path.GetDirectoryName(path));
-    //    File.WriteAllText(path, jsonData);
-    //    World.Instance.Self.FireEvent(World.Instance.Self, new GameEvent(GameEventId.UnPauseTime));
-
-    //    if (movingToNewLevel)
-    //        MovingToNewLevel();
-    //}
-
-    public static void Load(string path)
+    public void Load(string path)
     {
-        Instance.StartCoroutine(Instance.LoadInternal(path));
+        //StartCoroutine(LoadInternal(path));
+
+        SaveData data = JsonUtility.FromJson<SaveData>(File.ReadAllText(path));
+        World.Instance.InitWorld(data.Seed);
+
+        foreach (string eventString in data.Events)
+        {
+            GameEventSerializable ges = JsonUtility.FromJson<GameEventSerializable>(eventString);
+            string targetID = ges.TargetEntityId;
+            GameEvent ge = ges.CreateGameEvent();
+            IEntity target = EntityQuery.GetEntity(targetID);
+
+            target.FireEvent(target, ge);
+            EventBuilder builder = new EventBuilder(GameEventId.ProgressTimeUntilIdHasTakenTurn)
+                                    .With(EventParameters.Entity, targetID);
+            World.Instance.Self.FireEvent(World.Instance.Self, builder.CreateEvent());
+        }
     }
 
     internal IEnumerator LoadInternal(string path)

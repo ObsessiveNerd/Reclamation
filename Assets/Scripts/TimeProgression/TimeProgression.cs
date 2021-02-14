@@ -59,6 +59,7 @@ public class TimeProgression
             if (m_Current == null)
                 Update();
         }
+        Update();
     }
 
     public void Update()

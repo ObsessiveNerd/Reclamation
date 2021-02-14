@@ -65,7 +65,7 @@ public class World : MonoBehaviour
         }
         else
         {
-            SaveSystem.Load($"{Directory.EnumerateDirectories(SaveSystem.kSaveDataPath).ToList()[0]}/data.save");
+            FindObjectOfType<SaveSystem>().Load($"{Directory.EnumerateDirectories(SaveSystem.kSaveDataPath).ToList()[0]}/data.save");
         }
     }
 

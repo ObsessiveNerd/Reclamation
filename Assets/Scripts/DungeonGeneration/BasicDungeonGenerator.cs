@@ -57,7 +57,7 @@ public class BasicDungeonGenerator : IDungeonGenerator
     GameObject m_TilePrefab;
     int m_Vertical, m_Horizontal, m_Columns, m_Rows;
     int m_MinRoomSize = 5;
-    int m_MaxRoomSize = 8;
+    //int m_MaxRoomSize = 8;
 
     List<DungeonPartition> m_LeafNodes = new List<DungeonPartition>();
 
