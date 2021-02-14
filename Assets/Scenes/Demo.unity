@@ -154,7 +154,9 @@ MonoBehaviour:
   Seed: 0
   TilePrefab: {fileID: 6901715319108000600, guid: bf8a7134af4c2944cba826274e0f314d,
     type: 3}
-  StartNew: 0
+  StartNew: 1
+  MapColumns: 0
+  MapRows: 0
 --- !u!4 &855845759
 Transform:
   m_ObjectHideFlags: 0
@@ -315,7 +317,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.12156863, g: 0.10980392, b: 0.15294118, a: 0}
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -332,7 +334,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 12
+  orthographic size: 10
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2

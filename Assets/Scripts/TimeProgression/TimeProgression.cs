@@ -40,6 +40,27 @@ public class TimeProgression
         };
     }
 
+    public void ProgressTimeUntilEntityHasTakenTurn(string id)
+    {
+        Update();
+        if (m_Current == null)
+            Update();
+
+        if (m_Current.Value.ID == id)
+        {
+            Update();
+            if (m_Current == null)
+                Update();
+        }
+
+        while (m_Current.Value.ID != id)
+        {
+            Update();
+            if (m_Current == null)
+                Update();
+        }
+    }
+
     public void Update()
     {
         if (m_EntityList.Count == 0)

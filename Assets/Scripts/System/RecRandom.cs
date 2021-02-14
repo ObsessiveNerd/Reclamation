@@ -10,14 +10,17 @@ public class RecRandom
     {   get
         {
             if (m_Instance == null)
-                m_Instance = new RecRandom(0);
+                m_Instance = new RecRandom();
             return m_Instance;
         }
     }
 
-    public RecRandom(int seed = 0)
+    public static int InitRecRandom(int seed = 0)
     {
-        //m_Seed = seed;
+        m_Instance = new RecRandom();
+        m_Instance.m_Seed = seed;
+        UnityEngine.Random.InitState(m_Instance.m_Seed);
+        return m_Instance.m_Seed;
     }
 
     public int GetRandomValue(int low, int high)

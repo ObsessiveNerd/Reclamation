@@ -51,6 +51,7 @@ public static class GameEventId
     //public const string ApplyEventToTile = nameof(ApplyEventToTile);
     public const string AddComponentToTile = nameof(AddComponentToTile);
     public const string ProgressTime = nameof(ProgressTime);
+    public const string ProgressTimeUntilIdHasTakenTurn = nameof(ProgressTimeUntilIdHasTakenTurn);
     public const string PauseTime = nameof(PauseTime);
     public const string UnPauseTime = nameof(UnPauseTime);
     public const string RegisterEntity = nameof(RegisterEntity);

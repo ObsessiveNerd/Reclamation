@@ -9,6 +9,7 @@ public class WorldUpdate : WorldComponent
         base.Init(self);
         RegisteredEvents.Add(GameEventId.UpdateWorldView);
         RegisteredEvents.Add(GameEventId.ProgressTime);
+        RegisteredEvents.Add(GameEventId.ProgressTimeUntilIdHasTakenTurn);
         RegisteredEvents.Add(GameEventId.PauseTime);
         RegisteredEvents.Add(GameEventId.UnPauseTime);
     }
@@ -19,6 +20,12 @@ public class WorldUpdate : WorldComponent
         {
             foreach (var tile in m_Tiles)
                 tile.Value.FireEvent(tile.Value, new GameEvent(GameEventId.UpdateTile));
+        }
+
+        if(gameEvent.ID == GameEventId.ProgressTimeUntilIdHasTakenTurn)
+        {
+            string id = (string)gameEvent.Paramters[EventParameters.Entity];
+            m_TimeProgression.ProgressTimeUntilEntityHasTakenTurn(id);
         }
 
         if (gameEvent.ID == GameEventId.ProgressTime)

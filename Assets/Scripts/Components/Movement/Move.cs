@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -16,7 +17,12 @@ public class Move : Component
     {
         if (gameEvent.ID == GameEventId.MoveKeyPressed)
         {
-            MoveDirection direction = (MoveDirection)gameEvent.Paramters[EventParameters.InputDirection];
+            MoveDirection direction;
+            if (gameEvent.Paramters[EventParameters.InputDirection] is string)
+                direction = (MoveDirection)Enum.Parse(typeof(MoveDirection), gameEvent.Paramters[EventParameters.InputDirection].ToString());
+            else
+                direction = (MoveDirection)gameEvent.Paramters[EventParameters.InputDirection];
+
             KeyValuePair<string, object> data = new KeyValuePair<string, object>(EventParameters.InputDirection, direction);
             KeyValuePair<string, object> requiredEnergy = new KeyValuePair<string, object>(EventParameters.RequiredEnergy, m_EnergyRequired);
             GameEvent beforeMoving = new GameEvent(GameEventId.BeforeMoving, data, requiredEnergy);

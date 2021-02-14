@@ -28,7 +28,7 @@ public class Actor : IEntity
     public Actor(string name)
     {
         Name = name;
-        ID = Guid.NewGuid().ToString();
+        ID = IDManager.GetNewID().ToString();
         m_Components = new PriorityQueue<IComponent>(new ComponentComparer());
         //Destroyed = OnDestroy;
         FireEvent(World.Instance.Self, new GameEvent(GameEventId.RegisterEntity, new KeyValuePair<string, object>(EventParameters.Entity, this)));
@@ -37,7 +37,7 @@ public class Actor : IEntity
     public Actor(string name, string id)
     {
         Name = name;
-        ID = string.IsNullOrEmpty(id) ? Guid.NewGuid().ToString() : id;
+        ID = string.IsNullOrEmpty(id) ? IDManager.GetNewID().ToString() : id;
         m_Components = new PriorityQueue<IComponent>(new ComponentComparer());
         //Destroyed = OnDestroy;
         FireEvent(World.Instance.Self, new GameEvent(GameEventId.RegisterEntity, new KeyValuePair<string, object>(EventParameters.Entity, this)));

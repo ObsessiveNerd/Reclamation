@@ -23,13 +23,12 @@ public class World : MonoBehaviour
         else
             return;
 
+        Application.quitting += () => GameObject.FindObjectOfType<SaveSystem>().Save();
+
         int m_Vertical = (int)Camera.main.orthographicSize;
         int m_Horizontal = (int)(m_Vertical * Camera.main.aspect);
         MapColumns = m_Horizontal * 2;
         MapRows = m_Vertical * 2;
-
-        Seed = RecRandom.Instance.GetRandomValue(0, int.MaxValue);
-        SaveSystem.Instance.SetSaveDataSeed(Seed);
 
         m_World = new Actor("World");
 
@@ -46,28 +45,49 @@ public class World : MonoBehaviour
         m_World.AddComponent(new EntityMap());
         m_World.CleanupComponents();
 
-        IEntity player = EntityFactory.CreateEntity("Dwarf");
-        IEntity player2 = EntityFactory.CreateEntity("Dwarf");
-        IEntity goblin = EntityFactory.CreateEntity("Goblin");
-        IEntity helm = EntityFactory.CreateEntity("Helmet");
-
-        m_World.FireEvent(m_World, new GameEvent(GameEventId.StartWorld, new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.Seed, "0"),
-                                                                            new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.GameObject, TilePrefab)));
-
         if (StartNew)
         {
+            IEntity player = EntityFactory.CreateEntity("Dwarf");
+            IEntity player2 = EntityFactory.CreateEntity("Dwarf");
+            IEntity goblin = EntityFactory.CreateEntity("Goblin");
+            IEntity helm = EntityFactory.CreateEntity("Helmet");
+
             m_World.FireEvent(m_World, new GameEvent(GameEventId.ConvertToPlayableCharacter, new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.Entity, player.ID)));
             m_World.FireEvent(m_World, new GameEvent(GameEventId.ConvertToPlayableCharacter, new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.Entity, player2.ID)));
+
+            Seed = RecRandom.InitRecRandom(Random.Range(0, int.MaxValue));
+            m_World.FireEvent(m_World, new GameEvent(GameEventId.StartWorld, new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.Seed, Seed.ToString()),
+                                                                            new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.GameObject, TilePrefab)));
 
             Spawner.Spawn(player, 0, 0);
             Spawner.Spawn(player2, 5, 9);
             Spawner.Spawn(goblin, 10, 12);
-            //Spawner.Spawn(helm, 5, 5);
         }
         else
         {
             SaveSystem.Load($"{Directory.EnumerateDirectories(SaveSystem.kSaveDataPath).ToList()[0]}/data.save");
         }
+    }
+
+    public void InitWorld(int seed)
+    {
+        IEntity player = EntityFactory.CreateEntity("Dwarf");
+        IEntity player2 = EntityFactory.CreateEntity("Dwarf");
+        IEntity goblin = EntityFactory.CreateEntity("Goblin");
+        IEntity helm = EntityFactory.CreateEntity("Helmet");
+
+        m_World.FireEvent(m_World, new GameEvent(GameEventId.ConvertToPlayableCharacter, new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.Entity, player.ID)));
+        m_World.FireEvent(m_World, new GameEvent(GameEventId.ConvertToPlayableCharacter, new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.Entity, player2.ID)));
+
+        Seed = RecRandom.InitRecRandom(seed);
+        m_World.FireEvent(m_World, new GameEvent(GameEventId.StartWorld, new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.Seed, Seed.ToString()),
+                                                                            new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.GameObject, TilePrefab)));
+
+        Spawner.Spawn(player, 0, 0);
+        Spawner.Spawn(player2, 5, 9);
+        Spawner.Spawn(goblin, 10, 12);
+
+        m_World.FireEvent(m_World, new GameEvent(GameEventId.ProgressTime));
     }
 
     private void Update()

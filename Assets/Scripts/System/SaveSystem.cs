@@ -6,25 +6,14 @@ using System.Text;
 using UnityEngine;
 
 [Serializable]
-public class LevelInfo
-{
-    public List<string> Entites = new List<string>();
-    public LevelInfo(List<string> entities)
-    {
-        Entites = entities;
-    }
-}
-
-[Serializable]
 public class SaveData
 {
     public int Seed;
-    public int CurrentLevelIndex;
-    public List<LevelInfo> LevelInfo = new List<LevelInfo>();
-
+    public List<string> Events;
     public SaveData(int seed)
     {
         Seed = seed;
+        Events = new List<string>();
     }
 }
 
@@ -42,33 +31,45 @@ public class SaveSystem : MonoBehaviour
 
     public void Save()
     {
-        //StartCoroutine(SaveAsync());
+        m_Data = new SaveData(World.Instance.Seed);
+
+        string path = $"{kSaveDataPath}/{World.Instance.Seed}/tmp_event_log.txt";
+        using (var reader = new StreamReader(path))
+        {
+            while (!reader.EndOfStream)
+            {
+                string line = reader.ReadLine();
+                m_Data.Events.Add(line);
+            }
+        }
+
+        File.WriteAllText($"{kSaveDataPath}/{World.Instance.Seed}/data.save", JsonUtility.ToJson(m_Data));
     }
 
     public static void LogEvent(string targetId, GameEvent gameEvent)
     {
-        string path = $"{kSaveDataPath}/test/data.save";
+        string path = $"{kSaveDataPath}/{World.Instance.Seed}/tmp_event_log.txt";
         Directory.CreateDirectory(Path.GetDirectoryName(path));
         File.AppendAllText(path, JsonUtility.ToJson(new GameEventSerializable(targetId, gameEvent)));
         File.AppendAllText(path, "\n");
     }
 
-    public void SetSaveDataSeed(int seed)
-    {
-        m_Data = new SaveData(seed);
-    }
+    //public void SetSaveDataSeed(int seed)
+    //{
+       
+    //}
 
-    public void StoreLevelInfo(List<string> entities)
-    {
-        m_Data.LevelInfo.Add(new LevelInfo(entities));
-    }
+    //public void StoreLevelInfo(List<string> entities)
+    //{
+    //    m_Data.LevelInfo.Add(new LevelInfo(entities));
+    //}
 
-    int m_LevelIndex = 0;
-    public void MovingToNewLevel()
-    {
-        m_LevelIndex++;
-        m_Data.CurrentLevelIndex = m_LevelIndex;
-    }
+    //int m_LevelIndex = 0;
+    //public void MovingToNewLevel()
+    //{
+    //    m_LevelIndex++;
+    //    m_Data.CurrentLevelIndex = m_LevelIndex;
+    //}
 
     //IEnumerator SaveAsync(bool movingToNewLevel = false)
     //{
@@ -96,11 +97,27 @@ public class SaveSystem : MonoBehaviour
 
     public static void Load(string path)
     {
-        SaveData data = JsonUtility.FromJson<SaveData>(File.ReadAllText(path));
-        World.Instance.Seed = data.Seed;
+        Instance.StartCoroutine(Instance.LoadInternal(path));
+    }
 
-        foreach (var entity in data.LevelInfo[data.CurrentLevelIndex].Entites)
-            Spawner.Restore(EntityFactory.ParseEntityData(entity));
-        Instance.SetSaveDataSeed(data.Seed);
+    internal IEnumerator LoadInternal(string path)
+    {
+        SaveData data = JsonUtility.FromJson<SaveData>(File.ReadAllText(path));
+        World.Instance.InitWorld(data.Seed);
+
+        foreach (string eventString in data.Events)
+        {
+            GameEventSerializable ges = JsonUtility.FromJson<GameEventSerializable>(eventString);
+            string targetID = ges.TargetEntityId;
+            GameEvent ge = ges.CreateGameEvent();
+            IEntity target = EntityQuery.GetEntity(targetID);
+
+            target.FireEvent(target, ge);
+            EventBuilder builder = new EventBuilder(GameEventId.ProgressTimeUntilIdHasTakenTurn)
+                                    .With(EventParameters.Entity, targetID);
+            World.Instance.Self.FireEvent(World.Instance.Self, builder.CreateEvent());
+
+            yield return new WaitForSeconds(1.0f);
+        }
     }
 }
