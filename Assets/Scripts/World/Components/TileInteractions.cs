@@ -25,19 +25,19 @@ public class TileInteractions : WorldComponent
 
         if (gameEvent.ID == GameEventId.Pickup)
         {
-            IEntity entity = (IEntity)gameEvent.Paramters[EventParameters.Entity];
+            IEntity entity = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Entity]);
             Point p = m_EntityToPointMap[entity];
             FireEvent(m_Tiles[p], gameEvent);
         }
 
         if (gameEvent.ID == GameEventId.Drop)
         {
-            IEntity entity = (IEntity)gameEvent.Paramters[EventParameters.Entity];
-            IEntity droppingEntity = (IEntity)gameEvent.Paramters[EventParameters.Creature];
+            IEntity entity = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Entity]);
+            IEntity droppingEntity = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Creature]);
             EntityType entityType = (EntityType)gameEvent.Paramters[EventParameters.EntityType];
 
             Point p = m_EntityToPointMap[droppingEntity];
-            FireEvent(Self, new GameEvent(GameEventId.Spawn, new KeyValuePair<string, object>(EventParameters.Entity, entity),
+            FireEvent(Self, new GameEvent(GameEventId.Spawn, new KeyValuePair<string, object>(EventParameters.Entity, entity.ID),
                                                                     new KeyValuePair<string, object>(EventParameters.EntityType, EntityType.Item),
                                                                     new KeyValuePair<string, object>(EventParameters.Point, p)));
         }

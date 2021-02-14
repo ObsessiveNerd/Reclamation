@@ -50,17 +50,17 @@ public class PlayerManager : WorldComponent
 
         if (gameEvent.ID == GameEventId.ConvertToPlayableCharacter)
         {
-            ConvertToPlayableEntity((IEntity)gameEvent.Paramters[EventParameters.Entity]);
+            ConvertToPlayableEntity(EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Entity]));
         }
 
         if (gameEvent.ID == GameEventId.RegisterPlayableCharacter)
         {
-            RegisterPlayer((IEntity)gameEvent.Paramters[EventParameters.Entity]);
+            RegisterPlayer(EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Entity]));
         }
 
         if (gameEvent.ID == GameEventId.UnRegisterPlayer)
         {
-            UnregisterPlayer((IEntity)gameEvent.Paramters[EventParameters.Entity]);
+            UnregisterPlayer(EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Entity]));
         }
     }
 
@@ -103,7 +103,7 @@ public class PlayerManager : WorldComponent
         m_Players.Remove(entity);
         m_TimeProgression.RemoveEntity(entity);
         //m_PlayerToTimeProgressionMap.Remove(entity);
-        FireEvent(Self, new GameEvent(GameEventId.Despawn, new KeyValuePair<string, object>(EventParameters.Entity, entity),
+        FireEvent(Self, new GameEvent(GameEventId.Despawn, new KeyValuePair<string, object>(EventParameters.Entity, entity.ID),
                                                             new KeyValuePair<string, object>(EventParameters.EntityType, EntityType.Creature)));
     }
 }

@@ -23,7 +23,7 @@ public class Move : Component
             FireEvent(Self, beforeMoving);
 
             //Need to get a result from this and check that the world says it's valid to move in the desired direction
-            GameEvent beforeMovingCheckWorld = new GameEvent(GameEventId.BeforeMoving, new KeyValuePair<string, object>(EventParameters.Entity, Self),
+            GameEvent beforeMovingCheckWorld = new GameEvent(GameEventId.BeforeMoving, new KeyValuePair<string, object>(EventParameters.Entity, Self.ID),
                                                                             new KeyValuePair<string, object>(EventParameters.EntityType, EntityType.Creature),
                                                                             new KeyValuePair<string, object>(EventParameters.InputDirection, beforeMoving.Paramters[EventParameters.InputDirection]),
                                                                             requiredEnergy);
@@ -35,7 +35,7 @@ public class Move : Component
             float currentEnergy = (float)FireEvent(Self, new GameEvent(GameEventId.GetEnergy, new KeyValuePair<string, object>(EventParameters.Value, 0))).Paramters[EventParameters.Value];
             if (energyRequired > 0f && currentEnergy >= energyRequired)
             {
-                GameEvent moveWorld = new GameEvent(GameEventId.MoveEntity, new KeyValuePair<string, object>(EventParameters.Entity, Self),
+                GameEvent moveWorld = new GameEvent(GameEventId.MoveEntity, new KeyValuePair<string, object>(EventParameters.Entity, Self.ID),
                                                                                 new KeyValuePair<string, object>(EventParameters.EntityType, EntityType.Creature),
                                                                                 new KeyValuePair<string, object>(EventParameters.InputDirection, beforeMovingCheckWorld.Paramters[EventParameters.InputDirection]),
                                                                                 requiredEnergy);

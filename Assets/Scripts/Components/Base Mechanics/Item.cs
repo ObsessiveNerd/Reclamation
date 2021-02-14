@@ -14,18 +14,18 @@ public class Item : Component
     {
         if (gameEvent.ID == GameEventId.Pickup)
         {
-            IEntity entity = (IEntity)gameEvent.Paramters[EventParameters.Entity];
-            FireEvent(entity, new GameEvent(GameEventId.AddToInventory, new KeyValuePair<string, object>(EventParameters.Entity, Self)));
+            IEntity entity = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Entity]);
+            FireEvent(entity, new GameEvent(GameEventId.AddToInventory, new KeyValuePair<string, object>(EventParameters.Entity, Self.ID)));
         }
 
         if (gameEvent.ID == GameEventId.Drop)
         {
-            IEntity droppingEntity = (IEntity)gameEvent.Paramters[EventParameters.Entity];
-            FireEvent(World.Instance.Self, new GameEvent(GameEventId.Drop, new KeyValuePair<string, object>(EventParameters.Entity, Self),
+            IEntity droppingEntity = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Entity]);
+            FireEvent(World.Instance.Self, new GameEvent(GameEventId.Drop, new KeyValuePair<string, object>(EventParameters.Entity, Self.ID),
                                                                            new KeyValuePair<string, object>(EventParameters.EntityType, EntityType.Item),
-                                                                           new KeyValuePair<string, object>(EventParameters.Creature, droppingEntity)));
+                                                                           new KeyValuePair<string, object>(EventParameters.Creature, droppingEntity.ID)));
 
-            FireEvent(droppingEntity, new GameEvent(GameEventId.RemoveFromInventory, new KeyValuePair<string, object>(EventParameters.Entity, Self)));
+            FireEvent(droppingEntity, new GameEvent(GameEventId.RemoveFromInventory, new KeyValuePair<string, object>(EventParameters.Entity, Self.ID)));
         }
     }
 }

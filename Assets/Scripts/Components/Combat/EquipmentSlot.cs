@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class EquipmentSlot : Component
 {
-    IEntity m_Equipment;
+    string m_EquipmentId;
 
     public EquipmentSlot()
     {
@@ -27,35 +27,35 @@ public class EquipmentSlot : Component
     public override void HandleEvent(GameEvent gameEvent)
     {
         if (gameEvent.ID == GameEventId.AddArmorValue)
-            FireEvent(m_Equipment, gameEvent);
+            FireEvent(EntityQuery.GetEntity(m_EquipmentId), gameEvent);
 
         if (gameEvent.ID == GameEventId.GetEquipment)
-            gameEvent.Paramters[EventParameters.Equipment] = m_Equipment;
+            gameEvent.Paramters[EventParameters.Equipment] = m_EquipmentId;
 
         if (gameEvent.ID == GameEventId.Equip)
         {
-            if (m_Equipment != null)
+            if (m_EquipmentId != null)
                 FireEvent(Self, new GameEvent(GameEventId.Unequip));
 
-            FireEvent(m_Equipment, new GameEvent(GameEventId.ItemEquipped));
-            m_Equipment = (IEntity)gameEvent.Paramters[EventParameters.Equipment];
+            FireEvent(EntityQuery.GetEntity(m_EquipmentId), new GameEvent(GameEventId.ItemEquipped));
+            //m_EquipmentId = (string)gameEvent.Paramters[EventParameters.Equipment];
             //m_Equipment.Destroyed += EquipmentDestroyed;
         }
 
         if(gameEvent.ID == GameEventId.Unequip)
         {
-            if (m_Equipment != null)
+            if (m_EquipmentId != null)
             {
-                FireEvent(Self, new GameEvent(GameEventId.AddToInventory, new KeyValuePair<string, object>(EventParameters.Entity, m_Equipment)));
-                FireEvent(m_Equipment, new GameEvent(GameEventId.ItemUnequipped));
-                m_Equipment = null;
+                FireEvent(Self, new GameEvent(GameEventId.AddToInventory, new KeyValuePair<string, object>(EventParameters.Entity, m_EquipmentId)));
+                FireEvent(EntityQuery.GetEntity(m_EquipmentId), new GameEvent(GameEventId.ItemUnequipped));
+                m_EquipmentId = null;
             }
         }
 
         if(gameEvent.ID == GameEventId.CheckEquipment)
         {
             GameEvent ge = (GameEvent)gameEvent.Paramters[EventParameters.GameEvent];
-            FireEvent(m_Equipment, ge);
+            FireEvent(EntityQuery.GetEntity(m_EquipmentId), ge);
         }
     }
 }

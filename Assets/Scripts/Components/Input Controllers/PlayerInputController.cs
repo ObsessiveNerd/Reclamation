@@ -11,7 +11,7 @@ public class PlayerInputController : InputControllerBase
             MoveDirection desiredDirection = InputUtility.GetMoveDirection();
 
             if (desiredDirection != MoveDirection.None)
-                FireEvent(Self, new GameEvent(GameEventId.MoveKeyPressed, new KeyValuePair<string, object>(EventParameters.InputDirection, desiredDirection)));
+                FireEvent(Self, new GameEvent(GameEventId.MoveKeyPressed, new KeyValuePair<string, object>(EventParameters.InputDirection, desiredDirection)), true);
 
             else if (Input.GetKeyDown(KeyCode.I))
             {
@@ -28,7 +28,7 @@ public class PlayerInputController : InputControllerBase
             else if (Input.GetKeyDown(KeyCode.F))
             {
                 GameEvent getRangedWeapon = FireEvent(Self, new GameEvent(GameEventId.GetRangedWeapon, new KeyValuePair<string, object>(EventParameters.Value, null)));
-                IEntity rangedWeapon = (IEntity)getRangedWeapon.Paramters[EventParameters.Value];
+                IEntity rangedWeapon = EntityQuery.GetEntity((string)getRangedWeapon.Paramters[EventParameters.Value]);
                 if (rangedWeapon != null)
                 {
                     Self.RemoveComponent(this);
@@ -56,7 +56,7 @@ public class PlayerInputController : InputControllerBase
 
             else if (Input.GetKeyDown(KeyCode.G))
             {
-                FireEvent(World.Instance.Self, new GameEvent(GameEventId.Pickup, new KeyValuePair<string, object>(EventParameters.Entity, Self)));
+                FireEvent(World.Instance.Self, new GameEvent(GameEventId.Pickup, new KeyValuePair<string, object>(EventParameters.Entity, Self.ID)));
                 gameEvent.Paramters[EventParameters.UpdateWorldView] = true;
             }
 
@@ -73,7 +73,7 @@ public class PlayerInputController : InputControllerBase
                 if (result.Count == 0)
                     return;
                 if(result.Count == 1)
-                    FireEvent(World.Instance.Self, new GameEvent(GameEventId.Interact, new KeyValuePair<string, object>(EventParameters.Entity, Self),
+                    FireEvent(World.Instance.Self, new GameEvent(GameEventId.Interact, new KeyValuePair<string, object>(EventParameters.Entity, Self.ID),
                                                                                         new KeyValuePair<string, object>(EventParameters.TilePosition, result[0])));
                 else
                 {
@@ -82,7 +82,7 @@ public class PlayerInputController : InputControllerBase
                     {
                         Self.RemoveComponent(typeof(PromptForDirectionController));
                         Self.AddComponent(new PlayerInputController());
-                        FireEvent(World.Instance.Self, new GameEvent(GameEventId.InteractInDirection, new KeyValuePair<string, object>(EventParameters.Entity, Self),
+                        FireEvent(World.Instance.Self, new GameEvent(GameEventId.InteractInDirection, new KeyValuePair<string, object>(EventParameters.Entity, Self.ID),
                                                                                                         new KeyValuePair<string, object>(EventParameters.InputDirection, dir)));
                     }));
                 }

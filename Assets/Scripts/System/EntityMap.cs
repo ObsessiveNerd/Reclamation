@@ -11,7 +11,7 @@ public class EntityMap : WorldComponent
         base.Init(self);
         RegisteredEvents.Add(GameEventId.RegisterEntity);
         RegisteredEvents.Add(GameEventId.DestroyEntity);
-        RegisteredEvents.Add(GameEventId.GetEnergy);
+        RegisteredEvents.Add(GameEventId.GetEntity);
     }
 
     public override void HandleEvent(GameEvent gameEvent)

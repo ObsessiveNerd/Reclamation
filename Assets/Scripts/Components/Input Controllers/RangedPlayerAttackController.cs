@@ -15,8 +15,9 @@ public class RangedPlayerAttackController : InputControllerBase
     public override void Init(IEntity self)
     {
         base.Init(self);
-        GameEvent selectTile = new GameEvent(GameEventId.SelectTile, new KeyValuePair<string, object>(EventParameters.Entity, Self),
-                                                                                new KeyValuePair<string, object>(EventParameters.Target, Self),
+        Debug.Log("target is still set to self");
+        GameEvent selectTile = new GameEvent(GameEventId.SelectTile, new KeyValuePair<string, object>(EventParameters.Entity, Self.ID),
+                                                                                new KeyValuePair<string, object>(EventParameters.Target, Self.ID),
                                                                                 new KeyValuePair<string, object>(EventParameters.TilePosition, null));
         FireEvent(World.Instance.Self, selectTile);
         m_TileSelection = (Point)selectTile.Paramters[EventParameters.TilePosition];

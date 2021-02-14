@@ -15,7 +15,7 @@ public class EntityMovement : WorldComponent
     {
         if (gameEvent.ID == GameEventId.BeforeMoving)
         {
-            IEntity entity = (IEntity)gameEvent.Paramters[EventParameters.Entity];
+            IEntity entity = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Entity]);
             MoveDirection moveDirection = (MoveDirection)gameEvent.Paramters[EventParameters.InputDirection];
             if (!m_EntityToPointMap.ContainsKey(entity)) return;
 
@@ -33,7 +33,7 @@ public class EntityMovement : WorldComponent
 
         if (gameEvent.ID == GameEventId.MoveEntity)
         {
-            IEntity entity = (IEntity)gameEvent.Paramters[EventParameters.Entity];
+            IEntity entity = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Entity]);
             if (!m_EntityToPointMap.ContainsKey(entity)) return;
             Point currentPoint = m_EntityToPointMap[entity];
             EntityType entityType = (EntityType)gameEvent.Paramters[EventParameters.EntityType];
@@ -47,11 +47,11 @@ public class EntityMovement : WorldComponent
                 //Just as a note, doing it this way isn't terribly efficient since despawn is going to remove things from the time progression
                 //This also means turn order is going to get fucked, so really we should do this proper and just event to the correct tiles here.
                 //I mean I guess things are despawning and spawning in order so maybe turn order won't get fucked.
-                GameEvent despawn = new GameEvent(GameEventId.Despawn, new KeyValuePair<string, object>(EventParameters.Entity, entity),
+                GameEvent despawn = new GameEvent(GameEventId.Despawn, new KeyValuePair<string, object>(EventParameters.Entity, entity.ID),
                                                                    new KeyValuePair<string, object>(EventParameters.EntityType, entityType));
                 FireEvent(m_Tiles[currentPoint], despawn);
 
-                GameEvent spawn = new GameEvent(GameEventId.Spawn, new KeyValuePair<string, object>(EventParameters.Entity, entity),
+                GameEvent spawn = new GameEvent(GameEventId.Spawn, new KeyValuePair<string, object>(EventParameters.Entity, entity.ID),
                                                                        new KeyValuePair<string, object>(EventParameters.EntityType, entityType));
 
                 FireEvent(m_Tiles[newPoint], spawn);

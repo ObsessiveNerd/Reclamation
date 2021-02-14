@@ -11,7 +11,7 @@ public class InteractsWithWorld : Component
 
     public override void HandleEvent(GameEvent gameEvent)
     {
-        IEntity target = (IEntity)gameEvent.Paramters[EventParameters.Target];
+        IEntity target = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Target]);
         Demeanor demeanor = Factions.GetDemeanorForTarget(Self, target);
 
         switch(demeanor)
@@ -22,7 +22,7 @@ public class InteractsWithWorld : Component
                 FireEvent(target, new GameEvent(GameEventId.Interact));
                 break;
             case Demeanor.Hostile:
-                FireEvent(Self, new GameEvent(GameEventId.PerformAttack, new KeyValuePair<string, object>(EventParameters.Target, target),
+                FireEvent(Self, new GameEvent(GameEventId.PerformAttack, new KeyValuePair<string, object>(EventParameters.Target, target.ID),
                                                                          new KeyValuePair<string, object>(EventParameters.WeaponType, TypeWeapon.Melee & TypeWeapon.Finesse)));
                 break;
         }

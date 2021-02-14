@@ -18,7 +18,8 @@ public class WorldSpawner : WorldComponent
     {
         if(gameEvent.ID == GameEventId.Spawn)
         {
-            IEntity entity = (IEntity)gameEvent.Paramters[EventParameters.Entity];
+            
+            IEntity entity = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Entity]);
             Point spawnPoint = (Point)gameEvent.Paramters[EventParameters.Point];
             if (!m_Tiles.ContainsKey(spawnPoint)) return;
 
@@ -34,7 +35,7 @@ public class WorldSpawner : WorldComponent
 
         if(gameEvent.ID == GameEventId.Despawn)
         {
-            IEntity entity = (IEntity)gameEvent.Paramters[EventParameters.Entity];
+            IEntity entity = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Entity]);
             EntityType entityType = (EntityType)gameEvent.Paramters[EventParameters.EntityType];
             if (!m_EntityToPointMap.ContainsKey(entity)) return;
 

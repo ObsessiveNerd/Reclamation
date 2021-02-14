@@ -42,7 +42,15 @@ public class SaveSystem : MonoBehaviour
 
     public void Save()
     {
-        StartCoroutine(SaveAsync());
+        //StartCoroutine(SaveAsync());
+    }
+
+    public static void LogEvent(string targetId, GameEvent gameEvent)
+    {
+        string path = $"{kSaveDataPath}/test/data.save";
+        Directory.CreateDirectory(Path.GetDirectoryName(path));
+        File.AppendAllText(path, JsonUtility.ToJson(new GameEventSerializable(targetId, gameEvent)));
+        File.AppendAllText(path, "\n");
     }
 
     public void SetSaveDataSeed(int seed)
@@ -62,29 +70,29 @@ public class SaveSystem : MonoBehaviour
         m_Data.CurrentLevelIndex = m_LevelIndex;
     }
 
-    IEnumerator SaveAsync(bool movingToNewLevel = false)
-    {
-        World.Instance.Self.FireEvent(World.Instance.Self, new GameEvent(GameEventId.PauseTime));
-        yield return null;
+    //IEnumerator SaveAsync(bool movingToNewLevel = false)
+    //{
+    //    World.Instance.Self.FireEvent(World.Instance.Self, new GameEvent(GameEventId.PauseTime));
+    //    yield return null;
 
-        List<IEntity> entities = (List<IEntity>)World.Instance.Self.FireEvent(World.Instance.Self, new GameEvent(GameEventId.GetEntities, new KeyValuePair<string, object>(EventParameters.Value, new List<IEntity>()))).
-                                    Paramters[EventParameters.Value];
+    //    List<IEntity> entities = (List<IEntity>)World.Instance.Self.FireEvent(World.Instance.Self, new GameEvent(GameEventId.GetEntities, new KeyValuePair<string, object>(EventParameters.Value, new List<IEntity>()))).
+    //                                Paramters[EventParameters.Value];
 
-        List<string> serializedEntities = new List<string>();
-        foreach (IEntity entity in entities)
-            serializedEntities.Add(entity.Serialize());
+    //    List<string> serializedEntities = new List<string>();
+    //    foreach (IEntity entity in entities)
+    //        serializedEntities.Add(entity.Serialize());
 
-        StoreLevelInfo(serializedEntities);
+    //    StoreLevelInfo(serializedEntities);
 
-        string jsonData = JsonUtility.ToJson(m_Data, true);
-        string path = $"{kSaveDataPath}/{m_Data.Seed}/data.save";
-        Directory.CreateDirectory(Path.GetDirectoryName(path));
-        File.WriteAllText(path, jsonData);
-        World.Instance.Self.FireEvent(World.Instance.Self, new GameEvent(GameEventId.UnPauseTime));
+    //    string jsonData = JsonUtility.ToJson(m_Data, true);
+    //    string path = $"{kSaveDataPath}/{m_Data.Seed}/data.save";
+    //    Directory.CreateDirectory(Path.GetDirectoryName(path));
+    //    File.WriteAllText(path, jsonData);
+    //    World.Instance.Self.FireEvent(World.Instance.Self, new GameEvent(GameEventId.UnPauseTime));
 
-        if (movingToNewLevel)
-            MovingToNewLevel();
-    }
+    //    if (movingToNewLevel)
+    //        MovingToNewLevel();
+    //}
 
     public static void Load(string path)
     {

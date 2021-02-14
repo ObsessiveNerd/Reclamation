@@ -35,18 +35,18 @@ public class Inventory : Component
         if (gameEvent.ID == GameEventId.OpenInventory)
         {
             FireEvent(World.Instance.Self, new GameEvent(GameEventId.OpenInventoryUI, new KeyValuePair<string, object>(EventParameters.Value, InventoryItems),
-                                                                                        new KeyValuePair<string, object>(EventParameters.Entity, Self)));
+                                                                                        new KeyValuePair<string, object>(EventParameters.Entity, Self.ID)));
         }
 
         if(gameEvent.ID == GameEventId.AddToInventory)
         {
-            IEntity item = (IEntity)gameEvent.Paramters[EventParameters.Entity];
+            IEntity item = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Entity]);
             InventoryItems.Add(item);
         }
 
         if(gameEvent.ID == GameEventId.RemoveFromInventory)
         {
-            IEntity item = (IEntity)gameEvent.Paramters[EventParameters.Entity];
+            IEntity item = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Entity]);
             if (InventoryItems.Contains(item))
             {
                 //item.Destroyed -= EntityDestroyed;

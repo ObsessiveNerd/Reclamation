@@ -9,7 +9,7 @@ public static class WorldUtility
         GameEvent result = source.FireEvent(World.Instance.Self, new GameEvent(GameEventId.GetEntityOnTile, new KeyValuePair<string, object>(EventParameters.TilePosition, position),
                                                                                             new KeyValuePair<string, object>(EventParameters.Entity, null)));
 
-        return (IEntity)result.Paramters[EventParameters.Entity];
+        return EntityQuery.GetEntity((string)result.Paramters[EventParameters.Entity]);
     }
 
     //public static IEntity GetClosestEnemyTo(IEntity e)

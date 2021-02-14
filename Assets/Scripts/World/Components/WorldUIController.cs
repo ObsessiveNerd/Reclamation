@@ -23,7 +23,7 @@ public class WorldUIController : WorldComponent
             GameObject ui = Resources.Load<GameObject>("UI/Inventory");
             m_ActiveUI = GameObject.Instantiate(ui, m_Canvas);
 
-            IEntity source = (IEntity)gameEvent.Paramters[EventParameters.Entity];
+            IEntity source = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Entity]);
             List<IEntity> inventory = (List<IEntity>)gameEvent.Paramters[EventParameters.Value];
             m_ActiveUI.GetComponent<InventoryMono>().Setup(source, inventory);
         }

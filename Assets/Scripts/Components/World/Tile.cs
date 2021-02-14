@@ -117,7 +117,7 @@ public class Tile : Component
 
         if (gameEvent.ID == GameEventId.Spawn)
         {
-            IEntity entity = (IEntity)gameEvent.Paramters[EventParameters.Entity];
+            IEntity entity = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Entity]);
             EntityType entityType = (EntityType)gameEvent.Paramters[EventParameters.EntityType];
             switch(entityType)
             {
@@ -135,11 +135,11 @@ public class Tile : Component
 
         if(gameEvent.ID == GameEventId.Pickup)
         {
-            IEntity entity = (IEntity)gameEvent.Paramters[EventParameters.Entity];
+            IEntity entity = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Entity]);
             List<IEntity> itemsPickedup = new List<IEntity>();
             foreach (var item in Items)
             {
-                FireEvent(entity, new GameEvent(GameEventId.AddToInventory, new KeyValuePair<string, object>(EventParameters.Entity, item)));
+                FireEvent(entity, new GameEvent(GameEventId.AddToInventory, new KeyValuePair<string, object>(EventParameters.Entity, item.ID)));
                 itemsPickedup.Add(item);
             }
 
@@ -149,7 +149,7 @@ public class Tile : Component
 
         if(gameEvent.ID == GameEventId.Despawn)
         {
-            IEntity entity = (IEntity)gameEvent.Paramters[EventParameters.Entity];
+            IEntity entity = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Entity]);
             EntityType entityType = (EntityType)gameEvent.Paramters[EventParameters.EntityType];
             switch (entityType)
             {
@@ -179,7 +179,7 @@ public class Tile : Component
 
         if (gameEvent.ID == GameEventId.GetEntityOnTile)
         {
-            gameEvent.Paramters[EventParameters.Entity] = GetTarget()[0];
+            gameEvent.Paramters[EventParameters.Entity] = GetTarget()[0].ID;
         }
 
         if(gameEvent.ID == GameEventId.IsTileBlocking)

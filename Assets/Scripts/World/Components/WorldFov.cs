@@ -26,7 +26,7 @@ public class WorldFov : WorldComponent
 
         if(gameEvent.ID == GameEventId.FOVRecalculated)
         {
-            IEntity source = (IEntity)gameEvent.Paramters[EventParameters.Entity];
+            IEntity source = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Entity]);
             List<Point> newVisibleTiles = (List<Point>)gameEvent.Paramters[EventParameters.VisibleTiles];
 
             if (!m_PlayerToVisibleTiles.ContainsKey(source))

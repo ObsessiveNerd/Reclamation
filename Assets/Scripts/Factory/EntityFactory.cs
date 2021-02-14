@@ -16,10 +16,10 @@ public static class EntityFactory
             path = $"{SaveSystem.kSaveDataPath}/{World.Instance.Seed}/Blueprints/{blueprintName}.bp"; //todo: need proper seed
         if (!File.Exists(path))
             return null;
-        return GetEntity(path);
+        return GetEntity(path, a.ID);
     }
 
-    public static IEntity GetEntity(string path)
+    public static IEntity GetEntity(string path, string entityID = "")
     {
         Actor a = null;
         using (var stream = new StreamReader(path))
@@ -32,7 +32,7 @@ public static class EntityFactory
             int nameLength = lastIndex - firstIndex - 1;
             string name = header.Substring(nameStart, nameLength);
 
-            a = new Actor(name);
+            a = new Actor(name, entityID);
 
             string line;
             while ((line = stream.ReadLine()) != null && line != ")")

@@ -11,15 +11,16 @@ public static class CombatUtility
         int rollToHit = (int)source.FireEvent(source, new GameEvent(GameEventId.RollToHit, new KeyValuePair<string, object>(EventParameters.RollToHit, 0),
                                                                           new KeyValuePair<string, object>(EventParameters.WeaponType, weaponType))).Paramters[EventParameters.RollToHit];
         RecLog.Log($"Roll to hit was {rollToHit}");
-        GameEvent checkWeaponAttack = source.FireEvent(weapon, new GameEvent(GameEventId.AmAttacking, new KeyValuePair<string, object>(EventParameters.RollToHit, rollToHit),
-                                                      new KeyValuePair<string, object>(EventParameters.Attack, weapon),
-                                                      new KeyValuePair<string, object>(EventParameters.DamageList, new List<Damage>()),
-                                                      new KeyValuePair<string, object>(EventParameters.AdditionalGameEvents, new List<GameEvent>())));
+
+        EventBuilder builder = new EventBuilder(GameEventId.AmAttacking)
+                                .With(EventParameters.RollToHit, rollToHit)
+                                .With(EventParameters.Attack, weapon)
+                                .With(EventParameters.DamageList, new List<Damage>());
+
+        GameEvent checkWeaponAttack = source.FireEvent(weapon, builder.CreateEvent());
 
         GameEvent attack = new GameEvent(GameEventId.TakeDamage, checkWeaponAttack.Paramters);
         source.FireEvent(target, attack);
-        foreach (var ge in (List<GameEvent>)checkWeaponAttack.Paramters[EventParameters.AdditionalGameEvents])
-            source.FireEvent(target, ge);
 
         source.FireEvent(source, new GameEvent(GameEventId.UseEnergy, new KeyValuePair<string, object>(EventParameters.Value, 1f))); //todo: temp energy value.  Energy value should come from the weapon probably
     }

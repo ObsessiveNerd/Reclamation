@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -160,7 +161,7 @@ public static class EventParameters
     public const string DamageType = nameof(DamageType);
     public const string RollToHit = nameof(RollToHit);
     public const string WeaponType = nameof(WeaponType);
-    public const string AdditionalGameEvents = nameof(AdditionalGameEvents);
+    //public const string AdditionalGameEvents = nameof(AdditionalGameEvents);
     public const string GameEvent = nameof(GameEvent);
     public const string Enemy = nameof(Enemy);
     public const string Equipment = nameof(Equipment);
@@ -169,6 +170,41 @@ public static class EventParameters
     public const string TileInSight = nameof(TileInSight);
     public const string VisibleTiles = nameof(VisibleTiles);
     public const string FOVRange = nameof(FOVRange);
+}
+
+[Serializable]
+public class GameEventSerializable
+{
+    [SerializeField]
+    public string TargetEntityId;
+    [SerializeField]
+    public string Id;
+    [SerializeField]
+    public List<string> ParameterKeys;
+    [SerializeField]
+    public List<string> ParameterValues;
+
+    public GameEventSerializable(string targetId, GameEvent ge)
+    {
+        TargetEntityId = targetId;
+        Id = ge.ID;
+        ParameterKeys = new List<string>();
+        ParameterValues = new List<string>();
+        foreach(var key in ge.Paramters.Keys)
+        {
+            ParameterKeys.Add(key);
+            ParameterValues.Add(ge.Paramters[key].ToString());
+        }
+    }
+
+    public GameEvent CreateGameEvent()
+    {
+        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        for(int i = 0; i < ParameterKeys.Count; i++)
+            parameters.Add(ParameterKeys[i], ParameterValues[i]);
+        GameEvent ge = new GameEvent(Id, parameters);
+        return ge;
+    }
 }
 
 public class GameEvent
@@ -192,5 +228,12 @@ public class GameEvent
     {
         m_ID = id;
         m_Parameters = parameters;
+    }
+
+    public T GetValue<T>(string parameterId)
+    {
+        if (Paramters.ContainsKey(parameterId))
+            return (T)Paramters[parameterId];
+        return default(T);
     }
 }

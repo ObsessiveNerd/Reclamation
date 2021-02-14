@@ -27,7 +27,10 @@ public class WorldDataQuery : WorldComponent
 
         if(gameEvent.ID == GameEventId.GetEntityLocation)
         {
-            if (m_EntityToPointMap.TryGetValue((IEntity)gameEvent.Paramters[EventParameters.Entity], out Point result))
+            EventBuilder eBuilder = new EventBuilder(GameEventId.GetEntity)
+                                    .With(EventParameters.Entity, null)
+                                    .With(EventParameters.Value, gameEvent.Paramters[EventParameters.Entity]);
+            if (m_EntityToPointMap.TryGetValue(FireEvent(Self, eBuilder.CreateEvent()).GetValue<IEntity>(EventParameters.Entity), out Point result))
                 gameEvent.Paramters[EventParameters.TilePosition] = result;
         }
     }

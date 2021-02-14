@@ -1,4 +1,4 @@
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 using UnityEngine;
 
@@ -28,11 +28,6 @@ public class World : MonoBehaviour
         MapColumns = m_Horizontal * 2;
         MapRows = m_Vertical * 2;
 
-        IEntity player = EntityFactory.CreateEntity("Dwarf");
-        IEntity player2 = EntityFactory.CreateEntity("Dwarf");
-        IEntity goblin = EntityFactory.CreateEntity("Goblin");
-        IEntity helm = EntityFactory.CreateEntity("Helmet");
-
         Seed = RecRandom.Instance.GetRandomValue(0, int.MaxValue);
         SaveSystem.Instance.SetSaveDataSeed(Seed);
 
@@ -49,20 +44,25 @@ public class World : MonoBehaviour
         m_World.AddComponent(new WorldDataQuery());
         m_World.AddComponent(new WorldFov());
         m_World.AddComponent(new EntityMap());
-
         m_World.CleanupComponents();
+
+        IEntity player = EntityFactory.CreateEntity("Dwarf");
+        IEntity player2 = EntityFactory.CreateEntity("Dwarf");
+        IEntity goblin = EntityFactory.CreateEntity("Goblin");
+        IEntity helm = EntityFactory.CreateEntity("Helmet");
+
         m_World.FireEvent(m_World, new GameEvent(GameEventId.StartWorld, new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.Seed, "0"),
                                                                             new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.GameObject, TilePrefab)));
 
         if (StartNew)
         {
-            m_World.FireEvent(m_World, new GameEvent(GameEventId.ConvertToPlayableCharacter, new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.Entity, player)));
-            m_World.FireEvent(m_World, new GameEvent(GameEventId.ConvertToPlayableCharacter, new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.Entity, player2)));
+            m_World.FireEvent(m_World, new GameEvent(GameEventId.ConvertToPlayableCharacter, new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.Entity, player.ID)));
+            m_World.FireEvent(m_World, new GameEvent(GameEventId.ConvertToPlayableCharacter, new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.Entity, player2.ID)));
 
-            Spawner.Spawn(player, 3, 3);
+            Spawner.Spawn(player, 0, 0);
             Spawner.Spawn(player2, 5, 9);
             Spawner.Spawn(goblin, 10, 12);
-            Spawner.Spawn(helm, 5, 5);
+            //Spawner.Spawn(helm, 5, 5);
         }
         else
         {

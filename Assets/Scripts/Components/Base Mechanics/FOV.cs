@@ -28,7 +28,7 @@ public class FOV : Component
             GameEvent beforeFOVCalculated = new GameEvent(GameEventId.BeforeFOVRecalculated, new KeyValuePair<string, object>(EventParameters.FOVRange, FOVRange));
             beforeFOVCalculated = (GameEvent)FireEvent(Self, new GameEvent(GameEventId.CheckEquipment, new KeyValuePair<string, object>(EventParameters.GameEvent, beforeFOVCalculated))).Paramters[EventParameters.GameEvent];
             FOVRange = (int)beforeFOVCalculated.Paramters[EventParameters.FOVRange];
-            FireEvent(Self, new GameEvent(GameEventId.FOVRecalculated, new KeyValuePair<string, object>(EventParameters.Entity, Self),
+            FireEvent(Self, new GameEvent(GameEventId.FOVRecalculated, new KeyValuePair<string, object>(EventParameters.Entity, Self.ID),
                                                                                         new KeyValuePair<string, object>(EventParameters.VisibleTiles, m_Fov.GetVisibleTiles(Self, FOVRange))));
             FOVRange = baseRange;
         }

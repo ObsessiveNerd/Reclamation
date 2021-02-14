@@ -16,7 +16,7 @@ public class Shadowcasting : IFovAlgorithm
     {
         m_Range = range;
         m_Source = source;
-        m_SourcePoint = (Point)source.FireEvent(World.Instance.Self, new GameEvent(GameEventId.GetEntityLocation, new KeyValuePair<string, object>(EventParameters.Entity, source),
+        m_SourcePoint = (Point)source.FireEvent(World.Instance.Self, new GameEvent(GameEventId.GetEntityLocation, new KeyValuePair<string, object>(EventParameters.Entity, source.ID),
                                                                                                             new KeyValuePair<string, object>(EventParameters.TilePosition, null)))
             .Paramters[EventParameters.TilePosition];
         m_VisiblePoints = new List<Point>();

@@ -17,7 +17,7 @@ public static class Spawner
         EntityType entityType = (EntityType)e.FireEvent(e, new GameEvent(GameEventId.GetEntityType, new KeyValuePair<string, object>(EventParameters.EntityType, EntityType.None))).Paramters[EventParameters.EntityType];
 
 
-        World.Instance.Self.FireEvent(World.Instance.Self, new GameEvent(GameEventId.Spawn, new KeyValuePair<string, object>(EventParameters.Entity, e),
+        World.Instance.Self.FireEvent(World.Instance.Self, new GameEvent(GameEventId.Spawn, new KeyValuePair<string, object>(EventParameters.Entity, e.ID),
                                                                             new KeyValuePair<string, object>(EventParameters.EntityType, entityType),
                                                                             new KeyValuePair<string, object>(EventParameters.Point, new Point(x, y))));
     }
@@ -27,7 +27,7 @@ public static class Spawner
         EntityType entityType = (EntityType)e.FireEvent(e, new GameEvent(GameEventId.GetEntityType, new KeyValuePair<string, object>(EventParameters.EntityType, EntityType.None))).Paramters[EventParameters.EntityType];
 
 
-        World.Instance.Self.FireEvent(World.Instance.Self, new GameEvent(GameEventId.Despawn, new KeyValuePair<string, object>(EventParameters.Entity, e),
+        World.Instance.Self.FireEvent(World.Instance.Self, new GameEvent(GameEventId.Despawn, new KeyValuePair<string, object>(EventParameters.Entity, e.ID),
                                                                             new KeyValuePair<string, object>(EventParameters.EntityType, entityType)));
     }
 

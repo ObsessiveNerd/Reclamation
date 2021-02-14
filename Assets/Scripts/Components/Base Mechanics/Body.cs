@@ -99,8 +99,8 @@ public class Body : Component
 
             if (dropTarget != null)
             {
-                FireEvent(World.Instance.Self, new GameEvent(GameEventId.Drop, new KeyValuePair<string, object>(EventParameters.Entity, dropTarget),
-                                                                                new KeyValuePair<string, object>(EventParameters.Creature, Self),
+                FireEvent(World.Instance.Self, new GameEvent(GameEventId.Drop, new KeyValuePair<string, object>(EventParameters.Entity, dropTarget.ID),
+                                                                                new KeyValuePair<string, object>(EventParameters.Creature, Self.ID),
                                                                                 new KeyValuePair<string, object>(EventParameters.EntityType, EntityType.Item)));
             }
         }
@@ -176,9 +176,14 @@ public class Body : Component
             TypeWeapon desiredWeaponToAttack = (TypeWeapon)gameEvent.Paramters[EventParameters.WeaponType];
             foreach (IEntity hand in Arms)
             {
-                IEntity equipment = (IEntity)FireEvent(hand, new GameEvent(GameEventId.GetEquipment, new KeyValuePair<string, object>(EventParameters.Equipment, null))).Paramters[EventParameters.Equipment];
-                if (equipment != null && CombatUtility.GetWeaponType(equipment).HasFlag(desiredWeaponToAttack))
-                    CombatUtility.Attack(Self, (IEntity)gameEvent.Paramters[EventParameters.Target], equipment);
+                EventBuilder getEquipment = new EventBuilder(GameEventId.GetEquipment)
+                                            .With(EventParameters.Equipment, null);
+
+                string equipment = FireEvent(hand, getEquipment.CreateEvent()).GetValue<string>(EventParameters.Equipment);
+                IEntity equipmentEntity = EntityQuery.GetEntity(equipment);
+
+                if (equipment != null && CombatUtility.GetWeaponType(equipmentEntity).HasFlag(desiredWeaponToAttack))
+                    CombatUtility.Attack(Self, EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Target]), equipmentEntity);
             }
         }
 
