@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using System.Linq;
 using UnityEngine;
 
@@ -62,6 +62,11 @@ public class World : MonoBehaviour
             Spawner.Spawn(player, 0, 0);
             Spawner.Spawn(player2, 5, 9);
             Spawner.Spawn(goblin, 10, 12);
+
+            m_World.FireEvent(player, new GameEvent(GameEventId.InitFOV));
+            m_World.FireEvent(player2, new GameEvent(GameEventId.InitFOV));
+
+            m_World.FireEvent(m_World, new GameEvent(GameEventId.UpdateWorldView));
         }
         else
         {

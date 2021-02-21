@@ -14,6 +14,7 @@ public class FOV : Component
     {
         base.Init(self);
         RegisteredEvents.Add(GameEventId.AfterMoving);
+        RegisteredEvents.Add(GameEventId.InitFOV);
         m_Fov = new Shadowcasting();
 
         //FireEvent(World.Instance.Self, new GameEvent(GameEventId.FOVRecalculated, new KeyValuePair<string, object>(EventParameters.Entity, Self),
@@ -22,7 +23,7 @@ public class FOV : Component
 
     public override void HandleEvent(GameEvent gameEvent)
     {
-        if (gameEvent.ID == GameEventId.AfterMoving)
+        if (gameEvent.ID == GameEventId.AfterMoving || gameEvent.ID == GameEventId.InitFOV)
         {
             int baseRange = FOVRange;
             GameEvent beforeFOVCalculated = new GameEvent(GameEventId.BeforeFOVRecalculated, new KeyValuePair<string, object>(EventParameters.FOVRange, FOVRange));
