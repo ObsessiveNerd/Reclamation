@@ -84,7 +84,6 @@ public class Tile : Component
         RegisteredEvents.Add(GameEventId.Pickup);
         RegisteredEvents.Add(GameEventId.VisibilityUpdated);
         RegisteredEvents.Add(GameEventId.IsTileBlocking);
-        RegisteredEvents.Add(GameEventId.BeforeMoving);
         RegisteredEvents.Add(GameEventId.DestroyObject);
     }
 

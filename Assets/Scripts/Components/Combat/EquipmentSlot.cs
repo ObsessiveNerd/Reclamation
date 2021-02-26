@@ -34,11 +34,11 @@ public class EquipmentSlot : Component
 
         if (gameEvent.ID == GameEventId.Equip)
         {
-            if (m_EquipmentId != null)
+            if (!string.IsNullOrEmpty(m_EquipmentId))
                 FireEvent(Self, new GameEvent(GameEventId.Unequip));
 
             FireEvent(EntityQuery.GetEntity(m_EquipmentId), new GameEvent(GameEventId.ItemEquipped));
-            //m_EquipmentId = (string)gameEvent.Paramters[EventParameters.Equipment];
+            m_EquipmentId = (string)gameEvent.Paramters[EventParameters.Equipment];
             //m_Equipment.Destroyed += EquipmentDestroyed;
         }
 

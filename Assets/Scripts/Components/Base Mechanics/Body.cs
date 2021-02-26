@@ -274,7 +274,7 @@ public class DTO_Body : IDataTransferComponent
         {
             foreach (var e in equipment[key])
                 Component.HandleEvent(new GameEvent(GameEventId.Equip, new KeyValuePair<string, object>(EventParameters.EntityType, key),
-                                                                        new KeyValuePair<string, object>(EventParameters.Equipment, e)));
+                                                                        new KeyValuePair<string, object>(EventParameters.Equipment, e.ID)));
         }
     }
 
