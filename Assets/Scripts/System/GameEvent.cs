@@ -92,6 +92,7 @@ public static class GameEventId
     public const string UpdateTile = nameof(UpdateTile);
     public const string EndSelection = nameof(EndSelection);
     public const string ShowTileInfo = nameof(ShowTileInfo);
+    public const string DestroyObject = nameof(DestroyObject);
 
     //Character Selection
     public const string RotateActiveCharacter = nameof(RotateActiveCharacter);

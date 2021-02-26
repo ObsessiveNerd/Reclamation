@@ -40,7 +40,7 @@ public class WorldSpawner : WorldComponent
             if (!m_EntityToPointMap.ContainsKey(entity)) return;
 
             Point currentPoint = m_EntityToPointMap[entity];
-            GameEvent despawn = new GameEvent(GameEventId.Despawn, new KeyValuePair<string, object>(EventParameters.Entity, entity),
+            GameEvent despawn = new GameEvent(GameEventId.Despawn, new KeyValuePair<string, object>(EventParameters.Entity, entity.ID),
                                                                    new KeyValuePair<string, object>(EventParameters.EntityType, entityType));
             FireEvent(m_Tiles[currentPoint], despawn);
             m_EntityToPointMap.Remove(entity);

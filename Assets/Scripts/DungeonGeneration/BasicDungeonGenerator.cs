@@ -7,11 +7,161 @@ public class Room
 {
     private Point m_StartPoint;
     private Point m_Size;
-    private Point m_EndPoint;
+    private List<Point> m_Hallways;
 
-    public Room()
+    public Room(Point startPoint, Point size)
     {
+        m_StartPoint = startPoint;
+        m_Size = size;
+        m_Hallways = new List<Point>();
+    }
 
+    Point GetMiddleOfTheRoom()
+    {
+        int x = (m_StartPoint.x + m_Size.x - 1) - (m_Size.x / 2);
+        int y = (m_StartPoint.y + m_Size.y - 1) - (m_Size.y / 2);
+        return new Point(x, y);
+    }
+
+    public void CreateWalls()
+    {
+        for (int i = m_StartPoint.x; i < m_StartPoint.x + m_Size.x; i++)
+        {
+            for (int j = m_StartPoint.y; j < m_StartPoint.y + m_Size.y; j++)
+            {
+                if (i == m_StartPoint.x || i == m_StartPoint.x + m_Size.x - 1 || j == m_StartPoint.y || j == m_StartPoint.y + m_Size.y - 1)
+                    Spawner.Spawn(EntityFactory.CreateEntity("Wall"), new Point(i, j));
+            }
+        }
+    }
+
+    public void CreateHallwayToRoom(Room otherRoom)
+    {
+        int hallwayDirection = RecRandom.Instance.GetRandomValue(0, 2);
+        if(hallwayDirection == 1)
+        {
+            Point midPoint = GetMiddleOfTheRoom();
+            Point otherMidPoint = otherRoom.GetMiddleOfTheRoom();
+
+            int xDirection = (int)Mathf.Sign(otherMidPoint.x - midPoint.x);
+            for (int x = midPoint.x; x != otherMidPoint.x; x += xDirection)
+            {
+                Point hallPoint = new Point(x, midPoint.y);
+                EventBuilder builder = new EventBuilder(GameEventId.DestroyObject)
+                                      .With(EventParameters.Point, hallPoint);
+                m_Hallways.Add(hallPoint);
+
+                Point above = new Point(x, hallPoint.y + 1);
+                Point below = new Point(x, hallPoint.y - 1);
+
+                Spawner.Spawn(EntityFactory.CreateEntity("Wall"), above);
+                Spawner.Spawn(EntityFactory.CreateEntity("Wall"), below);
+
+                World.Instance.Self.FireEvent(World.Instance.Self, builder.CreateEvent());
+            }
+
+            SurroundPointWithWalls(new Point(otherMidPoint.x, midPoint.y));
+
+            int yDirection = (int)Mathf.Sign(otherMidPoint.y - midPoint.y);
+            for (int y = midPoint.y; y != otherMidPoint.y; y += yDirection)
+            {
+                Point hallPoint = new Point(otherMidPoint.x, y);
+                EventBuilder builder = new EventBuilder(GameEventId.DestroyObject)
+                                         .With(EventParameters.Point, hallPoint);
+                m_Hallways.Add(hallPoint);
+
+                Point left = new Point(hallPoint.x + 1, y);
+                Point right = new Point(hallPoint.x - 1, y);
+
+                Spawner.Spawn(EntityFactory.CreateEntity("Wall"), left);
+                Spawner.Spawn(EntityFactory.CreateEntity("Wall"), right);
+
+                World.Instance.Self.FireEvent(World.Instance.Self, builder.CreateEvent());
+            }
+        }
+        else
+        {
+            Point midPoint = GetMiddleOfTheRoom();
+            Point otherMidPoint = otherRoom.GetMiddleOfTheRoom();
+            int yDirection = (int)Mathf.Sign(otherMidPoint.y - midPoint.y);
+            for (int y = midPoint.y; y != otherMidPoint.y; y += yDirection)
+            {
+                Point hallPoint = new Point(midPoint.x, y);
+                EventBuilder builder = new EventBuilder(GameEventId.DestroyObject)
+                                         .With(EventParameters.Point, hallPoint);
+                m_Hallways.Add(hallPoint);
+
+                Point left = new Point(hallPoint.x + 1, y);
+                Point right = new Point(hallPoint.x - 1, y);
+
+                Spawner.Spawn(EntityFactory.CreateEntity("Wall"), left);
+                Spawner.Spawn(EntityFactory.CreateEntity("Wall"), right);
+
+                World.Instance.Self.FireEvent(World.Instance.Self, builder.CreateEvent());
+            }
+
+            SurroundPointWithWalls(new Point(midPoint.x, otherMidPoint.y));
+
+            int xDirection = (int)Mathf.Sign(otherMidPoint.x - midPoint.x);
+            for (int x = midPoint.x; x != otherMidPoint.x; x += xDirection)
+            {
+                Point hallPoint = new Point(x, otherMidPoint.y);
+                EventBuilder builder = new EventBuilder(GameEventId.DestroyObject)
+                                      .With(EventParameters.Point, hallPoint);
+                m_Hallways.Add(hallPoint);
+
+                Point above = new Point(x, hallPoint.y + 1);
+                Point below = new Point(x, hallPoint.y - 1);
+
+                Spawner.Spawn(EntityFactory.CreateEntity("Wall"), above);
+                Spawner.Spawn(EntityFactory.CreateEntity("Wall"), below);
+
+                World.Instance.Self.FireEvent(World.Instance.Self, builder.CreateEvent());
+            }
+        }
+    }
+
+    public Point GetValidPoint()
+    {
+        int x = RecRandom.Instance.GetRandomValue(m_StartPoint.x + 1, (m_StartPoint.x + m_Size.x) - 1);
+        int y = RecRandom.Instance.GetRandomValue(m_StartPoint.y + 1, (m_StartPoint.y + m_Size.y) - 1);
+
+        return new Point(x, y);
+    }
+
+    public void ClearRoom()
+    {
+        for(int x = m_StartPoint.x + 1; x < (m_StartPoint.x + m_Size.x) - 1; x++)
+        {
+            for(int y = m_StartPoint.y + 1; y < (m_StartPoint.y + m_Size.y) - 1; y++)
+            {
+                EventBuilder builder = new EventBuilder(GameEventId.DestroyObject)
+                                     .With(EventParameters.Point, new Point(x, y));
+
+                World.Instance.Self.FireEvent(World.Instance.Self, builder.CreateEvent());
+            }
+        }
+    }
+
+    public void ClearHallways()
+    {
+        foreach(Point p in m_Hallways)
+        {
+            EventBuilder builder = new EventBuilder(GameEventId.DestroyObject)
+                                      .With(EventParameters.Point, p);
+            World.Instance.Self.FireEvent(World.Instance.Self, builder.CreateEvent());
+        }
+    }
+
+    void SurroundPointWithWalls(Point p)
+    {
+        for(int x = p.x - 1; x <= p.x + 1; x++)
+        {
+            for(int y = p.y - 1; y <= p.y + 1; y++)
+            {
+                Spawner.Spawn(EntityFactory.CreateEntity("Wall"), new Point(x, y));
+            }
+        }
     }
 }
 
@@ -28,16 +178,15 @@ public class DungeonPartition
         Size = size;
     }
 
-    public void CreateRoom()
+    public Room CreateRoom(int minRoomSize)
     {
-        for(int i = StartPoint.x; i < StartPoint.x + Size.x; i++)
-        {
-            for(int j = StartPoint.y; j < StartPoint.y + Size.y; j++)
-            {
-                if(i == StartPoint.x || i == StartPoint.x + Size.x - 1 || j == StartPoint.y || j == StartPoint.y + Size.y - 1)
-                    Spawner.Spawn(EntityFactory.CreateEntity("Wall"), new Point(i, j));
-            }
-        }
+        int roomWidth = RecRandom.Instance.GetRandomValue(minRoomSize, Size.x - 1);
+        int roomHeight = RecRandom.Instance.GetRandomValue(minRoomSize, Size.y - 1);
+
+        int roomStartX = RecRandom.Instance.GetRandomValue(StartPoint.x, (StartPoint.x + Size.x) - roomWidth);
+        int roomStartY = RecRandom.Instance.GetRandomValue(StartPoint.y, (StartPoint.y + Size.y) - roomHeight);
+
+        return new Room(new Point(roomStartX, roomStartY), new Point(roomWidth, roomHeight));
     }
 
     public Point GetRandomPosition()
@@ -57,28 +206,31 @@ public class BasicDungeonGenerator : IDungeonGenerator
     GameObject m_TilePrefab;
     int m_Vertical, m_Horizontal, m_Columns, m_Rows;
     int m_MinRoomSize = 5;
-    //int m_MaxRoomSize = 8;
 
     List<DungeonPartition> m_LeafNodes = new List<DungeonPartition>();
 
-    public BasicDungeonGenerator(int seed, GameObject tilePrefab)
+    public List<Room> Rooms { get; internal set; }
+
+    public BasicDungeonGenerator(GameObject tilePrefab)
     {
         m_TilePrefab = tilePrefab;
         m_Vertical = (int)Camera.main.orthographicSize;
         m_Horizontal = (int)(m_Vertical * Camera.main.aspect);
         m_Columns = m_Horizontal * 2;
         m_Rows = m_Vertical * 2;
+        Rooms = new List<Room>();
     }
 
-    public virtual void GenerateDungeon(Dictionary<Point, Actor> pointToTileMap, out Point spawnPoint)
+    public virtual void GenerateDungeon(Dictionary<Point, Actor> pointToTileMap)
     {
         CreateTiles(pointToTileMap);
         DungeonPartition root = new DungeonPartition(new Point(0, 0), new Point(m_Columns, m_Rows));
         SplitPartition(root);
 
+        CreateRooms();
         CreateWalls();
-
-        spawnPoint = new Point(0, 0);
+        CreateHallways();
+        CleanupRooms();
     }
 
     void SplitPartition(DungeonPartition partition)
@@ -118,10 +270,31 @@ public class BasicDungeonGenerator : IDungeonGenerator
         SplitPartition(partition.Children[1]);
     }
 
-    void CreateWalls()
+    void CreateRooms()
     {
         foreach (DungeonPartition node in m_LeafNodes)
-            node.CreateRoom();
+            Rooms.Add(node.CreateRoom(m_MinRoomSize));
+    }
+
+    void CreateWalls()
+    {
+        foreach (Room room in Rooms)
+            room.CreateWalls();
+    }
+
+    void CleanupRooms()
+    {
+        foreach (Room room in Rooms)
+            room.ClearRoom();
+
+        foreach (Room room in Rooms)
+            room.ClearHallways();
+    }
+
+    void CreateHallways()
+    {
+        for(int i = 0; i < Rooms.Count - 1; ++i)
+            Rooms[i].CreateHallwayToRoom(Rooms[i + 1]);
     }
 
     void CreateTiles(Dictionary<Point, Actor> pointToTileMap)

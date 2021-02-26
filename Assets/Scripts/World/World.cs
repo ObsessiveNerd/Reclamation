@@ -47,24 +47,9 @@ public class World : MonoBehaviour
 
         if (StartNew)
         {
-            IEntity player = EntityFactory.CreateEntity("Dwarf");
-            IEntity player2 = EntityFactory.CreateEntity("Dwarf");
-            IEntity goblin = EntityFactory.CreateEntity("Goblin");
-            IEntity helm = EntityFactory.CreateEntity("Helmet");
-
-            m_World.FireEvent(m_World, new GameEvent(GameEventId.ConvertToPlayableCharacter, new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.Entity, player.ID)));
-            m_World.FireEvent(m_World, new GameEvent(GameEventId.ConvertToPlayableCharacter, new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.Entity, player2.ID)));
-
             Seed = RecRandom.InitRecRandom(Random.Range(0, int.MaxValue));
             m_World.FireEvent(m_World, new GameEvent(GameEventId.StartWorld, new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.Seed, Seed.ToString()),
                                                                             new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.GameObject, TilePrefab)));
-
-            Spawner.Spawn(player, 0, 0);
-            Spawner.Spawn(player2, 5, 9);
-            Spawner.Spawn(goblin, 10, 12);
-
-            m_World.FireEvent(player, new GameEvent(GameEventId.InitFOV));
-            m_World.FireEvent(player2, new GameEvent(GameEventId.InitFOV));
 
             m_World.FireEvent(m_World, new GameEvent(GameEventId.UpdateWorldView));
         }
@@ -76,23 +61,21 @@ public class World : MonoBehaviour
 
     public void InitWorld(int seed)
     {
-        IEntity player = EntityFactory.CreateEntity("Dwarf");
-        IEntity player2 = EntityFactory.CreateEntity("Dwarf");
-        IEntity goblin = EntityFactory.CreateEntity("Goblin");
-        IEntity helm = EntityFactory.CreateEntity("Helmet");
+        //IEntity player = EntityFactory.CreateEntity("Dwarf");
+        //IEntity player2 = EntityFactory.CreateEntity("Dwarf");
+        //IEntity goblin = EntityFactory.CreateEntity("Goblin");
+        //IEntity helm = EntityFactory.CreateEntity("Helmet");
 
-        m_World.FireEvent(m_World, new GameEvent(GameEventId.ConvertToPlayableCharacter, new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.Entity, player.ID)));
-        m_World.FireEvent(m_World, new GameEvent(GameEventId.ConvertToPlayableCharacter, new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.Entity, player2.ID)));
+        //m_World.FireEvent(m_World, new GameEvent(GameEventId.ConvertToPlayableCharacter, new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.Entity, player.ID)));
+        //m_World.FireEvent(m_World, new GameEvent(GameEventId.ConvertToPlayableCharacter, new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.Entity, player2.ID)));
 
         Seed = RecRandom.InitRecRandom(seed);
         m_World.FireEvent(m_World, new GameEvent(GameEventId.StartWorld, new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.Seed, Seed.ToString()),
                                                                             new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.GameObject, TilePrefab)));
 
-        Spawner.Spawn(player, 0, 0);
-        Spawner.Spawn(player2, 5, 9);
-        Spawner.Spawn(goblin, 10, 12);
-
-        m_World.FireEvent(m_World, new GameEvent(GameEventId.ProgressTime));
+        //Spawner.Spawn(player, 0, 0);
+        //Spawner.Spawn(player2, 5, 9);
+        //Spawner.Spawn(goblin, 10, 12);
     }
 
     private void Update()

@@ -17,11 +17,6 @@ public class PlayerManager : WorldComponent
 
     public override void HandleEvent(GameEvent gameEvent)
     {
-        if(gameEvent.ID == GameEventId.StartWorld)
-        {
-            m_TimeProgression = new TimeProgression();
-        }
-
         if (gameEvent.ID == GameEventId.RotateActiveCharacter)
         {
             if (m_Players.Count == 1)

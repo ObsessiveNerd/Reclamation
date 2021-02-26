@@ -12,6 +12,7 @@ public class TileInteractions : WorldComponent
         //RegisteredEvents.Add(GameEventId.Interact);
         RegisteredEvents.Add(GameEventId.Pickup);
         RegisteredEvents.Add(GameEventId.Drop);
+        RegisteredEvents.Add(GameEventId.DestroyObject);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
@@ -51,6 +52,15 @@ public class TileInteractions : WorldComponent
         if (gameEvent.ID == GameEventId.AddComponentToTile)
         {
             //Todo
+        }
+
+        if(gameEvent.ID == GameEventId.DestroyObject)
+        {
+            Point p = gameEvent.GetValue<Point>(EventParameters.Point);
+            if (!m_Tiles.ContainsKey(p))
+                Debug.Log($"P isn't here. {p}");
+            else
+                FireEvent(m_Tiles[p], gameEvent);
         }
     }
 }

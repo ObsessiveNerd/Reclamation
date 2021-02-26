@@ -85,6 +85,7 @@ public class Tile : Component
         RegisteredEvents.Add(GameEventId.VisibilityUpdated);
         RegisteredEvents.Add(GameEventId.IsTileBlocking);
         RegisteredEvents.Add(GameEventId.BeforeMoving);
+        RegisteredEvents.Add(GameEventId.DestroyObject);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
@@ -95,6 +96,12 @@ public class Tile : Component
             GameEvent getSprite = new GameEvent(GameEventId.GetSprite, new KeyValuePair<string, object>(EventParameters.RenderSprite, null));
             GameEvent getSpriteEvent = FireEvent(target, getSprite);
             FireEvent(Self, new GameEvent(GameEventId.UpdateRenderer, getSpriteEvent.Paramters));
+        }
+
+        if(gameEvent.ID == GameEventId.DestroyObject)
+        {
+            if (ObjectSlot != null)
+                Spawner.Despawn(ObjectSlot);
         }
 
         if (gameEvent.ID == GameEventId.VisibilityUpdated)
