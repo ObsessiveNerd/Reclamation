@@ -7,6 +7,7 @@ using UnityEngine.UI;
 
 public class CombatLogMono : MonoBehaviour
 {
+    public GameObject LHSAnchor, RHSAnchor;
     public GameObject CombatLog;
     public TextMeshProUGUI CombatLogContent;
     public int MaxLineCount;
@@ -15,10 +16,12 @@ public class CombatLogMono : MonoBehaviour
     private List<string> m_BacklogEvents = new List<string>();
 
     private bool m_ProcessingEvent = false;
+    private bool m_IsAtRhs = true;
 
     void Start()
     {
         RecLog.MessageLogged += LogMessage;
+        MoveCombatLogTo(RHSAnchor.transform);
     }
 
     void LogMessage(string message)
@@ -60,6 +63,28 @@ public class CombatLogMono : MonoBehaviour
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.F1))
-            CombatLog.SetActive(!CombatLog.activeSelf);
+        {
+            if (CombatLog.activeSelf)
+            {
+                if (m_IsAtRhs)
+                {
+                    MoveCombatLogTo(LHSAnchor.transform);
+                    m_IsAtRhs = false;
+                }
+                else
+                    CombatLog.SetActive(false);
+            }
+            else
+            {
+                m_IsAtRhs = true;
+                MoveCombatLogTo(RHSAnchor.transform);
+                CombatLog.SetActive(true);
+            }
+        }
+    }
+
+    void MoveCombatLogTo(Transform anchor)
+    {
+        CombatLog.transform.position = anchor.position;
     }
 }

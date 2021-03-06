@@ -31,6 +31,7 @@ public static class GameEventId
     public const string Equip = nameof(Equip);
     public const string Unequip = nameof(Unequip);
     public const string GetRangedWeapon = nameof(GetRangedWeapon);
+    public const string GetIcon = nameof(GetIcon);
 
     //Item
     public const string Pickup = nameof(Pickup);
