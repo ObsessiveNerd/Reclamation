@@ -15,10 +15,10 @@ public class PointComparer : IEqualityComparer<Point>
     }
 }
 
-public struct Point
+public struct Point : IMapNode
 {
-    public int x;
-    public int y;
+    public int x { get; set; }
+    public int y { get; set; }
 
     public Point(int _x, int _y)
     {
@@ -57,6 +57,11 @@ public struct Point
     {
         return !lhs.Equals(rhs);
     }
+
+    public static float Distance(Point lhs, Point rhs)
+    {
+        return Mathf.Sqrt(Mathf.Pow(lhs.x - rhs.x, 2) + Mathf.Pow(lhs.y - rhs.y, 2));
+    }
 }
 
 public class Tile : Component
@@ -85,6 +90,7 @@ public class Tile : Component
         RegisteredEvents.Add(GameEventId.VisibilityUpdated);
         RegisteredEvents.Add(GameEventId.IsTileBlocking);
         RegisteredEvents.Add(GameEventId.DestroyObject);
+        RegisteredEvents.Add(GameEventId.PathfindingData);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
@@ -95,6 +101,12 @@ public class Tile : Component
             GameEvent getSprite = new GameEvent(GameEventId.GetSprite, new KeyValuePair<string, object>(EventParameters.RenderSprite, null));
             GameEvent getSpriteEvent = FireEvent(target, getSprite);
             FireEvent(Self, new GameEvent(GameEventId.UpdateRenderer, getSpriteEvent.Paramters));
+        }
+
+        if(gameEvent.ID == GameEventId.PathfindingData)
+        {
+            foreach(var target in GetTarget(false))
+                FireEvent(target, gameEvent);
         }
 
         if(gameEvent.ID == GameEventId.DestroyObject)
@@ -198,7 +210,7 @@ public class Tile : Component
         }
     }
 
-    List<IEntity> GetTarget()
+    List<IEntity> GetTarget(bool includeSelf = true)
     {
         //if (m_IsVisible)
         {
@@ -210,6 +222,9 @@ public class Tile : Component
                 return Items;
         }
 
-        return new List<IEntity>() { Self };
+        if(includeSelf)
+            return new List<IEntity>() { Self };
+
+        return new List<IEntity>();
     }
 }

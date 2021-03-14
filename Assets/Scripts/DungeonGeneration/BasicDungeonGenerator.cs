@@ -203,28 +203,26 @@ public enum Direction
 
 public class BasicDungeonGenerator : IDungeonGenerator
 {
-    GameObject m_TilePrefab;
-    int m_Vertical, m_Horizontal, m_Columns, m_Rows;
+    //GameObject m_TilePrefab;
+    
     int m_MinRoomSize = 5;
 
     List<DungeonPartition> m_LeafNodes = new List<DungeonPartition>();
 
     public List<Room> Rooms { get; internal set; }
 
-    public BasicDungeonGenerator(GameObject tilePrefab)
+    public BasicDungeonGenerator(/*GameObject tilePrefab*/)
     {
-        m_TilePrefab = tilePrefab;
-        m_Vertical = (int)Camera.main.orthographicSize;
-        m_Horizontal = (int)(m_Vertical * Camera.main.aspect);
-        m_Columns = m_Horizontal * 2;
-        m_Rows = m_Vertical * 2;
         Rooms = new List<Room>();
     }
 
-    public virtual void GenerateDungeon(Dictionary<Point, Actor> pointToTileMap)
+    public virtual void GenerateDungeon(int rows, int columns)
     {
-        CreateTiles(pointToTileMap);
-        DungeonPartition root = new DungeonPartition(new Point(0, 0), new Point(m_Columns, m_Rows));
+        //CreateTiles(pointToTileMap);
+        //int rows = map.GetLength(0);
+        //int columns = map.GetLength(1);
+
+        DungeonPartition root = new DungeonPartition(new Point(0, 0), new Point(columns, rows));
         SplitPartition(root);
 
         CreateRooms();
@@ -295,32 +293,5 @@ public class BasicDungeonGenerator : IDungeonGenerator
     {
         for(int i = 0; i < Rooms.Count - 1; ++i)
             Rooms[i].CreateHallwayToRoom(Rooms[i + 1]);
-    }
-
-    void CreateTiles(Dictionary<Point, Actor> pointToTileMap)
-    {
-        for (int i = 0; i < m_Columns; i++)
-        {
-            for (int j = 0; j < m_Rows; j++)
-            {
-                CreateTile(i, j, m_Horizontal, m_Vertical, pointToTileMap);
-            }
-        }
-    }
-
-    protected void CreateTile(int x, int y, float screenHorizontal, float screenVertical, Dictionary<Point, Actor> pointToTileMap)
-    {
-        GameObject tile = UnityEngine.GameObject.Instantiate(m_TilePrefab);
-        tile.transform.position = new Vector2(x - (screenHorizontal - 0.5f), y - (screenVertical - 0.5f));
-        tile.transform.parent = UnityEngine.GameObject.Find("World").transform;
-
-        Actor actor = new Actor("Tile");
-        actor.AddComponent(new Tile(actor, new Point(x, y)));
-        actor.AddComponent(new TileVisible(false));
-        actor.AddComponent(new GraphicContainer("Textures/td_world_floor_cobble_b-120"));
-        actor.AddComponent(new Renderer(tile.GetComponent<SpriteRenderer>()));
-        actor.CleanupComponents();
-
-        pointToTileMap.Add(new Point(x, y), actor);
     }
 }

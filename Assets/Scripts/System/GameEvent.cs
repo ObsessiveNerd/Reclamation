@@ -59,6 +59,7 @@ public static class GameEventId
     public const string RegisterEntity = nameof(RegisterEntity);
     public const string DestroyEntity = nameof(DestroyEntity);
     public const string GetEntity = nameof(GetEntity);
+    public const string CalculatePath = nameof(CalculatePath);
 
     //Moving
     public const string EntityOvertaking = nameof(EntityOvertaking);
@@ -94,6 +95,8 @@ public static class GameEventId
     public const string EndSelection = nameof(EndSelection);
     public const string ShowTileInfo = nameof(ShowTileInfo);
     public const string DestroyObject = nameof(DestroyObject);
+    public const string PathfindingData = nameof(PathfindingData);
+    public const string IsValidTile = nameof(IsValidTile);
 
     //Character Selection
     public const string RotateActiveCharacter = nameof(RotateActiveCharacter);
@@ -174,6 +177,11 @@ public static class EventParameters
     public const string TileInSight = nameof(TileInSight);
     public const string VisibleTiles = nameof(VisibleTiles);
     public const string FOVRange = nameof(FOVRange);
+    public const string BlocksMovement = nameof(BlocksMovement);
+    public const string Weight = nameof(Weight);
+    public const string StartPos = nameof(StartPos);
+    public const string EndPos = nameof(EndPos);
+    public const string Path = nameof(Path);
 }
 
 [Serializable]
