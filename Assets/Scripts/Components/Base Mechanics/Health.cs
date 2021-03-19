@@ -28,6 +28,10 @@ public class Health : Component
                 CurrentHealth -= damage.DamageAmount;
                 if (CurrentHealth <= 0)
                 {
+                    EventBuilder swapActivePlayer = new EventBuilder(GameEventId.RotateActiveCharacter)
+                                                    .With(EventParameters.UpdateWorldView, true);
+                    FireEvent(Self, swapActivePlayer.CreateEvent());
+
                     Spawner.Despawn(Self); //Todo: temp - we need to just send a "I'm dead event" to Self and then have a death handler handle it (that way a goblin dying doesn't trigger a save delete and all that
                     RecLog.Log("...and died");
                     break;

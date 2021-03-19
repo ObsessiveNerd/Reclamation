@@ -2,11 +2,12 @@
 	Inherits:Creature
 	Health:10
 	Body:Head=1[<Helmet>], Arm=2[<Short Sword>], Leg=2[]
-	Inventory: [<Helmet>]
+	Inventory: [<Helmet>&<Short Sword>]
 	GraphicContainer:Textures/td_monsters_dwarf_d2
 	Move
 	Stats:Str=10, Agi=9, Con=13, Wis=11, Int=12, Cha=10
 	Energy:Regen=1
 	Faction:<DwarvenCompany>
 	FOV: VisibleRange=5
+	Aggression: BaseAggression=0
 )

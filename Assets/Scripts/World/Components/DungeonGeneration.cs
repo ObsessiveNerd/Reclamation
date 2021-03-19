@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WorldInitialization : WorldComponent
+public class DungeonGeneration : WorldComponent
 {
     GameObject m_TilePrefab;
     IDungeonGenerator m_DungeonGenerator;
@@ -13,6 +13,7 @@ public class WorldInitialization : WorldComponent
     {
         base.Init(self);
         RegisteredEvents.Add(GameEventId.StartWorld);
+        RegisteredEvents.Add(GameEventId.GetRandomValidPoint);
 
         m_Vertical = (int)Camera.main.orthographicSize;
         m_Horizontal = (int)(m_Vertical * Camera.main.aspect);
@@ -34,29 +35,34 @@ public class WorldInitialization : WorldComponent
             SpawnEnemies();
 
             ///
-            Point p1 = m_DungeonGenerator.Rooms[1].GetValidPoint();
-            Point p2 = m_DungeonGenerator.Rooms[5].GetValidPoint();
+            //Point p1 = m_DungeonGenerator.Rooms[0].GetValidPoint();
+            //Point p2 = m_DungeonGenerator.Rooms[m_DungeonGenerator.Rooms.Count - 1].GetValidPoint();
 
-            EventBuilder e = new EventBuilder(GameEventId.CalculatePath)
-                            .With(EventParameters.StartPos, p1)
-                            .With(EventParameters.EndPos, p2)
-                            .With(EventParameters.Path, null);
+            //EventBuilder e = new EventBuilder(GameEventId.CalculatePath)
+            //                .With(EventParameters.StartPos, p1)
+            //                .With(EventParameters.EndPos, p2)
+            //                .With(EventParameters.Path, null);
 
-            var path = FireEvent(Self, e.CreateEvent()).GetValue<List<IMapNode>>(EventParameters.Path);
+            //var path = FireEvent(Self, e.CreateEvent()).GetValue<List<IMapNode>>(EventParameters.Path);
 
-            Debug.Log($"StartNode: {p1.x}, {p1.y}");
+            //Debug.Log($"StartNode: {p1.x}, {p1.y}");
 
-            foreach (var node in path)
-            {
-                Spawner.Spawn(EntityFactory.CreateEntity("Helmet"), node.x, node.y);
-                Debug.Log($"{node.x}, {node.y}");
-            }
+            //foreach (var node in path)
+            //{
+            //    Spawner.Spawn(EntityFactory.CreateEntity("Helmet"), node.x, node.y);
+            //    Debug.Log($"{node.x}, {node.y}");
+            //}
 
-            Debug.Log($"EndNode: {p2.x}, {p2.y}");
+            //Debug.Log($"EndNode: {p2.x}, {p2.y}");
             //
 
             Factions.Initialize();
             FireEvent(Self, new GameEvent(GameEventId.UpdateWorldView));
+        }
+        else if(gameEvent.ID == GameEventId.GetRandomValidPoint)
+        {
+            int roomIndex = RecRandom.Instance.GetRandomValue(0, m_DungeonGenerator.Rooms.Count - 1);
+            gameEvent.Paramters[EventParameters.Value] = m_DungeonGenerator.Rooms[roomIndex].GetValidPoint();
         }
     }
 

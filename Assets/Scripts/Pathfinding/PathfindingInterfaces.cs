@@ -11,4 +11,5 @@ public interface IMapNode
 public interface IPathfindingAlgorithm
 {
     List<IMapNode> CalculatePath(IMapNode startingPoint, IMapNode targetPoint);
+    void Clear();
 }

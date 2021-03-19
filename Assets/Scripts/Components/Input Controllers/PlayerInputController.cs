@@ -94,9 +94,7 @@ public class PlayerInputController : InputControllerBase
 
             else if (Input.GetKeyDown(KeyCode.Tab))
             {
-                FireEvent(World.Instance.Self, new GameEvent(GameEventId.RotateActiveCharacter));
-                gameEvent.Paramters[EventParameters.UpdateWorldView] = true;
-                gameEvent.ContinueProcessing = false;
+                RotateActiveCharacter(gameEvent);
                 return;
             }
 
@@ -108,6 +106,18 @@ public class PlayerInputController : InputControllerBase
             FireEvent(Self, checkForEnergy);
             gameEvent.Paramters[EventParameters.TakeTurn] = (bool)checkForEnergy.Paramters[EventParameters.TakeTurn];
         }
+
+        else if(gameEvent.ID == GameEventId.RotateActiveCharacter)
+        {
+            RotateActiveCharacter(gameEvent);
+        }
+    }
+
+    void RotateActiveCharacter(GameEvent gameEvent)
+    {
+        FireEvent(World.Instance.Self, new GameEvent(GameEventId.RotateActiveCharacter));
+        gameEvent.Paramters[EventParameters.UpdateWorldView] = true;
+        gameEvent.ContinueProcessing = false;
     }
 }
 

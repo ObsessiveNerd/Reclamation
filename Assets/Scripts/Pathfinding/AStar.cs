@@ -13,6 +13,15 @@ public class AStar : IPathfindingAlgorithm
 
     Dictionary<IMapNode, IMapNode> nodeLinks = new Dictionary<IMapNode, IMapNode>();
 
+    public void Clear()
+    {
+        closedSet.Clear();
+        openSet.Clear();
+        gScore.Clear();
+        fScore.Clear();
+        nodeLinks.Clear();
+    }
+
     public List<IMapNode> CalculatePath(IMapNode start, IMapNode goal)
     {
         openSet[start] = true;
@@ -79,7 +88,7 @@ public class AStar : IPathfindingAlgorithm
         return score;
     }
 
-    public static IEnumerable<IMapNode> Neighbors(IMapNode center)
+    public IEnumerable<IMapNode> Neighbors(IMapNode center)
     {
 
         IMapNode pt = new Point(center.x - 1, center.y - 1);
@@ -117,14 +126,25 @@ public class AStar : IPathfindingAlgorithm
             yield return pt;
     }
 
-    public static bool IsValidNeighbor(IMapNode pt)
+    public bool IsValidNeighbor(IMapNode pt)
     {
         EventBuilder isValidTileEventBuilder = new EventBuilder(GameEventId.IsValidTile)
                                 .With(EventParameters.TilePosition, pt)
                                 .With(EventParameters.Value, true);
 
         bool isValidTile = World.Instance.Self.FireEvent(World.Instance.Self, isValidTileEventBuilder.CreateEvent()).GetValue<bool>(EventParameters.Value);
-        return isValidTile;
+        if (!isValidTile)
+            return false;
+
+        EventBuilder getPathData = new EventBuilder(GameEventId.PathfindingData)
+                                    .With(EventParameters.TilePosition, pt)
+                                    .With(EventParameters.BlocksMovement, false)
+                                    .With(EventParameters.Weight, 1);
+
+        bool blocksMovement = World.Instance.Self.FireEvent(World.Instance.Self, getPathData.CreateEvent()).GetValue<bool>(EventParameters.BlocksMovement);
+        if (blocksMovement)
+            closedSet[pt] = true;
+        return !blocksMovement;
     }
 
     private List<IMapNode> Reconstruct(IMapNode current)

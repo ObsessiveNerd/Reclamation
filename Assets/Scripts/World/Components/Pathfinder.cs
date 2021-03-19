@@ -31,6 +31,7 @@ public class Pathfinder : WorldComponent
             Point targetPoint = gameEvent.GetValue<Point>(EventParameters.EndPos);
 
             gameEvent.Paramters[EventParameters.Path] = m_Pathfinder.CalculatePath(startingPoint, targetPoint);
+            m_Pathfinder.Clear();
         }
     }
 }

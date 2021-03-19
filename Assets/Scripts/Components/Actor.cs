@@ -57,6 +57,15 @@ public class Actor : IEntity
         return gameEvent;
     }
 
+    public GameEvent FireEvent(GameEvent gameEvent, bool logEvent = false)
+    {
+        if (logEvent)
+            SaveSystem.LogEvent(ID, gameEvent);
+
+        HandleEvent(gameEvent);
+        return gameEvent;
+    }
+
     public void HandleEvent(GameEvent gameEvent)
     {
         foreach (IComponent component in m_Components.Values)

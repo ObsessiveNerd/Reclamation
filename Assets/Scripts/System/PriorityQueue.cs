@@ -14,6 +14,19 @@ public class PriorityQueue<T>
         m_Comparer = comparer;
     }
 
+    public int Count
+    {
+        get
+        {
+            return m_List.Count;
+        }
+    }
+
+    public T this[int key]
+    {
+        get => m_List[key];
+    }
+
     public void Add(T obj)
     {
         m_List.Add(obj);

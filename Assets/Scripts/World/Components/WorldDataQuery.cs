@@ -12,6 +12,7 @@ public class WorldDataQuery : WorldComponent
         RegisteredEvents.Add(GameEventId.GetEntities);
         RegisteredEvents.Add(GameEventId.GetEntityOnTile);
         RegisteredEvents.Add(GameEventId.GetEntityLocation);
+        RegisteredEvents.Add(GameEventId.GetTileAggression);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
@@ -30,8 +31,15 @@ public class WorldDataQuery : WorldComponent
             EventBuilder eBuilder = new EventBuilder(GameEventId.GetEntity)
                                     .With(EventParameters.Entity, null)
                                     .With(EventParameters.Value, gameEvent.Paramters[EventParameters.Entity]);
+
             if (m_EntityToPointMap.TryGetValue(FireEvent(Self, eBuilder.CreateEvent()).GetValue<IEntity>(EventParameters.Entity), out Point result))
                 gameEvent.Paramters[EventParameters.TilePosition] = result;
+        }
+
+        else if(gameEvent.ID == GameEventId.GetTileAggression)
+        {
+            Point p = gameEvent.GetValue<Point>(EventParameters.TilePosition);
+            FireEvent(m_Tiles[p], gameEvent);
         }
     }
 

@@ -7,4 +7,5 @@ Creature<Architype>(
 	InteractsWithWorld
 	InteractOnTileOvertake
 	Position
+	Wander
 )

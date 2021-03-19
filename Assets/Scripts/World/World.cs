@@ -28,7 +28,7 @@ public class World : MonoBehaviour
         m_World = new Actor("World");
 
         m_World.AddComponent(new WorldSpawner());
-        m_World.AddComponent(new WorldInitialization());
+        m_World.AddComponent(new DungeonGeneration());
         m_World.AddComponent(new WorldUpdate());
         m_World.AddComponent(new TileSelection());
         m_World.AddComponent(new TileInteractions());

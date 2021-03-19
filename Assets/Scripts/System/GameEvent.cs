@@ -5,6 +5,10 @@ using UnityEngine;
 
 public static class GameEventId
 {
+    //AI
+    public const string GetActionToTake = nameof(GetActionToTake);
+    public const string GetTileAggression = nameof(GetTileAggression);
+
     //FOV
     public const string FOVRecalculated = nameof(FOVRecalculated);
     public const string BeforeFOVRecalculated = nameof(BeforeFOVRecalculated);
@@ -13,6 +17,7 @@ public static class GameEventId
     public const string CheckVisibility = nameof(CheckVisibility);
     public const string IsTileBlocking = nameof(IsTileBlocking);
     public const string InitFOV = nameof(InitFOV);
+    public const string GetVisibleTiles = nameof(GetVisibleTiles);
 
     //Entity Info
     public const string GetEntityType = nameof(GetEntityType);
@@ -60,6 +65,10 @@ public static class GameEventId
     public const string DestroyEntity = nameof(DestroyEntity);
     public const string GetEntity = nameof(GetEntity);
     public const string CalculatePath = nameof(CalculatePath);
+
+    //Dungeon
+    public const string GetRandomValidPoint = nameof(GetRandomValidPoint);
+    public const string GetRandomValidPointInRange = nameof(GetRandomValidPointInRange);
 
     //Moving
     public const string EntityOvertaking = nameof(EntityOvertaking);
@@ -182,6 +191,8 @@ public static class EventParameters
     public const string StartPos = nameof(StartPos);
     public const string EndPos = nameof(EndPos);
     public const string Path = nameof(Path);
+    public const string Range = nameof(Range);
+    public const string AIActionList = nameof(AIActionList);
 }
 
 [Serializable]

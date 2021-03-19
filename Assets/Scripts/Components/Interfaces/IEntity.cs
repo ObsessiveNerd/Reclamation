@@ -6,6 +6,7 @@ using UnityEngine;
 public interface IEntity
 {
     GameEvent FireEvent(IEntity target, GameEvent gameEvent, bool logEvent = false);
+    GameEvent FireEvent(GameEvent gameEvent, bool logEvent = false);
     void HandleEvent(GameEvent gameEvent);
     void AddComponent(IComponent component);
     void RemoveComponent(IComponent component);

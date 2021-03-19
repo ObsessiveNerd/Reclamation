@@ -4,18 +4,27 @@ using UnityEngine;
 
 public class AIFOVHandler : Component
 {
+    private List<Point> m_VisiblePoints = new List<Point>();
     public override void Init(IEntity self)
     {
         base.Init(self);
         RegisteredEvents.Add(GameEventId.FOVRecalculated);
+        RegisteredEvents.Add(GameEventId.GetVisibleTiles);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
     {
         if (gameEvent.ID == GameEventId.FOVRecalculated)
         {
-
+            m_VisiblePoints = (List<Point>)gameEvent.Paramters[EventParameters.VisibleTiles];
+            //foreach(var tile in m_VisiblePoints)
+            //{
+            //    IEntity helm = EntityFactory.CreateEntity("Helmet");
+            //    Spawner.Spawn(helm, tile);
+            //}
         }
+        else if (gameEvent.ID == GameEventId.GetVisibleTiles)
+            gameEvent.Paramters[EventParameters.VisibleTiles] = m_VisiblePoints;
     }
 }
 
