@@ -14,6 +14,7 @@ public class DungeonGeneration : WorldComponent
         base.Init(self);
         RegisteredEvents.Add(GameEventId.StartWorld);
         RegisteredEvents.Add(GameEventId.GetRandomValidPoint);
+        RegisteredEvents.Add(GameEventId.AddValidPoints);
 
         m_Vertical = (int)Camera.main.orthographicSize;
         m_Horizontal = (int)(m_Vertical * Camera.main.aspect);
@@ -64,6 +65,12 @@ public class DungeonGeneration : WorldComponent
             int roomIndex = RecRandom.Instance.GetRandomValue(0, m_DungeonGenerator.Rooms.Count - 1);
             gameEvent.Paramters[EventParameters.Value] = m_DungeonGenerator.Rooms[roomIndex].GetValidPoint();
         }
+        else if(gameEvent.ID == GameEventId.AddValidPoints)
+        {
+            List<Point> validPoints = gameEvent.GetValue<List<Point>>(EventParameters.Value);
+            foreach(Point p in validPoints)
+                m_ValidDungeonPoints.Add(p);
+        }
     }
 
     void SpawnPlayers()
@@ -87,9 +94,12 @@ public class DungeonGeneration : WorldComponent
 
     void SpawnEnemies()
     {
-        Room randomRoom = m_DungeonGenerator.Rooms[RecRandom.Instance.GetRandomValue(1, m_DungeonGenerator.Rooms.Count)];
-        IEntity goblin = EntityFactory.CreateEntity("Goblin");
-        Spawner.Spawn(goblin, randomRoom.GetValidPoint());
+        for (int i = 0; i < 5; i++)
+        {
+            Room randomRoom = m_DungeonGenerator.Rooms[RecRandom.Instance.GetRandomValue(1, m_DungeonGenerator.Rooms.Count)];
+            IEntity goblin = EntityFactory.CreateEntity("Goblin");
+            Spawner.Spawn(goblin, randomRoom.GetValidPoint());
+        }
     }
 
     void CreateTiles(Dictionary<Point, Actor> pointToTileMap)

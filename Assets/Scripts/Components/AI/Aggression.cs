@@ -39,11 +39,20 @@ public class Aggression : Component
             {
                 if (point == m_CurrentLocation) continue;
 
+                EventBuilder getEntity = new EventBuilder(GameEventId.GetEntityOnTile)
+                                                        .With(EventParameters.TilePosition, point)
+                                                        .With(EventParameters.Entity, "");
+
+                IEntity target = EntityQuery.GetEntity(FireEvent(World.Instance.Self, getEntity.CreateEvent()).GetValue<string>(EventParameters.Entity));
+                if (target == null) continue;
+
+                if (Factions.GetDemeanorForTarget(Self, target) != Demeanor.Hostile) continue;
+
                 EventBuilder getCombatRatingOfTile = new EventBuilder(GameEventId.GetTileAggression)
                                                         .With(EventParameters.TilePosition, point)
                                                         .With(EventParameters.Value, -1);
 
-                int tileAggressionLevel = FireEvent(World.Instance.Self, getCombatRatingOfTile.CreateEvent()).GetValue<int>(EventParameters.Value);
+                int tileAggressionLevel = FireEvent(target, getCombatRatingOfTile.CreateEvent()).GetValue<int>(EventParameters.Value);
 
                 if(tileAggressionLevel > -1 && tileAggressionLevel <= myAggressionLevel)
                 {

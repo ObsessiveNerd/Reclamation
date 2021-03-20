@@ -41,7 +41,7 @@ public class RangedPlayerAttackController : InputControllerBase
             if(Input.GetKeyDown(KeyCode.Return))
             {
                 TypeWeapon weaponType = CombatUtility.GetWeaponType(m_Attack);
-                IEntity target = WorldUtility.GetEntityAtPosition(Self, m_TileSelection);
+                IEntity target = WorldUtility.GetEntityAtPosition(m_TileSelection);
 
                 CombatUtility.Attack(Self, target, m_Attack);
 

@@ -11,4 +11,5 @@
 	Info:"It's a nasty little goblin.  Its slimy green skin reeks with the pungent odor of dirt and mold."
 	FOV: VisibleRange=5
 	Aggression: BaseAggression=1
+	PackTactics
 )

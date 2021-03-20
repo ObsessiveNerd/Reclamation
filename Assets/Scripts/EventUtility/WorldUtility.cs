@@ -4,9 +4,9 @@ using UnityEngine;
 
 public static class WorldUtility
 {
-    public static IEntity GetEntityAtPosition(IEntity source, Point position)
+    public static IEntity GetEntityAtPosition(Point position)
     {
-        GameEvent result = source.FireEvent(World.Instance.Self, new GameEvent(GameEventId.GetEntityOnTile, new KeyValuePair<string, object>(EventParameters.TilePosition, position),
+        GameEvent result = World.Instance.Self.FireEvent(new GameEvent(GameEventId.GetEntityOnTile, new KeyValuePair<string, object>(EventParameters.TilePosition, position),
                                                                                             new KeyValuePair<string, object>(EventParameters.Entity, null)));
 
         return EntityQuery.GetEntity((string)result.Paramters[EventParameters.Entity]);

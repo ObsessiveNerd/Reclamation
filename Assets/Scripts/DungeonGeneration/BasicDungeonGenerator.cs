@@ -25,14 +25,23 @@ public class Room
 
     public void CreateWalls()
     {
+        List<Point> validPoints = new List<Point>();
+
         for (int i = m_StartPoint.x; i < m_StartPoint.x + m_Size.x; i++)
         {
             for (int j = m_StartPoint.y; j < m_StartPoint.y + m_Size.y; j++)
             {
                 if (i == m_StartPoint.x || i == m_StartPoint.x + m_Size.x - 1 || j == m_StartPoint.y || j == m_StartPoint.y + m_Size.y - 1)
                     Spawner.Spawn(EntityFactory.CreateEntity("Wall"), new Point(i, j));
+                else
+                    validPoints.Add(new Point(i, j));
             }
         }
+
+        EventBuilder sendValidPoints = new EventBuilder(GameEventId.AddValidPoints)
+                                        .With(EventParameters.Value, validPoints);
+
+        World.Instance.Self.FireEvent(sendValidPoints.CreateEvent());
     }
 
     public void CreateHallwayToRoom(Room otherRoom)
@@ -151,6 +160,12 @@ public class Room
                                       .With(EventParameters.Point, p);
             World.Instance.Self.FireEvent(World.Instance.Self, builder.CreateEvent());
         }
+
+        EventBuilder sendValidPoints = new EventBuilder(GameEventId.AddValidPoints)
+                                        .With(EventParameters.Value, m_Hallways);
+
+        World.Instance.Self.FireEvent(sendValidPoints.CreateEvent());
+
     }
 
     void SurroundPointWithWalls(Point p)

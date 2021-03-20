@@ -9,6 +9,7 @@ public abstract class WorldComponent : Component
     protected static Dictionary<IEntity, Point> m_EntityToPointMap = new Dictionary<IEntity, Point>();
     protected static LinkedList<IEntity> m_Players = new LinkedList<IEntity>();
     protected static LinkedListNode<IEntity> m_ActivePlayer;
+    protected static HashSet<Point> m_ValidDungeonPoints = new HashSet<Point>();
 
     public Point GetPointWhereEntityIs(IEntity e)
     {

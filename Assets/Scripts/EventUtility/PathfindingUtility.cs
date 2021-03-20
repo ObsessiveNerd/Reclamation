@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public static class PathfindingUtility
@@ -48,9 +49,7 @@ public static class PathfindingUtility
 
     public static Point GetValidPointWithinRange(IEntity target, int range)
     {
-        EventBuilder getEntityPointBuilder = new EventBuilder(GameEventId.GetEntityLocation)
-                                            .With(EventParameters.Value, target.ID);
-        Point startPos = World.Instance.Self.FireEvent(getEntityPointBuilder.CreateEvent()).GetValue<Point>(EventParameters.TilePosition);
+        Point startPos = GetEntityLocation(target); 
 
         List<Point> validPoints = new List<Point>();
         for(int i = startPos.x - range; i < startPos.x + range; i++)
@@ -58,15 +57,31 @@ public static class PathfindingUtility
             for(int j = startPos.y - range; j < startPos.y + range; j++)
             {
                 Point p = new Point(i, j);
-                if (CanNavigateTo(startPos, p))
-                    validPoints.Add(p);
+                validPoints.Add(p);
             }
         }
 
-        if (validPoints.Count == 0)
+        if (validPoints.Count == 0 || (validPoints.Count == 1 && validPoints[0] == startPos))
             return startPos;
 
-        return validPoints[RecRandom.Instance.GetRandomValue(0, validPoints.Count - 1)];
+        if (validPoints.Contains(startPos))
+            validPoints.Remove(startPos);
+
+        validPoints = validPoints.OrderBy(x => RecRandom.Instance.GetRandomValue(0, 100)).ToList();
+        foreach(Point vp in validPoints)
+        {
+            if (IsValidDungeonTile(vp))
+                return vp;
+        }
+        return startPos;
+    }
+
+    public static bool IsValidDungeonTile(Point p)
+    {
+        EventBuilder isValidPoint = new EventBuilder(GameEventId.IsValidDungeonTile)
+                                    .With(EventParameters.TilePosition, p)
+                                    .With(EventParameters.Value, false);
+        return World.Instance.Self.FireEvent(isValidPoint.CreateEvent()).GetValue<bool>(EventParameters.Value);
     }
 
     public static bool CanNavigateTo(Point startPos, Point destination)

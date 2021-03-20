@@ -10,4 +10,5 @@
 	Faction:<DwarvenCompany>
 	FOV: VisibleRange=5
 	Aggression: BaseAggression=0
+	PackTactics
 )

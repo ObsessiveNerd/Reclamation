@@ -8,6 +8,7 @@ public static class GameEventId
     //AI
     public const string GetActionToTake = nameof(GetActionToTake);
     public const string GetTileAggression = nameof(GetTileAggression);
+    public const string GetPackInformation = nameof(GetPackInformation);
 
     //FOV
     public const string FOVRecalculated = nameof(FOVRecalculated);
@@ -65,10 +66,12 @@ public static class GameEventId
     public const string DestroyEntity = nameof(DestroyEntity);
     public const string GetEntity = nameof(GetEntity);
     public const string CalculatePath = nameof(CalculatePath);
+    public const string IsValidDungeonTile = nameof(IsValidDungeonTile);
 
     //Dungeon
     public const string GetRandomValidPoint = nameof(GetRandomValidPoint);
     public const string GetRandomValidPointInRange = nameof(GetRandomValidPointInRange);
+    public const string AddValidPoints = nameof(AddValidPoints);
 
     //Moving
     public const string EntityOvertaking = nameof(EntityOvertaking);
@@ -193,6 +196,7 @@ public static class EventParameters
     public const string Path = nameof(Path);
     public const string Range = nameof(Range);
     public const string AIActionList = nameof(AIActionList);
+    public const string IsPartyLeader = nameof(IsPartyLeader);
 }
 
 [Serializable]
