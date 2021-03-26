@@ -28,7 +28,7 @@ public class Dice
 
     public int GetAverageRoll()
     {
-        int maxRoll = m_Modifiers * m_DAmount;
+        int maxRoll = m_AmountOfDice * m_DAmount;
         maxRoll += m_Modifiers;
         return maxRoll / 2;
     }

@@ -9,6 +9,8 @@ public class Health : Component
 
     public override int Priority { get { return 10; } }
 
+    private int PercentHealth {get{ return (CurrentHealth / MaxHealth) * 100; } }
+
     public Health(int maxHealth, int currentHealth = -1)
     {
         MaxHealth = maxHealth;
@@ -16,6 +18,7 @@ public class Health : Component
 
         RegisteredEvents.Add(GameEventId.TakeDamage);
         RegisteredEvents.Add(GameEventId.RestoreHealth);
+        RegisteredEvents.Add(GameEventId.GetCombatRating);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
@@ -39,10 +42,26 @@ public class Health : Component
             }
         }
 
-        if(gameEvent.ID == GameEventId.RestoreHealth)
+        else if(gameEvent.ID == GameEventId.RestoreHealth)
         {
             int healAmount = (int)gameEvent.Paramters[EventParameters.Healing];
             CurrentHealth = Mathf.Min(CurrentHealth + healAmount, MaxHealth);
+        }
+
+        else if(gameEvent.ID == GameEventId.GetCombatRating)
+        {
+            int startValue = (int)gameEvent.Paramters[EventParameters.Value];
+            int modifier = 0;
+            if (PercentHealth > 95)
+                modifier = 2;
+            else if (PercentHealth > 70 && PercentHealth < 95)
+                modifier = 1;
+            else if (PercentHealth < 50 && !(PercentHealth < 20))
+                modifier = -1;
+            else if (PercentHealth < 20)
+                modifier = -2;
+
+            gameEvent.Paramters[EventParameters.Value] = startValue + modifier;
         }
     }
 }
