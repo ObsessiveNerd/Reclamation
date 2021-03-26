@@ -77,17 +77,25 @@ public class DungeonGeneration : WorldComponent
     {
         IEntity player = EntityFactory.CreateEntity("Dwarf");
         IEntity player2 = EntityFactory.CreateEntity("Dwarf");
+        IEntity player3 = EntityFactory.CreateEntity("Dwarf");
+        IEntity player4 = EntityFactory.CreateEntity("Dwarf");
 
         FireEvent(Self, new GameEvent(GameEventId.ConvertToPlayableCharacter, new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.Entity, player.ID)));
         FireEvent(Self, new GameEvent(GameEventId.ConvertToPlayableCharacter, new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.Entity, player2.ID)));
+        FireEvent(Self, new GameEvent(GameEventId.ConvertToPlayableCharacter, new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.Entity, player3.ID)));
+        FireEvent(Self, new GameEvent(GameEventId.ConvertToPlayableCharacter, new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.Entity, player4.ID)));
 
         Spawner.Spawn(player, m_DungeonGenerator.Rooms[0].GetValidPoint());
         Spawner.Spawn(player2, m_DungeonGenerator.Rooms[0].GetValidPoint());
+        Spawner.Spawn(player3, m_DungeonGenerator.Rooms[0].GetValidPoint());
+        Spawner.Spawn(player4, m_DungeonGenerator.Rooms[0].GetValidPoint());
 
         player.CleanupComponents();
 
         FireEvent(player, new GameEvent(GameEventId.InitFOV));
         FireEvent(player2, new GameEvent(GameEventId.InitFOV));
+        FireEvent(player3, new GameEvent(GameEventId.InitFOV));
+        FireEvent(player4, new GameEvent(GameEventId.InitFOV));
 
         FireEvent(Self, new GameEvent(GameEventId.ProgressTime));
     }

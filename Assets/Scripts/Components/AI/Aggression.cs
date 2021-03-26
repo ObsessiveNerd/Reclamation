@@ -44,7 +44,7 @@ public class Aggression : Component
 
                 int targetCombatRating = FireEvent(target, getCombatRatingOfTile.CreateEvent()).GetValue<int>(EventParameters.Value);
                 Debug.Log($"{Self.Name} combat rating is {myCombatLevel}.  Target {target.Name} CR is {targetCombatRating}");
-                if(targetCombatRating > -1 && targetCombatRating <= myCombatLevel)
+                if(targetCombatRating > -1 && CombatUtility.ValueIsWithinCRBuffer(myCombatLevel, targetCombatRating))
                 {
                     m_TargetLocation = point;
                     AIAction attackAction = new AIAction()

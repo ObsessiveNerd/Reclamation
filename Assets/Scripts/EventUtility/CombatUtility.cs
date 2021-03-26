@@ -2,6 +2,8 @@
 
 public static class CombatUtility
 {
+    static int CombatRatingBuffer => 4;
+
     public static void Attack(IEntity source, IEntity target, IEntity weapon)
     {
         TypeWeapon weaponType = GetWeaponType(weapon);
@@ -30,5 +32,12 @@ public static class CombatUtility
         TypeWeapon weaponType = (TypeWeapon)weapon.FireEvent(weapon, new GameEvent(GameEventId.GetWeaponType,
             new KeyValuePair<string, object>(EventParameters.WeaponType, TypeWeapon.None))).Paramters[EventParameters.WeaponType];
         return weaponType;
+    }
+
+    public static bool ValueIsWithinCRBuffer(int sourceValue, int targetValue)
+    {
+        if (targetValue >= sourceValue - CombatRatingBuffer && targetValue <= sourceValue + CombatRatingBuffer)
+            return true;
+        return false;
     }
 }
