@@ -9,6 +9,7 @@ public class PackTactics : Component
     public string PartyLeaderId;
     public int PackRange;
 
+    private List<Point> m_VisiblePoints = new List<Point>();
     private Point m_Destination;
 
     public PackTactics(bool isPartyLeader, bool isInParty, string partyLeaderId, int packRange)
@@ -24,6 +25,8 @@ public class PackTactics : Component
         base.Init(self);
         RegisteredEvents.Add(GameEventId.GetActionToTake);
         RegisteredEvents.Add(GameEventId.GetPackInformation);
+        RegisteredEvents.Add(GameEventId.GetCombatRating);
+        RegisteredEvents.Add(GameEventId.BreakRank);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
@@ -33,8 +36,24 @@ public class PackTactics : Component
             gameEvent.Paramters[EventParameters.Entity] = Self.ID;
             gameEvent.Paramters[EventParameters.IsPartyLeader] = IsPartyLeader;
         }
-
-        if(gameEvent.ID == GameEventId.GetActionToTake)
+        else if(gameEvent.ID == GameEventId.BreakRank)
+        {
+            ClearPartyStatus();
+        }
+        else if(gameEvent.ID == GameEventId.GetCombatRating)
+        {
+            int startValue = (int)gameEvent.Paramters[EventParameters.Value];
+            int numberOfAllies = 0;
+            foreach(var point in m_VisiblePoints)
+            {
+                IEntity target = WorldUtility.GetEntityAtPosition(point);
+                var demeanor = Factions.GetDemeanorForTarget(Self, target);
+                if (demeanor == Demeanor.Friendly)
+                    numberOfAllies++;
+            }
+            gameEvent.Paramters[EventParameters.Value] = startValue + numberOfAllies;
+        }
+        else if(gameEvent.ID == GameEventId.GetActionToTake)
         {
             if (IsInParty && !string.IsNullOrEmpty(PartyLeaderId))
             {
@@ -60,9 +79,9 @@ public class PackTactics : Component
             {
                 EventBuilder getVisiblePoints = new EventBuilder(GameEventId.GetVisibleTiles)
                                             .With(EventParameters.VisibleTiles, new List<Point>());
-                List<Point> visiblePoints = FireEvent(Self, getVisiblePoints.CreateEvent()).GetValue<List<Point>>(EventParameters.VisibleTiles);
+                m_VisiblePoints = FireEvent(Self, getVisiblePoints.CreateEvent()).GetValue<List<Point>>(EventParameters.VisibleTiles);
                 bool partyLeaderInSight = false;
-                foreach (var point in visiblePoints)
+                foreach (var point in m_VisiblePoints)
                 {
                     IEntity entityAtTile = WorldUtility.GetEntityAtPosition(point);
 
@@ -85,25 +104,28 @@ public class PackTactics : Component
                     }
 
                     if (!partyLeaderInSight)
-                    {
-                        IsPartyLeader = true;
-                        PartyLeaderId = null;
-                        IsInParty = false;
-                    }
+                        ClearPartyStatus();
                 }
             }
         }
+    }
 
-        MoveDirection MoveWithPack()
-        {
-            Point currentLocation = PathfindingUtility.GetEntityLocation(Self);
-            var path = PathfindingUtility.GetPath(currentLocation, m_Destination);
+    void ClearPartyStatus()
+    {
+        IsPartyLeader = true;
+        PartyLeaderId = null;
+        IsInParty = false;
+    }
 
-            if (path.Count == 0)
-                return MoveDirection.None;
+    MoveDirection MoveWithPack()
+    {
+        Point currentLocation = PathfindingUtility.GetEntityLocation(Self);
+        var path = PathfindingUtility.GetPath(currentLocation, m_Destination);
 
-            return PathfindingUtility.GetDirectionTo(currentLocation, path[0]);
-        }
+        if (path.Count == 0)
+            return MoveDirection.None;
+
+        return PathfindingUtility.GetDirectionTo(currentLocation, path[0]);
     }
 }
 

@@ -26,6 +26,13 @@ public class Dice
         return total;
     }
 
+    public int GetAverageRoll()
+    {
+        int maxRoll = m_Modifiers * m_DAmount;
+        maxRoll += m_Modifiers;
+        return maxRoll / 2;
+    }
+
     public static int Roll(string dice)
     {
         return new Dice(dice).Roll();

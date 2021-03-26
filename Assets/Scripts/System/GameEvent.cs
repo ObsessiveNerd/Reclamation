@@ -7,8 +7,10 @@ public static class GameEventId
 {
     //AI
     public const string GetActionToTake = nameof(GetActionToTake);
-    public const string GetTileAggression = nameof(GetTileAggression);
+    //public const string GetTileAggression = nameof(GetTileAggression);
+    public const string GetCombatRating = nameof(GetCombatRating);
     public const string GetPackInformation = nameof(GetPackInformation);
+    public const string BreakRank = nameof(BreakRank);
 
     //FOV
     public const string FOVRecalculated = nameof(FOVRecalculated);
@@ -138,6 +140,10 @@ public static class GameEventId
     public const string Sharpness = nameof(Sharpness);
     public const string SeverBodyPart = nameof(SeverBodyPart);
 
+    //Stats
+    public const string GetPrimaryStatType = nameof(GetPrimaryStatType);
+    public const string GetStat = nameof(GetStat);
+
     //Body
     public const string GrowBodyPart = nameof(GrowBodyPart);
     public const string CheckEquipment = nameof(CheckEquipment);
@@ -197,6 +203,7 @@ public static class EventParameters
     public const string Range = nameof(Range);
     public const string AIActionList = nameof(AIActionList);
     public const string IsPartyLeader = nameof(IsPartyLeader);
+    public const string StatType = nameof(StatType);
 }
 
 [Serializable]

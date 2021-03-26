@@ -10,11 +10,13 @@ public class Armor : Component
     {
         ArmorAmount = armor;
         RegisteredEvents.Add(GameEventId.AddArmorValue);
+        RegisteredEvents.Add(GameEventId.GetCombatRating);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
     {
-        gameEvent.Paramters[EventParameters.Value] = (int)gameEvent.Paramters[EventParameters.Value] + ArmorAmount;
+        if(gameEvent.ID == GameEventId.AddArmorValue || gameEvent.ID == GameEventId.GetCombatRating)
+            gameEvent.Paramters[EventParameters.Value] = (int)gameEvent.Paramters[EventParameters.Value] + ArmorAmount;
     }
 }
 

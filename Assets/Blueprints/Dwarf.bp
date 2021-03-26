@@ -9,6 +9,6 @@
 	Energy:Regen=1
 	Faction:<DwarvenCompany>
 	FOV: VisibleRange=5
-	Aggression: BaseAggression=0
 	PackTactics
+	PrimaryStatType:Str
 )

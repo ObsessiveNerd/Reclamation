@@ -4,22 +4,13 @@ using UnityEngine;
 
 public class Aggression : Component
 {
-    public int BaseAggression;
-    public override int Priority => 1;
-
     Point m_CurrentLocation;
     Point m_TargetLocation;
-
-    public Aggression(int baseAggression)
-    {
-        BaseAggression = baseAggression;
-    }
 
     public override void Init(IEntity self)
     {
         base.Init(self);
         RegisteredEvents.Add(GameEventId.GetActionToTake);
-        RegisteredEvents.Add(GameEventId.GetTileAggression);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
@@ -27,10 +18,10 @@ public class Aggression : Component
         if(gameEvent.ID == GameEventId.GetActionToTake)
         {
             m_CurrentLocation = PathfindingUtility.GetEntityLocation(Self);
-            EventBuilder getMyAggressionLevel = new EventBuilder(GameEventId.GetTileAggression)
+            EventBuilder getMyAggressionLevel = new EventBuilder(GameEventId.GetCombatRating)
                                                         .With(EventParameters.Value, -1);
 
-            int myAggressionLevel = FireEvent(Self, getMyAggressionLevel.CreateEvent()).GetValue<int>(EventParameters.Value);
+            int myCombatLevel = FireEvent(Self, getMyAggressionLevel.CreateEvent()).GetValue<int>(EventParameters.Value);
 
             EventBuilder getVisiblePoints = new EventBuilder(GameEventId.GetVisibleTiles)
                                             .With(EventParameters.VisibleTiles, new List<Point>());
@@ -48,13 +39,12 @@ public class Aggression : Component
 
                 if (Factions.GetDemeanorForTarget(Self, target) != Demeanor.Hostile) continue;
 
-                EventBuilder getCombatRatingOfTile = new EventBuilder(GameEventId.GetTileAggression)
-                                                        .With(EventParameters.TilePosition, point)
+                EventBuilder getCombatRatingOfTile = new EventBuilder(GameEventId.GetCombatRating)
                                                         .With(EventParameters.Value, -1);
 
-                int tileAggressionLevel = FireEvent(target, getCombatRatingOfTile.CreateEvent()).GetValue<int>(EventParameters.Value);
-
-                if(tileAggressionLevel > -1 && tileAggressionLevel <= myAggressionLevel)
+                int targetCombatRating = FireEvent(target, getCombatRatingOfTile.CreateEvent()).GetValue<int>(EventParameters.Value);
+                Debug.Log($"{Self.Name} combat rating is {myCombatLevel}.  Target {target.Name} CR is {targetCombatRating}");
+                if(targetCombatRating > -1 && targetCombatRating <= myCombatLevel)
                 {
                     m_TargetLocation = point;
                     AIAction attackAction = new AIAction()
@@ -63,12 +53,9 @@ public class Aggression : Component
                         ActionToTake = MakeAttack
                     };
                     gameEvent.GetValue<PriorityQueue<AIAction>>(EventParameters.AIActionList).Add(attackAction);
+                    break;
                 }
             }
-        }
-        else if(gameEvent.ID == GameEventId.GetTileAggression)
-        {
-            gameEvent.Paramters[EventParameters.Value] = BaseAggression;
         }
     }
 
@@ -86,14 +73,14 @@ public class DTO_Aggression : IDataTransferComponent
 
     public void CreateComponent(string data)
     {
-        string[] parameters = data.Split('=');
-        int baseAggression = int.Parse(parameters[1]);
-        Component = new Aggression(baseAggression);
+        //string[] parameters = data.Split('=');
+        //int baseAggression = int.Parse(parameters[1]);
+        Component = new Aggression();
     }
 
     public string CreateSerializableData(IComponent component)
     {
         Aggression agg = (Aggression)component;
-        return $"{nameof(Aggression)}:BaseAggression={agg.BaseAggression}";
+        return $"{nameof(Aggression)}"; //:BaseAggression={agg.BaseAggression}";
     }
 }

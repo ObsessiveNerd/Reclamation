@@ -91,7 +91,6 @@ public class Tile : Component
         RegisteredEvents.Add(GameEventId.IsTileBlocking);
         RegisteredEvents.Add(GameEventId.DestroyObject);
         RegisteredEvents.Add(GameEventId.PathfindingData);
-        RegisteredEvents.Add(GameEventId.GetTileAggression);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
@@ -208,15 +207,6 @@ public class Tile : Component
                 foreach (IEntity e in GetTarget())
                     FireEvent(e, gameEvent);
             }
-        }
-
-        else if(gameEvent.ID == GameEventId.GetTileAggression)
-        {
-            var targets = GetTarget(false);
-            if (targets.Count == 0) return;
-
-            IEntity target = targets[0];
-            FireEvent(target, gameEvent);
         }
     }
 

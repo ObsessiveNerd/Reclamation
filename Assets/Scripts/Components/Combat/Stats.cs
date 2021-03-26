@@ -2,6 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum Stat
+{
+    Str,
+    Agi,
+    Con,
+    Wis,
+    Int,
+    Cha
+}
+
 public class Stats : Component
 {
     public int Str;
@@ -15,6 +25,7 @@ public class Stats : Component
     {
         SetStats(Str, Agi, Con, Wis, Int, Cha);
         RegisteredEvents.Add(GameEventId.RollToHit);
+        RegisteredEvents.Add(GameEventId.GetStat);
     }
 
     void SetStats(int Str, int Agi, int Con, int Wis, int Int, int Cha)
@@ -29,34 +40,62 @@ public class Stats : Component
 
     public override void HandleEvent(GameEvent gameEvent)
     {
-        int totalRoll = Dice.Roll("1d20");
-        TypeWeapon weaponType = (TypeWeapon)gameEvent.Paramters[EventParameters.WeaponType];
-        switch(weaponType)
+        if(gameEvent.ID == GameEventId.RollToHit)
         {
-            case TypeWeapon.Melee:
-            case TypeWeapon.StrSpell:
-                totalRoll += GetModifier(Str);
-                break;
-            case TypeWeapon.Finesse:
-            case TypeWeapon.Ranged:
-            case TypeWeapon.AgiSpell:
-                totalRoll += GetModifier(Agi);
-                break;
-            case TypeWeapon.MagicStaff:
-            case TypeWeapon.IntSpell:
-                totalRoll += GetModifier(Int);
-                break;
-            case TypeWeapon.ConSpell:
-                totalRoll += GetModifier(Con);
-                break;
-            case TypeWeapon.WisSpell:
-                totalRoll += GetModifier(Wis);
-                break;
-            case TypeWeapon.ChaSpell:
-                totalRoll += GetModifier(Cha);
-                break;
+            int totalRoll = Dice.Roll("1d20");
+            TypeWeapon weaponType = (TypeWeapon)gameEvent.Paramters[EventParameters.WeaponType];
+            switch(weaponType)
+            {
+                case TypeWeapon.Melee:
+                case TypeWeapon.StrSpell:
+                    totalRoll += GetModifier(Str);
+                    break;
+                case TypeWeapon.Finesse:
+                case TypeWeapon.Ranged:
+                case TypeWeapon.AgiSpell:
+                    totalRoll += GetModifier(Agi);
+                    break;
+                case TypeWeapon.MagicStaff:
+                case TypeWeapon.IntSpell:
+                    totalRoll += GetModifier(Int);
+                    break;
+                case TypeWeapon.ConSpell:
+                    totalRoll += GetModifier(Con);
+                    break;
+                case TypeWeapon.WisSpell:
+                    totalRoll += GetModifier(Wis);
+                    break;
+                case TypeWeapon.ChaSpell:
+                    totalRoll += GetModifier(Cha);
+                    break;
+            }
+            gameEvent.Paramters[EventParameters.RollToHit] = totalRoll;
         }
-        gameEvent.Paramters[EventParameters.RollToHit] = totalRoll;
+        else if(gameEvent.ID == GameEventId.GetStat)
+        {
+            Stat s = gameEvent.GetValue<Stat>(EventParameters.StatType);
+            switch (s)
+            {
+                case Stat.Str:
+                    gameEvent.Paramters[EventParameters.Value] = GetModifier(Str);
+                    break;
+                case Stat.Agi:
+                    gameEvent.Paramters[EventParameters.Value] = GetModifier(Agi);
+                    break;
+                case Stat.Con:
+                    gameEvent.Paramters[EventParameters.Value] = GetModifier(Con);
+                    break;
+                case Stat.Wis:
+                    gameEvent.Paramters[EventParameters.Value] = GetModifier(Wis);
+                    break;
+                case Stat.Int:
+                    gameEvent.Paramters[EventParameters.Value] = GetModifier(Int);
+                    break;
+                case Stat.Cha:
+                    gameEvent.Paramters[EventParameters.Value] = GetModifier(Cha);
+                    break;
+            }
+        }
     }
 
     int GetModifier(int value)

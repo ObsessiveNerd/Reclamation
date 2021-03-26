@@ -58,6 +58,7 @@ public class Body : Component
         RegisteredEvents.Add(GameEventId.Unequip);
         RegisteredEvents.Add(GameEventId.CheckEquipment);
         RegisteredEvents.Add(GameEventId.EndTurn);
+        RegisteredEvents.Add(GameEventId.GetCombatRating);
     }
 
     bool HasEquipment(IEntity e)
@@ -142,7 +143,7 @@ public class Body : Component
             }
         }
 
-        else if (gameEvent.ID == GameEventId.AddArmorValue)
+        else if (gameEvent.ID == GameEventId.AddArmorValue || gameEvent.ID == GameEventId.GetCombatRating)
         {
             FireEvent(Torso, gameEvent);
             foreach(var head in Heads)

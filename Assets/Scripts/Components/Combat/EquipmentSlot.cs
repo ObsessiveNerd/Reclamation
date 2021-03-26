@@ -13,6 +13,7 @@ public class EquipmentSlot : Component
         RegisteredEvents.Add(GameEventId.Equip);
         RegisteredEvents.Add(GameEventId.Unequip);
         RegisteredEvents.Add(GameEventId.CheckEquipment);
+        RegisteredEvents.Add(GameEventId.GetCombatRating);
     }
 
     //void EquipmentDestroyed(IEntity e)
@@ -56,6 +57,12 @@ public class EquipmentSlot : Component
         {
             GameEvent ge = (GameEvent)gameEvent.Paramters[EventParameters.GameEvent];
             FireEvent(EntityQuery.GetEntity(m_EquipmentId), ge);
+        }
+
+        if(gameEvent.ID == GameEventId.GetCombatRating)
+        {
+            if(!string.IsNullOrEmpty(m_EquipmentId))
+                FireEvent(EntityQuery.GetEntity(m_EquipmentId), gameEvent);
         }
     }
 }

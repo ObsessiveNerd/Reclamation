@@ -12,7 +12,6 @@ public class WorldDataQuery : WorldComponent
         RegisteredEvents.Add(GameEventId.GetEntities);
         RegisteredEvents.Add(GameEventId.GetEntityOnTile);
         RegisteredEvents.Add(GameEventId.GetEntityLocation);
-        RegisteredEvents.Add(GameEventId.GetTileAggression);
         RegisteredEvents.Add(GameEventId.IsValidDungeonTile);
     }
 
@@ -37,11 +36,6 @@ public class WorldDataQuery : WorldComponent
                 gameEvent.Paramters[EventParameters.TilePosition] = result;
         }
 
-        else if(gameEvent.ID == GameEventId.GetTileAggression)
-        {
-            Point p = gameEvent.GetValue<Point>(EventParameters.TilePosition);
-            FireEvent(m_Tiles[p], gameEvent);
-        }
         else if(gameEvent.ID == GameEventId.IsValidDungeonTile)
         {
             Point p = gameEvent.GetValue<Point>(EventParameters.TilePosition);
