@@ -13,6 +13,7 @@ public class Inventory : Component
         RegisteredEvents.Add(GameEventId.AddToInventory);
         RegisteredEvents.Add(GameEventId.RemoveFromInventory);
         RegisteredEvents.Add(GameEventId.EmptyBag);
+        RegisteredEvents.Add(GameEventId.Died);
     }
 
     //void EntityDestroyed(IEntity e)
@@ -54,14 +55,14 @@ public class Inventory : Component
             }
         }
 
-        //if(gameEvent.ID == GameEventId.EmptyBag)
-        //{
-        //    foreach (IEntity item in InventoryItems)
-        //        FireEvent(World.Instance.Self, new GameEvent(GameEventId.Drop, new KeyValuePair<string, object>(EventParameters.Entity, item),
-        //                                                                        new KeyValuePair<string, object>(EventParameters.Creature, Self),
-        //                                                                        new KeyValuePair<string, object>(EventParameters.EntityType, EntityType.Item)));
-        //    InventoryItems.Clear();
-        //}
+        if (gameEvent.ID == GameEventId.Died)
+        {
+            foreach (IEntity item in InventoryItems)
+                FireEvent(World.Instance.Self, new GameEvent(GameEventId.Drop, new KeyValuePair<string, object>(EventParameters.Entity, item.ID),
+                                                                                new KeyValuePair<string, object>(EventParameters.Creature, Self.ID),
+                                                                                new KeyValuePair<string, object>(EventParameters.EntityType, EntityType.Item)));
+            InventoryItems.Clear();
+        }
     }
 }
 

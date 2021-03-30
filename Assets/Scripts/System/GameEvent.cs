@@ -44,6 +44,7 @@ public static class GameEventId
     //Item
     public const string Pickup = nameof(Pickup);
     public const string Drop = nameof(Drop);
+    public const string GetValue = nameof(GetValue);
 
     //Debug
     public const string RevealAllTiles = nameof(RevealAllTiles);
@@ -111,6 +112,7 @@ public static class GameEventId
     public const string DestroyObject = nameof(DestroyObject);
     public const string PathfindingData = nameof(PathfindingData);
     public const string IsValidTile = nameof(IsValidTile);
+    public const string GetValueOnTile = nameof(GetValueOnTile);
 
     //Character Selection
     public const string RotateActiveCharacter = nameof(RotateActiveCharacter);
@@ -133,6 +135,7 @@ public static class GameEventId
     public const string PerformAttack = nameof(PerformAttack);
     public const string RollToHit = nameof(RollToHit);
     public const string TakeDamage = nameof(TakeDamage);
+    public const string Died = nameof(Died);
     public const string RestoreHealth = nameof(RestoreHealth);
     public const string GetWeaponType = nameof(GetWeaponType);
     public const string GetEquipment = nameof(GetEquipment);

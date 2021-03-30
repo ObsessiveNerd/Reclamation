@@ -2,4 +2,5 @@
 	Inherits:Item
 	Armor:1
 	GraphicContainer:Textures/td_items_leather_helm
+	Value: 25
 )

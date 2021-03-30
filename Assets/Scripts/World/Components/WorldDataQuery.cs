@@ -13,6 +13,7 @@ public class WorldDataQuery : WorldComponent
         RegisteredEvents.Add(GameEventId.GetEntityOnTile);
         RegisteredEvents.Add(GameEventId.GetEntityLocation);
         RegisteredEvents.Add(GameEventId.IsValidDungeonTile);
+        RegisteredEvents.Add(GameEventId.GetValueOnTile);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
@@ -43,6 +44,13 @@ public class WorldDataQuery : WorldComponent
                 gameEvent.Paramters[EventParameters.Value] = true;
             else
                 gameEvent.Paramters[EventParameters.Value] = false;
+        }
+
+        else if(gameEvent.ID == GameEventId.GetValueOnTile)
+        {
+            Point p = gameEvent.GetValue<Point>(EventParameters.TilePosition);
+            if (m_ValidDungeonPoints.Contains(p))
+                FireEvent(m_Tiles[p], gameEvent);
         }
     }
 

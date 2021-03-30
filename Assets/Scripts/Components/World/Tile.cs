@@ -17,6 +17,8 @@ public class PointComparer : IEqualityComparer<Point>
 
 public struct Point : IMapNode
 {
+    public static readonly Point InvalidPoint = new Point(-1, -1);
+
     public int x { get; set; }
     public int y { get; set; }
 
@@ -91,6 +93,7 @@ public class Tile : Component
         RegisteredEvents.Add(GameEventId.IsTileBlocking);
         RegisteredEvents.Add(GameEventId.DestroyObject);
         RegisteredEvents.Add(GameEventId.PathfindingData);
+        RegisteredEvents.Add(GameEventId.GetValueOnTile);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
@@ -207,6 +210,22 @@ public class Tile : Component
                 foreach (IEntity e in GetTarget())
                     FireEvent(e, gameEvent);
             }
+        }
+
+        if(gameEvent.ID == GameEventId.GetValueOnTile)
+        {
+            if (Items.Count == 0)
+                return;
+
+            int totalValue = 0;
+            foreach(var item in Items)
+            {
+                EventBuilder getValue = new EventBuilder(GameEventId.GetValue)
+                                        .With(EventParameters.Value, 0);
+                int itemValue = FireEvent(item, getValue.CreateEvent()).GetValue<int>(EventParameters.Value);
+                totalValue += itemValue;
+            }
+            gameEvent.Paramters[EventParameters.Value] = totalValue;
         }
     }
 
