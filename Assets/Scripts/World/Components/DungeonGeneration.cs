@@ -78,7 +78,7 @@ public class DungeonGeneration : WorldComponent
     {
         for (int i = 0; i < 1; i++)
         {
-            IEntity player = EntityFactory.CreateEntity("Dwarf");
+            IEntity player = EntityFactory.CreateEntity("DwarfWarrior");
             FireEvent(Self, new GameEvent(GameEventId.ConvertToPlayableCharacter, new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.Entity, player.ID)));
             Spawner.Spawn(player, m_DungeonGenerator.Rooms[0].GetValidPoint());
 
@@ -96,7 +96,7 @@ public class DungeonGeneration : WorldComponent
         for (int i = 0; i < 1; i++)
         {
             Room randomRoom = m_DungeonGenerator.Rooms[RecRandom.Instance.GetRandomValue(1, m_DungeonGenerator.Rooms.Count)];
-            IEntity goblin = EntityFactory.CreateEntity("Goblin");
+            IEntity goblin = EntityFactory.CreateEntity("GoblinWarrior");
             Spawner.Spawn(goblin, randomRoom.GetValidPoint());
         }
     }
@@ -104,7 +104,7 @@ public class DungeonGeneration : WorldComponent
     void SpawnItems()
     {
         Room randomRoom = m_DungeonGenerator.Rooms[RecRandom.Instance.GetRandomValue(1, m_DungeonGenerator.Rooms.Count)];
-        IEntity helmet = EntityFactory.CreateEntity("Helmet");
+        IEntity helmet = EntityFactory.CreateEntity("BronzeHelmet");
         Spawner.Spawn(helmet, randomRoom.GetValidPoint());
     }
 

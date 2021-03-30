@@ -7,16 +7,45 @@ using UnityEngine;
 
 public static class EntityFactory
 {
-    private static string m_BluePrintPath = "Assets/Blueprints";
+    private static string m_BluePrintPath = "Blueprints";
+    private static Dictionary<string, string> m_Blueprints = new Dictionary<string, string>();
+
     public static IEntity CreateEntity(string blueprintName)
     {
+        if(m_Blueprints.Count == 0)
+        {
+            foreach(var bpPath in Directory.EnumerateFiles(m_BluePrintPath, "*", SearchOption.AllDirectories))
+            {
+                string bpName = Path.GetFileNameWithoutExtension(bpPath);
+                m_Blueprints.Add(bpName, bpPath);
+            }
+        }
+
+        if (!m_Blueprints.ContainsKey(blueprintName))
+            return null;
+
         Actor a = new Actor("<empty>");
-        string path = $"{m_BluePrintPath}/{blueprintName}.bp";
+        string path = m_Blueprints[blueprintName]; //$"{m_BluePrintPath}/{blueprintName}.bp";
         if(!File.Exists(path))
             path = $"{SaveSystem.kSaveDataPath}/{World.Instance.Seed}/Blueprints/{blueprintName}.bp"; //todo: need proper seed
         if (!File.Exists(path))
             return null;
         return GetEntity(path, a.ID);
+    }
+
+    public static string GetRandomCharacterBPName()
+    {
+        return string.Empty;
+    }
+
+    public static string GetRandomMonsterBPName(int combatRatingMin, int combatRatingMax)
+    {
+        return string.Empty;
+    }
+
+    public static string GetRandomItemBPName(int rarity)
+    {
+        return string.Empty;
     }
 
     public static IEntity GetEntity(string path, string entityID = "")
