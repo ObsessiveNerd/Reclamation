@@ -70,6 +70,7 @@ public static class GameEventId
     public const string GetEntity = nameof(GetEntity);
     public const string CalculatePath = nameof(CalculatePath);
     public const string IsValidDungeonTile = nameof(IsValidDungeonTile);
+    public const string GetClosestEnemy = nameof(GetClosestEnemy);
 
     //Dungeon
     public const string GetRandomValidPoint = nameof(GetRandomValidPoint);
@@ -87,6 +88,7 @@ public static class GameEventId
     public const string Interact = nameof(Interact);
     public const string InteractInDirection = nameof(InteractInDirection);
     public const string InteractWithTarget = nameof(InteractWithTarget);
+    public const string StopMovement = nameof(StopMovement);
 
     //Time progression
     public const string StartTurn = nameof(StartTurn);
@@ -155,11 +157,15 @@ public static class GameEventId
     public const string GetEntities = nameof(GetEntities);
     public const string GetEntityLocation = nameof(GetEntityLocation);
     public const string GetInteractableObjects = nameof(GetInteractableObjects);
+    public const string GetName = nameof(GetName);
 
     //UI
     public const string UIInput = nameof(UIInput);
     public const string CloseUI = nameof(CloseUI);
     public const string OpenInventoryUI = nameof(OpenInventoryUI);
+
+    //Spellcasting
+    public const string GetSpells = nameof(GetSpells);
 }
 
 public static class EventParameters
@@ -207,6 +213,8 @@ public static class EventParameters
     public const string AIActionList = nameof(AIActionList);
     public const string IsPartyLeader = nameof(IsPartyLeader);
     public const string StatType = nameof(StatType);
+    public const string SpellList = nameof(SpellList);
+    public const string Name = nameof(Name);
 }
 
 [Serializable]
@@ -269,8 +277,12 @@ public class GameEvent
 
     public T GetValue<T>(string parameterId)
     {
-        if (Paramters.ContainsKey(parameterId))
-            return (T)Paramters[parameterId];
+        if (Paramters.TryGetValue(parameterId, out object value))
+        {
+            if (value == null)
+                return default(T);
+            return (T)value;
+        }
         return default(T);
     }
 }

@@ -14,6 +14,7 @@ public class Inventory : Component
         RegisteredEvents.Add(GameEventId.RemoveFromInventory);
         RegisteredEvents.Add(GameEventId.EmptyBag);
         RegisteredEvents.Add(GameEventId.Died);
+        RegisteredEvents.Add(GameEventId.GetSpells);
     }
 
     //void EntityDestroyed(IEntity e)
@@ -62,6 +63,12 @@ public class Inventory : Component
                                                                                 new KeyValuePair<string, object>(EventParameters.Creature, Self.ID),
                                                                                 new KeyValuePair<string, object>(EventParameters.EntityType, EntityType.Item)));
             InventoryItems.Clear();
+        }
+
+        if(gameEvent.ID == GameEventId.GetSpells)
+        {
+            foreach (IEntity item in InventoryItems)
+                FireEvent(item, gameEvent);
         }
     }
 }

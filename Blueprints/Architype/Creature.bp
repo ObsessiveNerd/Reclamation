@@ -11,4 +11,5 @@ Creature<Architype>(
 	Fear
 	Wander
 	CombatRating
+	BlocksNonHostileMovement
 )

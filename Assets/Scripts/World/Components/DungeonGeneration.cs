@@ -76,7 +76,7 @@ public class DungeonGeneration : WorldComponent
 
     void SpawnPlayers()
     {
-        for (int i = 0; i < 1; i++)
+        for (int i = 0; i < 2; i++)
         {
             IEntity player = EntityFactory.CreateEntity("DwarfWarrior");
             FireEvent(Self, new GameEvent(GameEventId.ConvertToPlayableCharacter, new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.Entity, player.ID)));
@@ -93,7 +93,7 @@ public class DungeonGeneration : WorldComponent
 
     void SpawnEnemies()
     {
-        for (int i = 0; i < 1; i++)
+        for (int i = 0; i < 2; i++)
         {
             Room randomRoom = m_DungeonGenerator.Rooms[RecRandom.Instance.GetRandomValue(1, m_DungeonGenerator.Rooms.Count)];
             IEntity goblin = EntityFactory.CreateEntity("GoblinWarrior");

@@ -4,6 +4,12 @@ using UnityEngine;
 
 public class PlayerInputController : InputControllerBase
 {
+    public override void Init(IEntity self)
+    {
+        base.Init(self);
+        RegisteredEvents.Add(GameEventId.GetSprite);
+    }
+
     public override void HandleEvent(GameEvent gameEvent)
     {
         if (gameEvent.ID == GameEventId.UpdateEntity)
@@ -62,7 +68,8 @@ public class PlayerInputController : InputControllerBase
 
             else if (Input.GetKeyDown(KeyCode.C))
             {
-                //Cast spell
+                Self.RemoveComponent(this);
+                Self.AddComponent(new SpellcasterPlayerController());
             }
 
             else if (Input.GetKeyDown(KeyCode.Space))
@@ -107,10 +114,17 @@ public class PlayerInputController : InputControllerBase
             gameEvent.Paramters[EventParameters.TakeTurn] = (bool)checkForEnergy.Paramters[EventParameters.TakeTurn];
         }
 
-        else if(gameEvent.ID == GameEventId.RotateActiveCharacter)
+        //Just for testing
+        else if (gameEvent.ID == GameEventId.GetSprite)
         {
-            RotateActiveCharacter(gameEvent);
+            Sprite sprite = Resources.Load<Sprite>("Textures/active_dwarf");
+            gameEvent.Paramters[EventParameters.RenderSprite] = sprite;
         }
+
+        //else if(gameEvent.ID == GameEventId.RotateActiveCharacter)
+        //{
+        //    RotateActiveCharacter(gameEvent);
+        //}
     }
 
     void RotateActiveCharacter(GameEvent gameEvent)

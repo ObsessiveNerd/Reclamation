@@ -7,6 +7,8 @@ public class GraphicContainer : Component
     private Sprite m_Sprite;
     public string SpritePath;
 
+    public override int Priority => 1;
+
     public GraphicContainer(string spritePath)
     {
         Sprite sprite = Resources.Load<Sprite>(spritePath);

@@ -14,6 +14,7 @@ public class WorldDataQuery : WorldComponent
         RegisteredEvents.Add(GameEventId.GetEntityLocation);
         RegisteredEvents.Add(GameEventId.IsValidDungeonTile);
         RegisteredEvents.Add(GameEventId.GetValueOnTile);
+        RegisteredEvents.Add(GameEventId.GetClosestEnemy);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
@@ -51,6 +52,26 @@ public class WorldDataQuery : WorldComponent
             Point p = gameEvent.GetValue<Point>(EventParameters.TilePosition);
             if (m_ValidDungeonPoints.Contains(p))
                 FireEvent(m_Tiles[p], gameEvent);
+        }
+        else if(gameEvent.ID == GameEventId.GetClosestEnemy)
+        {
+            IEntity closestEnemy = null;
+            float distance = float.MaxValue;
+            IEntity source = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameters.Entity));
+            Point sourcePoint = m_EntityToPointMap[source];
+            foreach (var entity in m_EntityToPointMap.Keys)
+            {
+                if (entity == source) continue;
+
+                if (Point.Distance(sourcePoint, m_EntityToPointMap[entity]) < distance &&
+                    Factions.GetDemeanorForTarget(source, entity) == Demeanor.Hostile)
+                {
+                    closestEnemy = entity;
+                    distance = Point.Distance(sourcePoint, m_EntityToPointMap[entity]);
+                }
+            }
+
+            gameEvent.Paramters[EventParameters.Value] = closestEnemy.ID;
         }
     }
 

@@ -12,8 +12,13 @@ public static class WorldUtility
         return EntityQuery.GetEntity((string)result.Paramters[EventParameters.Entity]);
     }
 
-    //public static IEntity GetClosestEnemyTo(IEntity e)
-    //{
-    //    return null;
-    //}
+    public static IEntity GetClosestEnemyTo(IEntity e)
+    {
+        EventBuilder eventBuilder = new EventBuilder(GameEventId.GetClosestEnemy)
+                                    .With(EventParameters.Entity, e.ID)
+                                    .With(EventParameters.Value, null);
+
+        string id = World.Instance.Self.FireEvent(eventBuilder.CreateEvent()).GetValue<string>(EventParameters.Value);
+        return EntityQuery.GetEntity(id);
+    }
 }

@@ -12,6 +12,6 @@
 	FOV: VisibleRange=5
 	Desire:1
 	PackTactics
-	Inventory
+	Inventory: []
 	PrimaryStatType:Str
 )

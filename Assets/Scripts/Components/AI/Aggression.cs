@@ -63,6 +63,9 @@ public class Aggression : Component
     MoveDirection MakeAttack()
     {
         var path = PathfindingUtility.GetPath(m_CurrentLocation, m_TargetLocation);
+        if (path.Count == 0)
+            return MoveDirection.None;
+
         return PathfindingUtility.GetDirectionTo(m_CurrentLocation, path[0]);
     }
 }

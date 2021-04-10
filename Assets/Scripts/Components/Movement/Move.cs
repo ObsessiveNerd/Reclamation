@@ -6,17 +6,20 @@ using UnityEngine;
 public class Move : Component
 {
     float m_EnergyRequired = 1f;
+    bool m_StopMovement = false;
 
     public Move()
     {
         RegisteredEvents.Add(GameEventId.MoveKeyPressed);
         RegisteredEvents.Add(GameEventId.GetMinimumEnergyForAction);
+        RegisteredEvents.Add(GameEventId.StopMovement);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
     {
         if (gameEvent.ID == GameEventId.MoveKeyPressed)
         {
+            m_StopMovement = false;
             MoveDirection direction;
             if (gameEvent.Paramters[EventParameters.InputDirection] is string)
                 direction = (MoveDirection)Enum.Parse(typeof(MoveDirection), gameEvent.Paramters[EventParameters.InputDirection].ToString());
@@ -39,7 +42,7 @@ public class Move : Component
 
             //Make sure we have enough energy;
             float currentEnergy = (float)FireEvent(Self, new GameEvent(GameEventId.GetEnergy, new KeyValuePair<string, object>(EventParameters.Value, 0))).Paramters[EventParameters.Value];
-            if (energyRequired > 0f && currentEnergy >= energyRequired)
+            if (energyRequired > 0f && currentEnergy >= energyRequired && !m_StopMovement)
             {
                 GameEvent moveWorld = new GameEvent(GameEventId.MoveEntity, new KeyValuePair<string, object>(EventParameters.Entity, Self.ID),
                                                                                 new KeyValuePair<string, object>(EventParameters.EntityType, EntityType.Creature),
@@ -60,9 +63,13 @@ public class Move : Component
                 GameEvent useEnergy = new GameEvent(GameEventId.UseEnergy, new KeyValuePair<string, object>(EventParameters.Value, energyRequired));
                 FireEvent(Self, useEnergy);
             }
+            else if (m_StopMovement)
+                FireEvent(Self, new GameEvent(GameEventId.SkipTurn));
         }
         if (gameEvent.ID == GameEventId.GetMinimumEnergyForAction)
             gameEvent.Paramters[EventParameters.Value] = Mathf.Min((float)gameEvent.Paramters[EventParameters.Value] > 0f ? (float)gameEvent.Paramters[EventParameters.Value] : m_EnergyRequired, m_EnergyRequired);
+        if (gameEvent.ID == GameEventId.StopMovement)
+            m_StopMovement = true;
     }
 }
 

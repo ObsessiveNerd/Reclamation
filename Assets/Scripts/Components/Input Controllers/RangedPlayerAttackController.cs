@@ -15,12 +15,16 @@ public class RangedPlayerAttackController : InputControllerBase
     public override void Init(IEntity self)
     {
         base.Init(self);
-        Debug.Log("target is still set to self");
+
+        IEntity startingTarget = WorldUtility.GetClosestEnemyTo(Self);
+        Debug.Log($"Target is {startingTarget.Name}");
+
         GameEvent selectTile = new GameEvent(GameEventId.SelectTile, new KeyValuePair<string, object>(EventParameters.Entity, Self.ID),
-                                                                                new KeyValuePair<string, object>(EventParameters.Target, Self.ID),
+                                                                                new KeyValuePair<string, object>(EventParameters.Target, startingTarget.ID),
                                                                                 new KeyValuePair<string, object>(EventParameters.TilePosition, null));
         FireEvent(World.Instance.Self, selectTile);
         m_TileSelection = (Point)selectTile.Paramters[EventParameters.TilePosition];
+        FireEvent(World.Instance.Self, new GameEvent(GameEventId.UpdateWorldView));
     }
 
     public override void HandleEvent(GameEvent gameEvent)
@@ -45,7 +49,7 @@ public class RangedPlayerAttackController : InputControllerBase
 
                 CombatUtility.Attack(Self, target, m_Attack);
 
-                EndSelection(gameEvent);
+                EndSelection(gameEvent, m_TileSelection);
 
                 GameEvent checkForEnergy = new GameEvent(GameEventId.HasEnoughEnergyToTakeATurn, new KeyValuePair<string, object>(EventParameters.TakeTurn, false));
                 FireEvent(Self, checkForEnergy);
@@ -53,17 +57,8 @@ public class RangedPlayerAttackController : InputControllerBase
             }
 
             if (Input.GetKeyDown(KeyCode.Escape))
-                EndSelection(gameEvent);
+                EndSelection(gameEvent, m_TileSelection);
         }
-    }
-
-    void EndSelection(GameEvent gameEvent)
-    {
-        Self.RemoveComponent(this);
-        Self.AddComponent(new PlayerInputController());
-        FireEvent(World.Instance.Self, new GameEvent(GameEventId.EndSelection, new KeyValuePair<string, object>(EventParameters.TilePosition, m_TileSelection)));
-        gameEvent.Paramters[EventParameters.UpdateWorldView] = true;
-        //gameEvent.Paramters[EventParameters.CleanupComponents] = true;
     }
 }
 

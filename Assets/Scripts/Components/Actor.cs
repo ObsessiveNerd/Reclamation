@@ -9,7 +9,19 @@ public class Actor : IEntity
     List<IComponent> m_AddQueue = new List<IComponent>();
     List<IComponent> m_RemoveQueue = new List<IComponent>();
 
-    public string Name { get; internal set; }
+    private string m_Name;
+    public string Name {
+        get
+        {
+            EventBuilder getName = new EventBuilder(GameEventId.GetName)
+                                    .With(EventParameters.Name, m_Name);
+            return FireEvent(getName.CreateEvent()).GetValue<string>(EventParameters.Name);
+        }
+        internal set
+        {
+            m_Name = value;
+        }
+    }
     public string ID { get; internal set; }
     public bool NeedsCleanup
     {

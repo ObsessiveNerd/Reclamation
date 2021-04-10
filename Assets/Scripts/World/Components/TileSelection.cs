@@ -54,6 +54,8 @@ public class TileSelection : WorldComponent
         if (gameEvent.ID == GameEventId.EndSelection)
         {
             Point currentTilePos = (Point)gameEvent.Paramters[EventParameters.TilePosition];
+            if(!m_Tiles.ContainsKey(currentTilePos)) return;
+
             m_Tiles[currentTilePos].RemoveComponent(typeof(SelectedTile));
             m_Tiles[currentTilePos].CleanupComponents();
             gameEvent.Paramters[EventParameters.TilePosition] = null;

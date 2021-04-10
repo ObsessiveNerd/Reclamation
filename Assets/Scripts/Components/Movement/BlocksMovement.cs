@@ -1,0 +1,37 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class BlocksNonHostileMovement : Component
+{
+    public BlocksNonHostileMovement()
+    {
+        RegisteredEvents.Add(GameEventId.EntityOvertaking);
+    }
+
+    public override void HandleEvent(GameEvent gameEvent)
+    {
+        if (gameEvent.ID == GameEventId.EntityOvertaking)
+        {
+            IEntity overtakingEntity = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameters.Entity));
+            Demeanor getDemeanor = Factions.GetDemeanorForTarget(Self, overtakingEntity);
+            if(getDemeanor == Demeanor.Friendly || getDemeanor == Demeanor.Neutral)
+                FireEvent(overtakingEntity, new GameEvent(GameEventId.StopMovement));
+        }
+    }
+}
+
+public class DTO_BlocksNonHostileMovement : IDataTransferComponent
+{
+    public IComponent Component { get; set; }
+
+    public void CreateComponent(string data)
+    {
+        Component = new BlocksNonHostileMovement();
+    }
+
+    public string CreateSerializableData(IComponent component)
+    {
+        return nameof(BlocksNonHostileMovement);
+    }
+}

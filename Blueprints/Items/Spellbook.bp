@@ -1,0 +1,4 @@
+<Spellbook>(
+	Inherits: Item
+	SpellContainer: [<Firebolt>&<IceRay>]
+)
