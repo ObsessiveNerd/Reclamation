@@ -10,6 +10,7 @@ public class WorldUIController : WorldComponent
         RegisteredEvents.Add(GameEventId.UIInput);
         RegisteredEvents.Add(GameEventId.CloseUI);
         RegisteredEvents.Add(GameEventId.OpenInventoryUI);
+        RegisteredEvents.Add(GameEventId.OpenSpellUI);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
@@ -19,6 +20,12 @@ public class WorldUIController : WorldComponent
             IEntity source = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Entity]);
             List<IEntity> inventory = (List<IEntity>)gameEvent.Paramters[EventParameters.Value];
             GameObject.FindObjectOfType<InventoryMono>().Setup(source, inventory);
+        }
+
+        else if(gameEvent.ID == GameEventId.OpenSpellUI)
+        {
+            IEntity source = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Entity]);
+            GameObject.FindObjectOfType<SpellSelectorMono>().Setup(source, (List<string>)gameEvent.Paramters[EventParameters.SpellList]);
         }
     }
 }

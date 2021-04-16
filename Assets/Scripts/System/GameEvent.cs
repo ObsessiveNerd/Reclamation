@@ -163,9 +163,12 @@ public static class GameEventId
     public const string UIInput = nameof(UIInput);
     public const string CloseUI = nameof(CloseUI);
     public const string OpenInventoryUI = nameof(OpenInventoryUI);
+    public const string OpenSpellUI = nameof(OpenSpellUI);
 
     //Spellcasting
     public const string GetSpells = nameof(GetSpells);
+    public const string SpellSelected = nameof(SpellSelected);
+    public const string OpenSpellSelector = nameof(OpenSpellSelector);
 }
 
 public static class EventParameters
@@ -214,6 +217,7 @@ public static class EventParameters
     public const string IsPartyLeader = nameof(IsPartyLeader);
     public const string StatType = nameof(StatType);
     public const string SpellList = nameof(SpellList);
+    public const string Spell = nameof(Spell);
     public const string Name = nameof(Name);
 }
 

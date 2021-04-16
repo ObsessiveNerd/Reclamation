@@ -117,7 +117,7 @@ public class PlayerInputController : InputControllerBase
         //Just for testing
         else if (gameEvent.ID == GameEventId.GetSprite)
         {
-            Sprite sprite = Resources.Load<Sprite>("Textures/active_dwarf");
+            Sprite sprite = Resources.Load<Sprite>("Textures/Characters/active_dwarf");
             gameEvent.Paramters[EventParameters.RenderSprite] = sprite;
         }
 

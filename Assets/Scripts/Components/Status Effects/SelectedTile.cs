@@ -12,7 +12,7 @@ public class SelectedTile : Component
     {
         base.Init(self);
 
-        m_SelectionSprite = Resources.Load<Sprite>("Textures/selection");
+        m_SelectionSprite = Resources.Load<Sprite>("Textures/Effects/selection");
         RegisteredEvents.Add(GameEventId.AlterSprite);
     }
 
