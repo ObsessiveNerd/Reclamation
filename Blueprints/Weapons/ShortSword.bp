@@ -2,5 +2,5 @@
 	Inherits:Item
 	WeaponType:Melee
 	DealDamage:DamageType=Slashing, Damage=1d6
-	GraphicContainer:Textures/td_items_weapon_sword
+	GraphicContainer:Textures/Weapons/td_items_weapon_sword
 )

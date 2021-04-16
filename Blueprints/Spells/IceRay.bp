@@ -3,4 +3,5 @@
 	DealDamage:DamageType=Ice, Damage=1d6
 	Range:8
 	WeaponType:IntSpell
+	GraphicContainer:Textures/Spells/SpellBook06_04
 )
