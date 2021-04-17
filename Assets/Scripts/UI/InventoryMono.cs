@@ -9,7 +9,8 @@ public class InventoryMono : EscapeableMono
     public GameObject InventoryObject;
 
     public GameObject InventoryView;
-    public GameObject CharacterViewArea;
+    public GameObject EquipmentView;
+    public GameObject CharacterView;
 
     IEntity m_Source;
     public void Setup(IEntity source, List<IEntity> inventory)
@@ -30,17 +31,17 @@ public class InventoryMono : EscapeableMono
         }
 
         InventoryObject.SetActive(true);
+        EquipmentView.SetActive(true);
+        CharacterView.SetActive(true);
     }
 
     protected override void OnEscape()
     {
+        EquipmentView.SetActive(false);
+        CharacterView.SetActive(false);
         InventoryObject.SetActive(false);
         foreach (Transform go in InventoryView.GetComponentsInChildren<Transform>())
             if(InventoryView.transform != go)
-                Destroy(go.gameObject);
-
-        foreach (Transform go in CharacterViewArea.GetComponentsInChildren<Transform>())
-            if (CharacterViewArea.transform != go)
                 Destroy(go.gameObject);
     }
 }

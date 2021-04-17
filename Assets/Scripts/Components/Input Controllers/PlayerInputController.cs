@@ -17,7 +17,12 @@ public class PlayerInputController : InputControllerBase
             MoveDirection desiredDirection = InputUtility.GetMoveDirection();
 
             if (desiredDirection != MoveDirection.None)
+            {
                 FireEvent(Self, new GameEvent(GameEventId.MoveKeyPressed, new KeyValuePair<string, object>(EventParameters.InputDirection, desiredDirection)), true);
+                EventBuilder setCamera = new EventBuilder(GameEventId.SetCameraPosition)
+                                    .With(EventParameters.Point, PathfindingUtility.GetEntityLocation(Self));
+                FireEvent(World.Instance.Self, setCamera.CreateEvent());
+            }
 
             else if (Input.GetKeyDown(KeyCode.I))
             {
@@ -74,7 +79,6 @@ public class PlayerInputController : InputControllerBase
 
             else if (Input.GetKeyDown(KeyCode.Space))
             {
-
                 var getInteractableObjectsPositions = FireEvent(World.Instance.Self, new GameEvent(GameEventId.GetInteractableObjects, new KeyValuePair<string, object>(EventParameters.Value, new List<Point>())));
                 var result = (List<Point>)getInteractableObjectsPositions.Paramters[EventParameters.Value];
                 if (result.Count == 0)
@@ -96,8 +100,8 @@ public class PlayerInputController : InputControllerBase
             }
 
             //This is temporary, we can keep this functionality but right now it's just to test dropping items from your bag
-            else if (Input.GetKeyDown(KeyCode.D))
-                FireEvent(Self, new GameEvent(GameEventId.EmptyBag));
+            //else if (Input.GetKeyDown(KeyCode.D))
+            //    FireEvent(Self, new GameEvent(GameEventId.EmptyBag));
 
             else if (Input.GetKeyDown(KeyCode.Tab))
             {

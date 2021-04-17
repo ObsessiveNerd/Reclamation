@@ -36,6 +36,10 @@ public class PlayerManager : WorldComponent
             m_ActivePlayer.Value.CleanupComponents();
 
             m_TimeProgression.SetActiveEntity(m_ActivePlayer.Value);
+
+            EventBuilder setCamera = new EventBuilder(GameEventId.SetCameraPosition)
+                                    .With(EventParameters.Point, PathfindingUtility.GetEntityLocation(m_ActivePlayer.Value));
+            FireEvent(Self, setCamera.CreateEvent());
         }
 
         //if(gameEvent.ID == GameEventId.GetActivePlayer)
@@ -74,6 +78,10 @@ public class PlayerManager : WorldComponent
             entity.AddComponent(new AIController());
 
         m_TimeProgression.RegisterEntity(entity);
+
+        EventBuilder setCamera = new EventBuilder(GameEventId.SetCameraPosition)
+                                    .With(EventParameters.Point, PathfindingUtility.GetEntityLocation(m_ActivePlayer.Value));
+        FireEvent(Self, setCamera.CreateEvent());
 
         //m_PlayerToTimeProgressionMap[entity] = new TimeProgression();
         //m_PlayerToTimeProgressionMap[entity].RegisterEntity(entity);

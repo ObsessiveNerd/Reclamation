@@ -116,6 +116,9 @@ public static class GameEventId
     public const string IsValidTile = nameof(IsValidTile);
     public const string GetValueOnTile = nameof(GetValueOnTile);
 
+    //Camera
+    public const string SetCameraPosition = nameof(SetCameraPosition);
+
     //Character Selection
     public const string RotateActiveCharacter = nameof(RotateActiveCharacter);
     public const string ConvertToPlayableCharacter = nameof(ConvertToPlayableCharacter);
@@ -164,6 +167,8 @@ public static class GameEventId
     public const string CloseUI = nameof(CloseUI);
     public const string OpenInventoryUI = nameof(OpenInventoryUI);
     public const string OpenSpellUI = nameof(OpenSpellUI);
+    public const string GetPlayableCharacters = nameof(GetPlayableCharacters);
+    public const string GetCharacterInfo = nameof(GetCharacterInfo);
 
     //Spellcasting
     public const string GetSpells = nameof(GetSpells);

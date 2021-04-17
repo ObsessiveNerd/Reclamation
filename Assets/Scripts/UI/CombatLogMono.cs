@@ -7,21 +7,24 @@ using UnityEngine.UI;
 
 public class CombatLogMono : MonoBehaviour
 {
-    public GameObject LHSAnchor, RHSAnchor;
+    //public GameObject LHSAnchor, RHSAnchor;
     public GameObject CombatLog;
     public TextMeshProUGUI CombatLogContent;
-    public int MaxLineCount;
+    //public int MaxLineCount;
+
+    //public GameObject TMPPRefab;
+    public RectTransform Content;
 
     private List<string> m_EventLog = new List<string>();
     private List<string> m_BacklogEvents = new List<string>();
 
     private bool m_ProcessingEvent = false;
-    private bool m_IsAtRhs = true;
+    //private bool m_IsAtRhs = true;
 
     void Start()
     {
         RecLog.MessageLogged += LogMessage;
-        MoveCombatLogTo(RHSAnchor.transform);
+        //MoveCombatLogTo(RHSAnchor.transform);
     }
 
     void LogMessage(string message)
@@ -43,16 +46,22 @@ public class CombatLogMono : MonoBehaviour
         {
             m_BacklogEvents.Add(message);
         }
+        ResetLogToBottom();
     }
 
     void RefreshLog()
     {
-        while (m_EventLog.Count > MaxLineCount)
-            m_EventLog.RemoveAt(0);
+        //while (m_EventLog.Count > MaxLineCount)
+        //    m_EventLog.RemoveAt(0);
 
         string guiString = string.Empty;
         foreach (string log in m_EventLog)
         {
+            //GameObject newLog = new GameObject("CombatLog");
+            //var tmp = newLog.AddComponent<TextMeshProUGUI>();
+            //tmp.fontSize = 15;
+            //tmp.text = log;
+
             guiString += log;
             guiString += "\n";
         }
@@ -62,29 +71,48 @@ public class CombatLogMono : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.F1))
+        RestrictLogScroll();
+
+        //if (false && Input.GetKeyDown(KeyCode.F1))
+        //{
+        //    if (CombatLog.activeSelf)
+        //    {
+        //        if (m_IsAtRhs)
+        //        {
+        //            MoveCombatLogTo(LHSAnchor.transform);
+        //            m_IsAtRhs = false;
+        //        }
+        //        else
+        //            CombatLog.SetActive(false);
+        //    }
+        //    else
+        //    {
+        //        m_IsAtRhs = true;
+        //        MoveCombatLogTo(RHSAnchor.transform);
+        //        CombatLog.SetActive(true);
+        //    }
+        //}
+    }
+
+    void RestrictLogScroll()
+    {
+        var localP = Content.transform.localPosition;
+        if(localP.y > 0)
         {
-            if (CombatLog.activeSelf)
-            {
-                if (m_IsAtRhs)
-                {
-                    MoveCombatLogTo(LHSAnchor.transform);
-                    m_IsAtRhs = false;
-                }
-                else
-                    CombatLog.SetActive(false);
-            }
-            else
-            {
-                m_IsAtRhs = true;
-                MoveCombatLogTo(RHSAnchor.transform);
-                CombatLog.SetActive(true);
-            }
+            localP.y = 0;
+            Content.transform.localPosition = localP;
         }
     }
 
-    void MoveCombatLogTo(Transform anchor)
+    void ResetLogToBottom()
     {
-        CombatLog.transform.position = anchor.position;
+        var localP = Content.transform.localPosition;
+        localP.y = 0;
+        Content.transform.localPosition = localP;
     }
+
+    //void MoveCombatLogTo(Transform anchor)
+    //{
+    //    CombatLog.transform.position = anchor.position;
+    //}
 }

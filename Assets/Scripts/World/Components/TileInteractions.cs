@@ -13,6 +13,7 @@ public class TileInteractions : WorldComponent
         RegisteredEvents.Add(GameEventId.Pickup);
         RegisteredEvents.Add(GameEventId.Drop);
         RegisteredEvents.Add(GameEventId.DestroyObject);
+        RegisteredEvents.Add(GameEventId.GetInteractableObjects);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
@@ -61,6 +62,11 @@ public class TileInteractions : WorldComponent
                 Debug.Log($"P isn't here. {p}");
             else
                 FireEvent(m_Tiles[p], gameEvent);
+        }
+
+        if(gameEvent.ID == GameEventId.GetInteractableObjects)
+        {
+
         }
     }
 }

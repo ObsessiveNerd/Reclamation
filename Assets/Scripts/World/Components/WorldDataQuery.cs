@@ -15,6 +15,7 @@ public class WorldDataQuery : WorldComponent
         RegisteredEvents.Add(GameEventId.IsValidDungeonTile);
         RegisteredEvents.Add(GameEventId.GetValueOnTile);
         RegisteredEvents.Add(GameEventId.GetClosestEnemy);
+        RegisteredEvents.Add(GameEventId.GetPlayableCharacters);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
@@ -72,6 +73,10 @@ public class WorldDataQuery : WorldComponent
             }
 
             gameEvent.Paramters[EventParameters.Value] = closestEnemy.ID;
+        }
+        else if(gameEvent.ID == GameEventId.GetPlayableCharacters)
+        {
+            gameEvent.GetValue<List<string>>(EventParameters.Value).AddRange(m_Players.Select(e => e.ID));
         }
     }
 

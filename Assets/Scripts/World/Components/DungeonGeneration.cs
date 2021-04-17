@@ -124,6 +124,7 @@ public class DungeonGeneration : WorldComponent
         GameObject tile = UnityEngine.GameObject.Instantiate(m_TilePrefab);
         tile.transform.position = new Vector2(x - (screenHorizontal - 0.5f), y - (screenVertical - 0.5f));
         tile.transform.parent = UnityEngine.GameObject.Find("World").transform;
+        m_GameObjectMap.Add(new Point(x, y), tile);
 
         Actor actor = new Actor("Tile");
         actor.AddComponent(new Tile(actor, new Point(x, y)));

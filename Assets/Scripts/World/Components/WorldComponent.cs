@@ -10,6 +10,7 @@ public abstract class WorldComponent : Component
     protected static LinkedList<IEntity> m_Players = new LinkedList<IEntity>();
     protected static LinkedListNode<IEntity> m_ActivePlayer;
     protected static HashSet<Point> m_ValidDungeonPoints = new HashSet<Point>();
+    protected static Dictionary<Point, UnityEngine.GameObject> m_GameObjectMap = new Dictionary<Point, UnityEngine.GameObject>();
 
     public Point GetPointWhereEntityIs(IEntity e)
     {

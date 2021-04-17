@@ -39,6 +39,7 @@ public class World : MonoBehaviour
         m_World.AddComponent(new WorldFov());
         m_World.AddComponent(new EntityMap());
         m_World.AddComponent(new Pathfinder());
+        m_World.AddComponent(new CameraController());
 
         m_World.CleanupComponents();
 
