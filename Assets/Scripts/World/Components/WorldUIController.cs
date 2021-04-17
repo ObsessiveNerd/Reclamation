@@ -11,6 +11,8 @@ public class WorldUIController : WorldComponent
         RegisteredEvents.Add(GameEventId.CloseUI);
         RegisteredEvents.Add(GameEventId.OpenInventoryUI);
         RegisteredEvents.Add(GameEventId.OpenSpellUI);
+        RegisteredEvents.Add(GameEventId.UpdateUI);
+        RegisteredEvents.Add(GameEventId.RegisterPlayableCharacter);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
@@ -18,14 +20,26 @@ public class WorldUIController : WorldComponent
         if(gameEvent.ID == GameEventId.OpenInventoryUI)
         {
             IEntity source = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Entity]);
-            List<IEntity> inventory = (List<IEntity>)gameEvent.Paramters[EventParameters.Value];
-            GameObject.FindObjectOfType<InventoryMono>().Setup(source, inventory);
+            //List<IEntity> inventory = (List<IEntity>)gameEvent.Paramters[EventParameters.Value];
+            GameObject.FindObjectOfType<CharacterManagerMono>().Setup(source);
         }
 
         else if(gameEvent.ID == GameEventId.OpenSpellUI)
         {
             IEntity source = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Entity]);
             GameObject.FindObjectOfType<SpellSelectorMono>().Setup(source, (List<string>)gameEvent.Paramters[EventParameters.SpellList]);
+        }
+
+        else if(gameEvent.ID == GameEventId.RegisterPlayableCharacter)
+        {
+            string id = gameEvent.GetValue<string>(EventParameters.Entity);
+            GameObject.FindObjectOfType<PlayableCharacterSelector>().AddCharacterTab(id);
+        }
+
+        else if(gameEvent.ID == GameEventId.UpdateUI)
+        {
+            string id = gameEvent.GetValue<string>(EventParameters.Entity);
+            GameObject.FindObjectOfType<CharacterManagerMono>().UpdateUI(id);
         }
     }
 }

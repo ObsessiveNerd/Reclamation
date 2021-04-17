@@ -63,10 +63,5 @@ public class TileInteractions : WorldComponent
             else
                 FireEvent(m_Tiles[p], gameEvent);
         }
-
-        if(gameEvent.ID == GameEventId.GetInteractableObjects)
-        {
-
-        }
     }
 }

@@ -18,7 +18,18 @@ public class PlayerUIController : InputControllerBase
                 Self.RemoveComponent(this);
                 Self.AddComponent(new PlayerInputController());
             }
+            else if (Input.GetKeyDown(KeyCode.Tab))
+            {
+                RotateActiveCharacter(gameEvent);
+            }
         }
+    }
+
+    void RotateActiveCharacter(GameEvent gameEvent)
+    {
+        FireEvent(World.Instance.Self, new GameEvent(GameEventId.RotateActiveCharacter));
+        gameEvent.Paramters[EventParameters.UpdateWorldView] = true;
+        gameEvent.ContinueProcessing = false;
     }
 }
 

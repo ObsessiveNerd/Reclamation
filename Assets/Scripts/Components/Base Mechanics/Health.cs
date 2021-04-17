@@ -19,6 +19,7 @@ public class Health : Component
         RegisteredEvents.Add(GameEventId.TakeDamage);
         RegisteredEvents.Add(GameEventId.RestoreHealth);
         RegisteredEvents.Add(GameEventId.GetCombatRating);
+        RegisteredEvents.Add(GameEventId.GetHealth);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
@@ -47,6 +48,12 @@ public class Health : Component
         {
             int healAmount = (int)gameEvent.Paramters[EventParameters.Healing];
             CurrentHealth = Mathf.Min(CurrentHealth + healAmount, MaxHealth);
+        }
+
+        else if(gameEvent.ID == GameEventId.GetHealth)
+        {
+            gameEvent.Paramters[EventParameters.Value] = CurrentHealth;
+            gameEvent.Paramters[EventParameters.MaxValue] = MaxHealth;
         }
 
         else if(gameEvent.ID == GameEventId.GetCombatRating)

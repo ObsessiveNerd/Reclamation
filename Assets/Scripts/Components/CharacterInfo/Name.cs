@@ -14,12 +14,12 @@ public class Name : Component
     public override void Init(IEntity self)
     {
         base.Init(self);
-        RegisteredEvents.Add(GameEventId.GetCharacterInfo);
+        RegisteredEvents.Add(GameEventId.GetInfo);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
     {
-        if(gameEvent.ID == GameEventId.GetCharacterInfo)
+        if(gameEvent.ID == GameEventId.GetInfo)
         {
             gameEvent.Paramters[EventParameters.Name] = PrettyName;
         }

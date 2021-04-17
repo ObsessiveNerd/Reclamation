@@ -40,6 +40,7 @@ public static class GameEventId
     public const string Unequip = nameof(Unequip);
     public const string GetRangedWeapon = nameof(GetRangedWeapon);
     public const string GetIcon = nameof(GetIcon);
+    public const string GetCurrentInventory = nameof(GetCurrentInventory);
 
     //Item
     public const string Pickup = nameof(Pickup);
@@ -121,6 +122,7 @@ public static class GameEventId
 
     //Character Selection
     public const string RotateActiveCharacter = nameof(RotateActiveCharacter);
+    public const string SetActiveCharacter = nameof(SetActiveCharacter);
     public const string ConvertToPlayableCharacter = nameof(ConvertToPlayableCharacter);
 
     //Input
@@ -147,6 +149,7 @@ public static class GameEventId
     public const string AddArmorValue = nameof(AddArmorValue);
     public const string Sharpness = nameof(Sharpness);
     public const string SeverBodyPart = nameof(SeverBodyPart);
+    public const string GetHealth = nameof(GetHealth);
 
     //Stats
     public const string GetPrimaryStatType = nameof(GetPrimaryStatType);
@@ -155,6 +158,7 @@ public static class GameEventId
     //Body
     public const string GrowBodyPart = nameof(GrowBodyPart);
     public const string CheckEquipment = nameof(CheckEquipment);
+    public const string GetCurrentEquipment = nameof(GetCurrentEquipment);
 
     //Data Request
     public const string GetEntities = nameof(GetEntities);
@@ -168,7 +172,8 @@ public static class GameEventId
     public const string OpenInventoryUI = nameof(OpenInventoryUI);
     public const string OpenSpellUI = nameof(OpenSpellUI);
     public const string GetPlayableCharacters = nameof(GetPlayableCharacters);
-    public const string GetCharacterInfo = nameof(GetCharacterInfo);
+    public const string GetInfo = nameof(GetInfo);
+    public const string UpdateUI = nameof(UpdateUI);
 
     //Spellcasting
     public const string GetSpells = nameof(GetSpells);
@@ -194,6 +199,7 @@ public static class EventParameters
     public const string EntityType = nameof(EntityType);
     public const string Creature = nameof(Creature);
     public const string Value = nameof(Value);
+    public const string MaxValue = nameof(MaxValue);
     public const string TilePosition = nameof(TilePosition);
     public const string Attack = nameof(Attack);
     public const string Color = nameof(Color);
@@ -224,6 +230,12 @@ public static class EventParameters
     public const string SpellList = nameof(SpellList);
     public const string Spell = nameof(Spell);
     public const string Name = nameof(Name);
+    public const string Head = nameof(Head);
+    public const string Torso = nameof(Torso);
+    public const string LeftArm = nameof(LeftArm);
+    public const string RightArm = nameof(RightArm);
+    public const string Legs = nameof(Legs);
+    public const string Objects = nameof(Objects);
 }
 
 [Serializable]

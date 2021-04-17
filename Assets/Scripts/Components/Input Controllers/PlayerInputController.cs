@@ -79,24 +79,29 @@ public class PlayerInputController : InputControllerBase
 
             else if (Input.GetKeyDown(KeyCode.Space))
             {
-                var getInteractableObjectsPositions = FireEvent(World.Instance.Self, new GameEvent(GameEventId.GetInteractableObjects, new KeyValuePair<string, object>(EventParameters.Value, new List<Point>())));
-                var result = (List<Point>)getInteractableObjectsPositions.Paramters[EventParameters.Value];
-                if (result.Count == 0)
-                    return;
-                if(result.Count == 1)
-                    FireEvent(World.Instance.Self, new GameEvent(GameEventId.Interact, new KeyValuePair<string, object>(EventParameters.Entity, Self.ID),
-                                                                                        new KeyValuePair<string, object>(EventParameters.TilePosition, result[0])));
-                else
-                {
-                    Self.RemoveComponent(this);
-                    Self.AddComponent(new PromptForDirectionController((dir) =>
-                    {
-                        Self.RemoveComponent(typeof(PromptForDirectionController));
-                        Self.AddComponent(new PlayerInputController());
-                        FireEvent(World.Instance.Self, new GameEvent(GameEventId.InteractInDirection, new KeyValuePair<string, object>(EventParameters.Entity, Self.ID),
-                                                                                                        new KeyValuePair<string, object>(EventParameters.InputDirection, dir)));
-                    }));
-                }
+                EventBuilder pickupItems = new EventBuilder(GameEventId.Pickup)
+                                            .With(EventParameters.Entity, Self.ID);
+
+                FireEvent(World.Instance.Self, pickupItems.CreateEvent());
+
+                //var getInteractableObjectsPositions = FireEvent(World.Instance.Self, new GameEvent(GameEventId.GetInteractableObjects, new KeyValuePair<string, object>(EventParameters.Value, new List<Point>())));
+                //var result = (List<Point>)getInteractableObjectsPositions.Paramters[EventParameters.Value];
+                //if (result.Count == 0)
+                //    return;
+                //if(result.Count == 1)
+                //    FireEvent(World.Instance.Self, new GameEvent(GameEventId.Interact, new KeyValuePair<string, object>(EventParameters.Entity, Self.ID),
+                //                                                                        new KeyValuePair<string, object>(EventParameters.TilePosition, result[0])));
+                //else
+                //{
+                //    Self.RemoveComponent(this);
+                //    Self.AddComponent(new PromptForDirectionController((dir) =>
+                //    {
+                //        Self.RemoveComponent(typeof(PromptForDirectionController));
+                //        Self.AddComponent(new PlayerInputController());
+                //        FireEvent(World.Instance.Self, new GameEvent(GameEventId.InteractInDirection, new KeyValuePair<string, object>(EventParameters.Entity, Self.ID),
+                //                                                                                        new KeyValuePair<string, object>(EventParameters.InputDirection, dir)));
+                //    }));
+                //}
             }
 
             //This is temporary, we can keep this functionality but right now it's just to test dropping items from your bag

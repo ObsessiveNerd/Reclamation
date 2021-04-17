@@ -11,6 +11,6 @@
 	FOV: VisibleRange=5
 	PackTactics
 	PrimaryStatType:Str
-	Portrait:Textures/Portraits/Tex_Dwarf_warrior_male_bg
+	Portrait:Portraits/Characters/Tex_Dwarf_warrior_male_bg
 	Name:Test Name
 )

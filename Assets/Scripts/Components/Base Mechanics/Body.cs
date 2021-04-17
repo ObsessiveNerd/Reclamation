@@ -59,6 +59,7 @@ public class Body : Component
         RegisteredEvents.Add(GameEventId.CheckEquipment);
         RegisteredEvents.Add(GameEventId.EndTurn);
         RegisteredEvents.Add(GameEventId.GetCombatRating);
+        RegisteredEvents.Add(GameEventId.GetCurrentEquipment);
     }
 
     bool HasEquipment(IEntity e)
@@ -104,6 +105,18 @@ public class Body : Component
                                                                                 new KeyValuePair<string, object>(EventParameters.Creature, Self.ID),
                                                                                 new KeyValuePair<string, object>(EventParameters.EntityType, EntityType.Item)));
             }
+        }
+
+        //TODO this only works for bipedal monsters
+        else if(gameEvent.ID == GameEventId.GetCurrentEquipment)
+        {
+            gameEvent.Paramters[EventParameters.Head] = GetEquipmentIdForBodyPart(Heads[0]);
+            gameEvent.Paramters[EventParameters.Torso] = GetEquipmentIdForBodyPart(Torso);
+            if(Arms.Count > 0)
+                gameEvent.Paramters[EventParameters.LeftArm] = GetEquipmentIdForBodyPart(Arms[0]);
+            if(Arms.Count > 1)
+                gameEvent.Paramters[EventParameters.RightArm] = GetEquipmentIdForBodyPart(Arms[1]);
+            gameEvent.Paramters[EventParameters.Legs] = GetEquipmentIdForBodyPart(Legs[0]);
         }
 
         else if(gameEvent.ID == GameEventId.Equip)
@@ -231,6 +244,16 @@ public class Body : Component
                 Legs.Add(leg);
                 break;
         }
+    }
+
+    string GetEquipmentIdForBodyPart(IEntity bodyPart)
+    {
+        EventBuilder getEquipment = new EventBuilder(GameEventId.GetEquipment)
+                                            .With(EventParameters.Equipment, null);
+
+        string equipment = FireEvent(bodyPart, getEquipment.CreateEvent()).GetValue<string>(EventParameters.Equipment);
+
+        return equipment;
     }
 }
 

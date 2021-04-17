@@ -1,34 +1,38 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayableCharacterSelector : MonoBehaviour
 {
     public GameObject CharacterButton;
 
-    void Start()
+    private Dictionary<string, GameObject> m_CharacterIdToTabGameObject = new Dictionary<string, GameObject>();
+    public void AddCharacterTab(string id)
     {
-        foreach (Transform go in GetComponentsInChildren<Transform>())
-            if (transform != go)
-                Destroy(go.gameObject);
+        IEntity entity = EntityQuery.GetEntity(id);
 
-        EventBuilder getActivePlayers = new EventBuilder(GameEventId.GetPlayableCharacters)
-                                        .With(EventParameters.Value, new List<string>());
+        var newTab = Instantiate(CharacterButton);
+        newTab.transform.SetParent(transform);
+        newTab.GetComponent<CharacterTab>().Setup(entity);
 
-        List<string> activePlayerIds = World.Instance.Self.FireEvent(getActivePlayers.CreateEvent()).GetValue<List<string>>(EventParameters.Value);
-
-        foreach(string id in activePlayerIds)
+        newTab.AddComponent<Button>().onClick.AddListener(() =>
         {
-            IEntity entity = EntityQuery.GetEntity(id);
-            EventBuilder characterInfo = new EventBuilder(GameEventId.GetCharacterInfo)
-                                        .With(EventParameters.Name, "")
-                                        .With(EventParameters.RenderSprite, null);
+            EventBuilder newPlayer = new EventBuilder(GameEventId.SetActiveCharacter)
+                                        .With(EventParameters.Entity, id);
 
-            var firedEvent = entity.FireEvent(characterInfo.CreateEvent());
+            World.Instance.Self.FireEvent(newPlayer.CreateEvent());
+        });
 
-            var newTab = Instantiate(CharacterButton);
-            newTab.transform.SetParent(transform);
-            newTab.GetComponent<CharacterTab>().Setup(firedEvent.GetValue<Sprite>(EventParameters.RenderSprite), firedEvent.GetValue<string>(EventParameters.Name));
+        m_CharacterIdToTabGameObject.Add(id, newTab);
+    }
+
+    public void RemoveCharacterTab(string id)
+    {
+        if(m_CharacterIdToTabGameObject.ContainsKey(id))
+        {
+            Destroy(m_CharacterIdToTabGameObject[id]);
+            m_CharacterIdToTabGameObject.Remove(id);
         }
     }
 }

@@ -15,6 +15,7 @@ public class Inventory : Component
         RegisteredEvents.Add(GameEventId.EmptyBag);
         RegisteredEvents.Add(GameEventId.Died);
         RegisteredEvents.Add(GameEventId.GetSpells);
+        RegisteredEvents.Add(GameEventId.GetCurrentInventory);
     }
 
     //void EntityDestroyed(IEntity e)
@@ -69,6 +70,11 @@ public class Inventory : Component
         {
             foreach (IEntity item in InventoryItems)
                 FireEvent(item, gameEvent);
+        }
+
+        if(gameEvent.ID == GameEventId.GetCurrentInventory)
+        {
+            gameEvent.Paramters[EventParameters.Value] = InventoryItems;
         }
     }
 }

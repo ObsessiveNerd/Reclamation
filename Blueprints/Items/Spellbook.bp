@@ -1,4 +1,5 @@
 <Spellbook>(
 	Inherits: Item
 	SpellContainer: [<Firebolt>&<IceRay>]
+	Portrait: Portraits/Items/book_11_t
 )

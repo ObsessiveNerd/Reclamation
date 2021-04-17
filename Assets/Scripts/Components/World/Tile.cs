@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class PointComparer : IEqualityComparer<Point>
@@ -94,6 +95,7 @@ public class Tile : Component
         RegisteredEvents.Add(GameEventId.DestroyObject);
         RegisteredEvents.Add(GameEventId.PathfindingData);
         RegisteredEvents.Add(GameEventId.GetValueOnTile);
+        RegisteredEvents.Add(GameEventId.GetInteractableObjects);
     }
 
     public override void HandleEvent(GameEvent gameEvent)

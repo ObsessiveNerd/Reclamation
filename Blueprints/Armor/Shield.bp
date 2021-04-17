@@ -1,4 +1,5 @@
 <Shield>(
 	Inherits:Item
 	Armor:2
+	Portrait:Portraits/Armor/shield_t_01
 )

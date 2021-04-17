@@ -10,6 +10,7 @@ public class PlayerManager : WorldComponent
         base.Init(self);
         RegisteredEvents.Add(GameEventId.StartWorld);
         RegisteredEvents.Add(GameEventId.RotateActiveCharacter);
+        RegisteredEvents.Add(GameEventId.SetActiveCharacter);
         RegisteredEvents.Add(GameEventId.ConvertToPlayableCharacter);
         RegisteredEvents.Add(GameEventId.RegisterPlayableCharacter);
         RegisteredEvents.Add(GameEventId.UnRegisterPlayer);
@@ -19,27 +20,23 @@ public class PlayerManager : WorldComponent
     {
         if (gameEvent.ID == GameEventId.RotateActiveCharacter)
         {
-            if (m_Players.Count == 1)
-                return;
+            RotateCharacter();
+            FireEvent(Self, new GameEvent(GameEventId.UpdateUI, new KeyValuePair<string, object>(EventParameters.Entity, m_ActivePlayer.Value.ID)));
+        }
 
-            m_ActivePlayer.Value.RemoveComponent(typeof(PlayerInputController));
-            m_ActivePlayer.Value.AddComponent(new AIController());
-            //m_ActivePlayer.Value.CleanupComponents();
+        if (gameEvent.ID == GameEventId.SetActiveCharacter)
+        {
+            string id = gameEvent.GetValue<string>(EventParameters.Entity);
+            string startId = m_ActivePlayer.Value.ID;
 
-            m_ActivePlayer = m_ActivePlayer.Next;
-            if (m_ActivePlayer == null)
-                m_ActivePlayer = m_Players.First;
+            while (m_ActivePlayer.Value.ID != id)
+            {
+                RotateCharacter();
+                if (m_ActivePlayer.Value.ID == startId)
+                    break;
+            }
 
-            m_ActivePlayer.Value.CleanupComponents();
-            m_ActivePlayer.Value.RemoveComponent(typeof(AIController));
-            m_ActivePlayer.Value.AddComponent(new PlayerInputController());
-            m_ActivePlayer.Value.CleanupComponents();
-
-            m_TimeProgression.SetActiveEntity(m_ActivePlayer.Value);
-
-            EventBuilder setCamera = new EventBuilder(GameEventId.SetCameraPosition)
-                                    .With(EventParameters.Point, PathfindingUtility.GetEntityLocation(m_ActivePlayer.Value));
-            FireEvent(Self, setCamera.CreateEvent());
+            FireEvent(Self, new GameEvent(GameEventId.UpdateUI, new KeyValuePair<string, object>(EventParameters.Entity, m_ActivePlayer.Value.ID)));
         }
 
         //if(gameEvent.ID == GameEventId.GetActivePlayer)
@@ -108,5 +105,34 @@ public class PlayerManager : WorldComponent
         //m_PlayerToTimeProgressionMap.Remove(entity);
         FireEvent(Self, new GameEvent(GameEventId.Despawn, new KeyValuePair<string, object>(EventParameters.Entity, entity.ID),
                                                             new KeyValuePair<string, object>(EventParameters.EntityType, EntityType.Creature)));
+    }
+
+    void RotateCharacter()
+    {
+        if (m_Players.Count == 1)
+            return;
+
+        bool hasUIController = m_ActivePlayer.Value.GetComponents().Any(comp => comp.GetType() == typeof(PlayerUIController));
+        m_ActivePlayer.Value.RemoveComponent(typeof(InputControllerBase));
+        m_ActivePlayer.Value.AddComponent(new AIController());
+        //m_ActivePlayer.Value.CleanupComponents();
+
+        m_ActivePlayer = m_ActivePlayer.Next;
+        if (m_ActivePlayer == null)
+            m_ActivePlayer = m_Players.First;
+
+        m_ActivePlayer.Value.CleanupComponents();
+        m_ActivePlayer.Value.RemoveComponent(typeof(AIController));
+        if(hasUIController)
+            m_ActivePlayer.Value.AddComponent(new PlayerUIController());
+        else
+            m_ActivePlayer.Value.AddComponent(new PlayerInputController());
+        m_ActivePlayer.Value.CleanupComponents();
+
+        m_TimeProgression.SetActiveEntity(m_ActivePlayer.Value);
+
+        EventBuilder setCamera = new EventBuilder(GameEventId.SetCameraPosition)
+                                .With(EventParameters.Point, PathfindingUtility.GetEntityLocation(m_ActivePlayer.Value));
+        FireEvent(Self, setCamera.CreateEvent());
     }
 }
