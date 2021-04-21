@@ -27,6 +27,7 @@ public class InventoryManagerMono : MonoBehaviour
                 Image spriteRenderer = spriteGo.GetComponent<Image>();
                 spriteRenderer.sprite = sprite;
                 spriteGo.transform.SetParent(InventoryView);
+                spriteGo.AddComponent<InventoryItemMono>().Init(source, item);
             }
         }
     }

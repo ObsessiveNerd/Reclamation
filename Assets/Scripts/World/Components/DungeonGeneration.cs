@@ -36,28 +36,6 @@ public class DungeonGeneration : WorldComponent
             SpawnEnemies();
             SpawnItems();
 
-            ///
-            //Point p1 = m_DungeonGenerator.Rooms[0].GetValidPoint();
-            //Point p2 = m_DungeonGenerator.Rooms[m_DungeonGenerator.Rooms.Count - 1].GetValidPoint();
-
-            //EventBuilder e = new EventBuilder(GameEventId.CalculatePath)
-            //                .With(EventParameters.StartPos, p1)
-            //                .With(EventParameters.EndPos, p2)
-            //                .With(EventParameters.Path, null);
-
-            //var path = FireEvent(Self, e.CreateEvent()).GetValue<List<IMapNode>>(EventParameters.Path);
-
-            //Debug.Log($"StartNode: {p1.x}, {p1.y}");
-
-            //foreach (var node in path)
-            //{
-            //    Spawner.Spawn(EntityFactory.CreateEntity("Helmet"), node.x, node.y);
-            //    Debug.Log($"{node.x}, {node.y}");
-            //}
-
-            //Debug.Log($"EndNode: {p2.x}, {p2.y}");
-            //
-
             Factions.Initialize();
             FireEvent(Self, new GameEvent(GameEventId.UpdateWorldView));
         }

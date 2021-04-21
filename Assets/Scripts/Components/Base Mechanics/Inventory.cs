@@ -18,19 +18,9 @@ public class Inventory : Component
         RegisteredEvents.Add(GameEventId.GetCurrentInventory);
     }
 
-    //void EntityDestroyed(IEntity e)
-    //{
-    //    if (InventoryItems.Contains(e))
-    //    {
-    //        e.Destroyed -= EntityDestroyed;
-    //        InventoryItems.Remove(e);
-    //    }
-    //}
-
     public void AddToInventory(IEntity e)
     {
         InventoryItems.Add(e);
-        //e.Destroyed += EntityDestroyed;
     }
 
     public override void HandleEvent(GameEvent gameEvent)
@@ -45,16 +35,14 @@ public class Inventory : Component
         {
             IEntity item = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Entity]);
             InventoryItems.Add(item);
+            FireEvent(World.Instance.Self, new GameEvent(GameEventId.UpdateUI, new KeyValuePair<string, object>(EventParameters.Entity, Self.ID)));
         }
 
         if(gameEvent.ID == GameEventId.RemoveFromInventory)
         {
             IEntity item = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Entity]);
             if (InventoryItems.Contains(item))
-            {
-                //item.Destroyed -= EntityDestroyed;
                 InventoryItems.Remove(item);
-            }
         }
 
         if (gameEvent.ID == GameEventId.Died)

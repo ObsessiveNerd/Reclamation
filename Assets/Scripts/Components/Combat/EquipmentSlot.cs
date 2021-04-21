@@ -45,9 +45,10 @@ public class EquipmentSlot : Component
 
         if(gameEvent.ID == GameEventId.Unequip)
         {
-            if (m_EquipmentId != null)
+            if (m_EquipmentId != null && gameEvent.GetValue<string>(EventParameters.Item) == m_EquipmentId)
             {
-                FireEvent(Self, new GameEvent(GameEventId.AddToInventory, new KeyValuePair<string, object>(EventParameters.Entity, m_EquipmentId)));
+                IEntity owner = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameters.Entity));
+                FireEvent(owner, new GameEvent(GameEventId.AddToInventory, new KeyValuePair<string, object>(EventParameters.Entity, m_EquipmentId)));
                 FireEvent(EntityQuery.GetEntity(m_EquipmentId), new GameEvent(GameEventId.ItemUnequipped));
                 m_EquipmentId = null;
             }

@@ -119,6 +119,12 @@ public class Body : Component
             gameEvent.Paramters[EventParameters.Legs] = GetEquipmentIdForBodyPart(Legs[0]);
         }
 
+        else if(gameEvent.ID == GameEventId.Unequip)
+        {
+            foreach (var bp in m_AllBodyParts)
+                FireEvent(bp, gameEvent);
+        }
+
         else if(gameEvent.ID == GameEventId.Equip)
         {
             BodyPart bp = (BodyPart)gameEvent.Paramters[EventParameters.EntityType];

@@ -46,6 +46,7 @@ public static class GameEventId
     public const string Pickup = nameof(Pickup);
     public const string Drop = nameof(Drop);
     public const string GetValue = nameof(GetValue);
+    public const string GetBodyPartType = nameof(GetBodyPartType);
 
     //Debug
     public const string RevealAllTiles = nameof(RevealAllTiles);
@@ -195,6 +196,7 @@ public static class EventParameters
     public const string Renderer = nameof(Renderer);
     public const string Point = nameof(Point);
     public const string Entity = nameof(Entity);
+    public const string Item = nameof(Item);
     public const string Target = nameof(Target);
     public const string EntityType = nameof(EntityType);
     public const string Creature = nameof(Creature);

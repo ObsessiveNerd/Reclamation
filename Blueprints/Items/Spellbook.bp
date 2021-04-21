@@ -2,4 +2,5 @@
 	Inherits: Item
 	SpellContainer: [<Firebolt>&<IceRay>]
 	Portrait: Portraits/Items/book_11_t
+	GraphicContainer: Textures/Items/td_items_book_brown
 )

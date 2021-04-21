@@ -2,4 +2,5 @@ Item<Architype>(
 	Position
 	InteractOnTileOvertake
 	EntityTypeContainer: Item
+	Item
 )
