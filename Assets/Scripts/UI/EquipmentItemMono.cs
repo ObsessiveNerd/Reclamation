@@ -20,11 +20,11 @@ public class EquipmentItemMono : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        EventBuilder unequip = new EventBuilder(GameEventId.Unequip)
-                                .With(EventParameters.Entity, m_Source.ID)
-                                .With(EventParameters.Item, m_Item.ID);
+        //EventBuilder unequip = new EventBuilder(GameEventId.Unequip)
+        //                        .With(EventParameters.Entity, m_Source.ID)
+        //                        .With(EventParameters.Item, m_Item.ID);
 
-        m_Source.FireEvent(unequip.CreateEvent());
-        m_Callback?.Invoke();
+        //m_Source.FireEvent(unequip.CreateEvent());
+        //m_Callback?.Invoke();
     }
 }

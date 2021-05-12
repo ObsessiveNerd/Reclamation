@@ -8,6 +8,7 @@ public class Item : Component
     {
         RegisteredEvents.Add(GameEventId.Pickup);
         RegisteredEvents.Add(GameEventId.Drop);
+        RegisteredEvents.Add(GameEventId.GetContextMenuActions);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
@@ -25,7 +26,25 @@ public class Item : Component
                                                                            new KeyValuePair<string, object>(EventParameters.EntityType, EntityType.Item),
                                                                            new KeyValuePair<string, object>(EventParameters.Creature, droppingEntity.ID)));
 
+            EventBuilder unequip = new EventBuilder(GameEventId.Unequip)
+                                .With(EventParameters.Entity, droppingEntity.ID)
+                                .With(EventParameters.Item, Self.ID);
+
+            FireEvent(droppingEntity, unequip.CreateEvent());
             FireEvent(droppingEntity, new GameEvent(GameEventId.RemoveFromInventory, new KeyValuePair<string, object>(EventParameters.Entity, Self.ID)));
+        }
+
+        if (gameEvent.ID == GameEventId.GetContextMenuActions)
+        {
+            IEntity source = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameters.Entity));
+            ContextMenuButton button = new ContextMenuButton("Drop", () =>
+            {
+                EventBuilder drop = new EventBuilder(GameEventId.Drop)
+                                        .With(EventParameters.Entity, source.ID);
+
+                FireEvent(Self, drop.CreateEvent(), true);
+            });
+            gameEvent.GetValue<List<ContextMenuButton>>(EventParameters.InventoryContextActions).Add(button);
         }
     }
 }

@@ -38,8 +38,13 @@ public class WorldUIController : WorldComponent
 
         else if(gameEvent.ID == GameEventId.UpdateUI)
         {
-            string id = gameEvent.GetValue<string>(EventParameters.Entity);
-            GameObject.FindObjectOfType<CharacterManagerMono>().UpdateUI(id);
+            if (gameEvent.Paramters.ContainsKey(EventParameters.Entity))
+            {
+                string id = gameEvent.GetValue<string>(EventParameters.Entity);
+                GameObject.FindObjectOfType<CharacterManagerMono>().UpdateUI(id);
+            }
+            else
+                GameObject.FindObjectOfType<CharacterManagerMono>().UpdateUI(m_ActivePlayer.Value.ID);
         }
     }
 }

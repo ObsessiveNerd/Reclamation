@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -18,16 +19,16 @@ public class InventoryItemMono : MonoBehaviour, IPointerClickHandler
     {
         if (eventData.button == PointerEventData.InputButton.Left)
         {
-            EventBuilder dropItem = new EventBuilder(GameEventId.Drop)
-                                    .With(EventParameters.Entity, m_Source.ID);
+            EventBuilder getContextMenuActions = new EventBuilder(GameEventId.GetContextMenuActions)
+                                    .With(EventParameters.Entity, m_Source.ID)
+                                    .With(EventParameters.InventoryContextActions , new List<ContextMenuButton>());
 
-            m_Object.FireEvent(dropItem.CreateEvent());
+            var result = m_Object.FireEvent(getContextMenuActions.CreateEvent()).GetValue<List<ContextMenuButton>>(EventParameters.InventoryContextActions );
 
-            Destroy(gameObject);
-        }
-        else if (eventData.button == PointerEventData.InputButton.Left)
-        {
+            var contextMenu = FindObjectOfType<ContextMenuMono>();
 
+            foreach (var action in result)
+                contextMenu.AddButton(action);
         }
     }
 }

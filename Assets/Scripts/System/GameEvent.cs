@@ -160,6 +160,7 @@ public static class GameEventId
     public const string GrowBodyPart = nameof(GrowBodyPart);
     public const string CheckEquipment = nameof(CheckEquipment);
     public const string GetCurrentEquipment = nameof(GetCurrentEquipment);
+    public const string CheckItemEquiped = nameof(CheckItemEquiped);
 
     //Data Request
     public const string GetEntities = nameof(GetEntities);
@@ -175,6 +176,7 @@ public static class GameEventId
     public const string GetPlayableCharacters = nameof(GetPlayableCharacters);
     public const string GetInfo = nameof(GetInfo);
     public const string UpdateUI = nameof(UpdateUI);
+    public const string GetContextMenuActions = nameof(GetContextMenuActions);
 
     //Spellcasting
     public const string GetSpells = nameof(GetSpells);
@@ -238,6 +240,7 @@ public static class EventParameters
     public const string RightArm = nameof(RightArm);
     public const string Legs = nameof(Legs);
     public const string Objects = nameof(Objects);
+    public const string InventoryContextActions = nameof(InventoryContextActions);
 }
 
 [Serializable]

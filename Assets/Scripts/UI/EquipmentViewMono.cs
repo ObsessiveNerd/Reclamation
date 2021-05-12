@@ -36,21 +36,20 @@ public class EquipmentViewMono : MonoBehaviour
 
     void SetEquipment(string equipmentId, GameObject slot)
     {
-        if (string.IsNullOrEmpty(equipmentId)) return;
+        if (string.IsNullOrEmpty(equipmentId))
+        {
+            slot.GetComponent<Image>().sprite = DefaultImage;
+            return;
+        }
 
         IEntity equipment = EntityQuery.GetEntity(equipmentId);
         EventBuilder getImage = new EventBuilder(GameEventId.GetInfo)
                                 .With(EventParameters.RenderSprite, null);
         var equipmentInfo = equipment.FireEvent(getImage.CreateEvent());
         slot.GetComponent<Image>().sprite = equipmentInfo.GetValue<Sprite>(EventParameters.RenderSprite);
-        var equipmentSlotMono = slot.GetComponentInParent<EquipmentItemMono>();
+        var equipmentSlotMono = slot.GetComponentInParent<InventoryItemMono>();
         if(equipmentSlotMono != null)
-        {
-            equipmentSlotMono.Init(m_Source, equipment, () =>
-            {
-                slot.GetComponent<Image>().sprite = DefaultImage;
-            });
-        }
+            equipmentSlotMono.Init(m_Source, equipment);
     }
 
     public void Cleanup()

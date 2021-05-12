@@ -4,4 +4,5 @@
 	DealDamage:DamageType=Slashing, Damage=1d6
 	GraphicContainer:Textures/Weapons/td_items_weapon_sword
 	Portrait:Portraits/Weapons/swords_t_01
+	Equipment: Arm
 )

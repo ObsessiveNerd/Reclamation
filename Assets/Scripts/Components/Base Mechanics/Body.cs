@@ -60,6 +60,7 @@ public class Body : Component
         RegisteredEvents.Add(GameEventId.EndTurn);
         RegisteredEvents.Add(GameEventId.GetCombatRating);
         RegisteredEvents.Add(GameEventId.GetCurrentEquipment);
+        RegisteredEvents.Add(GameEventId.CheckItemEquiped);
     }
 
     bool HasEquipment(IEntity e)
@@ -119,6 +120,20 @@ public class Body : Component
             gameEvent.Paramters[EventParameters.Legs] = GetEquipmentIdForBodyPart(Legs[0]);
         }
 
+        else if(gameEvent.ID == GameEventId.CheckItemEquiped)
+        {
+            string equipmentId = gameEvent.GetValue<string>(EventParameters.Item);
+            foreach(var bodyPart in m_AllBodyParts)
+            {
+                string equipedId = GetEquipmentIdForBodyPart(bodyPart);
+                if(equipedId == equipmentId)
+                {
+                    gameEvent.Paramters[EventParameters.Value] = true;
+                    break;
+                }
+            }
+        }
+
         else if(gameEvent.ID == GameEventId.Unequip)
         {
             foreach (var bp in m_AllBodyParts)
@@ -153,6 +168,8 @@ public class Body : Component
                 {
                     equipedItem = true;
                     FireEvent(e, gameEvent);
+                    FireEvent(Self, new GameEvent(GameEventId.RemoveFromInventory, 
+                        new KeyValuePair<string, object>(EventParameters.Entity, gameEvent.Paramters[EventParameters.Equipment])));
                     break;
                 }
             }
