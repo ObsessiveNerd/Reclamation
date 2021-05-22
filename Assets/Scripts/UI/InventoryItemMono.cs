@@ -19,6 +19,9 @@ public class InventoryItemMono : MonoBehaviour, IPointerClickHandler
     {
         if (eventData.button == PointerEventData.InputButton.Left)
         {
+            if (m_Source == null || m_Object == null)
+                return;
+
             EventBuilder getContextMenuActions = new EventBuilder(GameEventId.GetContextMenuActions)
                                     .With(EventParameters.Entity, m_Source.ID)
                                     .With(EventParameters.InventoryContextActions , new List<ContextMenuButton>());
