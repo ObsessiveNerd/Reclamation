@@ -25,8 +25,6 @@ public class CharacterManagerMono : EscapeableMono
         InventoryView.GetComponent<InventoryManagerMono>().Setup(source);
         EquipmentView.GetComponent<EquipmentViewMono>().Setup(source);
         CharacterStats.GetComponent<CharacterStatsMono>().Setup(source);
-
-        Debug.Log($"Character updated to {id}");
     }
 
     protected override void OnEscape()

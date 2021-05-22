@@ -27,6 +27,7 @@ public class Door : Component
     {
         base.Init(self);
         RegisteredEvents.Add(GameEventId.Interact);
+        RegisteredEvents.Add(GameEventId.ForceInteract);
         RegisteredEvents.Add(GameEventId.PathfindingData);
         RegisteredEvents.Add(GameEventId.IsTileBlocking);
         RegisteredEvents.Add(GameEventId.GetSprite);
@@ -34,13 +35,18 @@ public class Door : Component
 
     public override void HandleEvent(GameEvent gameEvent)
     {
-        if(gameEvent.ID == GameEventId.Interact)
+        if (gameEvent.ID == GameEventId.Interact)
         {
             if (Locked)
             {
                 //Look for key in inventory
             }
-            else
+            else if (Closed)
+                Closed = false;
+        }
+        else if (gameEvent.ID == GameEventId.ForceInteract)
+        {
+            if (!Locked)
                 Closed = !Closed;
         }
         else if(gameEvent.ID == GameEventId.PathfindingData)

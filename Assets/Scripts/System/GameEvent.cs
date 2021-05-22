@@ -88,6 +88,7 @@ public static class GameEventId
     public const string SetPoint = nameof(SetPoint);
     public const string GetPoint = nameof(GetPoint);
     public const string Interact = nameof(Interact);
+    public const string ForceInteract = nameof(ForceInteract);
     public const string InteractInDirection = nameof(InteractInDirection);
     public const string InteractWithTarget = nameof(InteractWithTarget);
     public const string StopMovement = nameof(StopMovement);
