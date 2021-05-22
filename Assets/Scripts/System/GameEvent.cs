@@ -166,6 +166,7 @@ public static class GameEventId
     public const string GetEntities = nameof(GetEntities);
     public const string GetEntityLocation = nameof(GetEntityLocation);
     public const string GetInteractableObjects = nameof(GetInteractableObjects);
+    public const string GetObject = nameof(GetObject);
     public const string GetName = nameof(GetName);
 
     //UI
@@ -241,6 +242,7 @@ public static class EventParameters
     public const string Legs = nameof(Legs);
     public const string Objects = nameof(Objects);
     public const string InventoryContextActions = nameof(InventoryContextActions);
+    public const string IncludeSelf = nameof(IncludeSelf);
 }
 
 [Serializable]

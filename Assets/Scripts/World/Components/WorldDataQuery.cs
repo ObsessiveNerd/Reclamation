@@ -26,7 +26,8 @@ public class WorldDataQuery : WorldComponent
         if (gameEvent.ID == GameEventId.GetEntityOnTile)
         {
             Point currentTilePos = (Point)gameEvent.Paramters[EventParameters.TilePosition];
-            FireEvent(m_Tiles[currentTilePos], gameEvent);
+            if(m_Tiles.ContainsKey(currentTilePos))
+                FireEvent(m_Tiles[currentTilePos], gameEvent);
         }
 
         if(gameEvent.ID == GameEventId.GetEntityLocation)

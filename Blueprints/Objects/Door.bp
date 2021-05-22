@@ -1,0 +1,5 @@
+<Door>(
+	Inherits:Object
+	Door: Closed=true, Locked=false, OpenSpritePath=Textures/Environment/td_world_door_wood_h_open, ClosedSpritePath=Textures/Environment/td_world_door_wood_h_closed
+	Info: "It's a door."
+)

@@ -202,7 +202,15 @@ public class Tile : Component
 
         if (gameEvent.ID == GameEventId.GetEntityOnTile)
         {
-            gameEvent.Paramters[EventParameters.Entity] = GetTarget()[0].ID;
+            bool includeSelf = true;
+            if(gameEvent.Paramters.ContainsKey(EventParameters.IncludeSelf))
+                includeSelf = gameEvent.GetValue<bool>(EventParameters.IncludeSelf);
+
+            var targets = GetTarget(includeSelf);
+            if(targets.Count == 0)
+                gameEvent.Paramters[EventParameters.Entity] = null;
+            else
+                gameEvent.Paramters[EventParameters.Entity] = GetTarget(includeSelf)[0].ID;
         }
 
         if(gameEvent.ID == GameEventId.IsTileBlocking)

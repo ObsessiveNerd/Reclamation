@@ -4,10 +4,11 @@ using UnityEngine;
 
 public static class WorldUtility
 {
-    public static IEntity GetEntityAtPosition(Point position)
+    public static IEntity GetEntityAtPosition(Point position, bool includeTile = true)
     {
         GameEvent result = World.Instance.Self.FireEvent(new GameEvent(GameEventId.GetEntityOnTile, new KeyValuePair<string, object>(EventParameters.TilePosition, position),
-                                                                                            new KeyValuePair<string, object>(EventParameters.Entity, null)));
+                                                                                            new KeyValuePair<string, object>(EventParameters.Entity, null),
+                                                                                            new KeyValuePair<string, object>(EventParameters.IncludeSelf, includeTile)));
 
         return EntityQuery.GetEntity((string)result.Paramters[EventParameters.Entity]);
     }

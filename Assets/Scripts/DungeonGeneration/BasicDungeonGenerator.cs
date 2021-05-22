@@ -7,6 +7,7 @@ public class Room
 {
     private Point m_StartPoint;
     private Point m_Size;
+    private List<Point> m_Walls;
     private List<Point> m_Hallways;
 
     public Room(Point startPoint, Point size)
@@ -14,6 +15,7 @@ public class Room
         m_StartPoint = startPoint;
         m_Size = size;
         m_Hallways = new List<Point>();
+        m_Walls = new List<Point>();
     }
 
     Point GetMiddleOfTheRoom()
@@ -32,7 +34,10 @@ public class Room
             for (int j = m_StartPoint.y; j < m_StartPoint.y + m_Size.y; j++)
             {
                 if (i == m_StartPoint.x || i == m_StartPoint.x + m_Size.x - 1 || j == m_StartPoint.y || j == m_StartPoint.y + m_Size.y - 1)
+                {
                     Spawner.Spawn(EntityFactory.CreateEntity("Wall"), new Point(i, j));
+                    m_Walls.Add(new Point(i, j));
+                }
                 else
                     validPoints.Add(new Point(i, j));
             }
@@ -42,6 +47,32 @@ public class Room
                                         .With(EventParameters.Value, validPoints);
 
         World.Instance.Self.FireEvent(sendValidPoints.CreateEvent());
+    }
+
+    public void CreateDoors()
+    {
+        foreach(var wall in m_Walls)
+        {
+            Point up = new Point(wall.x, wall.y + 1);
+            Point down = new Point(wall.x, wall.y - 1);
+
+            Point left = new Point(wall.x - 1, wall.y);
+            Point right = new Point(wall.x + 1, wall.y);
+
+            if ((WorldUtility.GetEntityAtPosition(up, false) != null && WorldUtility.GetEntityAtPosition(down, false) != null) ||
+                (WorldUtility.GetEntityAtPosition(right, false) != null && WorldUtility.GetEntityAtPosition(left, false) != null))
+                {
+
+                EventBuilder getEntity = new EventBuilder(GameEventId.GetEntityOnTile)
+                                            .With(EventParameters.TilePosition, wall)
+                                            .With(EventParameters.Entity, null)
+                                            .With(EventParameters.IncludeSelf, false);
+
+                string entityId = World.Instance.Self.FireEvent(getEntity.CreateEvent()).GetValue<string>(EventParameters.Entity);
+                if (string.IsNullOrEmpty(entityId) && RecRandom.Instance.GetRandomValue(0, 100) > 50)
+                    Spawner.Spawn(EntityFactory.CreateEntity("Door"), wall);
+            }
+        }
     }
 
     public void CreateHallwayToRoom(Room otherRoom)
@@ -302,6 +333,9 @@ public class BasicDungeonGenerator : IDungeonGenerator
 
         foreach (Room room in Rooms)
             room.ClearHallways();
+
+        foreach (Room room in Rooms)
+            room.CreateDoors();
     }
 
     void CreateHallways()
