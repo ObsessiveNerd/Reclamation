@@ -134,14 +134,22 @@ public class DungeonGeneration : WorldComponent
         if (gameEvent.ID == GameEventId.LoadLevel)
         {
             m_CurrentLevel = gameEvent.GetValue<int>(EventParameters.Level);
-            //LoadOrCreateDungeon();
-            //TODO
         }
     }
 
     void SaveCurrentLevel()
     {
-        DungeonGenerationResult level = m_DungeonLevelMap[m_CurrentLevel];
+        DungeonGenerationResult level = null;
+        if (m_DungeonLevelMap.ContainsKey(m_CurrentLevel))
+            level = m_DungeonLevelMap[m_CurrentLevel];
+        else if (SaveSystem.Instance.LoadLevel(m_CurrentLevel) != null)
+        {
+            level = SaveSystem.Instance.LoadLevel(m_CurrentLevel);
+            m_DungeonLevelMap.Add(m_CurrentLevel, level);
+        }
+        else
+            return;
+
         foreach (var tile in m_Tiles.Values)
         {
             EventBuilder serializeTile = new EventBuilder(GameEventId.SerializeTile)
@@ -194,6 +202,13 @@ public class DungeonGeneration : WorldComponent
 
     void LoadOrCreateDungeon()
     {
+        if (!m_DungeonLevelMap.ContainsKey(m_CurrentLevel))
+        {
+            DungeonGenerationResult loadedLevel = SaveSystem.Instance.LoadLevel(m_CurrentLevel);
+            if (loadedLevel != null)
+                m_DungeonLevelMap.Add(m_CurrentLevel, loadedLevel);
+        }
+
         if (m_DungeonLevelMap.ContainsKey(m_CurrentLevel))
         {
             DungeonGenerationResult dungeonLevel = m_DungeonLevelMap[m_CurrentLevel];
