@@ -1,6 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using UnityEngine;
 
 public class PointComparer : IEqualityComparer<Point>
@@ -16,6 +18,7 @@ public class PointComparer : IEqualityComparer<Point>
     }
 }
 
+[Serializable]
 public struct Point : IMapNode
 {
     public static readonly Point InvalidPoint = new Point(-1, -1);
@@ -73,6 +76,16 @@ public class Tile : Component
     public IEntity ObjectSlot;
     public List<IEntity> Items = new List<IEntity>();
 
+    List<IEntity> AllEntities
+    {
+        get
+        {
+            List<IEntity> entities = new List<IEntity>(Items);
+            entities.Add(CreatureSlot);
+            entities.Add(ObjectSlot);
+            return entities;
+        }
+    }
     bool m_HasEntity { get { return CreatureSlot != null || ObjectSlot != null || Items.Count > 0; } }
     bool m_IsVisible = false;
     Point m_GridPoint;
@@ -93,9 +106,11 @@ public class Tile : Component
         RegisteredEvents.Add(GameEventId.VisibilityUpdated);
         RegisteredEvents.Add(GameEventId.IsTileBlocking);
         RegisteredEvents.Add(GameEventId.DestroyObject);
+        RegisteredEvents.Add(GameEventId.DestroyAll);
         RegisteredEvents.Add(GameEventId.PathfindingData);
         RegisteredEvents.Add(GameEventId.GetValueOnTile);
         RegisteredEvents.Add(GameEventId.GetInteractableObjects);
+        RegisteredEvents.Add(GameEventId.SerializeTile);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
@@ -116,8 +131,16 @@ public class Tile : Component
 
         if(gameEvent.ID == GameEventId.DestroyObject)
         {
-            if (ObjectSlot != null)
-                Spawner.Despawn(ObjectSlot);
+            Spawner.Despawn(ObjectSlot);
+        }
+
+        if (gameEvent.ID == GameEventId.DestroyAll)
+        {
+            Spawner.Despawn(CreatureSlot);
+            Spawner.Despawn(ObjectSlot);
+            List<IEntity> items = new List<IEntity>(Items);
+            foreach (var item in items)
+                Spawner.Despawn(item);
         }
 
         if (gameEvent.ID == GameEventId.VisibilityUpdated)
@@ -236,6 +259,14 @@ public class Tile : Component
                 totalValue += itemValue;
             }
             gameEvent.Paramters[EventParameters.Value] = totalValue;
+        }
+
+        if(gameEvent.ID == GameEventId.SerializeTile)
+        {
+            LevelData levelData = gameEvent.GetValue<LevelData>(EventParameters.Value);
+            foreach (var target in AllEntities)
+                if(target != null)
+                    levelData.Entities.Add(target.Serialize());
         }
     }
 

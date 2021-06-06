@@ -25,6 +25,11 @@ public class TimeProgression
         return m_EntityList.Contains(entity);
     }
 
+    public void SetPostFrameCallback(Action callback)
+    {
+        m_PostFrameCallback = callback;
+    }
+
     public void SetActiveEntity(IEntity entity)
     {
         m_PostFrameCallback = () =>

@@ -317,10 +317,11 @@ public class DTO_Body : IDataTransferComponent
         }
         Component = new Body(heads, arms, legs);
 
-        foreach(var key in equipment.Keys)
+        foreach (var key in equipment.Keys)
         {
             foreach (var e in equipment[key])
-                Component.HandleEvent(new GameEvent(GameEventId.Equip, new KeyValuePair<string, object>(EventParameters.EntityType, key),
+                if (e != null)
+                    Component.HandleEvent(new GameEvent(GameEventId.Equip, new KeyValuePair<string, object>(EventParameters.EntityType, key),
                                                                         new KeyValuePair<string, object>(EventParameters.Equipment, e.ID)));
         }
     }
@@ -344,11 +345,11 @@ public class DTO_Body : IDataTransferComponent
         {
             GameEvent getEquipment = new GameEvent(GameEventId.GetEquipment, new KeyValuePair<string, object>(EventParameters.Equipment, null));
             bp.HandleEvent(getEquipment);
-            IEntity equipment = (IEntity)getEquipment.Paramters[EventParameters.Equipment];
+            string equipment = (string)getEquipment.Paramters[EventParameters.Equipment];
             if (equipment != null)
             {
-                sb.Append($"<{equipment.ID}>&");
-                EntityFactory.CreateTemporaryBlueprint($"{World.Instance.Seed}", equipment.ID, equipment.Serialize()); //todo: feed proper seed
+                sb.Append($"<{equipment}>&");
+                EntityFactory.CreateTemporaryBlueprint($"{World.Instance.Seed}", equipment, EntityQuery.GetEntity(equipment).Serialize()); //todo: feed proper seed
             }
         }
         string value = sb.ToString().TrimEnd('&');

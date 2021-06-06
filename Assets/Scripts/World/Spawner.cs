@@ -24,6 +24,9 @@ public static class Spawner
 
     public static void Despawn(IEntity e)
     {
+        if (e == null)
+            return;
+
         EntityType entityType = (EntityType)e.FireEvent(e, new GameEvent(GameEventId.GetEntityType, new KeyValuePair<string, object>(EventParameters.EntityType, EntityType.None))).Paramters[EventParameters.EntityType];
 
 

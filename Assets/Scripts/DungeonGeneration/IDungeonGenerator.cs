@@ -2,10 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public struct DungeonGenerationResult
+{
+
+}
+
 public interface IDungeonGenerator
 {
     //void GenerateDungeon(Dictionary<Point, Actor> pointToTileMap);
     //void GenerateDungeon(IMapNode[,] map);
-    void GenerateDungeon(int rows, int columns);
+    DungeonGenerationResult GenerateDungeon();
     List<Room> Rooms { get; }
 }

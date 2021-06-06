@@ -166,7 +166,9 @@ public static class EntityFactory
     {
         StringBuilder sb = new StringBuilder();
         foreach (var entity in entities)
-            sb.Append($"<{entity.ID}>&");
+            if(entity != null)
+                sb.Append($"<{entity.ID}>&");
+
         return sb.ToString().TrimEnd('&');
     }
 

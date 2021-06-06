@@ -17,6 +17,13 @@ public class SaveData
     }
 }
 
+[Serializable]
+public class LevelData
+{
+    public List<string> Entities = new List<string>();
+    public List<Room> RoomData = new List<Room>();
+}
+
 public class SaveSystem : MonoBehaviour
 {
     public const string kSaveDataPath = "SaveData";
@@ -34,6 +41,10 @@ public class SaveSystem : MonoBehaviour
         m_Data = new SaveData(World.Instance.Seed);
 
         string path = $"{kSaveDataPath}/{World.Instance.Seed}/tmp_event_log.txt";
+        Directory.CreateDirectory(Path.GetDirectoryName(path));
+        if (!File.Exists(path))
+            return;
+
         using (var reader = new StreamReader(path))
         {
             while (!reader.EndOfStream)
@@ -44,6 +55,24 @@ public class SaveSystem : MonoBehaviour
         }
 
         File.WriteAllText($"{kSaveDataPath}/{World.Instance.Seed}/data.save", JsonUtility.ToJson(m_Data));
+    }
+
+    public void SaveLevel(LevelData levelData, int level)
+    {
+        string path = $"{kSaveDataPath}/{World.Instance.Seed}/{level}";
+        if(Directory.Exists(path))
+            Directory.Delete(path, true);
+
+        Directory.CreateDirectory(path);
+        File.WriteAllText($"{path}/data.dat", JsonUtility.ToJson(levelData));
+    }
+
+    public LevelData LoadLevel(int level)
+    {
+        string path = $"{kSaveDataPath}/{World.Instance.Seed}/{level}";
+        if (!Directory.Exists(path))
+            return null;
+        return JsonUtility.FromJson<LevelData>(File.ReadAllText($"{path}/data.dat"));
     }
 
     public static void LogEvent(string targetId, GameEvent gameEvent)
@@ -60,6 +89,7 @@ public class SaveSystem : MonoBehaviour
 
         SaveData data = JsonUtility.FromJson<SaveData>(File.ReadAllText(path));
         World.Instance.InitWorld(data.Seed);
+        return;
 
         foreach (string eventString in data.Events)
         {

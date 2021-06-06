@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class DungeonGeneration : WorldComponent
@@ -15,6 +16,10 @@ public class DungeonGeneration : WorldComponent
         RegisteredEvents.Add(GameEventId.StartWorld);
         RegisteredEvents.Add(GameEventId.GetRandomValidPoint);
         RegisteredEvents.Add(GameEventId.AddValidPoints);
+        RegisteredEvents.Add(GameEventId.MoveDown);
+        RegisteredEvents.Add(GameEventId.MoveUp);
+        RegisteredEvents.Add(GameEventId.SaveLevel);
+        RegisteredEvents.Add(GameEventId.LoadLevel);
 
         m_Vertical = (int)Camera.main.orthographicSize;
         m_Horizontal = (int)(m_Vertical * Camera.main.aspect);
@@ -26,18 +31,30 @@ public class DungeonGeneration : WorldComponent
         {
             Seed = (string)gameEvent.Paramters[EventParameters.Seed];
             m_TilePrefab = (GameObject)gameEvent.Paramters[EventParameters.GameObject];
-
             CreateTiles(m_Tiles);
 
-            m_DungeonGenerator = new BasicDungeonGenerator();
-            m_DungeonGenerator.GenerateDungeon(World.Instance.MapRows, World.Instance.MapColumns);
+            m_DungeonGenerator = new BasicDungeonGenerator(World.Instance.MapRows, World.Instance.MapColumns);
 
-            SpawnPlayers();
-            SpawnEnemies();
-            SpawnItems();
-
-            Factions.Initialize();
-            FireEvent(Self, new GameEvent(GameEventId.UpdateWorldView));
+            SetupNewLevel();
+            FireEvent(Self, new GameEvent(GameEventId.SaveLevel));
+        }
+        else if(gameEvent.ID == GameEventId.MoveUp)
+        {
+            m_TimeProgression.SetPostFrameCallback(() =>
+            {
+                CleanTiles();
+                m_CurrentLevel--;
+                SetupNewLevel();
+            });
+        }
+        else if(gameEvent.ID == GameEventId.MoveDown)
+        {
+            m_TimeProgression.SetPostFrameCallback(() =>
+            {
+                CleanTiles();
+                m_CurrentLevel++;
+                SetupNewLevel();
+            });
         }
         else if(gameEvent.ID == GameEventId.GetRandomValidPoint)
         {
@@ -49,6 +66,84 @@ public class DungeonGeneration : WorldComponent
             List<Point> validPoints = gameEvent.GetValue<List<Point>>(EventParameters.Value);
             foreach(Point p in validPoints)
                 m_ValidDungeonPoints.Add(p);
+        }
+
+        if (gameEvent.ID == GameEventId.SaveLevel)
+        {
+            LevelData level = new LevelData();
+            foreach (var tile in m_Tiles.Values)
+            {
+                EventBuilder serializeTile = new EventBuilder(GameEventId.SerializeTile)
+                                             .With(EventParameters.Value, level);
+                FireEvent(tile, serializeTile.CreateEvent());
+            }
+
+            foreach (Room room in m_DungeonGenerator.Rooms)
+                level.RoomData.Add(room);
+
+            SaveSystem.Instance.SaveLevel(level, m_CurrentLevel);
+        }
+
+        if (gameEvent.ID == GameEventId.LoadLevel)
+        {
+            int levelToLoad = gameEvent.GetValue<int>(EventParameters.Level);
+
+            //TODO
+        }
+    }
+
+    void SetupNewLevel()
+    {
+        LevelData data = SaveSystem.Instance.LoadLevel(m_CurrentLevel);
+        Factions.Initialize();
+
+        if (data != null)
+        {
+            foreach (var room in data.RoomData)
+                m_DungeonGenerator.Rooms.Add(room);
+
+            foreach (string entityData in data.Entities)
+            {
+                IEntity entity = EntityFactory.ParseEntityData(entityData);
+                if(entity != null)
+                {
+                    EventBuilder getPoint = new EventBuilder(GameEventId.GetPoint)
+                                            .With(EventParameters.Value, Point.InvalidPoint);
+                    Point p = FireEvent(entity, getPoint.CreateEvent()).GetValue<Point>(EventParameters.Value);
+                    if (p != Point.InvalidPoint)
+                        Spawner.Spawn(entity, p);
+                }
+            }
+
+            foreach(var player in m_Players)
+                FireEvent(player, new GameEvent(GameEventId.InitFOV));
+        }
+        else
+        {
+            m_DungeonGenerator.GenerateDungeon();
+
+            SpawnPlayers();
+            SpawnEnemies();
+            SpawnItems();
+        }
+
+        //MovePlayersToCurrentFloor();
+        FireEvent(Self, new GameEvent(GameEventId.UpdateWorldView));
+    }
+
+    void CleanTiles()
+    {
+        List<IEntity> entities = new List<IEntity>(m_EntityToPointMap.Keys);
+        foreach (var entity in entities)
+        {
+            if (m_Players.Contains(entity))
+                continue;
+            if (!m_EntityToPointMap.ContainsKey(entity))
+                continue;
+
+            Point p = m_EntityToPointMap[entity];
+            if(m_Tiles.ContainsKey(p))
+                FireEvent(m_Tiles[p], new GameEvent(GameEventId.DestroyAll));
         }
     }
 
@@ -69,6 +164,22 @@ public class DungeonGeneration : WorldComponent
         FireEvent(Self, new GameEvent(GameEventId.ProgressTime));
     }
 
+    void MovePlayersToCurrentFloor()
+    {
+        var playerIds = new List<string>();
+        playerIds.AddRange(m_Players.Select(p => p.ID));
+
+        foreach(var player in playerIds)
+        {
+            var entity = EntityQuery.GetEntity(player);
+            Spawner.Despawn(entity);
+            Spawner.Spawn(entity, m_DungeonGenerator.Rooms[0].GetValidPoint());
+            FireEvent(entity, new GameEvent(GameEventId.InitFOV));
+        }
+
+        FireEvent(Self, new GameEvent(GameEventId.ProgressTime));
+    }
+
     void SpawnEnemies()
     {
         for (int i = 0; i < 2; i++)
@@ -84,6 +195,9 @@ public class DungeonGeneration : WorldComponent
         Room randomRoom = m_DungeonGenerator.Rooms[RecRandom.Instance.GetRandomValue(1, m_DungeonGenerator.Rooms.Count)];
         IEntity helmet = EntityFactory.CreateEntity("BronzeHelmet");
         Spawner.Spawn(helmet, randomRoom.GetValidPoint());
+
+        Spawner.Spawn(EntityFactory.CreateEntity("StairsUp"), m_DungeonGenerator.Rooms[0].GetValidPoint());
+        Spawner.Spawn(EntityFactory.CreateEntity("StairsDown"), m_DungeonGenerator.Rooms[RecRandom.Instance.GetRandomValue(1, m_DungeonGenerator.Rooms.Count)].GetValidPoint());
     }
 
     void CreateTiles(Dictionary<Point, Actor> pointToTileMap)

@@ -1,0 +1,5 @@
+<StairsUp>(
+	Inherits:Object
+	Stairs: Up
+	GraphicContainer:Textures/Environment/td_world_wall_cave_stair_up
+)

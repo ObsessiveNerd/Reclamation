@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[Serializable]
 public class Room
 {
     private Point m_StartPoint;
@@ -249,32 +250,28 @@ public enum Direction
 
 public class BasicDungeonGenerator : IDungeonGenerator
 {
-    //GameObject m_TilePrefab;
-    
-    int m_MinRoomSize = 5;
-
-    List<DungeonPartition> m_LeafNodes = new List<DungeonPartition>();
-
     public List<Room> Rooms { get; internal set; }
 
-    public BasicDungeonGenerator(/*GameObject tilePrefab*/)
+    private List<DungeonPartition> m_LeafNodes = new List<DungeonPartition>();
+    private DungeonPartition m_Root;
+    private int m_MinRoomSize = 5;
+
+    public BasicDungeonGenerator(int rows, int columns)
     {
         Rooms = new List<Room>();
+        m_Root = new DungeonPartition(new Point(0, 0), new Point(columns, rows));
     }
 
-    public virtual void GenerateDungeon(int rows, int columns)
+    public virtual DungeonGenerationResult GenerateDungeon()
     {
-        //CreateTiles(pointToTileMap);
-        //int rows = map.GetLength(0);
-        //int columns = map.GetLength(1);
-
-        DungeonPartition root = new DungeonPartition(new Point(0, 0), new Point(columns, rows));
-        SplitPartition(root);
+        SplitPartition(m_Root);
 
         CreateRooms();
         CreateWalls();
         CreateHallways();
         CleanupRooms();
+
+        return new DungeonGenerationResult();
     }
 
     void SplitPartition(DungeonPartition partition)

@@ -87,7 +87,8 @@ public class DTO_Inventory : IDataTransferComponent
     {
         Inventory inventory = (Inventory)component;
         foreach(var item in inventory.InventoryItems)
-            EntityFactory.CreateTemporaryBlueprint($"{World.Instance.Seed}", item.ID, item.Serialize()); //todo: feed proper seed
+            if(item != null)
+                EntityFactory.CreateTemporaryBlueprint($"{World.Instance.Seed}", item.ID, item.Serialize()); //todo: feed proper seed
 
         return $"{nameof(Inventory)}: [{EntityFactory.ConvertEntitiesToStringArray(inventory.InventoryItems)}]";
     }

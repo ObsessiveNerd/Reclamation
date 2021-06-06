@@ -78,6 +78,8 @@ public static class GameEventId
     public const string GetRandomValidPoint = nameof(GetRandomValidPoint);
     public const string GetRandomValidPointInRange = nameof(GetRandomValidPointInRange);
     public const string AddValidPoints = nameof(AddValidPoints);
+    public const string MoveUp = nameof(MoveUp);
+    public const string MoveDown = nameof(MoveDown);
 
     //Moving
     public const string EntityOvertaking = nameof(EntityOvertaking);
@@ -115,9 +117,13 @@ public static class GameEventId
     public const string EndSelection = nameof(EndSelection);
     public const string ShowTileInfo = nameof(ShowTileInfo);
     public const string DestroyObject = nameof(DestroyObject);
+    public const string DestroyAll = nameof(DestroyAll);
     public const string PathfindingData = nameof(PathfindingData);
     public const string IsValidTile = nameof(IsValidTile);
     public const string GetValueOnTile = nameof(GetValueOnTile);
+    public const string SaveLevel = nameof(SaveLevel);
+    public const string LoadLevel = nameof(LoadLevel);
+    public const string SerializeTile = nameof(SerializeTile);
 
     //Camera
     public const string SetCameraPosition = nameof(SetCameraPosition);
@@ -244,6 +250,7 @@ public static class EventParameters
     public const string Objects = nameof(Objects);
     public const string InventoryContextActions = nameof(InventoryContextActions);
     public const string IncludeSelf = nameof(IncludeSelf);
+    public const string Level = nameof(Level);
 }
 
 [Serializable]

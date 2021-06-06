@@ -10,6 +10,9 @@ public class PlayableCharacterSelector : MonoBehaviour
     private Dictionary<string, GameObject> m_CharacterIdToTabGameObject = new Dictionary<string, GameObject>();
     public void AddCharacterTab(string id)
     {
+        if (m_CharacterIdToTabGameObject.ContainsKey(id))
+            return;
+
         IEntity entity = EntityQuery.GetEntity(id);
 
         var newTab = Instantiate(CharacterButton);

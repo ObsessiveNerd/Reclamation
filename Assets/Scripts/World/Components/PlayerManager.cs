@@ -76,9 +76,12 @@ public class PlayerManager : WorldComponent
 
         m_TimeProgression.RegisterEntity(entity);
 
-        EventBuilder setCamera = new EventBuilder(GameEventId.SetCameraPosition)
-                                    .With(EventParameters.Point, PathfindingUtility.GetEntityLocation(m_ActivePlayer.Value));
-        FireEvent(Self, setCamera.CreateEvent());
+        if(m_ActivePlayer != null)
+        {
+            EventBuilder setCamera = new EventBuilder(GameEventId.SetCameraPosition)
+                                        .With(EventParameters.Point, PathfindingUtility.GetEntityLocation(m_ActivePlayer.Value));
+            FireEvent(Self, setCamera.CreateEvent());
+        }
 
         //m_PlayerToTimeProgressionMap[entity] = new TimeProgression();
         //m_PlayerToTimeProgressionMap[entity].RegisterEntity(entity);
