@@ -110,7 +110,11 @@ public static class EntityFactory
             int nameLength = lastIndex - firstIndex - 1;
             string name = header.Substring(nameStart, nameLength);
 
-            a = new Actor(name);
+            string[] nameAndID = name.Split(',');
+            if (nameAndID.Length == 1)
+                a = new Actor(name);
+            else
+                a = new Actor(nameAndID[0], nameAndID[1]);
 
             string line;
             while ((line = stream.ReadLine()) != null && line != ")")

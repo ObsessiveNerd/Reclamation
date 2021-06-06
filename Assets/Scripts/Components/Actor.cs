@@ -50,6 +50,9 @@ public class Actor : IEntity
     {
         Name = name;
         ID = string.IsNullOrEmpty(id) ? IDManager.GetNewID().ToString() : id;
+        if(!string.IsNullOrEmpty(id))
+            IDManager.SetId(int.Parse(id));
+
         m_Components = new PriorityQueue<IComponent>(new ComponentComparer());
         //Destroyed = OnDestroy;
         FireEvent(World.Instance.Self, new GameEvent(GameEventId.RegisterEntity, new KeyValuePair<string, object>(EventParameters.Entity, this)));
@@ -146,7 +149,7 @@ public class Actor : IEntity
         CleanupComponents();
 
         StringBuilder sb = new StringBuilder();
-        sb.AppendLine($"<{Name}>(");
+        sb.AppendLine($"<{Name},{ID}>(");
 
         foreach(IComponent comp in m_Components.ToList())
         {
