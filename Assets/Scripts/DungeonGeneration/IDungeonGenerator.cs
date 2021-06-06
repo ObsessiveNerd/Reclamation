@@ -11,6 +11,6 @@ public interface IDungeonGenerator
 {
     //void GenerateDungeon(Dictionary<Point, Actor> pointToTileMap);
     //void GenerateDungeon(IMapNode[,] map);
-    DungeonGenerationResult GenerateDungeon();
+    DungeonGenerationResult GenerateDungeon(DungeonMetaData metaData);
     List<Room> Rooms { get; }
 }

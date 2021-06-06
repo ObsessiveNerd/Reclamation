@@ -4,6 +4,14 @@ using UnityEngine;
 
 public static class LevelMetaData
 {
+    public static string MetadataPath
+    {
+        get
+        {
+            return $"LevelData";
+        }
+    }
+
     public const string StairsUp = nameof(StairsUp);
     public const string StairsDown = nameof(StairsDown);
     public const string ContainsBoss = nameof(ContainsBoss);

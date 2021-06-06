@@ -254,6 +254,7 @@ public class BasicDungeonGenerator : IDungeonGenerator
 
     private List<DungeonPartition> m_LeafNodes = new List<DungeonPartition>();
     private DungeonPartition m_Root;
+    private DungeonMetaData m_DMD;
     private int m_MinRoomSize = 5;
 
     public BasicDungeonGenerator(int rows, int columns)
@@ -262,8 +263,9 @@ public class BasicDungeonGenerator : IDungeonGenerator
         m_Root = new DungeonPartition(new Point(0, 0), new Point(columns, rows));
     }
 
-    public virtual DungeonGenerationResult GenerateDungeon()
+    public virtual DungeonGenerationResult GenerateDungeon(DungeonMetaData metaData)
     {
+        m_DMD = metaData;
         SplitPartition(m_Root);
 
         CreateRooms();

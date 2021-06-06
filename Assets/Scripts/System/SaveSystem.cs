@@ -18,7 +18,7 @@ public class SaveData
 }
 
 [Serializable]
-public class LevelData
+public class SerializedLevelData
 {
     public List<string> Entities = new List<string>();
     public List<Room> RoomData = new List<Room>();
@@ -57,7 +57,7 @@ public class SaveSystem : MonoBehaviour
         File.WriteAllText($"{kSaveDataPath}/{World.Instance.Seed}/data.save", JsonUtility.ToJson(m_Data));
     }
 
-    public void SaveLevel(LevelData levelData, int level)
+    public void SaveLevel(SerializedLevelData levelData, int level)
     {
         string path = $"{kSaveDataPath}/{World.Instance.Seed}/{level}";
         if(Directory.Exists(path))
@@ -67,12 +67,12 @@ public class SaveSystem : MonoBehaviour
         File.WriteAllText($"{path}/data.dat", JsonUtility.ToJson(levelData));
     }
 
-    public LevelData LoadLevel(int level)
+    public SerializedLevelData LoadLevel(int level)
     {
         string path = $"{kSaveDataPath}/{World.Instance.Seed}/{level}";
         if (!Directory.Exists(path))
             return null;
-        return JsonUtility.FromJson<LevelData>(File.ReadAllText($"{path}/data.dat"));
+        return JsonUtility.FromJson<SerializedLevelData>(File.ReadAllText($"{path}/data.dat"));
     }
 
     public static void LogEvent(string targetId, GameEvent gameEvent)

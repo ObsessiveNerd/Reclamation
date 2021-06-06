@@ -44,7 +44,7 @@ public class DTO_SpellContainer : IDataTransferComponent
         SpellContainer sc = (SpellContainer)component;
         StringBuilder spellNameBuilder = new StringBuilder();
         foreach (var name in sc.SpellNameToIdMap.Keys)
-            spellNameBuilder.Append($"{name},");
+            spellNameBuilder.Append($"<{name}>,");
         return $"{nameof(SpellContainer)}: [{spellNameBuilder.ToString().TrimEnd(',')}]";
     }
 }

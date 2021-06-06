@@ -263,7 +263,7 @@ public class Tile : Component
 
         if(gameEvent.ID == GameEventId.SerializeTile)
         {
-            LevelData levelData = gameEvent.GetValue<LevelData>(EventParameters.Value);
+            SerializedLevelData levelData = gameEvent.GetValue<SerializedLevelData>(EventParameters.Value);
             foreach (var target in AllEntities)
                 if(target != null)
                     levelData.Entities.Add(target.Serialize());

@@ -14,10 +14,20 @@ public static class EntityFactory
     {
         if(m_Blueprints.Count == 0)
         {
-            foreach(var bpPath in Directory.EnumerateFiles(m_BluePrintPath, "*", SearchOption.AllDirectories))
+            foreach (var bpPath in Directory.EnumerateFiles(m_BluePrintPath, "*", SearchOption.AllDirectories))
             {
                 string bpName = Path.GetFileNameWithoutExtension(bpPath);
                 m_Blueprints.Add(bpName, bpPath);
+            }
+
+            string tempBlueprints = $"{SaveSystem.kSaveDataPath}/{World.Instance.Seed}/Blueprints";
+            if (Directory.Exists(tempBlueprints))
+            {
+                foreach (var bpPath in Directory.EnumerateFiles(tempBlueprints, "*", SearchOption.AllDirectories))
+                {
+                    string bpName = Path.GetFileNameWithoutExtension(bpPath);
+                    m_Blueprints.Add(bpName, bpPath);
+                }
             }
         }
 
