@@ -9,6 +9,7 @@ public class DungeonMetaData
 {
     public bool StairsUp;
     public bool StairsDown;
+    public bool SpawnEnemies;
 
     public DungeonMetaData(string dataPath)
     {
@@ -27,6 +28,12 @@ public class DungeonMetaData
                             break;
                         case LevelMetaData.StairsDown:
                             StairsDown = bool.Parse(keyValue[1]);
+                            break;
+                        case LevelMetaData.MonsterTypes:
+                            if (keyValue[1].Contains("None"))
+                                SpawnEnemies = false;
+                            else
+                                SpawnEnemies = true;
                             break;
                     }
                 }
@@ -57,6 +64,7 @@ public class DungeonGeneration : WorldComponent
         RegisteredEvents.Add(GameEventId.MoveUp);
         RegisteredEvents.Add(GameEventId.SaveLevel);
         RegisteredEvents.Add(GameEventId.LoadLevel);
+        RegisteredEvents.Add(GameEventId.GetCurrentLevel);
 
         m_Vertical = (int)Camera.main.orthographicSize;
         m_Horizontal = (int)(m_Vertical * Camera.main.aspect);
@@ -69,28 +77,41 @@ public class DungeonGeneration : WorldComponent
             Seed = (string)gameEvent.Paramters[EventParameters.Seed];
             m_TilePrefab = (GameObject)gameEvent.Paramters[EventParameters.GameObject];
             CreateTiles(m_Tiles);
+            Factions.Initialize();
 
             m_DungeonGenerator = new BasicDungeonGenerator(World.Instance.MapRows, World.Instance.MapColumns);
 
-            SetupNewLevel();
+            LoadOrCreateDungeon();
+            SpawnPlayers();
+
             FireEvent(Self, new GameEvent(GameEventId.SaveLevel));
+        }
+        else if(gameEvent.ID == GameEventId.GetCurrentLevel)
+        {
+            gameEvent.Paramters[EventParameters.Level] = m_CurrentLevel;
         }
         else if (gameEvent.ID == GameEventId.MoveUp)
         {
             m_TimeProgression.SetPostFrameCallback(() =>
             {
+                SaveCurrentLevel();
                 CleanTiles();
                 m_CurrentLevel--;
-                MoveToNewLevel();
+                LoadOrCreateDungeon();
+                MovePlayersToCurrentFloor(false);
+
             });
         }
         else if (gameEvent.ID == GameEventId.MoveDown)
         {
             m_TimeProgression.SetPostFrameCallback(() =>
             {
+                SaveCurrentLevel();
                 CleanTiles();
                 m_CurrentLevel++;
-                MoveToNewLevel();
+                LoadOrCreateDungeon();
+                MovePlayersToCurrentFloor(true);
+
             });
         }
         else if (gameEvent.ID == GameEventId.GetRandomValidPoint)
@@ -107,78 +128,79 @@ public class DungeonGeneration : WorldComponent
 
         if (gameEvent.ID == GameEventId.SaveLevel)
         {
-            SerializedLevelData level = new SerializedLevelData();
-            foreach (var tile in m_Tiles.Values)
-            {
-                EventBuilder serializeTile = new EventBuilder(GameEventId.SerializeTile)
-                                             .With(EventParameters.Value, level);
-                FireEvent(tile, serializeTile.CreateEvent());
-            }
-
-            foreach (Room room in m_DungeonGenerator.Rooms)
-                level.RoomData.Add(room);
-
-            SaveSystem.Instance.SaveLevel(level, m_CurrentLevel);
+            SaveCurrentLevel();
         }
 
         if (gameEvent.ID == GameEventId.LoadLevel)
         {
-            int levelToLoad = gameEvent.GetValue<int>(EventParameters.Level);
-
+            m_CurrentLevel = gameEvent.GetValue<int>(EventParameters.Level);
+            //LoadOrCreateDungeon();
             //TODO
         }
     }
 
-    void SetupNewLevel()
+    void SaveCurrentLevel()
     {
-        SerializedLevelData data = SaveSystem.Instance.LoadLevel(m_CurrentLevel);
-        Factions.Initialize();
-
-        if (data != null)
+        DungeonGenerationResult level = m_DungeonLevelMap[m_CurrentLevel];
+        foreach (var tile in m_Tiles.Values)
         {
-            foreach (var room in data.RoomData)
-                m_DungeonGenerator.Rooms.Add(room);
-
-            foreach (string entityData in data.Entities)
-            {
-                IEntity entity = EntityFactory.ParseEntityData(entityData);
-                if (entity != null)
-                {
-                    EventBuilder getPoint = new EventBuilder(GameEventId.GetPoint)
-                                            .With(EventParameters.Value, Point.InvalidPoint);
-                    Point p = FireEvent(entity, getPoint.CreateEvent()).GetValue<Point>(EventParameters.Value);
-                    if (p != Point.InvalidPoint)
-                        Spawner.Spawn(entity, p);
-                }
-            }
-
-            foreach (var player in m_Players)
-                FireEvent(player, new GameEvent(GameEventId.InitFOV));
-        }
-        else
-        {
-            m_CurrentLevel = 1;
-            DungeonMetaData dmd = new DungeonMetaData($"{LevelMetaData.MetadataPath}/{m_CurrentLevel}.lvl");
-            m_DungeonGenerator.GenerateDungeon(dmd);
-
-            SpawnPlayers();
-            //SpawnEnemies();
-            SpawnItems(dmd);
+            EventBuilder serializeTile = new EventBuilder(GameEventId.SerializeTile)
+                                         .With(EventParameters.Value, level);
+            FireEvent(tile, serializeTile.CreateEvent());
         }
 
-        //MovePlayersToCurrentFloor();
-        FireEvent(Self, new GameEvent(GameEventId.UpdateWorldView));
+        foreach (Room room in m_DungeonGenerator.Rooms)
+            level.RoomData.Add(room);
+
+        SaveSystem.Instance.SaveLevel(level, m_CurrentLevel);
     }
 
-    void MoveToNewLevel()
+    //void SetupNewLevel()
+    //{
+    //    Factions.Initialize();
+
+    //    if (m_DungeonLevelMap.ContainsKey(m_CurrentLevel))
+    //    {
+    //        DungeonGenerationResult dungeonLevel = m_DungeonLevelMap[m_CurrentLevel];
+    //        foreach (var room in dungeonLevel.RoomData)
+    //            m_DungeonGenerator.Rooms.Add(room);
+
+    //        foreach (string entityData in dungeonLevel.Entities)
+    //        {
+    //            IEntity entity = EntityFactory.ParseEntityData(entityData);
+    //            if (entity != null)
+    //            {
+    //                EventBuilder getPoint = new EventBuilder(GameEventId.GetPoint)
+    //                                        .With(EventParameters.Value, Point.InvalidPoint);
+    //                Point p = FireEvent(entity, getPoint.CreateEvent()).GetValue<Point>(EventParameters.Value);
+    //                if (p != Point.InvalidPoint)
+    //                    Spawner.Spawn(entity, p);
+    //            }
+    //        }
+
+    //        foreach (var player in m_Players)
+    //            FireEvent(player, new GameEvent(GameEventId.InitFOV));
+    //    }
+    //    else
+    //    {
+    //        DungeonMetaData dmd = new DungeonMetaData($"{LevelMetaData.MetadataPath}/{m_CurrentLevel}.lvl");
+    //        m_DungeonGenerator.GenerateDungeon(dmd);
+
+    //        SpawnPlayers();
+    //    }
+
+    //    FireEvent(Self, new GameEvent(GameEventId.UpdateWorldView));
+    //}
+
+    void LoadOrCreateDungeon()
     {
-        SerializedLevelData data = SaveSystem.Instance.LoadLevel(m_CurrentLevel);
-        if (data != null)
+        if (m_DungeonLevelMap.ContainsKey(m_CurrentLevel))
         {
-            foreach (var room in data.RoomData)
+            DungeonGenerationResult dungeonLevel = m_DungeonLevelMap[m_CurrentLevel];
+            foreach (var room in dungeonLevel.RoomData)
                 m_DungeonGenerator.Rooms.Add(room);
 
-            foreach (string entityData in data.Entities)
+            foreach (string entityData in dungeonLevel.Entities)
             {
                 IEntity entity = EntityFactory.ParseEntityData(entityData);
                 if (entity != null)
@@ -190,19 +212,12 @@ public class DungeonGeneration : WorldComponent
                         Spawner.Spawn(entity, p);
                 }
             }
-
-            MovePlayersToCurrentFloor();
-
-            foreach (var player in m_Players)
-                FireEvent(player, new GameEvent(GameEventId.InitFOV));
         }
         else
         {
             DungeonMetaData dmd = new DungeonMetaData($"{LevelMetaData.MetadataPath}/{m_CurrentLevel}.lvl");
-            m_DungeonGenerator.GenerateDungeon(dmd);
-            SpawnEnemies();
-            SpawnItems(dmd);
-            MovePlayersToCurrentFloor();
+            DungeonGenerationResult dr = m_DungeonGenerator.GenerateDungeon(dmd);
+            m_DungeonLevelMap.Add(m_CurrentLevel, dr);
         }
     }
 
@@ -244,7 +259,7 @@ public class DungeonGeneration : WorldComponent
         FireEvent(Self, new GameEvent(GameEventId.ProgressTime));
     }
 
-    void MovePlayersToCurrentFloor()
+    void MovePlayersToCurrentFloor(bool movingDown)
     {
         var playerIds = new List<string>();
         playerIds.AddRange(m_Players.Select(p => p.ID));
@@ -252,35 +267,16 @@ public class DungeonGeneration : WorldComponent
         foreach (var player in playerIds)
         {
             var entity = EntityQuery.GetEntity(player);
-            Spawner.Move(entity, m_DungeonGenerator.Rooms[0].GetValidPoint());
+            if(movingDown)
+                Spawner.Move(entity, m_DungeonGenerator.Rooms[0].GetValidPoint());
+            else
+                Spawner.Move(entity, m_DungeonGenerator.Rooms[m_DungeonLevelMap[m_CurrentLevel].StairsDownRoomIndex].GetValidPoint());
             //Spawner.Despawn(entity);
             //Spawner.Spawn(entity, m_DungeonGenerator.Rooms[0].GetValidPoint());
             FireEvent(entity, new GameEvent(GameEventId.InitFOV));
         }
 
         //FireEvent(Self, new GameEvent(GameEventId.ProgressTime));
-    }
-
-    void SpawnEnemies()
-    {
-        for (int i = 0; i < 2; i++)
-        {
-            Room randomRoom = m_DungeonGenerator.Rooms[RecRandom.Instance.GetRandomValue(1, m_DungeonGenerator.Rooms.Count)];
-            IEntity goblin = EntityFactory.CreateEntity("GoblinWarrior");
-            Spawner.Spawn(goblin, randomRoom.GetValidPoint());
-        }
-    }
-
-    void SpawnItems(DungeonMetaData dmd)
-    {
-        Room randomRoom = m_DungeonGenerator.Rooms[RecRandom.Instance.GetRandomValue(1, m_DungeonGenerator.Rooms.Count)];
-        IEntity helmet = EntityFactory.CreateEntity("BronzeHelmet");
-        Spawner.Spawn(helmet, randomRoom.GetValidPoint());
-
-        if (dmd.StairsUp)
-            Spawner.Spawn(EntityFactory.CreateEntity("StairsUp"), m_DungeonGenerator.Rooms[0].GetValidPoint());
-        if (dmd.StairsDown)
-            Spawner.Spawn(EntityFactory.CreateEntity("StairsDown"), m_DungeonGenerator.Rooms[RecRandom.Instance.GetRandomValue(1, m_DungeonGenerator.Rooms.Count)].GetValidPoint());
     }
 
     void CreateTiles(Dictionary<Point, Actor> pointToTileMap)

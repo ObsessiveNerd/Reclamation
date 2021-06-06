@@ -59,21 +59,9 @@ public class World : MonoBehaviour
 
     public void InitWorld(int seed)
     {
-        //IEntity player = EntityFactory.CreateEntity("Dwarf");
-        //IEntity player2 = EntityFactory.CreateEntity("Dwarf");
-        //IEntity goblin = EntityFactory.CreateEntity("Goblin");
-        //IEntity helm = EntityFactory.CreateEntity("Helmet");
-
-        //m_World.FireEvent(m_World, new GameEvent(GameEventId.ConvertToPlayableCharacter, new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.Entity, player.ID)));
-        //m_World.FireEvent(m_World, new GameEvent(GameEventId.ConvertToPlayableCharacter, new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.Entity, player2.ID)));
-
         Seed = RecRandom.InitRecRandom(seed);
         m_World.FireEvent(m_World, new GameEvent(GameEventId.StartWorld, new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.Seed, Seed.ToString()),
                                                                             new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.GameObject, TilePrefab)));
-
-        //Spawner.Spawn(player, 0, 0);
-        //Spawner.Spawn(player2, 5, 9);
-        //Spawner.Spawn(goblin, 10, 12);
     }
 
     private void Update()

@@ -1,6 +1,6 @@
 StairsUp: true
-StairsDown: true
-ContainsBoss: false
+StairsDown: false
+ContainsBoss: true
 AverageMosterCR: 5
 MonsterTypes:
 SpecialItems:

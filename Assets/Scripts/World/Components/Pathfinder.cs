@@ -27,11 +27,12 @@ public class Pathfinder : WorldComponent
 
         else if(gameEvent.ID == GameEventId.CalculatePath)
         {
+            m_Pathfinder.Clear();
+
             Point startingPoint = gameEvent.GetValue<Point>(EventParameters.StartPos);
             Point targetPoint = gameEvent.GetValue<Point>(EventParameters.EndPos);
 
             gameEvent.Paramters[EventParameters.Path] = m_Pathfinder.CalculatePath(startingPoint, targetPoint);
-            m_Pathfinder.Clear();
         }
     }
 }

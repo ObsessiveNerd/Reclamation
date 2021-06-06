@@ -6,7 +6,6 @@ public class SpellcasterPlayerController : InputControllerBase
 {
     List<string> m_Spells = new List<string>();
     Point m_TileSelection = Point.InvalidPoint;
-    int m_CurrentSpellIndex = 0;
 
     public override void Init(IEntity self)
     {

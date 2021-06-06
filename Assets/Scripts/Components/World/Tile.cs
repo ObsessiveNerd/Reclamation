@@ -139,13 +139,12 @@ public class Tile : Component
             CreatureSlot = null;
             ObjectSlot = null;
             Items.Clear();
-            return;
 
-            Spawner.Despawn(CreatureSlot);
-            Spawner.Despawn(ObjectSlot);
-            List<IEntity> items = new List<IEntity>(Items);
-            foreach (var item in items)
-                Spawner.Despawn(item);
+            //Spawner.Despawn(CreatureSlot);
+            //Spawner.Despawn(ObjectSlot);
+            //List<IEntity> items = new List<IEntity>(Items);
+            //foreach (var item in items)
+            //    Spawner.Despawn(item);
         }
 
         if (gameEvent.ID == GameEventId.VisibilityUpdated)
@@ -268,7 +267,7 @@ public class Tile : Component
 
         if(gameEvent.ID == GameEventId.SerializeTile)
         {
-            SerializedLevelData levelData = gameEvent.GetValue<SerializedLevelData>(EventParameters.Value);
+            DungeonGenerationResult levelData = gameEvent.GetValue<DungeonGenerationResult>(EventParameters.Value);
             foreach (var target in AllEntities)
                 if(target != null)
                     levelData.Entities.Add(target.Serialize());

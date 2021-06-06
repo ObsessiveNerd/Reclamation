@@ -256,6 +256,7 @@ public class BasicDungeonGenerator : IDungeonGenerator
     private DungeonPartition m_Root;
     private DungeonMetaData m_DMD;
     private int m_MinRoomSize = 5;
+    private DungeonGenerationResult m_Result;
 
     public BasicDungeonGenerator(int rows, int columns)
     {
@@ -265,6 +266,8 @@ public class BasicDungeonGenerator : IDungeonGenerator
 
     public virtual DungeonGenerationResult GenerateDungeon(DungeonMetaData metaData)
     {
+        m_Result = new DungeonGenerationResult();
+
         m_DMD = metaData;
         SplitPartition(m_Root);
 
@@ -273,7 +276,12 @@ public class BasicDungeonGenerator : IDungeonGenerator
         CreateHallways();
         CleanupRooms();
 
-        return new DungeonGenerationResult();
+        if(metaData.SpawnEnemies)
+            SpawnEnemies();
+
+        SpawnItems();
+
+        return m_Result;
     }
 
     void SplitPartition(DungeonPartition partition)
@@ -316,7 +324,11 @@ public class BasicDungeonGenerator : IDungeonGenerator
     void CreateRooms()
     {
         foreach (DungeonPartition node in m_LeafNodes)
-            Rooms.Add(node.CreateRoom(m_MinRoomSize));
+        {
+            Room r = node.CreateRoom(m_MinRoomSize);
+            Rooms.Add(r);
+            m_Result.RoomData.Add(r);
+        }
     }
 
     void CreateWalls()
@@ -347,5 +359,31 @@ public class BasicDungeonGenerator : IDungeonGenerator
     {
         Rooms.Clear();
         m_LeafNodes.Clear();
+    }
+
+    void SpawnEnemies()
+    {
+        for (int i = 0; i < 2; i++)
+        {
+            Room randomRoom = Rooms[RecRandom.Instance.GetRandomValue(1, Rooms.Count)];
+            IEntity goblin = EntityFactory.CreateEntity("GoblinWarrior");
+            Spawner.Spawn(goblin, randomRoom.GetValidPoint());
+        }
+    }
+
+    void SpawnItems()
+    {
+        Room randomRoom = Rooms[RecRandom.Instance.GetRandomValue(1, Rooms.Count)];
+        IEntity helmet = EntityFactory.CreateEntity("BronzeHelmet");
+        Spawner.Spawn(helmet, randomRoom.GetValidPoint());
+
+        if (m_DMD.StairsUp)
+            Spawner.Spawn(EntityFactory.CreateEntity("StairsUp"), Rooms[0].GetValidPoint());
+        if (m_DMD.StairsDown)
+        {
+            int stairsDownRoomIndex = RecRandom.Instance.GetRandomValue(1, Rooms.Count);
+            Spawner.Spawn(EntityFactory.CreateEntity("StairsDown"), Rooms[stairsDownRoomIndex].GetValidPoint());
+            m_Result.StairsDownRoomIndex = stairsDownRoomIndex;
+        }
     }
 }

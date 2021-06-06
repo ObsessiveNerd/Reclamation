@@ -11,6 +11,7 @@ public abstract class WorldComponent : Component
     protected static LinkedListNode<IEntity> m_ActivePlayer;
     protected static HashSet<Point> m_ValidDungeonPoints = new HashSet<Point>();
     protected static Dictionary<Point, UnityEngine.GameObject> m_GameObjectMap = new Dictionary<Point, UnityEngine.GameObject>();
+    protected static Dictionary<int, DungeonGenerationResult> m_DungeonLevelMap = new Dictionary<int, DungeonGenerationResult>();
     protected static int m_CurrentLevel = 1;
     protected static bool PerformingBatchOperation = false;
 
