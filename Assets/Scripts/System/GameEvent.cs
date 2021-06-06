@@ -73,6 +73,7 @@ public static class GameEventId
     public const string CalculatePath = nameof(CalculatePath);
     public const string IsValidDungeonTile = nameof(IsValidDungeonTile);
     public const string GetClosestEnemy = nameof(GetClosestEnemy);
+    public const string GetActivePlayerId = nameof(GetActivePlayerId);
 
     //Dungeon
     public const string GetRandomValidPoint = nameof(GetRandomValidPoint);
@@ -87,6 +88,7 @@ public static class GameEventId
     public const string ExecuteMove = nameof(ExecuteMove);
     public const string AfterMoving = nameof(AfterMoving);
     public const string MoveEntity = nameof(MoveEntity);
+    public const string SetEntityPosition = nameof(SetEntityPosition);
     public const string SetPoint = nameof(SetPoint);
     public const string GetPoint = nameof(GetPoint);
     public const string Interact = nameof(Interact);

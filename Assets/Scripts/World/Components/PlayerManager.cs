@@ -62,6 +62,9 @@ public class PlayerManager : WorldComponent
 
     public void RegisterPlayer(IEntity entity)
     {
+        if (m_Players.Contains(entity))
+            return;
+
         var addedNode = m_Players.AddLast(entity);
 
         if (entity.HasComponent(typeof(PlayerInputController)))

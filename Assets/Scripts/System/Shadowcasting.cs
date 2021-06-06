@@ -14,11 +14,14 @@ public class Shadowcasting : IFovAlgorithm
 
     public List<Point> GetVisibleTiles(IEntity source, int range)
     {
+        if (source == null)
+            return new List<Point>();
+
         m_Range = range;
         m_Source = source;
-        m_SourcePoint = (Point)source.FireEvent(World.Instance.Self, new GameEvent(GameEventId.GetEntityLocation, new KeyValuePair<string, object>(EventParameters.Entity, source.ID),
-                                                                                                            new KeyValuePair<string, object>(EventParameters.TilePosition, null)))
-            .Paramters[EventParameters.TilePosition];
+        var getSourcePoint = source.FireEvent(World.Instance.Self, new GameEvent(GameEventId.GetEntityLocation, new KeyValuePair<string, object>(EventParameters.Entity, source.ID),
+                                                                                                            new KeyValuePair<string, object>(EventParameters.TilePosition, null)));
+        m_SourcePoint = getSourcePoint.GetValue<Point>(EventParameters.TilePosition);
         m_VisiblePoints = new List<Point>();
         m_VisiblePoints.Add(m_SourcePoint);
         foreach (int octant in m_VisibleOctants)

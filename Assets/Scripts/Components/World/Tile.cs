@@ -136,6 +136,11 @@ public class Tile : Component
 
         if (gameEvent.ID == GameEventId.DestroyAll)
         {
+            CreatureSlot = null;
+            ObjectSlot = null;
+            Items.Clear();
+            return;
+
             Spawner.Despawn(CreatureSlot);
             Spawner.Despawn(ObjectSlot);
             List<IEntity> items = new List<IEntity>(Items);

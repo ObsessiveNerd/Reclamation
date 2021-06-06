@@ -19,7 +19,7 @@ public class InteractsWithWorld : Component
             case Demeanor.Friendly:
             case Demeanor.None:
             case Demeanor.Neutral:
-                FireEvent(target, new GameEvent(GameEventId.Interact));
+                FireEvent(target, new GameEvent(GameEventId.Interact, new KeyValuePair<string, object>(EventParameters.Entity, Self.ID)));
                 break;
             case Demeanor.Hostile:
                 FireEvent(Self, new GameEvent(GameEventId.PerformAttack, new KeyValuePair<string, object>(EventParameters.Target, target.ID),

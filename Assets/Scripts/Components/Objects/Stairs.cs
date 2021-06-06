@@ -28,12 +28,16 @@ public class Stairs : Component
     {
         if(gameEvent.ID == GameEventId.Interact)
         {
-            EventBuilder move = new EventBuilder(GameEventId.MoveUp);
+            string e = gameEvent.GetValue<string>(EventParameters.Entity);
+            if (WorldUtility.IsActivePlayer(e))
+            {
+                EventBuilder move = new EventBuilder(GameEventId.MoveUp);
 
-            if (Direction == StairDirection.Down)
-                move = new EventBuilder(GameEventId.MoveDown);
+                if (Direction == StairDirection.Down)
+                    move = new EventBuilder(GameEventId.MoveDown);
 
-            FireEvent(World.Instance.Self, move.CreateEvent());
+                FireEvent(World.Instance.Self, move.CreateEvent());
+            }
         }
     }
 }

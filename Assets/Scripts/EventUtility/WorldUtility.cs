@@ -22,4 +22,11 @@ public static class WorldUtility
         string id = World.Instance.Self.FireEvent(eventBuilder.CreateEvent()).GetValue<string>(EventParameters.Value);
         return EntityQuery.GetEntity(id);
     }
+
+    public static bool IsActivePlayer(string entityId)
+    {
+        EventBuilder isActivePlayer = new EventBuilder(GameEventId.GetActivePlayerId)
+                                        .With(EventParameters.Value, null);
+        return entityId == World.Instance.Self.FireEvent(isActivePlayer.CreateEvent()).GetValue<string>(EventParameters.Value);
+    }
 }

@@ -12,22 +12,30 @@ public class DungeonMetaData
 
     public DungeonMetaData(string dataPath)
     {
-        using (StreamReader reader = new StreamReader(dataPath))
+        if (File.Exists(dataPath))
         {
-            while (!reader.EndOfStream)
+            using (StreamReader reader = new StreamReader(dataPath))
             {
-                string line = reader.ReadLine();
-                string[] keyValue = line.Split(':');
-                switch (keyValue[0])
+                while (!reader.EndOfStream)
                 {
-                    case LevelMetaData.StairsUp:
-                        StairsUp = bool.Parse(keyValue[1]);
-                        break;
-                    case LevelMetaData.StairsDown:
-                        StairsDown = bool.Parse(keyValue[1]);
-                        break;
+                    string line = reader.ReadLine();
+                    string[] keyValue = line.Split(':');
+                    switch (keyValue[0])
+                    {
+                        case LevelMetaData.StairsUp:
+                            StairsUp = bool.Parse(keyValue[1]);
+                            break;
+                        case LevelMetaData.StairsDown:
+                            StairsDown = bool.Parse(keyValue[1]);
+                            break;
+                    }
                 }
             }
+        }
+        else
+        {
+            StairsUp = true;
+            StairsDown = true;
         }
     }
 }
@@ -73,7 +81,7 @@ public class DungeonGeneration : WorldComponent
             {
                 CleanTiles();
                 m_CurrentLevel--;
-                SetupNewLevel();
+                MoveToNewLevel();
             });
         }
         else if (gameEvent.ID == GameEventId.MoveDown)
@@ -82,7 +90,7 @@ public class DungeonGeneration : WorldComponent
             {
                 CleanTiles();
                 m_CurrentLevel++;
-                SetupNewLevel();
+                MoveToNewLevel();
             });
         }
         else if (gameEvent.ID == GameEventId.GetRandomValidPoint)
@@ -149,17 +157,55 @@ public class DungeonGeneration : WorldComponent
         }
         else
         {
+            m_CurrentLevel = 1;
             DungeonMetaData dmd = new DungeonMetaData($"{LevelMetaData.MetadataPath}/{m_CurrentLevel}.lvl");
             m_DungeonGenerator.GenerateDungeon(dmd);
 
             SpawnPlayers();
-            SpawnEnemies();
+            //SpawnEnemies();
             SpawnItems(dmd);
         }
 
         //MovePlayersToCurrentFloor();
         FireEvent(Self, new GameEvent(GameEventId.UpdateWorldView));
     }
+
+    void MoveToNewLevel()
+    {
+        SerializedLevelData data = SaveSystem.Instance.LoadLevel(m_CurrentLevel);
+        if (data != null)
+        {
+            foreach (var room in data.RoomData)
+                m_DungeonGenerator.Rooms.Add(room);
+
+            foreach (string entityData in data.Entities)
+            {
+                IEntity entity = EntityFactory.ParseEntityData(entityData);
+                if (entity != null)
+                {
+                    EventBuilder getPoint = new EventBuilder(GameEventId.GetPoint)
+                                            .With(EventParameters.Value, Point.InvalidPoint);
+                    Point p = FireEvent(entity, getPoint.CreateEvent()).GetValue<Point>(EventParameters.Value);
+                    if (p != Point.InvalidPoint)
+                        Spawner.Spawn(entity, p);
+                }
+            }
+
+            MovePlayersToCurrentFloor();
+
+            foreach (var player in m_Players)
+                FireEvent(player, new GameEvent(GameEventId.InitFOV));
+        }
+        else
+        {
+            DungeonMetaData dmd = new DungeonMetaData($"{LevelMetaData.MetadataPath}/{m_CurrentLevel}.lvl");
+            m_DungeonGenerator.GenerateDungeon(dmd);
+            SpawnEnemies();
+            SpawnItems(dmd);
+            MovePlayersToCurrentFloor();
+        }
+    }
+
 
     void CleanTiles()
     {
@@ -174,7 +220,11 @@ public class DungeonGeneration : WorldComponent
             Point p = m_EntityToPointMap[entity];
             if (m_Tiles.ContainsKey(p))
                 FireEvent(m_Tiles[p], new GameEvent(GameEventId.DestroyAll));
+
+            m_EntityToPointMap.Remove(entity);
+            m_TimeProgression.RemoveEntity(entity);
         }
+        m_DungeonGenerator.Clean();
     }
 
     void SpawnPlayers()
@@ -202,12 +252,13 @@ public class DungeonGeneration : WorldComponent
         foreach (var player in playerIds)
         {
             var entity = EntityQuery.GetEntity(player);
-            Spawner.Despawn(entity);
-            Spawner.Spawn(entity, m_DungeonGenerator.Rooms[0].GetValidPoint());
+            Spawner.Move(entity, m_DungeonGenerator.Rooms[0].GetValidPoint());
+            //Spawner.Despawn(entity);
+            //Spawner.Spawn(entity, m_DungeonGenerator.Rooms[0].GetValidPoint());
             FireEvent(entity, new GameEvent(GameEventId.InitFOV));
         }
 
-        FireEvent(Self, new GameEvent(GameEventId.ProgressTime));
+        //FireEvent(Self, new GameEvent(GameEventId.ProgressTime));
     }
 
     void SpawnEnemies()

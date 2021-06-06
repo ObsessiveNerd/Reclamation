@@ -16,6 +16,7 @@ public class WorldDataQuery : WorldComponent
         RegisteredEvents.Add(GameEventId.GetValueOnTile);
         RegisteredEvents.Add(GameEventId.GetClosestEnemy);
         RegisteredEvents.Add(GameEventId.GetPlayableCharacters);
+        RegisteredEvents.Add(GameEventId.GetActivePlayerId);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
@@ -29,6 +30,9 @@ public class WorldDataQuery : WorldComponent
             if(m_Tiles.ContainsKey(currentTilePos))
                 FireEvent(m_Tiles[currentTilePos], gameEvent);
         }
+
+        if (gameEvent.ID == GameEventId.GetActivePlayerId)
+            gameEvent.Paramters[EventParameters.Value] = m_ActivePlayer.Value.ID;
 
         if(gameEvent.ID == GameEventId.GetEntityLocation)
         {

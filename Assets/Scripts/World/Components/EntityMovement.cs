@@ -9,6 +9,7 @@ public class EntityMovement : WorldComponent
         base.Init(self);
         RegisteredEvents.Add(GameEventId.BeforeMoving);
         RegisteredEvents.Add(GameEventId.MoveEntity);
+        RegisteredEvents.Add(GameEventId.SetEntityPosition);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
@@ -29,6 +30,26 @@ public class EntityMovement : WorldComponent
             {
                 //Move to a new part of the map.  For now do nothing
             }
+        }
+
+        if(gameEvent.ID == GameEventId.SetEntityPosition)
+        {
+            IEntity entity = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Entity]);
+            if (!m_EntityToPointMap.ContainsKey(entity)) return;
+            Point currentPoint = m_EntityToPointMap[entity];
+            Point newPoint = gameEvent.GetValue<Point>(EventParameters.TilePosition);
+            EntityType entityType = (EntityType)gameEvent.Paramters[EventParameters.EntityType];
+
+            EventBuilder removeEntityFromTile = new EventBuilder(GameEventId.Despawn)
+                                                .With(EventParameters.Entity, entity.ID)
+                                                .With(EventParameters.EntityType, entityType);
+            FireEvent(m_Tiles[currentPoint], removeEntityFromTile.CreateEvent());
+            m_EntityToPointMap[entity] = newPoint;
+            EventBuilder addEntityToTile = new EventBuilder(GameEventId.Spawn)
+                                            .With(EventParameters.Entity, entity.ID)
+                                            .With(EventParameters.EntityType, entityType);
+            FireEvent(m_Tiles[newPoint], addEntityToTile.CreateEvent());
+            FireEvent(Self, new GameEvent(GameEventId.UpdateWorldView));
         }
 
         if (gameEvent.ID == GameEventId.MoveEntity)

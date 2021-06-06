@@ -342,4 +342,10 @@ public class BasicDungeonGenerator : IDungeonGenerator
         for(int i = 0; i < Rooms.Count - 1; ++i)
             Rooms[i].CreateHallwayToRoom(Rooms[i + 1]);
     }
+
+    public void Clean()
+    {
+        Rooms.Clear();
+        m_LeafNodes.Clear();
+    }
 }
