@@ -10,13 +10,12 @@ public class World : MonoBehaviour
     [HideInInspector]
     public int Seed;
     public GameObject TilePrefab;
-    public bool StartNew;
+    //public bool StartNew;
     IEntity m_World;
 
     public int MapColumns, MapRows;
 
-    // Start is called before the first frame update
-    void Start()
+    public void StartWorld(bool startNew, string loadPath = "")
     {
         if (m_Instance == null)
             m_Instance = this;
@@ -43,7 +42,7 @@ public class World : MonoBehaviour
 
         m_World.CleanupComponents();
 
-        if (StartNew)
+        if (startNew)
         {
             Seed = RecRandom.InitRecRandom(Random.Range(0, int.MaxValue));
             m_World.FireEvent(m_World, new GameEvent(GameEventId.StartWorld, new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.Seed, Seed.ToString()),
@@ -54,7 +53,7 @@ public class World : MonoBehaviour
         }
         else
         {
-            FindObjectOfType<SaveSystem>().Load($"{Directory.EnumerateDirectories(SaveSystem.kSaveDataPath).ToList()[0]}/data.save");
+            FindObjectOfType<SaveSystem>().Load($"{loadPath}/data.save");
         }
     }
 
