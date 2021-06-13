@@ -108,6 +108,7 @@ public class DungeonManager : WorldComponent
                 m_CurrentLevel--;
                 LoadOrCreateDungeon();
                 MovePlayersToCurrentFloor(false);
+                FireEvent(Self, new GameEvent(GameEventId.UpdateCamera));
 
             });
         }
@@ -121,7 +122,7 @@ public class DungeonManager : WorldComponent
                 m_CurrentLevel++;
                 LoadOrCreateDungeon();
                 MovePlayersToCurrentFloor(true);
-
+                FireEvent(Self, new GameEvent(GameEventId.UpdateCamera));
             });
         }
         else if (gameEvent.ID == GameEventId.GetRandomValidPoint)
