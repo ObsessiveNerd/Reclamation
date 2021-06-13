@@ -47,7 +47,7 @@ public class DungeonMetaData
     }
 }
 
-public class DungeonGeneration : WorldComponent
+public class DungeonManager : WorldComponent
 {
     GameObject m_TilePrefab;
     IDungeonGenerator m_DungeonGenerator;
@@ -74,6 +74,7 @@ public class DungeonGeneration : WorldComponent
     {
         if (gameEvent.ID == GameEventId.StartWorld)
         {
+            Debug.Log("Start world called");
             Seed = (string)gameEvent.Paramters[EventParameters.Seed];
             m_TilePrefab = (GameObject)gameEvent.Paramters[EventParameters.GameObject];
             CreateTiles(m_Tiles);
@@ -82,11 +83,18 @@ public class DungeonGeneration : WorldComponent
             m_DungeonGenerator = new BasicDungeonGenerator(World.Instance.MapRows, World.Instance.MapColumns);
 
             LoadOrCreateDungeon();
-            SpawnPlayers();
+            if (gameEvent.GetValue<bool>(EventParameters.NewGame))
+                SpawnPlayers();
+            else
+            {
+                foreach (var player in m_Players)
+                    FireEvent(player, new GameEvent(GameEventId.InitFOV));
+                FireEvent(Self, new GameEvent(GameEventId.UpdateCamera));
+            }
 
             FireEvent(Self, new GameEvent(GameEventId.SaveLevel));
         }
-        else if(gameEvent.ID == GameEventId.GetCurrentLevel)
+        else if (gameEvent.ID == GameEventId.GetCurrentLevel)
         {
             gameEvent.Paramters[EventParameters.Level] = m_CurrentLevel;
         }
@@ -94,6 +102,7 @@ public class DungeonGeneration : WorldComponent
         {
             m_TimeProgression.SetPostFrameCallback(() =>
             {
+                CachePlayers();
                 SaveCurrentLevel();
                 CleanTiles();
                 m_CurrentLevel--;
@@ -106,6 +115,7 @@ public class DungeonGeneration : WorldComponent
         {
             m_TimeProgression.SetPostFrameCallback(() =>
             {
+                CachePlayers();
                 SaveCurrentLevel();
                 CleanTiles();
                 m_CurrentLevel++;
@@ -137,11 +147,25 @@ public class DungeonGeneration : WorldComponent
         }
     }
 
+    List<string> m_PlayerBlueprintCache = new List<string>();
+    void CachePlayers()
+    {
+        m_PlayerBlueprintCache.Clear();
+        foreach (var player in m_Players)
+        {
+            m_PlayerBlueprintCache.Add(player.ID);
+            Spawner.Despawn(player);
+        }
+    }
+
     void SaveCurrentLevel()
     {
         DungeonGenerationResult level = null;
         if (m_DungeonLevelMap.ContainsKey(m_CurrentLevel))
+        {
             level = m_DungeonLevelMap[m_CurrentLevel];
+            level.Entities.Clear();
+        }
         else if (SaveSystem.Instance.LoadLevel(m_CurrentLevel) != null)
         {
             level = SaveSystem.Instance.LoadLevel(m_CurrentLevel);
@@ -163,43 +187,6 @@ public class DungeonGeneration : WorldComponent
         SaveSystem.Instance.SaveLevel(level, m_CurrentLevel);
     }
 
-    //void SetupNewLevel()
-    //{
-    //    Factions.Initialize();
-
-    //    if (m_DungeonLevelMap.ContainsKey(m_CurrentLevel))
-    //    {
-    //        DungeonGenerationResult dungeonLevel = m_DungeonLevelMap[m_CurrentLevel];
-    //        foreach (var room in dungeonLevel.RoomData)
-    //            m_DungeonGenerator.Rooms.Add(room);
-
-    //        foreach (string entityData in dungeonLevel.Entities)
-    //        {
-    //            IEntity entity = EntityFactory.ParseEntityData(entityData);
-    //            if (entity != null)
-    //            {
-    //                EventBuilder getPoint = new EventBuilder(GameEventId.GetPoint)
-    //                                        .With(EventParameters.Value, Point.InvalidPoint);
-    //                Point p = FireEvent(entity, getPoint.CreateEvent()).GetValue<Point>(EventParameters.Value);
-    //                if (p != Point.InvalidPoint)
-    //                    Spawner.Spawn(entity, p);
-    //            }
-    //        }
-
-    //        foreach (var player in m_Players)
-    //            FireEvent(player, new GameEvent(GameEventId.InitFOV));
-    //    }
-    //    else
-    //    {
-    //        DungeonMetaData dmd = new DungeonMetaData($"{LevelMetaData.MetadataPath}/{m_CurrentLevel}.lvl");
-    //        m_DungeonGenerator.GenerateDungeon(dmd);
-
-    //        SpawnPlayers();
-    //    }
-
-    //    FireEvent(Self, new GameEvent(GameEventId.UpdateWorldView));
-    //}
-
     void LoadOrCreateDungeon()
     {
         if (!m_DungeonLevelMap.ContainsKey(m_CurrentLevel))
@@ -220,6 +207,9 @@ public class DungeonGeneration : WorldComponent
                 IEntity entity = EntityFactory.ParseEntityData(entityData);
                 if (entity != null)
                 {
+                    if (entity.Name.Contains("Dwarf"))
+                        Debug.Log("dwarf created");
+
                     EventBuilder getPoint = new EventBuilder(GameEventId.GetPoint)
                                             .With(EventParameters.Value, Point.InvalidPoint);
                     Point p = FireEvent(entity, getPoint.CreateEvent()).GetValue<Point>(EventParameters.Value);
@@ -276,22 +266,20 @@ public class DungeonGeneration : WorldComponent
 
     void MovePlayersToCurrentFloor(bool movingDown)
     {
-        var playerIds = new List<string>();
-        playerIds.AddRange(m_Players.Select(p => p.ID));
-
-        foreach (var player in playerIds)
+        foreach (var player in m_PlayerBlueprintCache)
         {
             var entity = EntityQuery.GetEntity(player);
-            if(movingDown)
-                Spawner.Move(entity, m_DungeonGenerator.Rooms[0].GetValidPoint());
+
+            if (movingDown)
+                Spawner.Spawn(entity, m_DungeonGenerator.Rooms[0].GetValidPoint());
             else
-                Spawner.Move(entity, m_DungeonGenerator.Rooms[m_DungeonLevelMap[m_CurrentLevel].StairsDownRoomIndex].GetValidPoint());
-            //Spawner.Despawn(entity);
-            //Spawner.Spawn(entity, m_DungeonGenerator.Rooms[0].GetValidPoint());
+                Spawner.Spawn(entity, m_DungeonGenerator.Rooms[m_DungeonLevelMap[m_CurrentLevel].StairsDownRoomIndex].GetValidPoint());
+
+            FireEvent(entity, new GameEvent(GameEventId.RegisterPlayableCharacter));
             FireEvent(entity, new GameEvent(GameEventId.InitFOV));
         }
 
-        //FireEvent(Self, new GameEvent(GameEventId.ProgressTime));
+        m_PlayerBlueprintCache.Clear();
     }
 
     void CreateTiles(Dictionary<Point, Actor> pointToTileMap)

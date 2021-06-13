@@ -130,6 +130,7 @@ public static class GameEventId
 
     //Camera
     public const string SetCameraPosition = nameof(SetCameraPosition);
+    public const string UpdateCamera = nameof(UpdateCamera);
 
     //Character Selection
     public const string RotateActiveCharacter = nameof(RotateActiveCharacter);
@@ -254,6 +255,7 @@ public static class EventParameters
     public const string InventoryContextActions = nameof(InventoryContextActions);
     public const string IncludeSelf = nameof(IncludeSelf);
     public const string Level = nameof(Level);
+    public const string NewGame = nameof(NewGame);
 }
 
 [Serializable]

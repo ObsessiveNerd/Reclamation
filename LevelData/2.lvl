@@ -1,0 +1,6 @@
+StairsUp: true
+StairsDown: true
+ContainsBoss: false
+AverageMosterCR: 5
+MonsterTypes: None
+SpecialItems:

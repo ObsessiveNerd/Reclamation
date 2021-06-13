@@ -28,7 +28,7 @@ public class World : MonoBehaviour
         m_World = new Actor("World");
 
         m_World.AddComponent(new WorldSpawner());
-        m_World.AddComponent(new DungeonGeneration());
+        m_World.AddComponent(new DungeonManager());
         m_World.AddComponent(new WorldUpdate());
         m_World.AddComponent(new TileSelection());
         m_World.AddComponent(new TileInteractions());
@@ -47,7 +47,8 @@ public class World : MonoBehaviour
         {
             Seed = RecRandom.InitRecRandom(Random.Range(0, int.MaxValue));
             m_World.FireEvent(m_World, new GameEvent(GameEventId.StartWorld, new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.Seed, Seed.ToString()),
-                                                                            new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.GameObject, TilePrefab)));
+                                                                            new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.GameObject, TilePrefab),
+                                                                            new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.NewGame, true)));
 
             m_World.FireEvent(m_World, new GameEvent(GameEventId.UpdateWorldView));
         }
@@ -61,7 +62,8 @@ public class World : MonoBehaviour
     {
         Seed = RecRandom.InitRecRandom(seed);
         m_World.FireEvent(m_World, new GameEvent(GameEventId.StartWorld, new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.Seed, Seed.ToString()),
-                                                                            new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.GameObject, TilePrefab)));
+                                                                            new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.GameObject, TilePrefab),
+                                                                            new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.NewGame, false)));
     }
 
     private void Update()

@@ -12,12 +12,14 @@ public class TimeProgression
 
     public void RegisterEntity(IEntity entity)
     {
-        m_EntityList.AddLast(entity);
+        if(!m_EntityList.Contains(entity))
+            m_EntityList.AddLast(entity);
     }
 
     public void RemoveEntity(IEntity entity)
     {
-        m_EntityList.Remove(entity);
+        if(m_EntityList.Contains(entity))
+            m_EntityList.Remove(entity);
     }
 
     public bool ContainsEntity(IEntity entity)

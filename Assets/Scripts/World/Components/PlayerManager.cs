@@ -14,6 +14,7 @@ public class PlayerManager : WorldComponent
         RegisteredEvents.Add(GameEventId.ConvertToPlayableCharacter);
         RegisteredEvents.Add(GameEventId.RegisterPlayableCharacter);
         RegisteredEvents.Add(GameEventId.UnRegisterPlayer);
+        RegisteredEvents.Add(GameEventId.UpdateCamera);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
@@ -58,28 +59,39 @@ public class PlayerManager : WorldComponent
         {
             UnregisterPlayer(EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Entity]));
         }
+
+        if (gameEvent.ID == GameEventId.UpdateCamera)
+        {
+            if (m_ActivePlayer != null)
+            {
+                EventBuilder setCamera = new EventBuilder(GameEventId.SetCameraPosition)
+                                    .With(EventParameters.Point, PathfindingUtility.GetEntityLocation(m_ActivePlayer.Value));
+                FireEvent(Self, setCamera.CreateEvent());
+            }
+        }
     }
 
     public void RegisterPlayer(IEntity entity)
     {
-        if (m_Players.Contains(entity))
-            return;
-
-        var addedNode = m_Players.AddLast(entity);
-
-        if (entity.HasComponent(typeof(PlayerInputController)))
-            m_ActivePlayer = addedNode;
-        else if (m_ActivePlayer == null && !entity.HasComponent(typeof(InputControllerBase)))
+        if (!m_Players.Any(p => p.ID == entity.ID))
         {
-            entity.AddComponent(new PlayerInputController());
-            m_ActivePlayer = addedNode;
+            var addedNode = m_Players.AddLast(entity);
+
+            if (entity.HasComponent(typeof(PlayerInputController)))
+                m_ActivePlayer = addedNode;
+            else if (m_ActivePlayer == null && !entity.HasComponent(typeof(InputControllerBase)))
+            {
+                entity.AddComponent(new PlayerInputController());
+                m_ActivePlayer = addedNode;
+            }
+            else if (!entity.HasComponent(typeof(InputControllerBase)))
+                entity.AddComponent(new AIController());
+
         }
-        else if (!entity.HasComponent(typeof(InputControllerBase)))
-            entity.AddComponent(new AIController());
 
         m_TimeProgression.RegisterEntity(entity);
 
-        if(m_ActivePlayer != null)
+        if (m_ActivePlayer != null)
         {
             EventBuilder setCamera = new EventBuilder(GameEventId.SetCameraPosition)
                                         .With(EventParameters.Point, PathfindingUtility.GetEntityLocation(m_ActivePlayer.Value));
