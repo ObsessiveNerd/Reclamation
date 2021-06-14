@@ -10,18 +10,18 @@ public class World : MonoBehaviour
     [HideInInspector]
     public int Seed;
     public GameObject TilePrefab;
-    //public bool StartNew;
     IEntity m_World;
 
     public int MapColumns, MapRows;
 
-    public void StartWorld(bool startNew, string loadPath = "")
+    public void StartWorld(bool startNew, string loadPath)
     {
         if (m_Instance == null)
             m_Instance = this;
         else
             return;
 
+        SaveSystem.Instance.CurrentSaveName = Path.GetFileName(loadPath);
         Application.quitting += () => GameObject.FindObjectOfType<SaveSystem>().Save();
 
         m_World = new Actor("World");

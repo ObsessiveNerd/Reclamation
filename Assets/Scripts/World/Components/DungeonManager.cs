@@ -166,10 +166,13 @@ public class DungeonManager : WorldComponent
         {
             level = m_DungeonLevelMap[m_CurrentLevel];
             level.Entities.Clear();
+            level.RoomData.Clear();
         }
         else if (SaveSystem.Instance.LoadLevel(m_CurrentLevel) != null)
         {
             level = SaveSystem.Instance.LoadLevel(m_CurrentLevel);
+            level.Entities.Clear();
+            level.RoomData.Clear();
             m_DungeonLevelMap.Add(m_CurrentLevel, level);
         }
         else

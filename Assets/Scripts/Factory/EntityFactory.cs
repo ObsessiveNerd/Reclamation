@@ -193,11 +193,10 @@ public static class EntityFactory
         return bpFormatting.Substring(start, length);
     }
 
-    public static void CreateTemporaryBlueprint(string tempPath, string blueprintName, string data)
+    public static void CreateTemporaryBlueprint(string blueprintName, string data)
     {
-        string path = $"{SaveSystem.kSaveDataPath}/{tempPath}/Blueprints/{blueprintName}.bp";
-        Directory.CreateDirectory(Path.GetDirectoryName(path));
-        File.WriteAllText(path, data);
+        string path = $"Blueprints/{blueprintName}.bp";
+        SaveSystem.Instance.WriteData(path, data);
     }
 }
 

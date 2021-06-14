@@ -23,13 +23,18 @@ public struct Point : IMapNode
 {
     public static readonly Point InvalidPoint = new Point(-1, -1);
 
-    public int x { get; set; }
-    public int y { get; set; }
+    [SerializeField]
+    private int m_x;
+    [SerializeField]
+    private int m_y;
+
+    public int x { get{ return m_x; } set { m_x = value; } }
+    public int y { get{ return m_y; } set { m_y = value; } }
 
     public Point(int _x, int _y)
     {
-        x = _x;
-        y = _y;
+        m_x = _x;
+        m_y = _y;
     }
 
     public static Point operator+(Point lhs, Point rhs)

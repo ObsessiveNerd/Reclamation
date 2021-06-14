@@ -6,7 +6,9 @@ using UnityEngine;
 [Serializable]
 public class Room
 {
+    [SerializeField]
     private Point m_StartPoint;
+    [SerializeField]
     private Point m_Size;
     private List<Point> m_Walls;
     private List<Point> m_Hallways;

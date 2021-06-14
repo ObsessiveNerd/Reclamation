@@ -11,14 +11,18 @@ public class TitleScreen : MonoBehaviour
     public GameObject LoadGames;
     public GameObject Button;
     public GameObject Content;
+    public GameObject GetNewSaveName;
 
     public void StartNewGame()
     {
-        SceneManager.LoadSceneAsync("Dungeon").completed += (scene) =>
+        GetNewSaveName.SetActive(true);
+        GetNewSaveName.GetComponent<TMP_InputField>().onEndEdit.AddListener((val) =>
+        {
+            SceneManager.LoadSceneAsync("Dungeon").completed += (scene) =>
             {
-                FindObjectOfType<World>().StartWorld(true);
-
+                FindObjectOfType<World>().StartWorld(true, val);
             };
+        });
     }
 
     public void OpenLoadGames()

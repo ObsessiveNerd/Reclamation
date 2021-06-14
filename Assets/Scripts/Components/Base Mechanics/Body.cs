@@ -349,7 +349,7 @@ public class DTO_Body : IDataTransferComponent
             if (equipment != null)
             {
                 sb.Append($"<{equipment}>&");
-                EntityFactory.CreateTemporaryBlueprint($"{World.Instance.Seed}", equipment, EntityQuery.GetEntity(equipment).Serialize()); //todo: feed proper seed
+                EntityFactory.CreateTemporaryBlueprint(equipment, EntityQuery.GetEntity(equipment).Serialize()); //todo: feed proper seed
             }
         }
         string value = sb.ToString().TrimEnd('&');
