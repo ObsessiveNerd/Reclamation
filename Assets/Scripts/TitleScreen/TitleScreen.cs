@@ -47,9 +47,13 @@ public class TitleScreen : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
+            GetNewSaveName.SetActive(false);
             LoadGames.SetActive(false);
-            foreach (var tran in Content.transform.GetComponentsInChildren<Transform>())
-                Destroy(tran.gameObject);
+            if (Content.transform.childCount > 0)
+            {
+                foreach (var tran in Content.transform.GetComponentsInChildren<Transform>())
+                    Destroy(tran.gameObject);
+            }
         }
     }
 }
