@@ -52,7 +52,11 @@ public class TitleScreen : MonoBehaviour
             if (Content.transform.childCount > 0)
             {
                 foreach (var tran in Content.transform.GetComponentsInChildren<Transform>())
+                {
+                    if (tran == Content.transform)
+                        continue;
                     Destroy(tran.gameObject);
+                }
             }
         }
     }
