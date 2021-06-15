@@ -276,6 +276,13 @@ public class Tile : Component
             foreach (var target in AllEntities)
                 if(target != null)
                     levelData.Entities.Add(target.Serialize());
+
+            EventBuilder getVisibilityData = new EventBuilder(GameEventId.GetVisibilityData)
+                                                .With(EventParameters.HasBeenVisited, m_IsVisible);
+
+            var getVis = FireEvent(Self, getVisibilityData.CreateEvent());
+            levelData.TilePoints.Add(m_GridPoint);
+            levelData.TileHasBeenVisited.Add(getVis.GetValue<bool>(EventParameters.HasBeenVisited));
         }
     }
 

@@ -165,14 +165,12 @@ public class DungeonManager : WorldComponent
         if (m_DungeonLevelMap.ContainsKey(m_CurrentLevel))
         {
             level = m_DungeonLevelMap[m_CurrentLevel];
-            level.Entities.Clear();
-            level.RoomData.Clear();
+            level.ClearData();
         }
         else if (SaveSystem.Instance.LoadLevel(m_CurrentLevel) != null)
         {
             level = SaveSystem.Instance.LoadLevel(m_CurrentLevel);
-            level.Entities.Clear();
-            level.RoomData.Clear();
+            level.ClearData();
             m_DungeonLevelMap.Add(m_CurrentLevel, level);
         }
         else
@@ -221,11 +219,22 @@ public class DungeonManager : WorldComponent
                         Spawner.Spawn(entity, p);
                 }
             }
+
+            for(int i = 0; i < dungeonLevel.TilePoints.Count; i++)
+            {
+                FireEvent(m_Tiles[dungeonLevel.TilePoints[i]], new GameEvent(GameEventId.SetHasBeenVisited,
+                    new KeyValuePair<string, object>(EventParameters.HasBeenVisited, dungeonLevel.TileHasBeenVisited[i])));
+            }
         }
         else
         {
             DungeonMetaData dmd = new DungeonMetaData($"{LevelMetaData.MetadataPath}/{m_CurrentLevel}.lvl");
             DungeonGenerationResult dr = m_DungeonGenerator.GenerateDungeon(dmd);
+            foreach(var point in m_Tiles.Keys)
+            {
+                FireEvent(m_Tiles[point], new GameEvent(GameEventId.SetHasBeenVisited,
+                    new KeyValuePair<string, object>(EventParameters.HasBeenVisited, false)));
+            }
             m_DungeonLevelMap.Add(m_CurrentLevel, dr);
         }
     }

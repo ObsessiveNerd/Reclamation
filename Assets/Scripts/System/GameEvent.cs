@@ -16,6 +16,7 @@ public static class GameEventId
     public const string FOVRecalculated = nameof(FOVRecalculated);
     public const string BeforeFOVRecalculated = nameof(BeforeFOVRecalculated);
     public const string SetVisibility = nameof(SetVisibility);
+    public const string SetHasBeenVisited = nameof(SetHasBeenVisited);
     public const string VisibilityUpdated = nameof(VisibilityUpdated);
     public const string CheckVisibility = nameof(CheckVisibility);
     public const string IsTileBlocking = nameof(IsTileBlocking);
@@ -125,8 +126,10 @@ public static class GameEventId
     public const string IsValidTile = nameof(IsValidTile);
     public const string GetValueOnTile = nameof(GetValueOnTile);
     public const string SaveLevel = nameof(SaveLevel);
+    public const string SaveVisibilityData = nameof(SaveVisibilityData);
     public const string LoadLevel = nameof(LoadLevel);
     public const string SerializeTile = nameof(SerializeTile);
+    public const string GetVisibilityData = nameof(GetVisibilityData);
 
     //Camera
     public const string SetCameraPosition = nameof(SetCameraPosition);
@@ -233,6 +236,7 @@ public static class EventParameters
     public const string GameObject = nameof(GameObject);
     public const string TileInSight = nameof(TileInSight);
     public const string VisibleTiles = nameof(VisibleTiles);
+    public const string HasBeenVisited = nameof(HasBeenVisited);
     public const string FOVRange = nameof(FOVRange);
     public const string BlocksMovement = nameof(BlocksMovement);
     public const string Weight = nameof(Weight);

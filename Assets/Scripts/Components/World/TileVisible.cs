@@ -18,7 +18,10 @@ public class TileVisible : Component
     {
         base.Init(self);
         RegisteredEvents.Add(GameEventId.SetVisibility);
+        RegisteredEvents.Add(GameEventId.SetHasBeenVisited);
         RegisteredEvents.Add(GameEventId.AlterSprite);
+        RegisteredEvents.Add(GameEventId.GetVisibilityData);
+        FireEvent(Self, new GameEvent(GameEventId.VisibilityUpdated, new KeyValuePair<string, object>(EventParameters.Value, HasBeenVisited)));
     }
 
     public override void HandleEvent(GameEvent gameEvent)
@@ -32,6 +35,11 @@ public class TileVisible : Component
             FireEvent(Self, new GameEvent(GameEventId.VisibilityUpdated, new KeyValuePair<string, object>(EventParameters.Value, IsVisible)));
         }
 
+        if (gameEvent.ID == GameEventId.SetHasBeenVisited)
+        {
+            HasBeenVisited = gameEvent.GetValue<bool>(EventParameters.HasBeenVisited);
+        }
+
         if(gameEvent.ID == GameEventId.AlterSprite)
         {
             SpriteRenderer sr = (SpriteRenderer)gameEvent.Paramters[EventParameters.Renderer];
@@ -42,10 +50,15 @@ public class TileVisible : Component
             else
                 sr.color = Color.white;
         }
+
+        if(gameEvent.ID == GameEventId.GetVisibilityData)
+        {
+            gameEvent.Paramters[EventParameters.HasBeenVisited] = HasBeenVisited;
+        }
     }
 }
 
-public class DTO_Visible : IDataTransferComponent
+public class DTO_TileVisible : IDataTransferComponent
 {
     public IComponent Component { get; set; }
 
