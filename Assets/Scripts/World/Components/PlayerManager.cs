@@ -58,6 +58,8 @@ public class PlayerManager : WorldComponent
         if (gameEvent.ID == GameEventId.UnRegisterPlayer)
         {
             UnregisterPlayer(EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Entity]));
+            if (m_Players.Count == 0)
+                FireEvent(Self, new GameEvent(GameEventId.GameFailure));
         }
 
         if (gameEvent.ID == GameEventId.UpdateCamera)
@@ -119,6 +121,8 @@ public class PlayerManager : WorldComponent
     {
         //May need to rotate to the next active character first
         m_Players.Remove(entity);
+        if (entity == m_ActivePlayer.Value)
+            RotateCharacter();
         m_TimeProgression.RemoveEntity(entity);
         //m_PlayerToTimeProgressionMap.Remove(entity);
         FireEvent(Self, new GameEvent(GameEventId.Despawn, new KeyValuePair<string, object>(EventParameters.Entity, entity.ID),
@@ -127,8 +131,8 @@ public class PlayerManager : WorldComponent
 
     void RotateCharacter()
     {
-        if (m_Players.Count == 1)
-            return;
+        //if (m_Players.Count == 1)
+        //    return;
 
         bool hasUIController = m_ActivePlayer.Value.GetComponents().Any(comp => comp.GetType() == typeof(PlayerUIController));
         m_ActivePlayer.Value.RemoveComponent(typeof(InputControllerBase));

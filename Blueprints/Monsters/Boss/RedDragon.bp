@@ -1,0 +1,16 @@
+<RedDragon> (
+	Inherits: Creature
+	Health:15
+	Body:Head=1[], Torso=1[], Arm=2[<DragonClaw>], Leg=2[]
+	Inventory
+	GraphicContainer:Textures/Monsters/td_monsters_dragon_d1
+	Move
+	Stats:Str=15, Agi=12, Con=10, Wis=9, Int=7, Cha=18
+	Energy:Regen=1
+	Faction:<RedDragon>
+	FOV: VisibleRange=5
+	Desire:3
+	Inventory: []
+	PrimaryStatType:Str
+	TriggerOnDeath: GameWin
+)

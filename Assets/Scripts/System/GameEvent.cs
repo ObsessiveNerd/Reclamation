@@ -76,6 +76,8 @@ public static class GameEventId
     public const string GetClosestEnemy = nameof(GetClosestEnemy);
     public const string GetActivePlayerId = nameof(GetActivePlayerId);
     public const string GetCurrentLevel = nameof(GetCurrentLevel);
+    public const string GameWin = nameof(GameWin);
+    public const string GameFailure = nameof(GameFailure);
 
     //Dungeon
     public const string GetRandomValidPoint = nameof(GetRandomValidPoint);

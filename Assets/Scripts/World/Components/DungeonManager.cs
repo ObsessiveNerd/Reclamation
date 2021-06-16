@@ -10,6 +10,7 @@ public class DungeonMetaData
     public bool StairsUp;
     public bool StairsDown;
     public bool SpawnEnemies;
+    public bool SpawnBoss;
 
     public DungeonMetaData(string dataPath)
     {
@@ -34,6 +35,9 @@ public class DungeonMetaData
                                 SpawnEnemies = false;
                             else
                                 SpawnEnemies = true;
+                            break;
+                        case LevelMetaData.ContainsBoss:
+                            SpawnBoss = bool.Parse(keyValue[1]);
                             break;
                     }
                 }
@@ -262,7 +266,7 @@ public class DungeonManager : WorldComponent
 
     void SpawnPlayers()
     {
-        for (int i = 0; i < 2; i++)
+        for (int i = 0; i < 4; i++)
         {
             IEntity player = EntityFactory.CreateEntity("DwarfWarrior");
             FireEvent(Self, new GameEvent(GameEventId.ConvertToPlayableCharacter, new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.Entity, player.ID)));

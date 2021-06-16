@@ -22,7 +22,7 @@ public class World : MonoBehaviour
             return;
 
         SaveSystem.Instance.CurrentSaveName = Path.GetFileName(loadPath);
-        Application.quitting += () => GameObject.FindObjectOfType<SaveSystem>().Save();
+        Application.quitting += () => GameObject.FindObjectOfType<SaveSystem>()?.Save();
 
         m_World = new Actor("World");
 
@@ -39,6 +39,7 @@ public class World : MonoBehaviour
         m_World.AddComponent(new EntityMap());
         m_World.AddComponent(new Pathfinder());
         m_World.AddComponent(new CameraController());
+        m_World.AddComponent(new StateManager());
 
         m_World.CleanupComponents();
 

@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class WorldUpdate : WorldComponent
 {
+    bool worldEnded = false;
+
     public override void Init(IEntity self)
     {
         base.Init(self);
@@ -12,6 +14,7 @@ public class WorldUpdate : WorldComponent
         RegisteredEvents.Add(GameEventId.ProgressTimeUntilIdHasTakenTurn);
         RegisteredEvents.Add(GameEventId.PauseTime);
         RegisteredEvents.Add(GameEventId.UnPauseTime);
+        RegisteredEvents.Add(GameEventId.GameWin);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
@@ -36,13 +39,16 @@ public class WorldUpdate : WorldComponent
 
         if (gameEvent.ID == GameEventId.UnPauseTime)
             StopTime = false;
+
+        if (gameEvent.ID == GameEventId.GameWin)
+            worldEnded = true;
     }
 
     public bool StopTime = false;
 
     public void ProgressTime()
     {
-        if (!StopTime)
+        if (!StopTime && !worldEnded)
             m_TimeProgression.Update();
             //m_PlayerToTimeProgressionMap[m_ActivePlayer.Value].Update();
     }

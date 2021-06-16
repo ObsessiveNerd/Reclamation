@@ -1,0 +1,6 @@
+<DragonClaw>(
+	Inherits:Item
+	WeaponType:Melee
+	DealDamage:DamageType=Slashing, Damage=1d12
+	Equipment: Arm
+)

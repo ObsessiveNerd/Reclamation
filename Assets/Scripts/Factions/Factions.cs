@@ -48,6 +48,7 @@ public static class Factions
 {
     public const string DwarvenCompany = nameof(DwarvenCompany);
     public const string Goblins = nameof(Goblins);
+    public const string RedDragon = nameof(RedDragon);
 
     static Dictionary<string, Dictionary<string, Demeanor>> m_DemeanorMap = new Dictionary<string, Dictionary<string, Demeanor>>();
 
@@ -61,13 +62,22 @@ public static class Factions
         m_DemeanorMap.Add(DwarvenCompany, new Dictionary<string, Demeanor>()
         {
             {DwarvenCompany, Demeanor.Friendly },
-            {Goblins, Demeanor.Hostile }
+            {Goblins, Demeanor.Hostile },
+            {RedDragon, Demeanor.Hostile },
         });
 
         m_DemeanorMap.Add(Goblins, new Dictionary<string, Demeanor>()
         {
             {Goblins, Demeanor.Friendly },
-            {DwarvenCompany, Demeanor.Hostile }
+            {DwarvenCompany, Demeanor.Hostile },
+            {RedDragon, Demeanor.Hostile }
+        });
+
+        m_DemeanorMap.Add(RedDragon, new Dictionary<string, Demeanor>()
+        {
+            {Goblins, Demeanor.Hostile },
+            {DwarvenCompany, Demeanor.Hostile },
+            {RedDragon, Demeanor.Friendly }
         });
     }
 

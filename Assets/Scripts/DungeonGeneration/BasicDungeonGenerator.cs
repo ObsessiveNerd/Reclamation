@@ -278,8 +278,15 @@ public class BasicDungeonGenerator : IDungeonGenerator
         CreateHallways();
         CleanupRooms();
 
-        if(metaData.SpawnEnemies)
+        //if(metaData.SpawnEnemies)
             SpawnEnemies();
+
+        if(metaData.SpawnBoss)
+        {
+            Room randomRoom = Rooms[RecRandom.Instance.GetRandomValue(1, Rooms.Count)];
+            IEntity goblin = EntityFactory.CreateEntity("RedDragon");
+            Spawner.Spawn(goblin, randomRoom.GetValidPoint());
+        }
 
         SpawnItems();
 
@@ -365,7 +372,7 @@ public class BasicDungeonGenerator : IDungeonGenerator
 
     void SpawnEnemies()
     {
-        for (int i = 0; i < 2; i++)
+        for (int i = 0; i < RecRandom.Instance.GetRandomValue(0, 4); i++)
         {
             Room randomRoom = Rooms[RecRandom.Instance.GetRandomValue(1, Rooms.Count)];
             IEntity goblin = EntityFactory.CreateEntity("GoblinWarrior");

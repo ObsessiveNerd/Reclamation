@@ -38,6 +38,8 @@ public class TileInteractions : WorldComponent
             IEntity droppingEntity = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Creature]);
             EntityType entityType = (EntityType)gameEvent.Paramters[EventParameters.EntityType];
 
+            if(!m_EntityToPointMap.ContainsKey(droppingEntity)) return;
+
             Point p = m_EntityToPointMap[droppingEntity];
             FireEvent(Self, new GameEvent(GameEventId.Spawn, new KeyValuePair<string, object>(EventParameters.Entity, entity.ID),
                                                                     new KeyValuePair<string, object>(EventParameters.EntityType, EntityType.Item),

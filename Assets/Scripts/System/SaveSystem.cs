@@ -39,6 +39,13 @@ public class SaveSystem : MonoBehaviour
             Save(CurrentSaveName);
     }
 
+    public void CleanCurrentSave()
+    {
+        string path = $"{kSaveDataPath}/{CurrentSaveName}";
+        Directory.Delete(path, true);
+        Directory.CreateDirectory(path);
+    }
+
     public void Save(string saveName)
     {
         m_Data = new SaveData(World.Instance.Seed);
