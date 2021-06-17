@@ -111,7 +111,7 @@ public class Tile : Component
         RegisteredEvents.Add(GameEventId.VisibilityUpdated);
         RegisteredEvents.Add(GameEventId.IsTileBlocking);
         RegisteredEvents.Add(GameEventId.DestroyObject);
-        RegisteredEvents.Add(GameEventId.DestroyAll);
+        RegisteredEvents.Add(GameEventId.CleanTile);
         RegisteredEvents.Add(GameEventId.PathfindingData);
         RegisteredEvents.Add(GameEventId.GetValueOnTile);
         RegisteredEvents.Add(GameEventId.GetInteractableObjects);
@@ -139,12 +139,13 @@ public class Tile : Component
             Spawner.Despawn(ObjectSlot);
         }
 
-        if (gameEvent.ID == GameEventId.DestroyAll)
+        if (gameEvent.ID == GameEventId.CleanTile)
         {
             CreatureSlot = null;
             ObjectSlot = null;
             Items.Clear();
-
+            FireEvent(Self, new GameEvent(GameEventId.SetVisibility, new KeyValuePair<string, object>(EventParameters.TileInSight, false)));
+            FireEvent(Self, new GameEvent(GameEventId.SetHasBeenVisited, new KeyValuePair<string, object>(EventParameters.HasBeenVisited, false)));
             //Spawner.Despawn(CreatureSlot);
             //Spawner.Despawn(ObjectSlot);
             //List<IEntity> items = new List<IEntity>(Items);
@@ -191,15 +192,22 @@ public class Tile : Component
         if(gameEvent.ID == GameEventId.Pickup)
         {
             IEntity entity = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Entity]);
-            List<IEntity> itemsPickedup = new List<IEntity>();
-            foreach (var item in Items)
+            if (Items.Count > 0)
             {
-                FireEvent(entity, new GameEvent(GameEventId.AddToInventory, new KeyValuePair<string, object>(EventParameters.Entity, item.ID)));
-                itemsPickedup.Add(item);
-            }
+                List<IEntity> itemsPickedup = new List<IEntity>();
+                foreach (var item in Items)
+                {
+                    FireEvent(entity, new GameEvent(GameEventId.AddToInventory, new KeyValuePair<string, object>(EventParameters.Entity, item.ID)));
+                    itemsPickedup.Add(item);
+                }
 
-            foreach (var item in itemsPickedup)
-                Spawner.Despawn(item);
+                foreach (var item in itemsPickedup)
+                    Spawner.Despawn(item);
+            }
+            if(ObjectSlot != null)
+            {
+                FireEvent(ObjectSlot, gameEvent);
+            }
         }
 
         if(gameEvent.ID == GameEventId.Despawn)

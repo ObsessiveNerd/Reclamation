@@ -21,12 +21,12 @@ public class Stairs : Component
     public override void Init(IEntity self)
     {
         base.Init(self);
-        RegisteredEvents.Add(GameEventId.Interact);
+        RegisteredEvents.Add(GameEventId.Pickup);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
     {
-        if(gameEvent.ID == GameEventId.Interact)
+        if(gameEvent.ID == GameEventId.Pickup)
         {
             string e = gameEvent.GetValue<string>(EventParameters.Entity);
             if (WorldUtility.IsActivePlayer(e))

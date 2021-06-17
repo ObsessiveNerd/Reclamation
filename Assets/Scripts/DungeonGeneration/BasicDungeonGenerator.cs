@@ -382,9 +382,12 @@ public class BasicDungeonGenerator : IDungeonGenerator
 
     void SpawnItems()
     {
-        Room randomRoom = Rooms[RecRandom.Instance.GetRandomValue(1, Rooms.Count)];
-        IEntity helmet = EntityFactory.CreateEntity("BronzeHelmet");
-        Spawner.Spawn(helmet, randomRoom.GetValidPoint());
+        if(RecRandom.Instance.GetRandomValue(0, 100) < 30)
+        {
+            Room randomRoom = Rooms[RecRandom.Instance.GetRandomValue(1, Rooms.Count)];
+            IEntity item = EntityFactory.CreateEntity("Spellbook");
+            Spawner.Spawn(item, randomRoom.GetValidPoint());
+        }
 
         if (m_DMD.StairsUp)
             Spawner.Spawn(EntityFactory.CreateEntity("StairsUp"), Rooms[0].GetValidPoint());

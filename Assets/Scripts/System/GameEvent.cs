@@ -7,7 +7,6 @@ public static class GameEventId
 {
     //AI
     public const string GetActionToTake = nameof(GetActionToTake);
-    //public const string GetTileAggression = nameof(GetTileAggression);
     public const string GetCombatRating = nameof(GetCombatRating);
     public const string GetPackInformation = nameof(GetPackInformation);
     public const string BreakRank = nameof(BreakRank);
@@ -59,10 +58,8 @@ public static class GameEventId
     public const string Despawn = nameof(Despawn);
     public const string SelectTile = nameof(SelectTile);
     public const string SelectNewTileInDirection = nameof(SelectNewTileInDirection);
-    //public const string GetActivePlayer = nameof(GetActivePlayer);
     public const string GetEntityOnTile = nameof(GetEntityOnTile);
     public const string ShowInfo = nameof(ShowInfo);
-    //public const string ApplyEventToTile = nameof(ApplyEventToTile);
     public const string AddComponentToTile = nameof(AddComponentToTile);
     public const string ProgressTime = nameof(ProgressTime);
     public const string ProgressTimeUntilIdHasTakenTurn = nameof(ProgressTimeUntilIdHasTakenTurn);
@@ -78,6 +75,7 @@ public static class GameEventId
     public const string GetCurrentLevel = nameof(GetCurrentLevel);
     public const string GameWin = nameof(GameWin);
     public const string GameFailure = nameof(GameFailure);
+    public const string CleanFoVData = nameof(CleanFoVData);
 
     //Dungeon
     public const string GetRandomValidPoint = nameof(GetRandomValidPoint);
@@ -123,7 +121,7 @@ public static class GameEventId
     public const string EndSelection = nameof(EndSelection);
     public const string ShowTileInfo = nameof(ShowTileInfo);
     public const string DestroyObject = nameof(DestroyObject);
-    public const string DestroyAll = nameof(DestroyAll);
+    public const string CleanTile = nameof(CleanTile);
     public const string PathfindingData = nameof(PathfindingData);
     public const string IsValidTile = nameof(IsValidTile);
     public const string GetValueOnTile = nameof(GetValueOnTile);
@@ -230,7 +228,6 @@ public static class EventParameters
     public const string DamageType = nameof(DamageType);
     public const string RollToHit = nameof(RollToHit);
     public const string WeaponType = nameof(WeaponType);
-    //public const string AdditionalGameEvents = nameof(AdditionalGameEvents);
     public const string GameEvent = nameof(GameEvent);
     public const string Enemy = nameof(Enemy);
     public const string Equipment = nameof(Equipment);

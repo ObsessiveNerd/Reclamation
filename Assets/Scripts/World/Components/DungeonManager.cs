@@ -81,6 +81,8 @@ public class DungeonManager : WorldComponent
             Debug.Log("Start world called");
             Seed = (string)gameEvent.Paramters[EventParameters.Seed];
             m_TilePrefab = (GameObject)gameEvent.Paramters[EventParameters.GameObject];
+            m_Tiles.Clear();
+            m_GameObjectMap.Clear();
             CreateTiles(m_Tiles);
             Factions.Initialize();
 
@@ -224,7 +226,7 @@ public class DungeonManager : WorldComponent
                 }
             }
 
-            for(int i = 0; i < dungeonLevel.TilePoints.Count; i++)
+            for (int i = 0; i < dungeonLevel.TilePoints.Count; i++)
             {
                 FireEvent(m_Tiles[dungeonLevel.TilePoints[i]], new GameEvent(GameEventId.SetHasBeenVisited,
                     new KeyValuePair<string, object>(EventParameters.HasBeenVisited, dungeonLevel.TileHasBeenVisited[i])));
@@ -234,7 +236,7 @@ public class DungeonManager : WorldComponent
         {
             DungeonMetaData dmd = new DungeonMetaData($"{LevelMetaData.MetadataPath}/{m_CurrentLevel}.lvl");
             DungeonGenerationResult dr = m_DungeonGenerator.GenerateDungeon(dmd);
-            foreach(var point in m_Tiles.Keys)
+            foreach (var point in m_Tiles.Keys)
             {
                 FireEvent(m_Tiles[point], new GameEvent(GameEventId.SetHasBeenVisited,
                     new KeyValuePair<string, object>(EventParameters.HasBeenVisited, false)));
@@ -246,6 +248,9 @@ public class DungeonManager : WorldComponent
 
     void CleanTiles()
     {
+        foreach (var tile in m_Tiles.Values)
+            FireEvent(tile, new GameEvent(GameEventId.CleanTile));
+
         List<IEntity> entities = new List<IEntity>(m_EntityToPointMap.Keys);
         foreach (var entity in entities)
         {
@@ -254,14 +259,11 @@ public class DungeonManager : WorldComponent
             if (!m_EntityToPointMap.ContainsKey(entity))
                 continue;
 
-            Point p = m_EntityToPointMap[entity];
-            if (m_Tiles.ContainsKey(p))
-                FireEvent(m_Tiles[p], new GameEvent(GameEventId.DestroyAll));
-
             m_EntityToPointMap.Remove(entity);
             m_TimeProgression.RemoveEntity(entity);
         }
         m_DungeonGenerator.Clean();
+        FireEvent(Self, new GameEvent(GameEventId.CleanFoVData));
     }
 
     void SpawnPlayers()
@@ -295,7 +297,7 @@ public class DungeonManager : WorldComponent
             FireEvent(entity, new GameEvent(GameEventId.RegisterPlayableCharacter));
             FireEvent(entity, new GameEvent(GameEventId.InitFOV));
         }
-
+        FireEvent(Self, new GameEvent(GameEventId.UpdateWorldView));
         m_PlayerBlueprintCache.Clear();
     }
 
@@ -312,7 +314,9 @@ public class DungeonManager : WorldComponent
 
     protected void CreateTile(int x, int y, float screenHorizontal, float screenVertical, Dictionary<Point, Actor> pointToTileMap)
     {
+        Point tilePoint = new Point(x, y);
         GameObject tile = UnityEngine.GameObject.Instantiate(m_TilePrefab);
+
         tile.transform.position = new Vector2(x - (screenHorizontal - 0.5f), y - (screenVertical - 0.5f));
         tile.transform.parent = UnityEngine.GameObject.Find("World").transform;
         m_GameObjectMap.Add(new Point(x, y), tile);
@@ -323,7 +327,6 @@ public class DungeonManager : WorldComponent
         actor.AddComponent(new GraphicContainer("Textures/Environment/td_world_floor_cobble_b-120"));
         actor.AddComponent(new Renderer(tile.GetComponent<SpriteRenderer>()));
         actor.CleanupComponents();
-
         pointToTileMap.Add(new Point(x, y), actor);
     }
 }

@@ -13,6 +13,7 @@ public class WorldFov : WorldComponent
         RegisteredEvents.Add(GameEventId.FOVRecalculated);
         RegisteredEvents.Add(GameEventId.IsTileBlocking);
         RegisteredEvents.Add(GameEventId.RevealAllTiles);
+        RegisteredEvents.Add(GameEventId.CleanFoVData);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
@@ -22,6 +23,18 @@ public class WorldFov : WorldComponent
             foreach (var tile in m_Tiles.Values)
                 FireEvent(tile, new GameEvent(GameEventId.SetVisibility, new KeyValuePair<string, object>(EventParameters.TileInSight, true)));
             FireEvent(Self, new GameEvent(GameEventId.UpdateWorldView));
+        }
+
+        if (gameEvent.ID == GameEventId.UnRegisterPlayer)
+        {
+            IEntity player = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Entity]);
+            if (m_PlayerToVisibleTiles.ContainsKey(player))
+                m_PlayerToVisibleTiles.Remove(player);
+        }
+
+        if (gameEvent.ID == GameEventId.CleanFoVData)
+        {
+            m_PlayerToVisibleTiles.Clear();
         }
 
         if(gameEvent.ID == GameEventId.FOVRecalculated)
@@ -45,27 +58,17 @@ public class WorldFov : WorldComponent
         }
     }
 
-    void ClearTiles(List<Point> oldTiles, List<Point> newTiles)
-    {
-        foreach (Point tile in oldTiles)
-        {
-            if(!newTiles.Contains(tile))
-                FireEvent(m_Tiles[tile], new GameEvent(GameEventId.SetVisibility, new KeyValuePair<string, object>(EventParameters.TileInSight, false)));
-        }
-    }
-
     void UpdateTiles(List<Point> oldTiles)
     {
         List<Point> allVisibleTiles = new List<Point>();
         foreach (var key in m_PlayerToVisibleTiles.Keys)
             allVisibleTiles.AddRange(m_PlayerToVisibleTiles[key]);
 
-        foreach (Point tile in oldTiles)
-        {
-            if(allVisibleTiles.Contains(tile))
+        foreach(Point tile in allVisibleTiles)
                 FireEvent(m_Tiles[tile], new GameEvent(GameEventId.SetVisibility, new KeyValuePair<string, object>(EventParameters.TileInSight, true)));
-            else
+
+        foreach (Point tile in oldTiles)
+            if(!allVisibleTiles.Contains(tile))
                 FireEvent(m_Tiles[tile], new GameEvent(GameEventId.SetVisibility, new KeyValuePair<string, object>(EventParameters.TileInSight, false)));
-        }
     }
 }

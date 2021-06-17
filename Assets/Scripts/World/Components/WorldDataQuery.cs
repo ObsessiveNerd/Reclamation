@@ -32,7 +32,7 @@ public class WorldDataQuery : WorldComponent
         }
 
         if (gameEvent.ID == GameEventId.GetActivePlayerId)
-            gameEvent.Paramters[EventParameters.Value] = m_ActivePlayer.Value.ID;
+            gameEvent.Paramters[EventParameters.Value] = m_ActivePlayer?.Value.ID;
 
         if(gameEvent.ID == GameEventId.GetEntityLocation)
         {

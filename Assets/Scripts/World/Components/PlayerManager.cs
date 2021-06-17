@@ -143,6 +143,9 @@ public class PlayerManager : WorldComponent
         if (m_ActivePlayer == null)
             m_ActivePlayer = m_Players.First;
 
+        if (m_ActivePlayer == null)
+            return;
+
         m_ActivePlayer.Value.CleanupComponents();
         m_ActivePlayer.Value.RemoveComponent(typeof(AIController));
         if(hasUIController)
