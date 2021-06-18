@@ -189,6 +189,7 @@ public static class GameEventId
     public const string OpenInventoryUI = nameof(OpenInventoryUI);
     public const string OpenSpellUI = nameof(OpenSpellUI);
     public const string GetPlayableCharacters = nameof(GetPlayableCharacters);
+    public const string SetInfo = nameof(SetInfo);
     public const string GetInfo = nameof(GetInfo);
     public const string UpdateUI = nameof(UpdateUI);
     public const string GetContextMenuActions = nameof(GetContextMenuActions);

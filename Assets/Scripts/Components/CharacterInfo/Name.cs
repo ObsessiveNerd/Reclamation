@@ -15,14 +15,16 @@ public class Name : Component
     {
         base.Init(self);
         RegisteredEvents.Add(GameEventId.GetInfo);
+        RegisteredEvents.Add(GameEventId.SetInfo);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
     {
         if(gameEvent.ID == GameEventId.GetInfo)
-        {
             gameEvent.Paramters[EventParameters.Name] = PrettyName;
-        }
+
+        if(gameEvent.ID == GameEventId.SetInfo)
+            PrettyName = gameEvent.GetValue<string>(EventParameters.Name);
     }
 }
 
