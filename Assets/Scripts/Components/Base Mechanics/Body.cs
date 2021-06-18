@@ -343,6 +343,8 @@ public class DTO_Body : IDataTransferComponent
         StringBuilder sb = new StringBuilder();
         foreach (var bp in bodyParts)
         {
+            if(bp == null) continue;
+
             GameEvent getEquipment = new GameEvent(GameEventId.GetEquipment, new KeyValuePair<string, object>(EventParameters.Equipment, null));
             bp.HandleEvent(getEquipment);
             string equipment = (string)getEquipment.Paramters[EventParameters.Equipment];
