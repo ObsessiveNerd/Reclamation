@@ -73,6 +73,11 @@ public struct Point : IMapNode
     {
         return Mathf.Sqrt(Mathf.Pow(lhs.x - rhs.x, 2) + Mathf.Pow(lhs.y - rhs.y, 2));
     }
+
+    public override string ToString()
+    {
+        return $"{x},{y}";
+    }
 }
 
 public class Tile : Component

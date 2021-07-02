@@ -90,6 +90,6 @@ public class DTO_Inventory : IDataTransferComponent
             if(item != null)
                 EntityFactory.CreateTemporaryBlueprint(item.ID, item.Serialize()); //todo: feed proper seed
 
-        return $"{nameof(Inventory)}: [{EntityFactory.ConvertEntitiesToStringArray(inventory.InventoryItems)}]";
+        return $"{nameof(Inventory)}: [{EntityFactory.ConvertEntitiesToStringArrayWithId(inventory.InventoryItems)}]";
     }
 }

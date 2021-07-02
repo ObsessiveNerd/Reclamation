@@ -33,13 +33,22 @@ public class DTO_EntityTypeContainer : IDataTransferComponent
 
     public void CreateComponent(string data)
     {
-        EntityType t = (EntityType)Enum.Parse(typeof(EntityType), data);
-        Component = new EntityTypeContainer(t);
+        string[] kvp = data.Split('=');
+        if(kvp.Length == 2)
+        {
+            EntityType t = (EntityType)Enum.Parse(typeof(EntityType), kvp[1]);
+            Component = new EntityTypeContainer(t);
+        }
+        else
+        {
+            EntityType t = (EntityType)Enum.Parse(typeof(EntityType), data);
+            Component = new EntityTypeContainer(t);
+        }
     }
 
     public string CreateSerializableData(IComponent component)
     {
         EntityTypeContainer etc = (EntityTypeContainer)component;
-        return $"{nameof(EntityTypeContainer)}:{etc.Type}";
+        return $"{nameof(EntityTypeContainer)}:Type={etc.Type}";
     }
 }

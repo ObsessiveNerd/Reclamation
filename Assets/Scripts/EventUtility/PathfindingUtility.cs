@@ -36,6 +36,9 @@ public static class PathfindingUtility
         EventBuilder builder = new EventBuilder(GameEventId.GetRandomValidPoint)
                                 .With(EventParameters.Value, null);
 
+        if (World.Instance == null)
+            return Point.InvalidPoint;
+
         return World.Instance.Self.FireEvent(builder.CreateEvent()).GetValue<Point>(EventParameters.Value);
     }
 
@@ -44,6 +47,9 @@ public static class PathfindingUtility
         EventBuilder getEntityPointBuilder = new EventBuilder(GameEventId.GetEntityLocation)
                                             .With(EventParameters.Entity, entity.ID)
                                             .With(EventParameters.TilePosition, null);
+        if (World.Instance == null)
+            return Point.InvalidPoint;
+
         return World.Instance.Self.FireEvent(getEntityPointBuilder.CreateEvent()).GetValue<Point>(EventParameters.TilePosition);
     }
 

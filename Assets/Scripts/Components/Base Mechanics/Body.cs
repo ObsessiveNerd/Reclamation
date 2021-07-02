@@ -16,9 +16,9 @@ public enum BodyPart
 public class Body : Component
 {
     public IEntity Torso;
-    public List<IEntity> Heads = new List<IEntity>();
-    public List<IEntity> Arms = new List<IEntity>();
-    public List<IEntity> Legs = new List<IEntity>();
+    public List<IEntity> Head = new List<IEntity>();
+    public List<IEntity> Arm = new List<IEntity>();
+    public List<IEntity> Leg = new List<IEntity>();
 
     private List<IEntity> m_AllBodyParts
     {
@@ -26,9 +26,9 @@ public class Body : Component
         {
             List<IEntity> list = new List<IEntity>();
             list.Add(Torso);
-            list.AddRange(Heads);
-            list.AddRange(Arms);
-            list.AddRange(Legs);
+            list.AddRange(Head);
+            list.AddRange(Arm);
+            list.AddRange(Leg);
             return list;
         }
     }
@@ -78,24 +78,24 @@ public class Body : Component
             switch (bp)
             {
                 case BodyPart.Head:
-                    if (Heads.Count > 0)
+                    if (Head.Count > 0)
                     {
-                        dropTarget = Heads[0];
-                        Heads.RemoveAt(0);
+                        dropTarget = Head[0];
+                        Head.RemoveAt(0);
                     }
                     break;
                 case BodyPart.Arm:
-                    if (Arms.Count > 0)
+                    if (Arm.Count > 0)
                     {
-                        dropTarget = Arms[0];
-                        Arms.RemoveAt(0);
+                        dropTarget = Arm[0];
+                        Arm.RemoveAt(0);
                     }
                     break;
                 case BodyPart.Leg:
-                    if (Legs.Count > 0)
+                    if (Leg.Count > 0)
                     {
-                        dropTarget = Legs[0];
-                        Legs.RemoveAt(0);
+                        dropTarget = Leg[0];
+                        Leg.RemoveAt(0);
                     }
                     break;
             }
@@ -111,13 +111,13 @@ public class Body : Component
         //TODO this only works for bipedal monsters
         else if(gameEvent.ID == GameEventId.GetCurrentEquipment)
         {
-            gameEvent.Paramters[EventParameters.Head] = GetEquipmentIdForBodyPart(Heads[0]);
+            gameEvent.Paramters[EventParameters.Head] = GetEquipmentIdForBodyPart(Head[0]);
             gameEvent.Paramters[EventParameters.Torso] = GetEquipmentIdForBodyPart(Torso);
-            if(Arms.Count > 0)
-                gameEvent.Paramters[EventParameters.LeftArm] = GetEquipmentIdForBodyPart(Arms[0]);
-            if(Arms.Count > 1)
-                gameEvent.Paramters[EventParameters.RightArm] = GetEquipmentIdForBodyPart(Arms[1]);
-            gameEvent.Paramters[EventParameters.Legs] = GetEquipmentIdForBodyPart(Legs[0]);
+            if(Arm.Count > 0)
+                gameEvent.Paramters[EventParameters.LeftArm] = GetEquipmentIdForBodyPart(Arm[0]);
+            if(Arm.Count > 1)
+                gameEvent.Paramters[EventParameters.RightArm] = GetEquipmentIdForBodyPart(Arm[1]);
+            gameEvent.Paramters[EventParameters.Legs] = GetEquipmentIdForBodyPart(Leg[0]);
         }
 
         else if(gameEvent.ID == GameEventId.CheckItemEquiped)
@@ -148,13 +148,13 @@ public class Body : Component
             {
                 //todo: all of this is temp.  we'll have to iterate through and see what open slots are avalible
                 case BodyPart.Head:
-                    target = Heads;
+                    target = Head;
                     break;
                 case BodyPart.Arm:
-                    target = Arms;
+                    target = Arm;
                     break;
                 case BodyPart.Leg:
-                    target = Legs;
+                    target = Leg;
                     break;
                 case BodyPart.Torso:
                     target = new List<IEntity>() { Torso };
@@ -182,17 +182,17 @@ public class Body : Component
         else if (gameEvent.ID == GameEventId.AddArmorValue || gameEvent.ID == GameEventId.GetCombatRating)
         {
             FireEvent(Torso, gameEvent);
-            foreach(var head in Heads)
+            foreach(var head in Head)
                 FireEvent(head, gameEvent);
-            foreach (var arm in Arms)
+            foreach (var arm in Arm)
                 FireEvent(arm, gameEvent);
-            foreach (var leg in Legs)
+            foreach (var leg in Leg)
                 FireEvent(leg, gameEvent);
         }
 
         else if (gameEvent.ID == GameEventId.GetRangedWeapon)
         {
-            foreach (IEntity hand in Arms)
+            foreach (IEntity hand in Arm)
             {
                 IEntity equipment = (IEntity)FireEvent(hand, new GameEvent(GameEventId.GetEquipment, new KeyValuePair<string, object>(EventParameters.Equipment, null))).Paramters[EventParameters.Equipment];
                 if (equipment != null)
@@ -211,7 +211,7 @@ public class Body : Component
         else if (gameEvent.ID == GameEventId.PerformAttack)
         {
             TypeWeapon desiredWeaponToAttack = (TypeWeapon)gameEvent.Paramters[EventParameters.WeaponType];
-            foreach (IEntity hand in Arms)
+            foreach (IEntity hand in Arm)
             {
                 EventBuilder getEquipment = new EventBuilder(GameEventId.GetEquipment)
                                             .With(EventParameters.Equipment, null);
@@ -252,19 +252,19 @@ public class Body : Component
                 Actor head = new Actor("Head");
                 head.AddComponent(new EquipmentSlot());
                 head.CleanupComponents();
-                Heads.Add(head);
+                Head.Add(head);
                 break;
             case BodyPart.Arm:
                 Actor arm = new Actor("Arm");
                 arm.AddComponent(new EquipmentSlot());
                 arm.CleanupComponents();
-                Arms.Add(arm);
+                Arm.Add(arm);
                 break;
             case BodyPart.Leg:
                 Actor leg = new Actor("Leg");
                 leg.AddComponent(new EquipmentSlot());
                 leg.CleanupComponents();
-                Legs.Add(leg);
+                Leg.Add(leg);
                 break;
         }
     }
@@ -330,12 +330,12 @@ public class DTO_Body : IDataTransferComponent
     {
         Body body = (Body)component;
 
-        string headEquipment = GetSerializedEquipment(body.Heads);
+        string headEquipment = GetSerializedEquipment(body.Head);
         string torsoEquipment = GetSerializedEquipment(new List<IEntity>() { body.Torso });
-        string armEquipment = GetSerializedEquipment(body.Arms);
-        string legEquipment = GetSerializedEquipment(body.Legs);
+        string armEquipment = GetSerializedEquipment(body.Arm);
+        string legEquipment = GetSerializedEquipment(body.Leg);
 
-        return $"Body:Head={body.Heads.Count}[{headEquipment}], Torso=1[{torsoEquipment}], Arm={body.Arms.Count}[{armEquipment}], Leg={body.Legs.Count}[{legEquipment}]";
+        return $"Body:Head={body.Head.Count}[{headEquipment}], Torso=1[{torsoEquipment}], Arm={body.Arm.Count}[{armEquipment}], Leg={body.Leg.Count}[{legEquipment}]";
     }
 
     string GetSerializedEquipment(IList<IEntity> bodyParts)

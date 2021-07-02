@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -42,8 +42,9 @@ public class Actor : IEntity
         Name = name;
         ID = IDManager.GetNewID().ToString();
         m_Components = new PriorityQueue<IComponent>(new ComponentComparer());
-        //Destroyed = OnDestroy;
-        FireEvent(World.Instance.Self, new GameEvent(GameEventId.RegisterEntity, new KeyValuePair<string, object>(EventParameters.Entity, this)));
+
+        if (World.Instance != null)
+            FireEvent(World.Instance.Self, new GameEvent(GameEventId.RegisterEntity, new KeyValuePair<string, object>(EventParameters.Entity, this)));
     }
 
     public Actor(string name, string id)
@@ -54,8 +55,8 @@ public class Actor : IEntity
             IDManager.SetId(int.Parse(id));
 
         m_Components = new PriorityQueue<IComponent>(new ComponentComparer());
-        //Destroyed = OnDestroy;
-        FireEvent(World.Instance.Self, new GameEvent(GameEventId.RegisterEntity, new KeyValuePair<string, object>(EventParameters.Entity, this)));
+        if(World.Instance != null)
+            FireEvent(World.Instance.Self, new GameEvent(GameEventId.RegisterEntity, new KeyValuePair<string, object>(EventParameters.Entity, this)));
     }
 
     //public virtual void OnDestroy(IEntity entity)

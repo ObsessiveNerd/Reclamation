@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
@@ -20,13 +20,16 @@ public static class EntityFactory
                 m_Blueprints.Add(bpName, bpPath);
             }
 
-            string tempBlueprints = $"{SaveSystem.kSaveDataPath}/{World.Instance.Seed}/Blueprints";
-            if (Directory.Exists(tempBlueprints))
+            if(World.Instance != null)
             {
-                foreach (var bpPath in Directory.EnumerateFiles(tempBlueprints, "*", SearchOption.AllDirectories))
+                string tempBlueprints = $"{SaveSystem.kSaveDataPath}/{World.Instance.Seed}/Blueprints";
+                if (Directory.Exists(tempBlueprints))
                 {
-                    string bpName = Path.GetFileNameWithoutExtension(bpPath);
-                    m_Blueprints.Add(bpName, bpPath);
+                    foreach (var bpPath in Directory.EnumerateFiles(tempBlueprints, "*", SearchOption.AllDirectories))
+                    {
+                        string bpName = Path.GetFileNameWithoutExtension(bpPath);
+                        m_Blueprints.Add(bpName, bpPath);
+                    }
                 }
             }
         }
@@ -176,12 +179,22 @@ public static class EntityFactory
         return result;
     }
 
-    public static string ConvertEntitiesToStringArray(List<IEntity> entities)
+    public static string ConvertEntitiesToStringArrayWithId(List<IEntity> entities)
     {
         StringBuilder sb = new StringBuilder();
         foreach (var entity in entities)
             if(entity != null)
                 sb.Append($"<{entity.ID}>&");
+
+        return sb.ToString().TrimEnd('&');
+    }
+
+    public static string ConvertEntitiesToStringArrayWithName(List<IEntity> entities)
+    {
+        StringBuilder sb = new StringBuilder();
+        foreach (var entity in entities)
+            if(entity != null)
+                sb.Append($"<{entity.Name}>&");
 
         return sb.ToString().TrimEnd('&');
     }
