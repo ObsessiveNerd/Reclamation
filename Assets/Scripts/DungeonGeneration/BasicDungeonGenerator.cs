@@ -372,11 +372,11 @@ public class BasicDungeonGenerator : IDungeonGenerator
 
     void SpawnEnemies()
     {
-        for (int i = 0; i < RecRandom.Instance.GetRandomValue(0, 4); i++)
+        for (int i = 0; i < RecRandom.Instance.GetRandomValue(2, 6); i++)
         {
             Room randomRoom = Rooms[RecRandom.Instance.GetRandomValue(1, Rooms.Count)];
-            IEntity goblin = EntityFactory.CreateEntity("GoblinWarrior");
-            Spawner.Spawn(goblin, randomRoom.GetValidPoint());
+            IEntity enemy = EntityFactory.CreateEntity(EntityFactory.GetRandomMonsterBPName());
+            Spawner.Spawn(enemy, randomRoom.GetValidPoint());
         }
     }
 

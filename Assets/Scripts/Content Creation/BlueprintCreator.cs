@@ -37,6 +37,12 @@ public class BlueprintCreator
         Components = new List<BlueprintValues>();
     }
 
+    public BlueprintCreator(string name)
+    {
+        BlueprintName = name;
+        Components = new List<BlueprintValues>();
+    }
+
     public void AddComponent(BlueprintValues bpv, IComponent comp)
     {
         if(comp.GetType() == typeof(GraphicContainer))

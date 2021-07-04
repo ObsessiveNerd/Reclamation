@@ -9,6 +9,15 @@ public static class EntityFactory
 {
     private static string m_BluePrintPath = "Blueprints";
     private static Dictionary<string, string> m_Blueprints = new Dictionary<string, string>();
+    private static Dictionary<string, List<string>> m_BlueprintTypeMap = new Dictionary<string, List<string>>();
+
+    private static string kArmorPath = "Blueprints\\Armor";
+    private static string kWeaponPath = "Blueprints\\Weapons";
+    private static string kMonstersPath = "Blueprints\\Monsters";
+    private static string kBossesPath = "Blueprints\\Boss";
+    private static string kSpellsPath = "Blueprints\\Spells";
+    private static string kObjectsPath = "Blueprints\\Objects";
+    private static string kItemsPath = "Blueprints\\Items";
 
     public static IEntity CreateEntity(string blueprintName)
     {
@@ -17,6 +26,10 @@ public static class EntityFactory
             foreach (var bpPath in Directory.EnumerateFiles(m_BluePrintPath, "*", SearchOption.AllDirectories))
             {
                 string bpName = Path.GetFileNameWithoutExtension(bpPath);
+                string directoryOnly = Path.GetDirectoryName(bpPath);
+                if (!m_BlueprintTypeMap.ContainsKey(directoryOnly))
+                    m_BlueprintTypeMap.Add(directoryOnly, new List<string>());
+                m_BlueprintTypeMap[directoryOnly].Add(bpName);
                 m_Blueprints.Add(bpName, bpPath);
             }
 
@@ -51,9 +64,10 @@ public static class EntityFactory
         return string.Empty;
     }
 
-    public static string GetRandomMonsterBPName(int combatRatingMin, int combatRatingMax)
+    public static string GetRandomMonsterBPName()
     {
-        return string.Empty;
+        var list = m_BlueprintTypeMap[kMonstersPath];
+        return list[RecRandom.Instance.GetRandomValue(0, list.Count)];
     }
 
     public static string GetRandomItemBPName(int rarity)

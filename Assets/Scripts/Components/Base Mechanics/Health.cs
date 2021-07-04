@@ -80,9 +80,30 @@ public class DTO_Health : IDataTransferComponent
     public IComponent Component { get; set; }
     public void CreateComponent(string data)
     {
+        int maxHealth = 0;
+        int currentHealth = 0;
         string[] parameters = data.Split(',');
-        int maxHealth = int.Parse(parameters[0]);
-        int currentHealth = parameters.Length > 1 ? int.Parse(parameters[1]) : maxHealth;
+        foreach(string param in parameters)
+        {
+            string[] value = param.Split('=');
+            if(value.Length == 2)
+            {
+                switch(value[0])
+                {
+                    case "MaxHealth":
+                        maxHealth = int.Parse(value[1]);
+                        break;
+                    case "CurrentHealth":
+                        currentHealth = int.Parse(value[1]);
+                        break;
+                }
+            }
+            else
+            {
+                maxHealth = int.Parse(parameters[0]);
+                currentHealth = parameters.Length > 1 ? int.Parse(parameters[1]) : maxHealth;
+            }
+        }
         Component = new Health(maxHealth, currentHealth);
     }
 

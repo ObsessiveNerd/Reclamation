@@ -79,13 +79,13 @@ public class DTO_Energy : IDataTransferComponent
             string[] values = param.Split('=');
             switch(values[0])
             {
-                case "Regen":
+                case "EnergyRegineration":
                     energyRegen = int.Parse(values[1]);
                     break;
-                case "Current":
+                case "CurrentEnergy":
                     currentEnergy = int.Parse(values[1]);
                     break;
-                case "TurnStarted":
+                case "HasHadTurnStarted":
                     turnStarted = bool.Parse(values[1]);
                     break;
             }

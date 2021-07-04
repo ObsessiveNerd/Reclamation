@@ -36,7 +36,16 @@ public class DTO_Position : IDataTransferComponent
 
     public void CreateComponent(string data)
     {
-        if (!string.IsNullOrEmpty(data))
+        string[] kvp = data.Split('=');
+        if(kvp.Length == 2)
+        {
+            string[] parameters = kvp[1].Split(',');
+            int x = int.Parse(parameters[0]);
+            int y = int.Parse(parameters[1]);
+            Point point = new Point(x, y);
+            Component = new Position(point);
+        }
+        else if (!string.IsNullOrEmpty(data))
         {
             string[] parameters = data.Split(',');
             int x = int.Parse(parameters[0]);

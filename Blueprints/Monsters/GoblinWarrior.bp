@@ -2,14 +2,13 @@
 	Inherits: Creature
 	Health:10
 	Body:Head=1[<BronzeHelmet>], Torso=1[], Arm=2[<ShortSword>], Leg=2[]
-	Inventory
 	GraphicContainer:Textures/Monsters/td_monsters_goblin_captain_l1
 	Move
 	Stats:Str=10, Agi=12, Con=10, Wis=9, Int=7, Cha=8
-	Energy:Regen=1
+	Energy:EnergyRegineration=1,CurrentEnergy=0,HasHadTurnStarted=False
 	Faction:<Goblins>
 	Info:"It's a nasty little goblin.  Its slimy green skin reeks with the pungent odor of dirt and mold."
-	FOV: VisibleRange=5
+	FOV: FOVRange=5
 	Desire:1
 	PackTactics
 	Inventory: []

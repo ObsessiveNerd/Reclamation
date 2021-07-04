@@ -162,17 +162,21 @@ public class ContentCreationWindow : EditorWindow
             Clear();
         if(GUILayout.Button("Load"))
         {
-            Clear();
             string path = EditorUtility.OpenFilePanel("Load Blueprint", $"{Application.dataPath}/../Blueprints", "bp");
             string fileContents = File.ReadAllText(path);
             IEntity e = EntityFactory.ParseEntityData(fileContents);
+            CreateNewBPBuilder(e.Name);
             foreach (var comp in e.GetComponents())
             {
-                m_Creator.AddComponent(new BlueprintValues()
+                var bpValue = new BlueprintValues()
                 {
                     ComponentName = comp.GetType().ToString(),
                     ComponentNameIndex = GetTypeIndex(comp.GetType().ToString())
-                }, comp);
+                };
+                m_Creator.AddComponent(bpValue, comp);
+
+                if (comp.GetType() == typeof(GraphicContainer) || comp.GetType() == typeof(Portrait))
+                    m_Creator.Components.Remove(bpValue);
             }
         }
         EditorGUILayout.EndHorizontal();
@@ -186,6 +190,12 @@ public class ContentCreationWindow : EditorWindow
                 return i;
         }
         return 0;
+    }
+
+    void CreateNewBPBuilder(string name = "")
+    {
+        m_Creator = new BlueprintCreator(name);
+        LoadArchetype();
     }
 
     void Clear()

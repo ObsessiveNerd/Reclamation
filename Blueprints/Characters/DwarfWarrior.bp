@@ -6,9 +6,9 @@
 	GraphicContainer:Textures/Characters/td_monsters_dwarf_d2
 	Move
 	Stats:Str=10, Agi=9, Con=13, Wis=11, Int=12, Cha=10
-	Energy:Regen=1
+	Energy:EnergyRegineration=1,CurrentEnergy=0,HasHadTurnStarted=False
 	Faction:<DwarvenCompany>
-	FOV: VisibleRange=5
+	FOV: FOVRange=5
 	PackTactics
 	PrimaryStatType:Str
 	Portrait:Portraits/Characters/Tex_Dwarf_warrior_male_bg

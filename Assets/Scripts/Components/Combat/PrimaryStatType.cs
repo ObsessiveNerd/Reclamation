@@ -33,8 +33,17 @@ public class DTO_PrimaryStatType : IDataTransferComponent
 
     public void CreateComponent(string data)
     {
-        Stat s = (Stat)Enum.Parse(typeof(Stat), data);
-        Component = new PrimaryStatType(s);
+        string[] kvp = data.Split('=');
+        if(kvp.Length == 2)
+        {
+            Stat s = (Stat)Enum.Parse(typeof(Stat), kvp[1]);
+            Component = new PrimaryStatType(s);
+        }
+        else
+        {
+            Stat s = (Stat)Enum.Parse(typeof(Stat), data);
+            Component = new PrimaryStatType(s);
+        }
     }
 
     public string CreateSerializableData(IComponent component)

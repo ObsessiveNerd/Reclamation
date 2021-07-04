@@ -14,6 +14,11 @@ public class World : MonoBehaviour
 
     public int MapColumns, MapRows;
 
+    private void Start()
+    {
+        StartWorld(true, $"{SaveSystem.kSaveDataPath}/{RecRandom.Instance.GetRandomValue(0, 1000).ToString()}");
+    }
+
     public void StartWorld(bool startNew, string loadPath)
     {
         if (m_Instance == null)

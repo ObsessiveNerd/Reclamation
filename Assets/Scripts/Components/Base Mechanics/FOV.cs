@@ -49,6 +49,6 @@ public class DTO_FOV : IDataTransferComponent
     public string CreateSerializableData(IComponent component)
     {
         FOV fov = (FOV)component;
-        return $"{nameof(FOV)}: VisibleRange={fov.FOVRange}";
+        return $"{nameof(FOV)}: FOVRange={fov.FOVRange}";
     }
 }
