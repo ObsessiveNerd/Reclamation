@@ -1,0 +1,7 @@
+<UnarmedStrike> (
+	Position:PositionPoint=0,0
+	InteractOnTileOvertake
+	EntityTypeContainer:Type=Item
+	Item
+	DealDamage:DamageType=Blunt,Dice=1d1
+)

@@ -219,6 +219,9 @@ public class Body : Component
                 string equipment = FireEvent(hand, getEquipment.CreateEvent()).GetValue<string>(EventParameters.Equipment);
                 IEntity equipmentEntity = EntityQuery.GetEntity(equipment);
 
+                if (equipmentEntity == null)
+                    equipmentEntity = EntityFactory.CreateEntity("UnarmedStrike");
+
                 if (equipment != null && CombatUtility.GetWeaponType(equipmentEntity).HasFlag(desiredWeaponToAttack))
                     CombatUtility.Attack(Self, EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Target]), equipmentEntity);
             }

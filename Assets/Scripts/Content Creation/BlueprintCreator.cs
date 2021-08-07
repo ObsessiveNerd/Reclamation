@@ -74,7 +74,7 @@ public class BlueprintCreator
                         value = EntityFactory.ConvertEntitiesToStringArrayWithName((field.GetValue(comp) as Dictionary<string, IEntity>).Values.ToList());
                     }
                     else
-                        value = field.GetValue(comp).ToString();
+                        value = field.GetValue(comp)?.ToString();
                     bpv.FieldToValue.Add(field.Name, value);
                 }
             }

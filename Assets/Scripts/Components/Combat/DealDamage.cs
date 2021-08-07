@@ -8,6 +8,11 @@ public class DealDamage : Component
     public DamageType DamageType;
     public Dice Dice;
 
+    public DealDamage()
+    {
+        Dice = new Dice("1d1");
+    }
+
     public DealDamage(DamageType damageType, Dice dice)
     {
         DamageType = damageType;
@@ -44,6 +49,7 @@ public class DTO_DealDamage : IDataTransferComponent
                 case "DamageType":
                     type = (DamageType)Enum.Parse(typeof(DamageType), value[1]);
                     break;
+                case "Dice":
                 case "Damage":
                     damageDice = value[1];
                     break;
