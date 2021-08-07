@@ -4,4 +4,6 @@
 	EntityTypeContainer:Type=Item
 	Item
 	DealDamage:DamageType=Blunt,Dice=1d1
+	WeaponType:TypeWeapon=Melee
+	Equipment:PreferredBodyPartWhenEquipped=Arm
 )

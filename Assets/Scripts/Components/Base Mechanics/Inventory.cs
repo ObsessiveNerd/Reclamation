@@ -74,10 +74,14 @@ public class DTO_Inventory : IDataTransferComponent
 
     public void CreateComponent(string data)
     {
+        string value = data;
+        if (data.Contains("="))
+            value = data.Split('=')[1];
+
         Component = new Inventory();
-        if(!string.IsNullOrEmpty(data))
+        if(!string.IsNullOrEmpty(value))
         {
-            foreach (IEntity e in EntityFactory.GetEntitiesFromArray(data))
+            foreach (IEntity e in EntityFactory.GetEntitiesFromArray(value))
                 ((Inventory)Component).AddToInventory(e);
 
         }

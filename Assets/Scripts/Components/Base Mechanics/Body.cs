@@ -222,7 +222,7 @@ public class Body : Component
                 if (equipmentEntity == null)
                     equipmentEntity = EntityFactory.CreateEntity("UnarmedStrike");
 
-                if (equipment != null && CombatUtility.GetWeaponType(equipmentEntity).HasFlag(desiredWeaponToAttack))
+                if (equipmentEntity != null && CombatUtility.GetWeaponType(equipmentEntity).HasFlag(desiredWeaponToAttack))
                     CombatUtility.Attack(Self, EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Target]), equipmentEntity);
             }
         }
@@ -304,11 +304,11 @@ public class DTO_Body : IDataTransferComponent
                 bpCount = int.Parse(bpTypeToCount[1].Substring(0, bpTypeToCount[1].IndexOf('[')));
             else
                 bpCount = int.Parse(bpTypeToCount[1]);
-            string equipmentData;
+            string equipmentData = null;
             if (bpTypeToCount[1].Contains("["))
                 equipmentData = bpTypeToCount[1].Substring(bpTypeToCount[1].IndexOf('['));
-            else
-                equipmentData = bpTypeToCount[1];
+            //else
+            //    equipmentData = bpTypeToCount[1];
 
             if (!equipment.ContainsKey(bpType))
                 equipment[bpType] = new List<IEntity>();

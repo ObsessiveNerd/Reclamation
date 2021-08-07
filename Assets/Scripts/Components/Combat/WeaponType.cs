@@ -41,7 +41,11 @@ public class DTO_WeaponType : IDataTransferComponent
 
     public void CreateComponent(string data)
     {
-        TypeWeapon tw = (TypeWeapon)Enum.Parse(typeof(TypeWeapon), data);
+        string value = data;
+        if (data.Contains("="))
+            value = data.Split('=')[1];
+
+        TypeWeapon tw = (TypeWeapon)Enum.Parse(typeof(TypeWeapon), value);
         Component = new WeaponType(tw);
     }
 

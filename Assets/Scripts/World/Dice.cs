@@ -40,6 +40,11 @@ public class Dice
         return new Dice(dice).Roll();
     }
 
+    public override string ToString()
+    {
+        return GetNotation();
+    }
+
     public string GetNotation()
     {
         string value = $"{m_AmountOfDice}d{m_DAmount}";

@@ -9,15 +9,11 @@
 	Stats:Str=10,Agi=9,Con=13,Wis=11,Int=12,Cha=10
 	Move
 	Inventory:InventoryItems=
-	Body:Torso=1,Head=1,Arm=2,Leg=2
 	Aggression
 	EntityTypeContainer:Type=Creature
 	PrimaryStatType:PrimaryStat=Str
 	RegisterWithTimeSystem
 	AIFOVHandler
-	Move
-	Energy:EnergyRegineration=1,CurrentEnergy=0,HasHadTurnStarted=False
-	FOV:FOVRange=5
 	Body:Torso=1,Head=1,Arm=2[<ShortSword>],Leg=2
 	BlocksNonHostileMovement
 	CombatRating

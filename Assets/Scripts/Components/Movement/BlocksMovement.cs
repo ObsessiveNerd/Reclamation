@@ -14,9 +14,9 @@ public class BlocksNonHostileMovement : Component
         if (gameEvent.ID == GameEventId.EntityOvertaking)
         {
             IEntity overtakingEntity = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameters.Entity));
-            Demeanor getDemeanor = Factions.GetDemeanorForTarget(Self, overtakingEntity);
-            if(getDemeanor == Demeanor.Friendly || getDemeanor == Demeanor.Neutral)
-                FireEvent(overtakingEntity, new GameEvent(GameEventId.StopMovement));
+            //Demeanor getDemeanor = Factions.GetDemeanorForTarget(Self, overtakingEntity);
+            //if(getDemeanor == Demeanor.Friendly || getDemeanor == Demeanor.Neutral)
+            FireEvent(overtakingEntity, new GameEvent(GameEventId.StopMovement));
         }
     }
 }

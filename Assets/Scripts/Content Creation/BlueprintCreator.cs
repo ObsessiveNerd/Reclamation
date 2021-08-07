@@ -60,7 +60,13 @@ public class BlueprintCreator
                 if (comp.GetType() == typeof(Body))
                 {
                     if (field.FieldType == typeof(List<IEntity>))
-                        bpv.FieldToValue.Add(field.Name, (field.GetValue(comp) as List<IEntity>).Count.ToString());
+                    {
+                        var value = field.GetValue(comp);
+                        if (value != null)
+                            bpv.FieldToValue.Add(field.Name, (value as List<IEntity>).Count.ToString());
+                        else
+                            bpv.FieldToValue.Add(field.Name, "0");
+                    }
                     else
                         bpv.FieldToValue.Add(field.Name, "1");
                 }

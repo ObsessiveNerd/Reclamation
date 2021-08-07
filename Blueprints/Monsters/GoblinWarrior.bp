@@ -10,7 +10,6 @@
 	AIController
 	CombatRating
 	BlocksNonHostileMovement
-	Body:Torso=1,Head=1,Arm=2,Leg=2
 	FOV:FOVRange=5
 	Energy:EnergyRegineration=1,CurrentEnergy=0,HasHadTurnStarted=False
 	Move
@@ -21,11 +20,7 @@
 	Aggression
 	Faction:ID=Goblins
 	Body:Torso=1,Head=1,Arm=2[<ShortSword>],Leg=2
-	Move
 	AIFOVHandler
-	Energy:EnergyRegineration=1,CurrentEnergy=0,HasHadTurnStarted=False
-	Faction:ID=Goblins
-	FOV:FOVRange=5
 	Desire:Greed=1
 	PackTactics:IsPartyLeader=True,IsInParty=False,PartyLeaderId=,PackRange=2
 	Info:InfoMessage=InfoMessage="It's a nasty little goblin.  Its slimy green skin reeks with the pungent odor of dirt and mold."

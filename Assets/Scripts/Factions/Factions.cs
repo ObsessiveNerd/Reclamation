@@ -79,7 +79,7 @@ public static class Factions
 {
     static int[,] FactionRelation = new int[,]
     {
-                                //None  //DE     LE    Gob    BE    Drag  De    WR   Kob    WF   CRPT   UD    
+                                //None  //DE     LE    Gob    BE    Drag  Dem    WR   Kob    WF   CRPT   UD    
         /*None*/                { 1,     3,       3,    1,    3,    3,    3,    3,    3,    3,    3,    3},
         /*DwarvenExpedition*/   { 3,     2,       2,    3,    3,    3,    3,    3,    3,    3,    3,    3},
         /*LostExpedition*/      { 3,     2,       2,    3,    3,    3,    3,    3,    3,    3,    3,    3},

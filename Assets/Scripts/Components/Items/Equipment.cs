@@ -65,7 +65,10 @@ public class DTO_Equipment : IDataTransferComponent
 
     public void CreateComponent(string data)
     {
-        BodyPart bp = (BodyPart)Enum.Parse(typeof(BodyPart), data);
+        string value = data;
+        if (data.Contains("="))
+            value = data.Split('=')[1];
+        BodyPart bp = (BodyPart)Enum.Parse(typeof(BodyPart), value);
         Component = new Equipment(bp);
     }
 

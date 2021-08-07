@@ -1,8 +1,11 @@
-<Short Sword>(
-	Inherits:Item
-	WeaponType:Melee
-	DealDamage:DamageType=Slashing, Damage=1d6
-	GraphicContainer:Textures/Weapons/td_items_weapon_sword
-	Portrait:Portraits/Weapons/swords_t_01
-	Equipment: Arm
+<Short Sword> (
+	GraphicContainer: Textures/Weapons/td_items_weapon_sword
+	Portrait: Portraits/Weapons/swords_t_01
+	Position:PositionPoint=0,0
+	InteractOnTileOvertake
+	EntityTypeContainer:Type=Item
+	Item
+	WeaponType:TypeWeapon=Melee
+	DealDamage:DamageType=Slashing,Dice=1d6
+	Equipment:PreferredBodyPartWhenEquipped=Arm
 )

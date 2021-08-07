@@ -179,6 +179,9 @@ public static class EntityFactory
 
     public static List<IEntity> GetEntitiesFromArray(string data)
     {
+        if (string.IsNullOrEmpty(data))
+            return new List<IEntity>();
+
         List<IEntity> result = new List<IEntity>();
         data = data.Replace(" ", string.Empty).TrimStart('[').TrimEnd(']');
         string[] parameters = data.Split('&');
