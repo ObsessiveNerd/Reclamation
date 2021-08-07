@@ -296,8 +296,17 @@ public class DTO_Body : IDataTransferComponent
         {
             string[] bpTypeToCount = bp.Split('=');
             BodyPart bpType = (BodyPart)Enum.Parse(typeof(BodyPart), bpTypeToCount[0]);
-            int bpCount = int.Parse(bpTypeToCount[1].Substring(0, bpTypeToCount[1].IndexOf('[')));
-            string equipmentData = bpTypeToCount[1].Substring(bpTypeToCount[1].IndexOf('['));
+            int bpCount = 0;
+            if (bpTypeToCount[1].Contains("["))
+                bpCount = int.Parse(bpTypeToCount[1].Substring(0, bpTypeToCount[1].IndexOf('[')));
+            else
+                bpCount = int.Parse(bpTypeToCount[1]);
+            string equipmentData;
+            if (bpTypeToCount[1].Contains("["))
+                equipmentData = bpTypeToCount[1].Substring(bpTypeToCount[1].IndexOf('['));
+            else
+                equipmentData = bpTypeToCount[1];
+
             if (!equipment.ContainsKey(bpType))
                 equipment[bpType] = new List<IEntity>();
             equipment[bpType].AddRange(EntityFactory.GetEntitiesFromArray(equipmentData));

@@ -1,0 +1,22 @@
+<Demon> (
+	GraphicContainer: Textures/Monsters/td_monsters_demon_d2
+	Defense
+	Move
+	InteractOnTileOvertake
+	EntityTypeContainer:Type=Creature
+	RegisterWithTimeSystem
+	AIController
+	AIFOVHandler
+	InteractsWithWorld
+	Position:PositionPoint=0,0
+	FOV:FOVRange=2
+	Aggression
+	Fear
+	Wander
+	CombatRating
+	BlocksNonHostileMovement
+	Energy:EnergyRegineration=1,CurrentEnergy=0,HasHadTurnStarted=False
+	Health:MaxHealth=15,CurrentHealth=15
+	Faction:ID=Demons
+	PrimaryStatType:PrimaryStat=Str
+)

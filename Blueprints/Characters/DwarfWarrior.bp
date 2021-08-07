@@ -1,15 +1,31 @@
 <DwarfWarrior> (
-	Inherits:Creature
-	Health:10
-	Body:Head=1[<BronzeHelmet>], Arm=2[<ShortSword>&<Shield>], Leg=2[]
-	Inventory: []
-	GraphicContainer:Textures/Characters/td_monsters_dwarf_d2
-	Move
-	Stats:Str=10, Agi=9, Con=13, Wis=11, Int=12, Cha=10
+	GraphicContainer: Textures/Characters/td_monsters_dwarf_d2
+	Portrait: Portraits/Characters/Tex_Dwarf_warrior_male_bg
+	Defense
+	PackTactics:IsPartyLeader=True,IsInParty=False,PartyLeaderId=,PackRange=2
+	FOV:FOVRange=5
+	Faction:ID=DwarvenExpedition
 	Energy:EnergyRegineration=1,CurrentEnergy=0,HasHadTurnStarted=False
-	Faction:<DwarvenCompany>
-	FOV: FOVRange=5
-	PackTactics
-	PrimaryStatType:Str
-	Portrait:Portraits/Characters/Tex_Dwarf_warrior_male_bg
+	Stats:Str=10,Agi=9,Con=13,Wis=11,Int=12,Cha=10
+	Move
+	Inventory:InventoryItems=
+	Body:Torso=1,Head=1,Arm=2,Leg=2
+	Aggression
+	EntityTypeContainer:Type=Creature
+	PrimaryStatType:PrimaryStat=Str
+	RegisterWithTimeSystem
+	AIFOVHandler
+	Move
+	Energy:EnergyRegineration=1,CurrentEnergy=0,HasHadTurnStarted=False
+	FOV:FOVRange=5
+	Body:Torso=1,Head=1,Arm=2[<ShortSword>],Leg=2
+	BlocksNonHostileMovement
+	CombatRating
+	AIController
+	Wander
+	Fear
+	Position:PositionPoint=0,0
+	InteractOnTileOvertake
+	InteractsWithWorld
+	Health:MaxHealth=10,CurrentHealth=10
 )

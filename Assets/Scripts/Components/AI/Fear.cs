@@ -67,7 +67,9 @@ public class Fear : Component
         Point randomPoint = PathfindingUtility.GetRandomValidPoint();
         var path = PathfindingUtility.GetPath(m_CurrentLocation, randomPoint);
         FireEvent(Self, new GameEvent(GameEventId.BreakRank));
-        return PathfindingUtility.GetDirectionTo(m_CurrentLocation, path[0]);
+        if(path.Count >= 1)
+            return PathfindingUtility.GetDirectionTo(m_CurrentLocation, path[0]);
+        return PathfindingUtility.GetDirectionTo(m_CurrentLocation, m_CurrentLocation);
     }
 }
 

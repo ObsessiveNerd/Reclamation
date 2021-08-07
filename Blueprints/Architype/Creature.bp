@@ -12,4 +12,11 @@ Creature<Architype>(
 	Wander
 	CombatRating
 	BlocksNonHostileMovement
+	Health:0
+	Body:Head=1[<BronzeHelmet>], Torso=1[], Arm=2[<ShortSword>], Leg=2[]
+	FOV: FOVRange=5
+	Energy:EnergyRegineration=1,CurrentEnergy=0,HasHadTurnStarted=False
+	Move
+	Stats:Str=0, Agi=0, Con=0, Wis=0, Int=0, Cha=0
+	Faction:<None>
 )

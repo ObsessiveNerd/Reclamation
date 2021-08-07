@@ -104,15 +104,11 @@ public class PlayerInputController : InputControllerBase
                 //}
             }
 
-            //This is temporary, we can keep this functionality but right now it's just to test dropping items from your bag
-            //else if (Input.GetKeyDown(KeyCode.D))
-            //    FireEvent(Self, new GameEvent(GameEventId.EmptyBag));
-
-            else if (Input.GetKeyDown(KeyCode.Tab))
-            {
-                RotateActiveCharacter(gameEvent);
-                return;
-            }
+            //else if (Input.GetKeyDown(KeyCode.Tab))
+            //{
+            //    RotateActiveCharacter(gameEvent);
+            //    return;
+            //}
 
             else if (Input.GetKeyDown(KeyCode.Escape))
                 GameObject.FindObjectOfType<SaveSystem>().Save();
@@ -129,11 +125,6 @@ public class PlayerInputController : InputControllerBase
             Sprite sprite = Resources.Load<Sprite>("Textures/Characters/active_dwarf");
             gameEvent.Paramters[EventParameters.RenderSprite] = sprite;
         }
-
-        //else if(gameEvent.ID == GameEventId.RotateActiveCharacter)
-        //{
-        //    RotateActiveCharacter(gameEvent);
-        //}
     }
 
     void RotateActiveCharacter(GameEvent gameEvent)

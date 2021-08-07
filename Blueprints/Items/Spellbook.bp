@@ -1,6 +1,9 @@
-<Spellbook>(
-	Inherits: Item
-	SpellContainer: [<Firebolt>&<IceRay>]
-	Portrait: Portraits/Items/book_11_t
+<Spellbook> (
 	GraphicContainer: Textures/Items/td_items_book_brown
+	Portrait: Portraits/Items/book_11_t
+	Position:PositionPoint=0,0
+	InteractOnTileOvertake
+	EntityTypeContainer:Type=Item
+	Item
+	SpellContainer:SpellNameToIdMap=<Firebolt>&<IceRay>
 )

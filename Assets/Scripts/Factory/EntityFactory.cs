@@ -187,8 +187,16 @@ public static class EntityFactory
             if (string.IsNullOrEmpty(parameter))
                 continue;
 
-            string entityName = GetEntityNameFromBlueprintFormatting(parameter);
-            result.Add(CreateEntity(entityName));
+            string value = parameter;
+            if (value.Contains("="))
+                value = value.Split('=')[1];
+            string entityName = GetEntityNameFromBlueprintFormatting(value);
+
+            var en = CreateEntity(entityName);
+            if (en != null)
+                result.Add(en);
+            else
+                Debug.LogError($"Issue creating entity: {value} from param: {parameter}");
         }
         return result;
     }
@@ -217,7 +225,9 @@ public static class EntityFactory
     {
         int start = bpFormatting.IndexOf('<') + 1;
         int length = bpFormatting.IndexOf('>') - start;
-        return bpFormatting.Substring(start, length);
+        if(length > start)
+            return bpFormatting.Substring(start, length);
+        return bpFormatting;
     }
 
     public static void CreateTemporaryBlueprint(string blueprintName, string data)

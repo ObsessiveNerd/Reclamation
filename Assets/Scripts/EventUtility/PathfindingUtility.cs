@@ -8,6 +8,9 @@ public static class PathfindingUtility
 {
     public static MoveDirection GetDirectionTo(IMapNode source, IMapNode target)
     {
+        if (source == target)
+            return MoveDirection.None;
+
         int rawX = target.x - source.x;
         int rawY = target.y - source.y;
 

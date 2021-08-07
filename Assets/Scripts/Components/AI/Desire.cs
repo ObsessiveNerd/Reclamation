@@ -99,8 +99,14 @@ public class DTO_Desire : IDataTransferComponent
 
     public void CreateComponent(string data)
     {
-        int mod = int.Parse(data);
-        Component = new Desire(mod);
+        string[] kvp = data.Split('=');
+        if (kvp.Length == 2)
+        {
+            int mod = int.Parse(kvp[1]);
+            Component = new Desire(mod);
+        }
+        else
+            Component = new Desire(0);
     }
 
     public string CreateSerializableData(IComponent component)

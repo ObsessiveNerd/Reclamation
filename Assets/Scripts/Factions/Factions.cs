@@ -1,14 +1,29 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
-using UnityEngine;
+
+public enum FactionId
+{
+    None,
+    DwarvenExpedition,
+    LostExpedition,
+    Goblins,
+    Beasts,
+    Dragons,
+    Demons,
+    Wraiths,
+    Kobolds,
+    Wolves,
+    Corrupted,
+    Undead
+}
 
 public class Faction : Component
 {
-    public string ID { get; internal set; }
+    public FactionId ID;
 
     public Faction(string faction)
     {
-        ID = faction;
+        ID = (FactionId)Enum.Parse(typeof(FactionId), faction);
         RegisteredEvents.Add(GameEventId.GetFaction);
     }
 
@@ -24,8 +39,24 @@ public class DTO_Faction : IDataTransferComponent
 
     public void CreateComponent(string data)
     {
-        string name = data.Substring(data.IndexOf('<') + 1, data.IndexOf('>') - (data.IndexOf('<') + 1));
-        Component = new Faction(name);
+        string[] kvp = data.Split('=');
+        if(kvp.Length == 2)
+        {
+            if(kvp[1].Contains("<"))
+            {
+                string name = kvp[1].Substring(kvp[1].IndexOf('<') + 1, kvp[1].IndexOf('>') - (kvp[1].IndexOf('<') + 1));
+                Component = new Faction(name);
+            }
+            else
+            {
+                Component = new Faction(kvp[1]);
+            }
+        }
+        else
+        {
+            string name = data.Substring(data.IndexOf('<') + 1, data.IndexOf('>') - (data.IndexOf('<') + 1));
+            Component = new Faction(name);
+        }
     }
 
     public string CreateSerializableData(IComponent component)
@@ -39,47 +70,31 @@ public class DTO_Faction : IDataTransferComponent
 public enum Demeanor
 {
     None = 0,
-    Neutral,
-    Friendly,
-    Hostile,
+    Neutral = 1,
+    Friendly = 2,
+    Hostile = 3,
 }
 
 public static class Factions
 {
-    public const string DwarvenCompany = nameof(DwarvenCompany);
-    public const string Goblins = nameof(Goblins);
-    public const string RedDragon = nameof(RedDragon);
+    static int[,] FactionRelation = new int[,]
+    {
+                                //None  //DE     LE    Gob    BE    Drag  De    WR   Kob    WF   CRPT   UD    
+        /*None*/                { 1,     3,       3,    1,    3,    3,    3,    3,    3,    3,    3,    3},
+        /*DwarvenExpedition*/   { 3,     2,       2,    3,    3,    3,    3,    3,    3,    3,    3,    3},
+        /*LostExpedition*/      { 3,     2,       2,    3,    3,    3,    3,    3,    3,    3,    3,    3},
+        /*Goblins*/             { 3,     3,       3,    2,    2,    1,    1,    1,    1,    1,    1,    1},
+        /*Beasts*/              { 3,     3,       3,    2,    2,    1,    1,    1,    1,    1,    1,    1},
+        /*Dragons*/             { 3,     3,       3,    1,    1,    1,    1,    1,    1,    1,    1,    1},
+        /*Demons*/              { 3,     3,       3,    1,    1,    1,    2,    1,    1,    1,    1,    1},
+        /*Wraiths*/             { 3,     3,       3,    1,    1,    1,    1,    2,    1,    1,    1,    1},
+        /*Kobolds*/             { 3,     3,       3,    1,    1,    1,    1,    1,    2,    1,    1,    1},
+        /*Wolves*/              { 3,     3,       3,    1,    1,    1,    1,    1,    1,    2,    1,    1},
+        /*Corrupted*/           { 3,     3,       3,    1,    1,    1,    1,    1,    1,    1,    2,    2},
+        /*Undead*/              { 3,     3,       3,    1,    1,    1,    1,    1,    1,    1,    2,    2}
+    };
 
     static Dictionary<string, Dictionary<string, Demeanor>> m_DemeanorMap = new Dictionary<string, Dictionary<string, Demeanor>>();
-
-    private static bool m_IsInitialized = false;
-    public static void Initialize()
-    {
-        if (m_IsInitialized)
-            return;
-
-        m_IsInitialized = true;
-        m_DemeanorMap.Add(DwarvenCompany, new Dictionary<string, Demeanor>()
-        {
-            {DwarvenCompany, Demeanor.Friendly },
-            {Goblins, Demeanor.Hostile },
-            {RedDragon, Demeanor.Hostile },
-        });
-
-        m_DemeanorMap.Add(Goblins, new Dictionary<string, Demeanor>()
-        {
-            {Goblins, Demeanor.Friendly },
-            {DwarvenCompany, Demeanor.Hostile },
-            {RedDragon, Demeanor.Hostile }
-        });
-
-        m_DemeanorMap.Add(RedDragon, new Dictionary<string, Demeanor>()
-        {
-            {Goblins, Demeanor.Hostile },
-            {DwarvenCompany, Demeanor.Hostile },
-            {RedDragon, Demeanor.Friendly }
-        });
-    }
 
     public static Demeanor GetDemeanorForTarget(IEntity source, IEntity target)
     {
@@ -92,6 +107,6 @@ public static class Factions
         if (sourceFaction == null || targetFaction == null)
             return Demeanor.None;
 
-        return m_DemeanorMap[sourceFaction.ID][targetFaction.ID];
+        return (Demeanor)FactionRelation[(int)sourceFaction.ID, (int)targetFaction.ID];
     }
 }

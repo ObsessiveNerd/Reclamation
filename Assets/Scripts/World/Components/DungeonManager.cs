@@ -84,7 +84,6 @@ public class DungeonManager : WorldComponent
             m_Tiles.Clear();
             m_GameObjectMap.Clear();
             CreateTiles(m_Tiles);
-            Factions.Initialize();
 
             m_DungeonGenerator = new BasicDungeonGenerator(World.Instance.MapRows, World.Instance.MapColumns);
 

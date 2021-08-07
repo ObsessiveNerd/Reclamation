@@ -1,22 +1,24 @@
 <Beetle> (
 	GraphicContainer: Textures/Monsters/td_monsters_beetle_r1
 	Defense
-	FOV:FOVRange=6
-	Move
-	Position:PositionPoint=0,0
-	EntityTypeContainer:Type=Creature
-	RegisterWithTimeSystem
-	AIController
-	AIFOVHandler
-	InteractsWithWorld
-	Aggression
-	Fear
-	Wander
-	CombatRating
-	BlocksNonHostileMovement
-	Stats:Str=8,Agi=8,Con=10,Wis=9,Int=5,Cha=5
-	InteractOnTileOvertake
 	Energy:EnergyRegineration=1,CurrentEnergy=0,HasHadTurnStarted=False
+	InteractOnTileOvertake
+	Stats:Str=8,Agi=8,Con=10,Wis=9,Int=5,Cha=5
+	BlocksNonHostileMovement
+	CombatRating
+	Wander
+	Fear
+	Aggression
+	InteractsWithWorld
+	AIFOVHandler
+	AIController
+	RegisterWithTimeSystem
+	EntityTypeContainer:Type=Creature
+	Position:PositionPoint=0,0
+	Move
+	FOV:FOVRange=6
 	PrimaryStatType:PrimaryStat=Agi
 	Health:MaxHealth=5,CurrentHealth=5
+	Faction:ID=None
+	Faction:ID=None
 )
