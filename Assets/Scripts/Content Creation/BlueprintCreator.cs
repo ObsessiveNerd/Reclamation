@@ -77,7 +77,7 @@ public class BlueprintCreator
                         value = EntityFactory.ConvertEntitiesToStringArrayWithName(field.GetValue(comp) as List<IEntity>);
                     else if (field.FieldType == typeof(Dictionary<string, IEntity>))
                     {
-                        value = EntityFactory.ConvertEntitiesToStringArrayWithName((field.GetValue(comp) as Dictionary<string, IEntity>).Values.ToList());
+                        value = EntityFactory.ConvertEntitiesToStringArrayWithName((field.GetValue(comp) as Dictionary<string, IEntity>)?.Values.ToList());
                     }
                     else
                         value = field.GetValue(comp)?.ToString();

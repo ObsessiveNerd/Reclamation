@@ -13,6 +13,13 @@ public static class WorldUtility
         return EntityQuery.GetEntity((string)result.Paramters[EventParameters.Entity]);
     }
 
+    public static Point GetEntityPosition(IEntity entity)
+    {
+        GameEvent result = entity.FireEvent(new GameEvent(GameEventId.GetPoint, new KeyValuePair<string, object>(EventParameters.Value, null)));
+
+        return result.GetValue<Point>(EventParameters.Value);
+    }
+
     public static IEntity GetClosestEnemyTo(IEntity e)
     {
         EventBuilder eventBuilder = new EventBuilder(GameEventId.GetClosestEnemy)

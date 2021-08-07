@@ -216,6 +216,9 @@ public static class EntityFactory
 
     public static string ConvertEntitiesToStringArrayWithName(List<IEntity> entities)
     {
+        if (entities == null)
+            return "";
+
         StringBuilder sb = new StringBuilder();
         foreach (var entity in entities)
             if(entity != null)

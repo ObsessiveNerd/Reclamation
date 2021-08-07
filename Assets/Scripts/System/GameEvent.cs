@@ -46,6 +46,10 @@ public static class GameEventId
     public const string Pickup = nameof(Pickup);
     public const string Drop = nameof(Drop);
     public const string GetValue = nameof(GetValue);
+    public const string AddItem = nameof(AddItem);
+    public const string GetItems = nameof(GetItems);
+    public const string DropItemsOnMap = nameof(DropItemsOnMap);
+    public const string AddItemsToInventory = nameof(AddItemsToInventory);
     public const string GetBodyPartType = nameof(GetBodyPartType);
 
     //Debug
