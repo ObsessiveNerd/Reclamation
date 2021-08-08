@@ -45,6 +45,8 @@ public class Actor : IEntity
 
         if (World.Instance != null)
             FireEvent(World.Instance.Self, new GameEvent(GameEventId.RegisterEntity, new KeyValuePair<string, object>(EventParameters.Entity, this)));
+
+        EntityMap.IDToNameMap[ID] = Name;
     }
 
     public Actor(string name, string id)
@@ -55,8 +57,10 @@ public class Actor : IEntity
             IDManager.SetId(int.Parse(id));
 
         m_Components = new PriorityQueue<IComponent>(new ComponentComparer());
-        if(World.Instance != null)
+        if (World.Instance != null)
             FireEvent(World.Instance.Self, new GameEvent(GameEventId.RegisterEntity, new KeyValuePair<string, object>(EventParameters.Entity, this)));
+
+        EntityMap.IDToNameMap[ID] = Name;
     }
 
     //public virtual void OnDestroy(IEntity entity)
@@ -109,6 +113,12 @@ public class Actor : IEntity
     public List<IComponent> GetComponents()
     {
         return m_Components.ToList();
+    }
+
+    public T GetComponent<T>() where T : IComponent
+    {
+        var value = m_Components.Values.FirstOrDefault(c => c.GetType() == typeof(T));
+        return (T)value;
     }
 
     public void RemoveComponent(IComponent component)

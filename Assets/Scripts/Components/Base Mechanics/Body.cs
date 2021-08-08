@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -280,6 +280,38 @@ public class Body : Component
         string equipment = FireEvent(bodyPart, getEquipment.CreateEvent()).GetValue<string>(EventParameters.Equipment);
 
         return equipment;
+    }
+
+    public override string ToString()
+    {
+        if (Head == null)
+            return $"Head=1[], Torso=1[], Arm=2[], Leg=2[]";
+
+        string headEquipment = GetSerializedEquipment(Head);
+        string torsoEquipment = GetSerializedEquipment(new List<IEntity>() { Torso });
+        string armEquipment = GetSerializedEquipment(Arm);
+        string legEquipment = GetSerializedEquipment(Leg);
+
+        return $"Head={Head.Count}[{headEquipment}], Torso=1[{torsoEquipment}], Arm={Arm.Count}[{armEquipment}], Leg={Leg.Count}[{legEquipment}]";
+    }
+
+    private string GetSerializedEquipment(List<IEntity> bodyPart)
+    {
+        if (bodyPart == null)
+            return "";
+
+        StringBuilder sb = new StringBuilder();
+        foreach (var bp in bodyPart)
+        {
+            if(bp == null) continue;
+
+            EquipmentSlot slot = bp.GetComponent<EquipmentSlot>();
+            string equipment = EntityQuery.GetEntityName(slot.EquipmentId);
+            if (!string.IsNullOrEmpty(equipment))
+                sb.Append($"<{equipment}>&");
+        }
+        string value = sb.ToString().TrimEnd('&');
+        return value;
     }
 }
 

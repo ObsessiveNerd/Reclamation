@@ -4,6 +4,13 @@ using UnityEngine;
 
 public class EntityMap : WorldComponent
 {
+    public static Dictionary<string, string> IDToNameMap = new Dictionary<string, string>();
+    public static void AddEntityToNameMap(IEntity e)
+    {
+        IDToNameMap[e.ID] = e.Name;
+    }
+
+
     private Dictionary<string, IEntity> m_EntityIdToEntityMap = new Dictionary<string, IEntity>();
 
     public override void Init(IEntity self)

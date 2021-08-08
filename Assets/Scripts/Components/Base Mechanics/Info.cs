@@ -25,7 +25,8 @@ public class DTO_Info : IDataTransferComponent
 
     public void CreateComponent(string data)
     {
-        Component = new Info(data);
+        string value = data.Split('=')[1];
+        Component = new Info(value);
     }
 
     public string CreateSerializableData(IComponent component)

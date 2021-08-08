@@ -59,16 +59,18 @@ public class BlueprintCreator
             {
                 if (comp.GetType() == typeof(Body))
                 {
-                    if (field.FieldType == typeof(List<IEntity>))
-                    {
-                        var value = field.GetValue(comp);
-                        if (value != null)
-                            bpv.FieldToValue.Add(field.Name, (value as List<IEntity>).Count.ToString());
-                        else
-                            bpv.FieldToValue.Add(field.Name, "0");
-                    }
-                    else
-                        bpv.FieldToValue.Add(field.Name, "1");
+                    bpv.FieldToValue.Add(field.Name, comp.ToString());
+                    break;
+                    //if (field.FieldType == typeof(List<IEntity>))
+                    //{
+                    //    var value = field.GetValue(comp);
+                    //    if (value != null)
+                    //        bpv.FieldToValue.Add(field.Name, (value as List<IEntity>).Count.ToString());
+                    //    else
+                    //        bpv.FieldToValue.Add(field.Name, "0");
+                    //}
+                    //else
+                    //    bpv.FieldToValue.Add(field.Name, "1");
                 }
                 else
                 {
@@ -105,8 +107,13 @@ public class BlueprintCreator
                 componentString = componentString.TrimEnd(':');
             else
             {
-                foreach (var keyValuePair in comp.FieldToValue)
-                    componentString += $"{keyValuePair.Key}={keyValuePair.Value},";
+                if (comp.ComponentName == nameof(Body))
+                    componentString += comp.FieldToValue["Torso"];
+                else
+                {
+                    foreach (var keyValuePair in comp.FieldToValue)
+                        componentString += $"{keyValuePair.Key}={keyValuePair.Value},";
+                }
                 componentString = componentString.TrimEnd(',');
             }
             sb.AppendLine(componentString);

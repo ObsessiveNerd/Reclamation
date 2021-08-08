@@ -13,6 +13,7 @@ public interface IEntity
     void RemoveComponent(Type component);
     bool HasComponent(Type component);
     List<IComponent> GetComponents();
+    T GetComponent<T>() where T : IComponent;
     void CleanupComponents();
     string Name { get; }
     string ID { get; }

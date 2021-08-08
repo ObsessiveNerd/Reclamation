@@ -199,7 +199,7 @@ public static class EntityFactory
             if (en != null)
                 result.Add(en);
             else
-                Debug.LogError($"Issue creating entity: {value} from param: {parameter}");
+                Debug.LogError($"Issue creating entity ({entityName}): {value} from param: {parameter}");
         }
         return result;
     }

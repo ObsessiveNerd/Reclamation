@@ -94,8 +94,6 @@ public static class Factions
         /*Undead*/              { 3,     3,       3,    1,    1,    1,    1,    1,    1,    1,    2,    2}
     };
 
-    static Dictionary<string, Dictionary<string, Demeanor>> m_DemeanorMap = new Dictionary<string, Dictionary<string, Demeanor>>();
-
     public static Demeanor GetDemeanorForTarget(IEntity source, IEntity target)
     {
         GameEvent getSourceFaction = new GameEvent(GameEventId.GetFaction, new KeyValuePair<string, object>(EventParameters.Value, null));
