@@ -25,7 +25,9 @@ public class DTO_Info : IDataTransferComponent
 
     public void CreateComponent(string data)
     {
-        string value = data.Split('=')[1];
+        string value = data;
+        if(value.Contains("="))
+            value = data.Split('=')[1];
         Component = new Info(value);
     }
 

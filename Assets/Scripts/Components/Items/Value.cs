@@ -29,7 +29,10 @@ public class DTO_Value : IDataTransferComponent
 
     public void CreateComponent(string data)
     {
-        int amount = int.Parse(data);
+        string value = data;
+        if (value.Contains("="))
+            value = value.Split('=')[1];
+        int amount = int.Parse(value);
         Component = new Value(amount);
     }
 

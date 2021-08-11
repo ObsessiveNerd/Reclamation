@@ -1,6 +1,10 @@
-<Torch>(
-	Inherits: Item
-	FOVModifier: Modifier=4
+<Torch> (
+	GraphicContainer: Textures/Environment/td_world_acid
+	Position:PositionPoint=0,0
+	InteractOnTileOvertake
+	EntityTypeContainer:Type=Item
+	Item:Rarity=Common
+	FOVModifier:Modifier=4
 	ActiveWhileEquiped
-	DestroyAfterTurns: DestroyAfterTurnCount=30
+	DestroyAfterTurns:CurrentTurnCount=0,DestroyAfterTurnCount=30,Active=False
 )

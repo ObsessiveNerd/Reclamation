@@ -47,6 +47,8 @@ public static class GameEventId
     public const string Drop = nameof(Drop);
     public const string GetValue = nameof(GetValue);
     public const string AddItem = nameof(AddItem);
+    public const string AddItems = nameof(AddItems);
+    public const string GetRarity = nameof(GetRarity);
     public const string GetItems = nameof(GetItems);
     public const string DropItemsOnMap = nameof(DropItemsOnMap);
     public const string AddItemsToInventory = nameof(AddItemsToInventory);
@@ -219,6 +221,7 @@ public static class EventParameters
     public const string Point = nameof(Point);
     public const string Entity = nameof(Entity);
     public const string Item = nameof(Item);
+    public const string Items = nameof(Items);
     public const string Target = nameof(Target);
     public const string EntityType = nameof(EntityType);
     public const string Creature = nameof(Creature);
@@ -264,6 +267,7 @@ public static class EventParameters
     public const string IncludeSelf = nameof(IncludeSelf);
     public const string Level = nameof(Level);
     public const string NewGame = nameof(NewGame);
+    public const string Rarity = nameof(Rarity);
 }
 
 [Serializable]

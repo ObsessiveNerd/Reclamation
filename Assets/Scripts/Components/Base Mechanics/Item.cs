@@ -1,14 +1,29 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum ItemRarity
+{
+    Common = 1,
+    Uncommon = 3,
+    Rare = 5,
+    Epic = 10,
+    Mythic = 20
+}
+
 public class Item : Component
 {
-    public Item()
+    public ItemRarity Rarity;
+
+    public Item(ItemRarity rarity)
     {
+        Rarity = rarity;
+
         RegisteredEvents.Add(GameEventId.Pickup);
         RegisteredEvents.Add(GameEventId.Drop);
         RegisteredEvents.Add(GameEventId.GetContextMenuActions);
+        RegisteredEvents.Add(GameEventId.GetRarity);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
@@ -46,6 +61,11 @@ public class Item : Component
             });
             gameEvent.GetValue<List<ContextMenuButton>>(EventParameters.InventoryContextActions).Add(button);
         }
+
+        if(gameEvent.ID == GameEventId.GetRarity)
+        {
+            gameEvent.Paramters[EventParameters.Rarity] = Rarity;
+        }
     }
 }
 
@@ -55,11 +75,19 @@ public class DTO_Item : IDataTransferComponent
 
     public void CreateComponent(string data)
     {
-        Component = new Item();
+        string value = data;
+        if (value.Contains("="))
+        {
+            value = data.Split('=')[1];
+            Component = new Item((ItemRarity)Enum.Parse(typeof(ItemRarity), value));
+        }
+        else
+            Component = new Item(ItemRarity.Common);
     }
 
     public string CreateSerializableData(IComponent component)
     {
-        return nameof(Item);
+        Item item = (Item)component;
+        return $"{nameof(Item)}:{nameof(item.Rarity)}={item.Rarity}";
     }
 }

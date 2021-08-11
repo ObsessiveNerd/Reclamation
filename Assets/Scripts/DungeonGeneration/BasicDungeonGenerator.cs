@@ -54,7 +54,7 @@ public class Room
 
     public void CreateDoors()
     {
-        foreach(var wall in m_Walls)
+        foreach (var wall in m_Walls)
         {
             Point up = new Point(wall.x, wall.y + 1);
             Point down = new Point(wall.x, wall.y - 1);
@@ -64,7 +64,7 @@ public class Room
 
             if ((WorldUtility.GetEntityAtPosition(up, false) != null && WorldUtility.GetEntityAtPosition(down, false) != null) ||
                 (WorldUtility.GetEntityAtPosition(right, false) != null && WorldUtility.GetEntityAtPosition(left, false) != null))
-                {
+            {
 
                 EventBuilder getEntity = new EventBuilder(GameEventId.GetEntityOnTile)
                                             .With(EventParameters.TilePosition, wall)
@@ -81,7 +81,7 @@ public class Room
     public void CreateHallwayToRoom(Room otherRoom)
     {
         int hallwayDirection = RecRandom.Instance.GetRandomValue(0, 2);
-        if(hallwayDirection == 1)
+        if (hallwayDirection == 1)
         {
             Point midPoint = GetMiddleOfTheRoom();
             Point otherMidPoint = otherRoom.GetMiddleOfTheRoom();
@@ -174,9 +174,9 @@ public class Room
 
     public void ClearRoom()
     {
-        for(int x = m_StartPoint.x + 1; x < (m_StartPoint.x + m_Size.x) - 1; x++)
+        for (int x = m_StartPoint.x + 1; x < (m_StartPoint.x + m_Size.x) - 1; x++)
         {
-            for(int y = m_StartPoint.y + 1; y < (m_StartPoint.y + m_Size.y) - 1; y++)
+            for (int y = m_StartPoint.y + 1; y < (m_StartPoint.y + m_Size.y) - 1; y++)
             {
                 EventBuilder builder = new EventBuilder(GameEventId.DestroyObject)
                                      .With(EventParameters.Point, new Point(x, y));
@@ -188,7 +188,7 @@ public class Room
 
     public void ClearHallways()
     {
-        foreach(Point p in m_Hallways)
+        foreach (Point p in m_Hallways)
         {
             EventBuilder builder = new EventBuilder(GameEventId.DestroyObject)
                                       .With(EventParameters.Point, p);
@@ -204,9 +204,9 @@ public class Room
 
     void SurroundPointWithWalls(Point p)
     {
-        for(int x = p.x - 1; x <= p.x + 1; x++)
+        for (int x = p.x - 1; x <= p.x + 1; x++)
         {
-            for(int y = p.y - 1; y <= p.y + 1; y++)
+            for (int y = p.y - 1; y <= p.y + 1; y++)
             {
                 Spawner.Spawn(EntityFactory.CreateEntity("Wall"), new Point(x, y));
             }
@@ -259,11 +259,21 @@ public class BasicDungeonGenerator : IDungeonGenerator
     private DungeonMetaData m_DMD;
     private int m_MinRoomSize = 5;
     private DungeonGenerationResult m_Result;
+    Dictionary<ItemRarity, List<string>> m_ItemRarityToBPName = new Dictionary<ItemRarity, List<string>>();
 
     public BasicDungeonGenerator(int rows, int columns)
     {
         Rooms = new List<Room>();
         m_Root = new DungeonPartition(new Point(0, 0), new Point(columns, rows));
+
+        foreach(var bp in EntityFactory.InventoryEntities)
+        {
+            IEntity e = EntityFactory.CreateEntity(bp);
+            ItemRarity rarity = e.FireEvent(new GameEvent(GameEventId.GetRarity, new KeyValuePair<string, object>(EventParameters.Rarity, null))).GetValue<ItemRarity>(EventParameters.Rarity);
+            if (!m_ItemRarityToBPName.ContainsKey(rarity))
+                m_ItemRarityToBPName.Add(rarity, new List<string>());
+            m_ItemRarityToBPName[rarity].Add(bp);
+        }
     }
 
     public virtual DungeonGenerationResult GenerateDungeon(DungeonMetaData metaData)
@@ -278,17 +288,17 @@ public class BasicDungeonGenerator : IDungeonGenerator
         CreateHallways();
         CleanupRooms();
 
-        //if(metaData.SpawnEnemies)
-            SpawnEnemies();
+        SpawnEnemies();
+        SpawnItems();
+        SpawnStairs();
 
-        if(metaData.SpawnBoss)
+        //TODO
+        if (metaData.SpawnBoss)
         {
             Room randomRoom = Rooms[RecRandom.Instance.GetRandomValue(1, Rooms.Count)];
             IEntity goblin = EntityFactory.CreateEntity("RedDragon");
             Spawner.Spawn(goblin, randomRoom.GetValidPoint());
         }
-
-        SpawnItems();
 
         return m_Result;
     }
@@ -298,7 +308,7 @@ public class BasicDungeonGenerator : IDungeonGenerator
         int minSize = Mathf.Min(partition.Size.x, partition.Size.y);
         if (minSize / 2 < m_MinRoomSize)
         {
-            if(minSize >= m_MinRoomSize)
+            if (minSize >= m_MinRoomSize)
                 m_LeafNodes.Add(partition);
             return;
         }
@@ -360,7 +370,7 @@ public class BasicDungeonGenerator : IDungeonGenerator
 
     void CreateHallways()
     {
-        for(int i = 0; i < Rooms.Count - 1; ++i)
+        for (int i = 0; i < Rooms.Count - 1; ++i)
             Rooms[i].CreateHallwayToRoom(Rooms[i + 1]);
     }
 
@@ -382,20 +392,82 @@ public class BasicDungeonGenerator : IDungeonGenerator
 
     void SpawnItems()
     {
-        if(RecRandom.Instance.GetRandomValue(0, 100) < 30)
+        foreach (var room in Rooms)
         {
-            Room randomRoom = Rooms[RecRandom.Instance.GetRandomValue(1, Rooms.Count)];
-            IEntity item = EntityFactory.CreateEntity("Spellbook");
-            Spawner.Spawn(item, randomRoom.GetValidPoint());
-        }
+            bool spawnItems = RecRandom.Instance.GetRandomValue(0, 100) < 30;
+            if (spawnItems)
+            {
+                int totalValue = RecRandom.Instance.GetRandomValue(1, 25);
+                bool spawnChest = RecRandom.Instance.GetRandomValue(0, 100) < 45;
+                List<string> items = GetItemsEqualToValue(totalValue);
 
+                if (spawnChest)
+                {
+                    IEntity chest = EntityFactory.CreateEntity("Chest");
+                    EventBuilder addItems = new EventBuilder(GameEventId.AddItems)
+                                            .With(EventParameters.Items, items);
+                    if (chest == null)
+                        continue;
+
+                    chest.FireEvent(addItems.CreateEvent());
+                    Spawner.Spawn(chest, room.GetValidPoint());
+                }
+                else
+                {
+                    Debug.Log("Items should be spawned");
+                    foreach (var item in items)
+                        Spawner.Spawn(EntityQuery.GetEntity(item), room.GetValidPoint());
+                }
+            }
+        }
+    }
+
+    void SpawnStairs()
+    {
         if (m_DMD.StairsUp)
             Spawner.Spawn(EntityFactory.CreateEntity("StairsUp"), Rooms[0].GetValidPoint());
+
         if (m_DMD.StairsDown)
         {
             int stairsDownRoomIndex = RecRandom.Instance.GetRandomValue(1, Rooms.Count);
             Spawner.Spawn(EntityFactory.CreateEntity("StairsDown"), Rooms[stairsDownRoomIndex].GetValidPoint());
             m_Result.StairsDownRoomIndex = stairsDownRoomIndex;
         }
+    }
+
+    List<string> GetItemsEqualToValue(int value)
+    {
+        List<string> returnedEntities = new List<string>();
+        int total = 0;
+
+        while (CanGetItemOfRarity(ItemRarity.Mythic, value, total))
+            returnedEntities.Add(GetItemOfSpecificRarity(ItemRarity.Mythic, ref total));
+
+        while (CanGetItemOfRarity(ItemRarity.Epic, value, total))
+            returnedEntities.Add(GetItemOfSpecificRarity(ItemRarity.Epic, ref total));
+
+        while (CanGetItemOfRarity(ItemRarity.Rare, value, total))
+            returnedEntities.Add(GetItemOfSpecificRarity(ItemRarity.Rare, ref total));
+
+        while (CanGetItemOfRarity(ItemRarity.Uncommon, value, total))
+            returnedEntities.Add(GetItemOfSpecificRarity(ItemRarity.Uncommon, ref total));
+
+        while (CanGetItemOfRarity(ItemRarity.Common, value, total))
+            returnedEntities.Add(GetItemOfSpecificRarity(ItemRarity.Common, ref total));
+
+        return returnedEntities;
+    }
+
+    string GetItemOfSpecificRarity(ItemRarity rarity, ref int total)
+    {
+        total += (int)rarity;
+        int listCount = m_ItemRarityToBPName[rarity].Count;
+        string bpName = m_ItemRarityToBPName[rarity][RecRandom.Instance.GetRandomValue(0, listCount)];
+        return EntityFactory.CreateEntity(bpName).ID;
+    }
+
+    bool CanGetItemOfRarity(ItemRarity rarity, int desiredTotal, int currentTotalValue)
+    {
+        return desiredTotal - currentTotalValue >= (int)rarity && m_ItemRarityToBPName.ContainsKey(rarity);
     }
 }

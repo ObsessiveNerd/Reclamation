@@ -7,6 +7,19 @@ using UnityEngine;
 
 public static class EntityFactory
 {
+    private static List<string> s_InventoryEntities;
+    public static List<string> InventoryEntities
+    {
+        get
+        {
+            if (s_InventoryEntities == null)
+                s_InventoryEntities = new List<string>();
+            if (m_Blueprints.Count == 0)
+                InitBlueprints();
+            return s_InventoryEntities;
+        }
+    }
+
     private static string m_BluePrintPath = "Blueprints";
     private static Dictionary<string, string> m_Blueprints = new Dictionary<string, string>();
     private static Dictionary<string, List<string>> m_BlueprintTypeMap = new Dictionary<string, List<string>>();
@@ -22,30 +35,7 @@ public static class EntityFactory
     public static IEntity CreateEntity(string blueprintName)
     {
         if(m_Blueprints.Count == 0)
-        {
-            foreach (var bpPath in Directory.EnumerateFiles(m_BluePrintPath, "*", SearchOption.AllDirectories))
-            {
-                string bpName = Path.GetFileNameWithoutExtension(bpPath);
-                string directoryOnly = Path.GetDirectoryName(bpPath);
-                if (!m_BlueprintTypeMap.ContainsKey(directoryOnly))
-                    m_BlueprintTypeMap.Add(directoryOnly, new List<string>());
-                m_BlueprintTypeMap[directoryOnly].Add(bpName);
-                m_Blueprints.Add(bpName, bpPath);
-            }
-
-            if(World.Instance != null)
-            {
-                string tempBlueprints = $"{SaveSystem.kSaveDataPath}/{World.Instance.Seed}/Blueprints";
-                if (Directory.Exists(tempBlueprints))
-                {
-                    foreach (var bpPath in Directory.EnumerateFiles(tempBlueprints, "*", SearchOption.AllDirectories))
-                    {
-                        string bpName = Path.GetFileNameWithoutExtension(bpPath);
-                        m_Blueprints.Add(bpName, bpPath);
-                    }
-                }
-            }
-        }
+            InitBlueprints();
 
         if (!m_Blueprints.ContainsKey(blueprintName))
             return null;
@@ -57,6 +47,35 @@ public static class EntityFactory
         if (!File.Exists(path))
             return null;
         return GetEntity(path, a.ID);
+    }
+
+    private static void InitBlueprints()
+    {
+        foreach (var bpPath in Directory.EnumerateFiles(m_BluePrintPath, "*", SearchOption.AllDirectories))
+        {
+            string bpName = Path.GetFileNameWithoutExtension(bpPath);
+            string directoryOnly = Path.GetDirectoryName(bpPath);
+            if (!m_BlueprintTypeMap.ContainsKey(directoryOnly))
+                m_BlueprintTypeMap.Add(directoryOnly, new List<string>());
+            m_BlueprintTypeMap[directoryOnly].Add(bpName);
+            m_Blueprints.Add(bpName, bpPath);
+
+            if (bpPath.StartsWith(kArmorPath) || bpPath.StartsWith(kWeaponPath) || bpPath.StartsWith(kItemsPath))
+                s_InventoryEntities.Add(bpName);
+        }
+
+        if (World.Instance != null)
+        {
+            string tempBlueprints = $"{SaveSystem.kSaveDataPath}/{World.Instance.Seed}/Blueprints";
+            if (Directory.Exists(tempBlueprints))
+            {
+                foreach (var bpPath in Directory.EnumerateFiles(tempBlueprints, "*", SearchOption.AllDirectories))
+                {
+                    string bpName = Path.GetFileNameWithoutExtension(bpPath);
+                    m_Blueprints.Add(bpName, bpPath);
+                }
+            }
+        }
     }
 
     public static string GetRandomCharacterBPName()

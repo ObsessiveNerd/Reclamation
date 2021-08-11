@@ -1,6 +1,9 @@
-<Short Bow>(
-	Inherits:Item
-	WeaponType:Ranged
-	DealDamage:DamageType=Piercing, Damage=1d8
-	Equipment: Arm
+<Short Bow> (
+	Position:PositionPoint=0,0
+	InteractOnTileOvertake
+	EntityTypeContainer:Type=Item
+	Item:Rarity=Uncommon
+	WeaponType:TypeWeapon=Ranged
+	DealDamage:DamageType=Piercing,Dice=1d8
+	Equipment:PreferredBodyPartWhenEquipped=Arm
 )

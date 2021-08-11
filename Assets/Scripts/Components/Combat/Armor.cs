@@ -26,13 +26,16 @@ public class DTO_Armor : IDataTransferComponent
 
     public void CreateComponent(string data)
     {
-        int armor = int.Parse(data);
+        string value = data;
+        if (value.Contains("="))
+            value = value.Split('=')[1];
+        int armor = int.Parse(value);
         Component = new Armor(armor);
     }
 
     public string CreateSerializableData(IComponent component)
     {
         Armor a = (Armor)component;
-        return $"{nameof(Armor)}:{a.ArmorAmount}";
+        return $"{nameof(Armor)}:{nameof(a.ArmorAmount)}={a.ArmorAmount}";
     }
 }

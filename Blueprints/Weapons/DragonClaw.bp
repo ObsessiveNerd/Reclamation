@@ -1,6 +1,10 @@
-<DragonClaw>(
-	Inherits:Item
-	WeaponType:Melee
-	DealDamage:DamageType=Slashing, Damage=1d12
-	Equipment: Arm
+<DragonClaw> (
+	GraphicContainer: Textures/Environment/td_world_grass_a
+	Position:PositionPoint=0,0
+	InteractOnTileOvertake
+	EntityTypeContainer:Type=Item
+	Item:Rarity=Epic
+	WeaponType:TypeWeapon=Melee
+	DealDamage:DamageType=Slashing,Dice=1d12
+	Equipment:PreferredBodyPartWhenEquipped=Arm
 )

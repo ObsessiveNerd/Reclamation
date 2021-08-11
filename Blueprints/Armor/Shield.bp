@@ -1,6 +1,9 @@
-<Shield>(
-	Inherits:Item
-	Armor:2
-	Portrait:Portraits/Armor/shield_t_01
-	Equipment: Arm
+<Shield> (
+	Portrait: Portraits/Armor/shield_t_01
+	Position:PositionPoint=0,0
+	InteractOnTileOvertake
+	EntityTypeContainer:Type=Item
+	Item:Rarity=Common
+	Armor:ArmorAmount=2
+	Equipment:PreferredBodyPartWhenEquipped=Arm
 )

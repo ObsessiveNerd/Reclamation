@@ -4,6 +4,6 @@
 	Position:PositionPoint=0,0
 	InteractOnTileOvertake
 	EntityTypeContainer:Type=Item
-	Item
+	Item:Rarity=Epic
 	SpellContainer:SpellNameToIdMap=<Firebolt>&<IceRay>
 )

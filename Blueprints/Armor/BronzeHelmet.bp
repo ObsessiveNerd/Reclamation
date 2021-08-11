@@ -1,8 +1,11 @@
-<BronzeHelmet>(
-	Inherits:Item
-	Armor:1
-	GraphicContainer:Textures/Armor/td_items_leather_helm
-	Value: 25
-	Portrait:Portraits/Armor/helmets_16
-	Equipment: Head
+<BronzeHelmet> (
+	GraphicContainer: Textures/Armor/td_items_leather_helm
+	Portrait: Portraits/Armor/helmets_16
+	Position:PositionPoint=0,0
+	InteractOnTileOvertake
+	EntityTypeContainer:Type=Item
+	Item:Rarity=Uncommon
+	Armor:ArmorAmount=1
+	Value:Amount=25
+	Equipment:PreferredBodyPartWhenEquipped=Head
 )
