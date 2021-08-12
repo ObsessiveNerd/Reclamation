@@ -65,7 +65,7 @@ public class ChestMono : EscapeableMono, IUpdatableUI
 
     protected override void OnEscape()
     {
-        m_Inventory.Cleanup();
+        m_Inventory?.Cleanup();
         Cleanup();
         WorldUtility.UnRegisterUI(this);
         ChestUI.SetActive(false);

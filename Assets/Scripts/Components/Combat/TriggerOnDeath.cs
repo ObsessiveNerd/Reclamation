@@ -33,12 +33,13 @@ public class DTO_TriggerOnDeath : IDataTransferComponent
 
     public void CreateComponent(string data)
     {
-        Component = new TriggerOnDeath(data);
+        string value = data.Split('=')[1];
+        Component = new TriggerOnDeath(value);
     }
 
     public string CreateSerializableData(IComponent component)
     {
         TriggerOnDeath tod = (TriggerOnDeath)component;
-        return $"{nameof(TriggerOnDeath)}: {tod.EventId}";
+        return $"{nameof(TriggerOnDeath)}: {nameof(tod.EventId)}={tod.EventId}";
     }
 }
