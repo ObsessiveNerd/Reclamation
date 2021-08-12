@@ -21,18 +21,10 @@ public class CharacterManagerMono : EscapeableMono
         CharacterStats.GetComponent<CharacterStatsMono>().Setup(source);
     }
 
-    //public void UpdateUI()
-    //{
-    //    Cleanup();
-    //    InventoryView.GetComponent<InventoryManagerMono>().Setup(source);
-    //    EquipmentView.GetComponent<EquipmentViewMono>().Setup(source);
-    //    CharacterStats.GetComponent<CharacterStatsMono>().Setup(source);
-    //}
-
     protected override void OnEscape()
     {
-        CharacterManagerObject.SetActive(false);
         Cleanup();
+        CharacterManagerObject.SetActive(false);
     }
 
     void Cleanup()
