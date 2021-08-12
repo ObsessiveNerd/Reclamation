@@ -15,17 +15,19 @@ public class CharacterManagerMono : EscapeableMono
     public void Setup(IEntity source)
     {
         CharacterManagerObject.SetActive(true);
-        UpdateUI(source.ID);
-    }
 
-    public void UpdateUI(string id)
-    {
-        Cleanup();
-        IEntity source = EntityQuery.GetEntity(id);
         InventoryView.GetComponent<InventoryManagerMono>().Setup(source);
         EquipmentView.GetComponent<EquipmentViewMono>().Setup(source);
         CharacterStats.GetComponent<CharacterStatsMono>().Setup(source);
     }
+
+    //public void UpdateUI()
+    //{
+    //    Cleanup();
+    //    InventoryView.GetComponent<InventoryManagerMono>().Setup(source);
+    //    EquipmentView.GetComponent<EquipmentViewMono>().Setup(source);
+    //    CharacterStats.GetComponent<CharacterStatsMono>().Setup(source);
+    //}
 
     protected override void OnEscape()
     {
@@ -35,8 +37,8 @@ public class CharacterManagerMono : EscapeableMono
 
     void Cleanup()
     {
-        InventoryView.GetComponent<InventoryManagerMono>().Cleanup();
-        EquipmentView.GetComponent<EquipmentViewMono>().Cleanup();
-        CharacterStats.GetComponent<CharacterStatsMono>().Cleanup();
+        InventoryView.GetComponent<InventoryManagerMono>().Close();
+        EquipmentView.GetComponent<EquipmentViewMono>().Close();
+        //CharacterStats.GetComponent<CharacterStatsMono>().Cleanup();
     }
 }

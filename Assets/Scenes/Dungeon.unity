@@ -3161,7 +3161,7 @@ MonoBehaviour:
     m_Right: 0
     m_Top: 0
     m_Bottom: 0
-  m_ChildAlignment: 1
+  m_ChildAlignment: 0
   m_StartCorner: 0
   m_StartAxis: 0
   m_CellSize: {x: 100, y: 100}
@@ -3185,6 +3185,7 @@ GameObject:
   - component: {fileID: 900815870}
   - component: {fileID: 900815871}
   - component: {fileID: 900815872}
+  - component: {fileID: 900815873}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -3309,6 +3310,7 @@ MonoBehaviour:
   InventoryView: {fileID: 1457070885}
   EquipmentView: {fileID: 120178566}
   CharacterStats: {fileID: 1514082004}
+  ChestUI: {fileID: 729036809}
 --- !u!114 &900815870
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3351,6 +3353,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   EndState: {fileID: 321278769}
+--- !u!114 &900815873
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 900815863}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9eb0516647786004abb0937dc6db66e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ChestUI: {fileID: 729036809}
+  ChestContent: {fileID: 894072840}
 --- !u!1 &961514152
 GameObject:
   m_ObjectHideFlags: 0

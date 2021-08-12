@@ -4,13 +4,17 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 
-public class InventoryManagerMono : MonoBehaviour
+public class InventoryManagerMono : MonoBehaviour, IUpdatableUI
 {
     public Transform InventoryView;
     IEntity m_Source;
+    List<GameObject> m_Items = new List<GameObject>();
+
     public void Setup(IEntity source)
     {
         m_Source = source;
+
+        WorldUtility.RegisterUI(this);
         EventBuilder getCurrentInventory = new EventBuilder(GameEventId.GetCurrentInventory)
                                             .With(EventParameters.Value, new List<IEntity>());
 
@@ -28,14 +32,27 @@ public class InventoryManagerMono : MonoBehaviour
                 spriteRenderer.sprite = sprite;
                 spriteGo.transform.SetParent(InventoryView);
                 spriteGo.AddComponent<InventoryItemMono>().Init(source, item);
+                m_Items.Add(spriteGo);
             }
         }
     }
 
     public void Cleanup()
     {
-        foreach (Transform go in InventoryView.GetComponentsInChildren<Transform>())
-            if (InventoryView.transform != go)
-                Destroy(go.gameObject);
+        foreach (GameObject go in m_Items)
+                Destroy(go);
+        m_Items.Clear();
+    }
+
+    public void UpdateUI()
+    {
+        Cleanup();
+        Setup(m_Source);
+    }
+
+    public void Close()
+    {
+        Cleanup();
+        WorldUtility.UnRegisterUI(this);
     }
 }

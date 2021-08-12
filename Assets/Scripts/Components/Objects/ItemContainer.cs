@@ -6,12 +6,12 @@ using UnityEngine;
 
 public class ItemContainer : Component
 {
-    public Dictionary<string, IEntity> ItemNameToIdMap = new Dictionary<string, IEntity>();
+    public Dictionary<string, IEntity> IDToEntityMap = new Dictionary<string, IEntity>();
 
     public ItemContainer(string itemNames)
     {
         foreach(var item in EntityFactory.GetEntitiesFromArray(itemNames))
-            ItemNameToIdMap[item.Name] = item;
+            IDToEntityMap[item.Name] = item;
     }
 
     public override void Init(IEntity self)
@@ -19,22 +19,25 @@ public class ItemContainer : Component
         base.Init(self);
         RegisteredEvents.Add(GameEventId.GetItems);
         RegisteredEvents.Add(GameEventId.AddItem);
+        RegisteredEvents.Add(GameEventId.AddItems);
         RegisteredEvents.Add(GameEventId.DropItemsOnMap);
         RegisteredEvents.Add(GameEventId.AddItemsToInventory);
+        RegisteredEvents.Add(GameEventId.Interact);
+        RegisteredEvents.Add(GameEventId.RemoveItem);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
     {
         if (gameEvent.ID == GameEventId.GetItems)
         {
-            gameEvent.Paramters[EventParameters.Item] = ItemNameToIdMap.Values.ToList();
+            gameEvent.Paramters[EventParameters.Item] = IDToEntityMap.Keys.ToList();
         }
         else if(gameEvent.ID == GameEventId.DropItemsOnMap)
         {
             Point p = WorldUtility.GetEntityPosition(Self);
-            foreach (var e in ItemNameToIdMap.Values)
+            foreach (var e in IDToEntityMap.Values)
                 Spawner.Spawn(e, p);
-            ItemNameToIdMap.Clear();
+            IDToEntityMap.Clear();
             Spawner.Despawn(Self);
         }
         else if(gameEvent.ID == GameEventId.AddItemsToInventory)
@@ -44,10 +47,46 @@ public class ItemContainer : Component
         else if(gameEvent.ID == GameEventId.AddItem)
         {
             string name = gameEvent.GetValue<string>(EventParameters.Item);
-            IEntity entity = EntityFactory.CreateEntity(name);
-            if(entity != null)
-                ItemNameToIdMap.Add(name, entity);
+            AddItem(name);
         }
+        else if(gameEvent.ID == GameEventId.AddItems)
+        {
+            List<string> names = gameEvent.GetValue<List<string>>(EventParameters.Items);
+            foreach(var name in names)
+                AddItem(name);
+        }
+        else if(gameEvent.ID == GameEventId.RemoveItem)
+        {
+            string id = gameEvent.GetValue<string>(EventParameters.Item);
+            if(IDToEntityMap.ContainsKey(id))
+                IDToEntityMap.Remove(id);
+        }
+        else if(gameEvent.ID == GameEventId.Interact)
+        {
+            string characterId = gameEvent.GetValue<string>(EventParameters.Entity);
+            if (!WorldUtility.IsActivePlayer(characterId))
+                return;
+
+            //TODO
+            StringBuilder sb = new StringBuilder("Container holds these items: \n");
+            foreach (var item in IDToEntityMap.Values)
+                sb.AppendLine(item.Name);
+            Debug.Log(sb.ToString());
+
+            EventBuilder openUI = new EventBuilder(GameEventId.OpenChestUI)
+                                    .With(EventParameters.Entity, Self.ID)
+                                    .With(EventParameters.Character, characterId);
+            World.Instance.Self.FireEvent(openUI.CreateEvent());
+        }
+    }
+
+    void AddItem(string name)
+    {
+        IEntity entity = EntityFactory.CreateEntity(name);
+        if (entity == null)
+            entity = EntityQuery.GetEntity(name);
+        if (entity != null)
+            IDToEntityMap.Add(name, entity);
     }
 }
 
@@ -57,14 +96,17 @@ public class DTO_ItemContainer : IDataTransferComponent
 
     public void CreateComponent(string data)
     {
-        Component = new ItemContainer(data);
+        string value = data;
+        if (value.Contains("="))
+            value = value.Split('=')[1];
+        Component = new ItemContainer(value);
     }
 
     public string CreateSerializableData(IComponent component)
     {
         ItemContainer ic = (ItemContainer)component;
         StringBuilder itemNameBuilder = new StringBuilder();
-        foreach (var name in ic.ItemNameToIdMap.Keys)
+        foreach (var name in ic.IDToEntityMap.Keys)
             itemNameBuilder.Append($"<{name}>,");
         return $"{nameof(ItemContainer)}: [{itemNameBuilder.ToString().TrimEnd(',')}]";
     }

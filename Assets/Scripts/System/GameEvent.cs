@@ -47,6 +47,7 @@ public static class GameEventId
     public const string Drop = nameof(Drop);
     public const string GetValue = nameof(GetValue);
     public const string AddItem = nameof(AddItem);
+    public const string RemoveItem = nameof(RemoveItem);
     public const string AddItems = nameof(AddItems);
     public const string GetRarity = nameof(GetRarity);
     public const string GetItems = nameof(GetItems);
@@ -193,6 +194,9 @@ public static class GameEventId
     public const string UIInput = nameof(UIInput);
     public const string CloseUI = nameof(CloseUI);
     public const string OpenInventoryUI = nameof(OpenInventoryUI);
+    public const string OpenChestUI = nameof(OpenChestUI);
+    public const string RegisterUI = nameof(RegisterUI);
+    public const string UnRegisterUI = nameof(UnRegisterUI);
     public const string OpenSpellUI = nameof(OpenSpellUI);
     public const string GetPlayableCharacters = nameof(GetPlayableCharacters);
     public const string SetInfo = nameof(SetInfo);
@@ -220,6 +224,7 @@ public static class EventParameters
     public const string Renderer = nameof(Renderer);
     public const string Point = nameof(Point);
     public const string Entity = nameof(Entity);
+    public const string Character = nameof(Character);
     public const string Item = nameof(Item);
     public const string Items = nameof(Items);
     public const string Target = nameof(Target);
@@ -264,6 +269,7 @@ public static class EventParameters
     public const string Legs = nameof(Legs);
     public const string Objects = nameof(Objects);
     public const string InventoryContextActions = nameof(InventoryContextActions);
+    public const string ChestContextActions = nameof(ChestContextActions);
     public const string IncludeSelf = nameof(IncludeSelf);
     public const string Level = nameof(Level);
     public const string NewGame = nameof(NewGame);

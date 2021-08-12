@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class WorldUIController : WorldComponent
 {
+    public List<IUpdatableUI> UpdatableUI = new List<IUpdatableUI>();
+
     public override void Init(IEntity self)
     {
         base.Init(self);
@@ -13,6 +15,9 @@ public class WorldUIController : WorldComponent
         RegisteredEvents.Add(GameEventId.OpenSpellUI);
         RegisteredEvents.Add(GameEventId.UpdateUI);
         RegisteredEvents.Add(GameEventId.RegisterPlayableCharacter);
+        RegisteredEvents.Add(GameEventId.OpenChestUI);
+        RegisteredEvents.Add(GameEventId.RegisterUI);
+        RegisteredEvents.Add(GameEventId.UnRegisterUI);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
@@ -38,13 +43,40 @@ public class WorldUIController : WorldComponent
 
         else if(gameEvent.ID == GameEventId.UpdateUI)
         {
-            if (gameEvent.Paramters.ContainsKey(EventParameters.Entity))
-            {
-                string id = gameEvent.GetValue<string>(EventParameters.Entity);
-                GameObject.FindObjectOfType<CharacterManagerMono>().UpdateUI(id);
-            }
-            else
-                GameObject.FindObjectOfType<CharacterManagerMono>().UpdateUI(m_ActivePlayer.Value.ID);
+
+            foreach (var ui in UpdatableUI)
+                ui.UpdateUI();
+
+            //if (gameEvent.Paramters.ContainsKey(EventParameters.Entity))
+            //{
+            //    string id = gameEvent.GetValue<string>(EventParameters.Entity);
+            //    GameObject.FindObjectOfType<CharacterManagerMono>().UpdateUI(id);
+            //}
+            //else
+            //    GameObject.FindObjectOfType<CharacterManagerMono>().UpdateUI(m_ActivePlayer.Value.ID);
+
+            //GameObject.FindObjectOfType<ChestMono>().UpdateUI();
+        }
+
+        else if(gameEvent.ID == GameEventId.OpenChestUI)
+        {
+            IEntity source = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameters.Entity));
+            IEntity character = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameters.Character));
+            GameObject.FindObjectOfType<ChestMono>().Init(source, character);
+        }
+
+        else if(gameEvent.ID == GameEventId.RegisterUI)
+        {
+            IUpdatableUI go = gameEvent.GetValue<IUpdatableUI>(EventParameters.GameObject);
+            if (!UpdatableUI.Contains(go))
+                UpdatableUI.Add(go);
+        }
+
+        else if(gameEvent.ID == GameEventId.UnRegisterUI)
+        {
+            IUpdatableUI go = gameEvent.GetValue<IUpdatableUI>(EventParameters.GameObject);
+            if (UpdatableUI.Contains(go))
+                UpdatableUI.Remove(go);
         }
     }
 }

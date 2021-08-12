@@ -1,0 +1,8 @@
+<Chest> (
+	GraphicContainer: Textures/Environment/td_world_chest
+	Position:PositionPoint=0,0
+	InteractOnTileOvertake
+	EntityTypeContainer:Type=Object
+	BlocksNonHostileMovement
+	ItemContainer:ItemNameToIdMap=
+)

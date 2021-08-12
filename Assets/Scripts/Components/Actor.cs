@@ -88,7 +88,8 @@ public class Actor : IEntity
 
     public void HandleEvent(GameEvent gameEvent)
     {
-        foreach (IComponent component in m_Components.Values)
+        var components = new List<IComponent>(m_Components.Values);
+        foreach (IComponent component in components)
         {
             if (component.RespondsTo(gameEvent))
                 component.HandleEvent(gameEvent);

@@ -409,6 +409,7 @@ public class BasicDungeonGenerator : IDungeonGenerator
                     if (chest == null)
                         continue;
 
+                    Debug.Log("Chest spawned");
                     chest.FireEvent(addItems.CreateEvent());
                     Spawner.Spawn(chest, room.GetValidPoint());
                 }

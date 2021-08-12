@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CharacterStatsMono : MonoBehaviour
+public class CharacterStatsMono : MonoBehaviour, IUpdatableUI
 {
     public void Setup(IEntity source)
     {
@@ -10,6 +10,11 @@ public class CharacterStatsMono : MonoBehaviour
     }
 
     public void Cleanup()
+    {
+
+    }
+
+    public void UpdateUI()
     {
 
     }
