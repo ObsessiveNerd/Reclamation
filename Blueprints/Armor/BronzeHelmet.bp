@@ -1,6 +1,6 @@
 <BronzeHelmet> (
 	GraphicContainer: Textures/Armor/td_items_leather_helm
-	Portrait: Portraits/Armor/helmets_16
+	Portrait: Portraits/Weapons/addons/062_t
 	Position:PositionPoint=0,0
 	InteractOnTileOvertake
 	EntityTypeContainer:Type=Item

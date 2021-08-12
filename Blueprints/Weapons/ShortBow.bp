@@ -1,4 +1,6 @@
 <Short Bow> (
+	GraphicContainer: Textures/Weapons/td_items_weapon_bow
+	Portrait: Portraits/Weapons/bows_and_crossbows/bw_t_01
 	Position:PositionPoint=0,0
 	InteractOnTileOvertake
 	EntityTypeContainer:Type=Item

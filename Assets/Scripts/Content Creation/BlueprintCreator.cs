@@ -47,11 +47,18 @@ public class BlueprintCreator
     {
         if(comp.GetType() == typeof(GraphicContainer))
         {
-            Icon = AssetDatabase.LoadAssetAtPath<Sprite>($"Assets/Resources/{((GraphicContainer)comp).SpritePath}.png");
+            string sp = ((GraphicContainer)comp).SpritePath;
+            //if (sp.EndsWith(".png"))
+            //    sp = sp.Replace(".png", "");
+
+            Icon = AssetDatabase.LoadAssetAtPath<Sprite>($"Assets/Resources/{sp}.png");
         }
         else if(comp.GetType() == typeof(Portrait))
         {
-            Portrait = AssetDatabase.LoadAssetAtPath<Sprite>($"Assets/Resources/{((Portrait)comp).SpritePath}.png");
+            string sp = ((Portrait)comp).SpritePath;
+            //if (sp.EndsWith(".png"))
+            //    sp = sp.Replace(".png", "");
+            Portrait = AssetDatabase.LoadAssetAtPath<Sprite>($"Assets/Resources/{sp}.png");
         }
         else
         {

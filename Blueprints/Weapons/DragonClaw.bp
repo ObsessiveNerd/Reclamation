@@ -1,5 +1,6 @@
 <DragonClaw> (
-	GraphicContainer: Textures/Environment/td_world_grass_a
+	GraphicContainer: Textures/Armor/td_items_dragons_claw
+	Portrait: Portraits/Weapons/addons/085_t
 	Position:PositionPoint=0,0
 	InteractOnTileOvertake
 	EntityTypeContainer:Type=Item
