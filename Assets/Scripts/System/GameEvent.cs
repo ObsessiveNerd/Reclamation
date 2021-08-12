@@ -166,12 +166,14 @@ public static class GameEventId
     public const string TakeDamage = nameof(TakeDamage);
     public const string Died = nameof(Died);
     public const string RestoreHealth = nameof(RestoreHealth);
+    public const string ApplyEffectToTarget = nameof(ApplyEffectToTarget);
     public const string GetWeaponType = nameof(GetWeaponType);
     public const string GetEquipment = nameof(GetEquipment);
     public const string AddArmorValue = nameof(AddArmorValue);
     public const string Sharpness = nameof(Sharpness);
     public const string SeverBodyPart = nameof(SeverBodyPart);
     public const string GetHealth = nameof(GetHealth);
+    public const string Quaff = nameof(Quaff);
 
     //Stats
     public const string GetPrimaryStatType = nameof(GetPrimaryStatType);

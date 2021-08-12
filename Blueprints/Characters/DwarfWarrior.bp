@@ -2,6 +2,7 @@
 	GraphicContainer: Textures/Characters/td_monsters_dwarf_d2
 	Portrait: Portraits/Characters/Tex_Dwarf_warrior_male_bg
 	Defense
+	InteractsWithWorld
 	PackTactics:IsPartyLeader=True,IsInParty=False,PartyLeaderId=,PackRange=2
 	FOV:FOVRange=5
 	Faction:ID=DwarvenExpedition
@@ -14,7 +15,7 @@
 	PrimaryStatType:PrimaryStat=Str
 	RegisterWithTimeSystem
 	AIFOVHandler
-	Body:Torso=1,Head=1,Arm=2[<ShortSword>],Leg=2
+	Body:Head=1[], Torso=1[], Arm=2[<Short Sword>], Leg=2[]
 	BlocksNonHostileMovement
 	CombatRating
 	AIController
@@ -22,6 +23,6 @@
 	Fear
 	Position:PositionPoint=0,0
 	InteractOnTileOvertake
-	InteractsWithWorld
+	HealthRegen:RegenAmount=1,RegenSpeed=5
 	Health:MaxHealth=10,CurrentHealth=10
 )

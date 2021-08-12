@@ -7,7 +7,7 @@ using UnityEngine;
 
 public static class EntityFactory
 {
-    private static List<string> s_InventoryEntities;
+    private static List<string> s_InventoryEntities = new List<string>();
     public static List<string> InventoryEntities
     {
         get
