@@ -44,7 +44,7 @@ public class EquipmentViewMono : MonoBehaviour, IUpdatableUI
         }
 
         IEntity equipment = EntityQuery.GetEntity(equipmentId);
-        EventBuilder getImage = new EventBuilder(GameEventId.GetInfo)
+        EventBuilder getImage = new EventBuilder(GameEventId.GetPortrait)
                                 .With(EventParameters.RenderSprite, null);
         var equipmentInfo = equipment.FireEvent(getImage.CreateEvent());
         slot.GetComponent<Image>().sprite = equipmentInfo.GetValue<Sprite>(EventParameters.RenderSprite);

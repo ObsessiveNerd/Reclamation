@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -15,6 +16,7 @@ public class Heal : Component
     {
         base.Init(self);
         RegisteredEvents.Add(GameEventId.ApplyEffectToTarget);
+        RegisteredEvents.Add(GameEventId.GetInfo);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
@@ -25,6 +27,11 @@ public class Heal : Component
             EventBuilder e = new EventBuilder(GameEventId.RestoreHealth)
                                 .With(EventParameters.Healing, HealAmount);
             target.FireEvent(e.CreateEvent());
+        }
+        else if (gameEvent.ID == GameEventId.GetInfo)
+        {
+            var dictionary = gameEvent.GetValue<Dictionary<string, string>>(EventParameters.Info);
+            dictionary.Add($"{nameof(Heal)}{Guid.NewGuid()}", $"Heals for: {HealAmount}");
         }
     }
 }

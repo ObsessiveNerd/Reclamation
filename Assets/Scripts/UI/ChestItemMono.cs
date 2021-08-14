@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class ChestItemMono : MonoBehaviour, IPointerClickHandler
+public class ChestItemMono : ItemMono, IPointerClickHandler
 {
     IEntity m_Chest { get; set; }
     IEntity m_Item { get; set; }
@@ -30,7 +30,7 @@ public class ChestItemMono : MonoBehaviour, IPointerClickHandler
             EventBuilder add = new EventBuilder(GameEventId.AddToInventory)
                                 .With(EventParameters.Entity, m_Item.ID);
             m_Character.FireEvent(add.CreateEvent());
-
+            DestroyPopup();
             //EventBuilder getContextMenuActions = new EventBuilder(GameEventId.GetContextMenuActions)
             //                        .With(EventParameters.Entity, m_Source.ID)
             //                        .With(EventParameters.ChestContextActions , new List<ContextMenuButton>());
@@ -42,5 +42,10 @@ public class ChestItemMono : MonoBehaviour, IPointerClickHandler
             //foreach (var action in result)
             //    contextMenu.AddButton(action);
         }
+    }
+
+    protected override string GetItemId()
+    {
+        return m_Item?.ID;
     }
 }

@@ -39,7 +39,7 @@ public class ChestMono : EscapeableMono, IUpdatableUI
         {
             var item = EntityQuery.GetEntity(itemId);
 
-            Sprite sprite = item.FireEvent(item, new GameEvent(GameEventId.GetInfo, 
+            Sprite sprite = item.FireEvent(item, new GameEvent(GameEventId.GetPortrait, 
                 new KeyValuePair<string, object>(EventParameters.RenderSprite, null))).GetValue<Sprite>(EventParameters.RenderSprite);
             if(sprite != null)
             {

@@ -18,14 +18,12 @@ public class CharacterTab : MonoBehaviour
         m_Entity = entity;
         m_PrettyName = GetComponentInChildren<TextMeshProUGUI>();
 
-        EventBuilder characterInfo = new EventBuilder(GameEventId.GetInfo)
-                            .With(EventParameters.Name, "")
+        EventBuilder characterInfo = new EventBuilder(GameEventId.GetPortrait)
                             .With(EventParameters.RenderSprite, null);
 
         var firedEvent = entity.FireEvent(characterInfo.CreateEvent());
 
         m_Portrait.sprite = firedEvent.GetValue<Sprite>(EventParameters.RenderSprite);
-        m_PrettyName.text = firedEvent.GetValue<string>(EventParameters.Name);
     }
 
     public void Update()

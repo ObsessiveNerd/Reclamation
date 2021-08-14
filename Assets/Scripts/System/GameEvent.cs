@@ -203,6 +203,7 @@ public static class GameEventId
     public const string GetPlayableCharacters = nameof(GetPlayableCharacters);
     public const string SetInfo = nameof(SetInfo);
     public const string GetInfo = nameof(GetInfo);
+    public const string GetPortrait = nameof(GetPortrait);
     public const string UpdateUI = nameof(UpdateUI);
     public const string GetContextMenuActions = nameof(GetContextMenuActions);
 
@@ -276,6 +277,7 @@ public static class EventParameters
     public const string Level = nameof(Level);
     public const string NewGame = nameof(NewGame);
     public const string Rarity = nameof(Rarity);
+    public const string Info = nameof(Info);
 }
 
 [Serializable]

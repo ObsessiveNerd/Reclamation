@@ -25,7 +25,7 @@ public class InventoryManagerMono : MonoBehaviour, IUpdatableUI
         GameObject spriteGoResource = Resources.Load<GameObject>("UI/InventoryItem");
         foreach(var item in inventory)
         {
-            Sprite sprite = item.FireEvent(item, new GameEvent(GameEventId.GetInfo, 
+            Sprite sprite = item.FireEvent(item, new GameEvent(GameEventId.GetPortrait, 
                 new KeyValuePair<string, object>(EventParameters.RenderSprite, null))).GetValue<Sprite>(EventParameters.RenderSprite);
             if(sprite != null)
             {

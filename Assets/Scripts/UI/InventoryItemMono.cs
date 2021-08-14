@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class InventoryItemMono : MonoBehaviour, IPointerClickHandler
+public class InventoryItemMono : ItemMono, IPointerClickHandler
 {
     IEntity m_Source { get; set; }
     IEntity m_Object { get; set; }
@@ -33,5 +33,10 @@ public class InventoryItemMono : MonoBehaviour, IPointerClickHandler
             foreach (var action in result)
                 contextMenu.AddButton(action);
         }
+    }
+
+    protected override string GetItemId()
+    {
+        return m_Object?.ID;
     }
 }

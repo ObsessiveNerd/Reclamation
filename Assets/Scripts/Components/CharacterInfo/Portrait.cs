@@ -17,12 +17,12 @@ public class Portrait : Component
     public override void Init(IEntity self)
     {
         base.Init(self);
-        RegisteredEvents.Add(GameEventId.GetInfo);
+        RegisteredEvents.Add(GameEventId.GetPortrait);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
     {
-        if(gameEvent.ID == GameEventId.GetInfo)
+        if(gameEvent.ID == GameEventId.GetPortrait)
         {
             gameEvent.Paramters[EventParameters.RenderSprite] = m_Sprite;
         }
