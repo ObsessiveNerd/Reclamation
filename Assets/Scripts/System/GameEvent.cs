@@ -36,6 +36,9 @@ public static class GameEventId
     public const string EmptyBag = nameof(EmptyBag);
     public const string ItemEquipped = nameof(ItemEquipped);
     public const string ItemUnequipped = nameof(ItemUnequipped);
+    public const string OnBeforeEquip = nameof(OnBeforeEquip);
+    public const string OnAfterEquip = nameof(OnAfterEquip);
+    public const string GetMultiBodyPartUse = nameof(GetMultiBodyPartUse);
     public const string Equip = nameof(Equip);
     public const string Unequip = nameof(Unequip);
     public const string GetRangedWeapon = nameof(GetRangedWeapon);
@@ -336,6 +339,11 @@ public class GameEvent
     {
         m_ID = id;
         m_Parameters = parameters;
+    }
+
+    public bool HasParameter(string parameterId)
+    {
+        return Paramters.ContainsKey(parameterId);
     }
 
     public T GetValue<T>(string parameterId)

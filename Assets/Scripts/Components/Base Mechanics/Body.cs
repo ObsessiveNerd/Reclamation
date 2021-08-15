@@ -143,6 +143,10 @@ public class Body : Component
         else if(gameEvent.ID == GameEventId.Equip)
         {
             BodyPart bp = (BodyPart)gameEvent.Paramters[EventParameters.EntityType];
+
+            int numberOfBodyPartsRequired = FireEvent(EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameters.Equipment)),
+                new GameEvent(GameEventId.GetMultiBodyPartUse, new KeyValuePair<string, object>(EventParameters.Value, 1))).GetValue<int>(EventParameters.Value);
+
             List<IEntity> target = new List<IEntity>();
             switch(bp)
             {
@@ -161,21 +165,37 @@ public class Body : Component
                     break;
             }
 
-            bool equipedItem = false;
-            foreach (IEntity e in target)
+            if (target.Count < numberOfBodyPartsRequired)
+                return;
+
+            int bodyPartsTaken = 0;
+            bool unequipThroughIteration = false;
+            for (int i = 0; i < target.Count && bodyPartsTaken < numberOfBodyPartsRequired; i++)
             {
-                if (!HasEquipment(e))
+                if (unequipThroughIteration && GetEquipmentIdForBodyPart(target[i]) != gameEvent.GetValue<string>(EventParameters.Equipment))
                 {
-                    equipedItem = true;
-                    FireEvent(e, gameEvent);
-                    FireEvent(Self, new GameEvent(GameEventId.RemoveFromInventory, 
-                        new KeyValuePair<string, object>(EventParameters.Entity, gameEvent.Paramters[EventParameters.Equipment])));
-                    break;
+                    EventBuilder unequip = new EventBuilder(GameEventId.Unequip)
+                                            .With(EventParameters.Entity, Self.ID)
+                                            .With(EventParameters.Item, GetEquipmentIdForBodyPart(target[i]));
+                    FireEvent(Self, unequip.CreateEvent());
                 }
-            }
-            if(!equipedItem)
-            {
-                //Todo: give a prompt that nothing was equiped and something needs to be unequiped
+
+                if (!HasEquipment(target[i]))
+                {
+                    bodyPartsTaken++;
+                    FireEvent(target[i], gameEvent);
+                    FireEvent(Self, new GameEvent(GameEventId.RemoveFromInventory,
+                        new KeyValuePair<string, object>(EventParameters.Entity, gameEvent.Paramters[EventParameters.Equipment])));
+                }
+
+                if(i == target.Count - 1 && bodyPartsTaken < numberOfBodyPartsRequired)
+                {
+                    i = -1;
+                    if(!unequipThroughIteration)
+                        unequipThroughIteration = true;
+                    else
+                        throw new Exception($"Attempted to equip item {EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameters.Equipment)).Name}");
+                }
             }
         }
 
@@ -194,14 +214,15 @@ public class Body : Component
         {
             foreach (IEntity hand in Arm)
             {
-                IEntity equipment = (IEntity)FireEvent(hand, new GameEvent(GameEventId.GetEquipment, new KeyValuePair<string, object>(EventParameters.Equipment, null))).Paramters[EventParameters.Equipment];
+                IEntity equipment = EntityQuery.GetEntity(FireEvent(hand, new GameEvent(GameEventId.GetEquipment, 
+                    new KeyValuePair<string, object>(EventParameters.Equipment, null))).GetValue<string>(EventParameters.Equipment));
                 if (equipment != null)
                 {
                     TypeWeapon weaponType = (TypeWeapon)FireEvent(equipment, new GameEvent(GameEventId.GetWeaponType,
                            new KeyValuePair<string, object>(EventParameters.WeaponType, null))).Paramters[EventParameters.WeaponType];
                     if (weaponType == TypeWeapon.Ranged)
                     {
-                        gameEvent.Paramters[EventParameters.Value] = equipment;
+                        gameEvent.Paramters[EventParameters.Value] = equipment.ID;
                         break;
                     }
                 }

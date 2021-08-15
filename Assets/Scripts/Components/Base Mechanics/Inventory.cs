@@ -31,14 +31,17 @@ public class Inventory : Component
                                                                                         new KeyValuePair<string, object>(EventParameters.Entity, Self.ID)));
         }
 
-        if(gameEvent.ID == GameEventId.AddToInventory)
+        if (gameEvent.ID == GameEventId.AddToInventory)
         {
             IEntity item = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Entity]);
-            InventoryItems.Add(item);
-            FireEvent(World.Instance.Self, new GameEvent(GameEventId.UpdateUI, new KeyValuePair<string, object>(EventParameters.Entity, Self.ID)));
+            if (!InventoryItems.Contains(item))
+            {
+                InventoryItems.Add(item);
+                FireEvent(World.Instance.Self, new GameEvent(GameEventId.UpdateUI, new KeyValuePair<string, object>(EventParameters.Entity, Self.ID)));
+            }
         }
 
-        if(gameEvent.ID == GameEventId.RemoveFromInventory)
+        if (gameEvent.ID == GameEventId.RemoveFromInventory)
         {
             IEntity item = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Entity]);
             if (InventoryItems.Contains(item))

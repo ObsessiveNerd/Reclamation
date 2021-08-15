@@ -8,4 +8,5 @@
 	WeaponType:TypeWeapon=Ranged
 	DealDamage:DamageType=Piercing,Dice=1d8
 	Equipment:PreferredBodyPartWhenEquipped=Arm
+	TwoHanded
 )

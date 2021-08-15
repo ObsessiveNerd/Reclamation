@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -36,14 +36,10 @@ public class EquipmentSlot : Component
 
         if (gameEvent.ID == GameEventId.Equip)
         {
-            if (!string.IsNullOrEmpty(EquipmentId))
-                FireEvent(Self, new GameEvent(GameEventId.Unequip));
-
             var entity = EntityQuery.GetEntity(EquipmentId);
             FireEvent(entity, new GameEvent(GameEventId.ItemEquipped));
             EquipmentId = (string)gameEvent.Paramters[EventParameters.Equipment];
             EquipmentName = entity?.Name;
-            //m_Equipment.Destroyed += EquipmentDestroyed;
         }
 
         if(gameEvent.ID == GameEventId.Unequip)
