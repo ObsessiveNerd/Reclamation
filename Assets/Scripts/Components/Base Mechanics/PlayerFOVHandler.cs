@@ -11,6 +11,7 @@ public class PlayerFOVHandler : Component
         base.Init(self);
         RegisteredEvents.Add(GameEventId.FOVRecalculated);
         RegisteredEvents.Add(GameEventId.GetVisibleTiles);
+        RegisteredEvents.Add(GameEventId.IsInFOV);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
@@ -20,8 +21,15 @@ public class PlayerFOVHandler : Component
             m_VisiblePoints = (List<Point>)gameEvent.Paramters[EventParameters.VisibleTiles];
             FireEvent(World.Instance.Self, gameEvent);
         }
+
         else if (gameEvent.ID == GameEventId.GetVisibleTiles)
             gameEvent.Paramters[EventParameters.VisibleTiles] = m_VisiblePoints;
+
+        else if(gameEvent.ID == GameEventId.IsInFOV)
+        {
+            var target = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameters.Entity));
+            gameEvent.Paramters[EventParameters.Value] = m_VisiblePoints.Contains(WorldUtility.GetEntityPosition(target));
+        }
     }
 }
 

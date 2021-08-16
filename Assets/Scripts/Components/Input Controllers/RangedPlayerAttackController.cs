@@ -17,6 +17,22 @@ public class RangedPlayerAttackController : InputControllerBase
         base.Init(self);
 
         IEntity startingTarget = WorldUtility.GetClosestEnemyTo(Self);
+
+        EventBuilder isVisible = new EventBuilder(GameEventId.EntityVisibilityState)
+                                    .With(EventParameters.Entity, startingTarget.ID)
+                                    .With(EventParameters.Value, false);
+
+        //Here we can check isVisible to see if the target is invisible or something
+        //FireEvent(startingTarget, isVisible.CreateEvent());
+
+        EventBuilder isInFOV = new EventBuilder(GameEventId.IsInFOV)
+                                .With(EventParameters.Entity, startingTarget.ID)
+                                .With(EventParameters.Value, false);
+
+        bool isInFoVResult = FireEvent(Self, isInFOV.CreateEvent()).GetValue<bool>(EventParameters.Value);
+        if (!isInFoVResult)
+            startingTarget = Self;
+
         Debug.Log($"Target is {startingTarget.Name}");
 
         GameEvent selectTile = new GameEvent(GameEventId.SelectTile, new KeyValuePair<string, object>(EventParameters.Entity, Self.ID),

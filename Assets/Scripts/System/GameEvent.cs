@@ -21,6 +21,8 @@ public static class GameEventId
     public const string IsTileBlocking = nameof(IsTileBlocking);
     public const string InitFOV = nameof(InitFOV);
     public const string GetVisibleTiles = nameof(GetVisibleTiles);
+    public const string EntityVisibilityState = nameof(EntityVisibilityState);
+    public const string IsInFOV = nameof(IsInFOV);
 
     //Entity Info
     public const string GetEntityType = nameof(GetEntityType);
