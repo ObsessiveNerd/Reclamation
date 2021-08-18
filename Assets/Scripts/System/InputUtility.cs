@@ -10,21 +10,21 @@ public class InputUtility
         //Need to rework this so we can eventually re-map controlls but this works for now
         MoveDirection direction = MoveDirection.None;
 
-        if (Input.GetKeyDown(KeyCode.Keypad8))
+        if (InputBinder.PerformRequestedAction(RequestedAction.MoveN))
             direction = MoveDirection.N;
-        else if (Input.GetKeyDown(KeyCode.Keypad9))
+        else if (InputBinder.PerformRequestedAction(RequestedAction.MoveNE))
             direction = MoveDirection.NE;
-        else if (Input.GetKeyDown(KeyCode.Keypad6))
+        else if (InputBinder.PerformRequestedAction(RequestedAction.MoveE))
             direction = MoveDirection.E;
-        else if (Input.GetKeyDown(KeyCode.Keypad3))
+        else if (InputBinder.PerformRequestedAction(RequestedAction.MoveSE))
             direction = MoveDirection.SE;
-        else if (Input.GetKeyDown(KeyCode.Keypad2))
+        else if (InputBinder.PerformRequestedAction(RequestedAction.MoveS))
             direction = MoveDirection.S;
-        else if (Input.GetKeyDown(KeyCode.Keypad1))
+        else if (InputBinder.PerformRequestedAction(RequestedAction.MoveSW))
             direction = MoveDirection.SW;
-        else if (Input.GetKeyDown(KeyCode.Keypad4))
+        else if (InputBinder.PerformRequestedAction(RequestedAction.MoveW))
             direction = MoveDirection.W;
-        else if (Input.GetKeyDown(KeyCode.Keypad7))
+        else if (InputBinder.PerformRequestedAction(RequestedAction.MoveNW))
             direction = MoveDirection.NW;
 
         return direction;

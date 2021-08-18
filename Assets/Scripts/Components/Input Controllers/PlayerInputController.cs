@@ -24,19 +24,19 @@ public class PlayerInputController : InputControllerBase
                 FireEvent(World.Instance.Self, setCamera.CreateEvent());
             }
 
-            else if (Input.GetKeyDown(KeyCode.I))
+            else if (InputBinder.PerformRequestedAction(RequestedAction.OpenInventory))
             {
                 FireEvent(Self, new GameEvent(GameEventId.OpenInventory));
                 Self.RemoveComponent(this);
                 Self.AddComponent(new PlayerUIController());
             }
 
-            else if(Input.GetKeyDown(KeyCode.M))
-            {
-                FireEvent(World.Instance.Self, new GameEvent(GameEventId.RevealAllTiles));
-            }
+            //else if(Input.GetKeyDown(KeyCode.M))
+            //{
+            //    FireEvent(World.Instance.Self, new GameEvent(GameEventId.RevealAllTiles));
+            //}
 
-            else if (Input.GetKeyDown(KeyCode.F))
+            else if (InputBinder.PerformRequestedAction(RequestedAction.FireRangedWeapon))
             {
                 GameEvent getRangedWeapon = FireEvent(Self, new GameEvent(GameEventId.GetRangedWeapon, new KeyValuePair<string, object>(EventParameters.Value, null)));
                 IEntity rangedWeapon = EntityQuery.GetEntity((string)getRangedWeapon.Paramters[EventParameters.Value]);
@@ -51,7 +51,7 @@ public class PlayerInputController : InputControllerBase
                     RecLog.Log("No ranged weapon equiped");
             }
 
-            else if (Input.GetKeyDown(KeyCode.L))
+            else if (InputBinder.PerformRequestedAction(RequestedAction.Look))
             {
                 Self.RemoveComponent(this);
                 Self.AddComponent(new LookController());
@@ -65,19 +65,19 @@ public class PlayerInputController : InputControllerBase
                 //Throw an equiped weapon
             }
 
-            else if (Input.GetKeyDown(KeyCode.G))
-            {
-                FireEvent(World.Instance.Self, new GameEvent(GameEventId.Pickup, new KeyValuePair<string, object>(EventParameters.Entity, Self.ID)));
-                gameEvent.Paramters[EventParameters.UpdateWorldView] = true;
-            }
+            //else if (Input.GetKeyDown(KeyCode.G))
+            //{
+            //    FireEvent(World.Instance.Self, new GameEvent(GameEventId.Pickup, new KeyValuePair<string, object>(EventParameters.Entity, Self.ID)));
+            //    gameEvent.Paramters[EventParameters.UpdateWorldView] = true;
+            //}
 
-            else if (Input.GetKeyDown(KeyCode.C))
+            else if (InputBinder.PerformRequestedAction(RequestedAction.CastSpell))
             {
                 Self.RemoveComponent(this);
                 Self.AddComponent(new SpellcasterPlayerController());
             }
 
-            else if (Input.GetKeyDown(KeyCode.Space))
+            else if (InputBinder.PerformRequestedAction(RequestedAction.PickupItem))
             {
                 EventBuilder pickupItems = new EventBuilder(GameEventId.Pickup)
                                             .With(EventParameters.Entity, Self.ID);
