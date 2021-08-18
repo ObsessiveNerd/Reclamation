@@ -57,15 +57,17 @@ public class InputBinder : MonoBehaviour
             System.Reflection.BindingFlags.NonPublic 
             | System.Reflection.BindingFlags.Instance);
 
-            string value = Input.inputString.ToUpper();
-            if (value == " ")
-                value = "Space";
+            foreach (KeyCode kcode in Enum.GetValues(typeof(KeyCode)))
+            {
+                if (Input.GetKey(kcode))
+                {
+                    fieldInfo.SetValue(m_Data, kcode);
+                    File.Delete(InputConfigPath);
+                    File.WriteAllText(InputConfigPath, JsonUtility.ToJson(m_Data));
+                }
+            }
 
-            KeyCode keyPressed = (KeyCode)Enum.Parse(typeof(KeyCode), value);
-            fieldInfo.SetValue(m_Data, keyPressed);
-
-            File.Delete(InputConfigPath);
-            File.WriteAllText(InputConfigPath, JsonUtility.ToJson(m_Data));
+            
 
             m_RequestedAction = null;
         }

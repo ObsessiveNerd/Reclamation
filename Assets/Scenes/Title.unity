@@ -745,6 +745,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: Settings
       objectReference: {fileID: 0}
+    - target: {fileID: 6364748974542281563, guid: 831065378b9e979428539671b14ac1fb,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 2105576995}
+    - target: {fileID: 6364748974542281563, guid: 831065378b9e979428539671b14ac1fb,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ResetToDefault
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 6364748974507586157, guid: 831065378b9e979428539671b14ac1fb, type: 3}
     - {fileID: 8762611527409986045, guid: 831065378b9e979428539671b14ac1fb, type: 3}
@@ -3253,3 +3263,15 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2063352897}
   m_CullTransparentMesh: 0
+--- !u!114 &2105576995 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4469866955698263098, guid: 0e0883edffe465547aa8096ce0af4ce2,
+    type: 3}
+  m_PrefabInstance: {fileID: 687513836}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f814c9192b7e3d54a80e177dfa60f759, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
