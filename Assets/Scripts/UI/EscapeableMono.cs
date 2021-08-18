@@ -6,9 +6,8 @@ public class EscapeableMono : MonoBehaviour
 {
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
-            if(gameObject.activeInHierarchy)
-                OnEscape();
+        if (Input.GetKeyDown(KeyCode.Escape) && gameObject.activeInHierarchy)
+            OnEscape();
     }
 
     protected virtual void OnEscape() { }
