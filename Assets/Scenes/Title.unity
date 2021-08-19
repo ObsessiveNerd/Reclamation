@@ -750,14 +750,7 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 2105576995}
-    - target: {fileID: 6364748974542281563, guid: 831065378b9e979428539671b14ac1fb,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: ResetToDefault
-      objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 6364748974507586157, guid: 831065378b9e979428539671b14ac1fb, type: 3}
-    - {fileID: 8762611527409986045, guid: 831065378b9e979428539671b14ac1fb, type: 3}
+    m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 831065378b9e979428539671b14ac1fb, type: 3}
 --- !u!224 &480199718 stripped
 RectTransform:
@@ -2506,7 +2499,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
-  m_AdditionalShaderChannelsFlag: 0
+  m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: 0
   m_SortingOrder: 1
   m_TargetDisplay: 0
