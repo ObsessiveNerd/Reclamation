@@ -14,6 +14,7 @@ public class CharacterManagerMono : EscapeableMono
 
     public void Setup(IEntity source)
     {
+        UIManager.Push(this);
         CharacterManagerObject.SetActive(true);
 
         InventoryView.GetComponent<InventoryManagerMono>().Setup(source);
@@ -21,7 +22,7 @@ public class CharacterManagerMono : EscapeableMono
         CharacterStats.GetComponent<CharacterStatsMono>().Setup(source);
     }
 
-    protected override void OnEscape()
+    public override void OnEscape()
     {
         Cleanup();
         CharacterManagerObject.SetActive(false);

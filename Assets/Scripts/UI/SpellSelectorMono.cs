@@ -34,9 +34,10 @@ public class SpellSelectorMono : EscapeableMono
         }
 
         SpellObject.SetActive(true);
+        UIManager.Push(this);
     }
 
-    protected override void OnEscape()
+    public override void OnEscape()
     {
         Close();
     }

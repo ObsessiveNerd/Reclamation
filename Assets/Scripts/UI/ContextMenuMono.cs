@@ -19,6 +19,7 @@ public class ContextMenuMono : EscapeableMono
         GameObject instance = cmb.CreateButton(ContextMenuButton);
         Button button = instance.GetComponent<Button>();
 
+        button.onClick.AddListener(() => UIManager.ForcePop());
         button.onClick.AddListener(() => OnEscape());
         button.onClick.AddListener(() =>
         {
@@ -27,9 +28,10 @@ public class ContextMenuMono : EscapeableMono
 
         instance.transform.SetParent(ContextMenu.transform);
         m_Buttons.Add(instance);
+        UIManager.Push(this);
     }
 
-    protected override void OnEscape()
+    public override void OnEscape()
     {
         foreach (var button in m_Buttons)
             Destroy(button);

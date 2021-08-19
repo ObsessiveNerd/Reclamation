@@ -4,11 +4,5 @@ using UnityEngine;
 
 public class EscapeableMono : MonoBehaviour
 {
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Escape) && gameObject.activeInHierarchy)
-            OnEscape();
-    }
-
-    protected virtual void OnEscape() { }
+    public virtual void OnEscape() { }
 }

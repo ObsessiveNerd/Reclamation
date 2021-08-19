@@ -24,6 +24,7 @@ public class ChestMono : EscapeableMono, IUpdatableUI
 
         ChestUI.SetActive(true);
         WorldUtility.RegisterUI(this);
+        UIManager.Push(this);
         UpdateUI();
     }
 
@@ -63,7 +64,7 @@ public class ChestMono : EscapeableMono, IUpdatableUI
         m_Items.Clear();
     }
 
-    protected override void OnEscape()
+    public override void OnEscape()
     {
         m_Inventory?.Cleanup();
         Cleanup();

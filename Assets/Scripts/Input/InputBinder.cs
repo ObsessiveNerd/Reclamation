@@ -48,7 +48,7 @@ public class InputBinder : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape) && UIManager.UIClear)
             UI.SetActive(!UI.activeInHierarchy);
 
         if(m_RequestedAction != null && !string.IsNullOrEmpty(Input.inputString))
