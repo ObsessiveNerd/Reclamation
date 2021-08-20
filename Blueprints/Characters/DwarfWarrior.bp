@@ -25,4 +25,5 @@
 	InteractOnTileOvertake
 	HealthRegen:RegenAmount=1,RegenSpeed=5
 	Health:MaxHealth=10,CurrentHealth=10
+	Name
 )

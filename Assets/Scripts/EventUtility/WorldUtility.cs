@@ -20,6 +20,14 @@ public static class WorldUtility
         return result.GetValue<Point>(EventParameters.Value);
     }
 
+    public static bool IsPlayableCharacter(string id)
+    {
+        EventBuilder isPlayableCharacter = new EventBuilder(GameEventId.IsPlayableCharacter)
+                                            .With(EventParameters.Entity, id)
+                                            .With(EventParameters.Value, false);
+        return World.Instance.Self.FireEvent(isPlayableCharacter.CreateEvent()).GetValue<bool>(EventParameters.Value);
+    }
+
     public static IEntity GetClosestEnemyTo(IEntity e)
     {
         EventBuilder eventBuilder = new EventBuilder(GameEventId.GetClosestEnemy)

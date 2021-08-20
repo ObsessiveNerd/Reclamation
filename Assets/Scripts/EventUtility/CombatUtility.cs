@@ -34,9 +34,16 @@ public static class CombatUtility
         return weaponType;
     }
 
-    public static bool ValueIsWithinCRBuffer(int sourceValue, int targetValue)
+    public static bool ICanTakeThem(int sourceValue, int targetValue)
     {
-        if (targetValue >= sourceValue - CombatRatingBuffer && targetValue <= sourceValue + CombatRatingBuffer)
+        if(targetValue < (sourceValue + CombatRatingBuffer))
+            return true;
+        return false;
+    }
+
+    public static bool AmIAfraid(int sourceCR, int targetCR)
+    {
+        if (targetCR > (sourceCR + CombatRatingBuffer))
             return true;
         return false;
     }

@@ -15,6 +15,7 @@ public class PlayerManager : WorldComponent
         RegisteredEvents.Add(GameEventId.RegisterPlayableCharacter);
         RegisteredEvents.Add(GameEventId.UnRegisterPlayer);
         RegisteredEvents.Add(GameEventId.UpdateCamera);
+        RegisteredEvents.Add(GameEventId.IsPlayableCharacter);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
@@ -38,6 +39,12 @@ public class PlayerManager : WorldComponent
             }
 
             FireEvent(Self, new GameEvent(GameEventId.UpdateUI, new KeyValuePair<string, object>(EventParameters.Entity, m_ActivePlayer.Value.ID)));
+        }
+
+        if(gameEvent.ID == GameEventId.IsPlayableCharacter)
+        {
+            string id = gameEvent.GetValue<string>(EventParameters.Entity);
+            gameEvent.Paramters[EventParameters.Value] = m_Players.Contains(EntityQuery.GetEntity(id));
         }
 
         //if(gameEvent.ID == GameEventId.GetActivePlayer)
@@ -93,6 +100,9 @@ public class PlayerManager : WorldComponent
 
         m_TimeProgression.RegisterEntity(entity);
 
+        if (!m_ActivePlayer.Value.HasComponent(typeof(PartyLeader)))
+            m_ActivePlayer.Value.AddComponent(new PartyLeader());
+
         if (m_ActivePlayer != null)
         {
             EventBuilder setCamera = new EventBuilder(GameEventId.SetCameraPosition)
@@ -136,6 +146,7 @@ public class PlayerManager : WorldComponent
 
         bool hasUIController = m_ActivePlayer.Value.GetComponents().Any(comp => comp.GetType() == typeof(PlayerUIController));
         m_ActivePlayer.Value.RemoveComponent(typeof(InputControllerBase));
+        m_ActivePlayer.Value.RemoveComponent(typeof(PartyLeader)); //We're going to need to start tracking the memebers of a party if we want to be able to split parties up intentionally
         m_ActivePlayer.Value.AddComponent(new AIController());
         //m_ActivePlayer.Value.CleanupComponents();
 
@@ -151,7 +162,10 @@ public class PlayerManager : WorldComponent
         if(hasUIController)
             m_ActivePlayer.Value.AddComponent(new PlayerUIController());
         else
+        {
             m_ActivePlayer.Value.AddComponent(new PlayerInputController());
+            m_ActivePlayer.Value.AddComponent(new PartyLeader());
+        }
         m_ActivePlayer.Value.CleanupComponents();
 
         m_TimeProgression.SetActiveEntity(m_ActivePlayer.Value);

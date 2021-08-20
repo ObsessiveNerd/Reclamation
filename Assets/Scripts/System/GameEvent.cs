@@ -149,6 +149,7 @@ public static class GameEventId
 
     //Character Selection
     public const string RotateActiveCharacter = nameof(RotateActiveCharacter);
+    public const string IsPlayableCharacter = nameof(IsPlayableCharacter);
     public const string SetActiveCharacter = nameof(SetActiveCharacter);
     public const string ConvertToPlayableCharacter = nameof(ConvertToPlayableCharacter);
 

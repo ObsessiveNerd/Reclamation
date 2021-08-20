@@ -36,5 +36,9 @@ public class CharacterTab : MonoBehaviour
 
         m_HealthBar.maxValue = getHealthResult.GetValue<int>(EventParameters.MaxValue);
         m_HealthBar.value = getHealthResult.GetValue<int>(EventParameters.Value);
+
+        EventBuilder getInfo = new EventBuilder(GameEventId.GetInfo)
+                                .With(EventParameters.Name, "");
+        m_PrettyName.text = m_Entity.FireEvent(getInfo.CreateEvent()).GetValue<string>(EventParameters.Name);
     }
 }

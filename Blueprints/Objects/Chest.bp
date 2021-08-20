@@ -4,5 +4,6 @@
 	InteractOnTileOvertake
 	EntityTypeContainer:Type=Object
 	BlocksNonHostileMovement
-	ItemContainer:ItemNameToIdMap=
+	ItemContainer:IDToEntityMap=
+	EnvironmentalObject
 )

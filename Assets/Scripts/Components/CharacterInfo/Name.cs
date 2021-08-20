@@ -21,7 +21,7 @@ public class Name : Component
     public override void HandleEvent(GameEvent gameEvent)
     {
         if(gameEvent.ID == GameEventId.GetInfo)
-            gameEvent.Paramters[EventParameters.Name] = PrettyName;
+            gameEvent.Paramters[EventParameters.Name] = Self.ID;
 
         if(gameEvent.ID == GameEventId.SetInfo)
             PrettyName = gameEvent.GetValue<string>(EventParameters.Name);

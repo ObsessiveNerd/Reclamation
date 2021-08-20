@@ -47,7 +47,7 @@ public class Fear : Component
 
                 int targetCombatRating = FireEvent(target, getCombatRatingOfTile.CreateEvent()).GetValue<int>(EventParameters.Value);
 
-                if(!CombatUtility.ValueIsWithinCRBuffer(myCombatLevel, targetCombatRating))
+                if(CombatUtility.AmIAfraid(myCombatLevel, targetCombatRating))
                 {
                     m_TargetLocation = point;
                     AIAction attackAction = new AIAction()

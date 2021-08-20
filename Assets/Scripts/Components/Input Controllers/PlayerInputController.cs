@@ -104,11 +104,11 @@ public class PlayerInputController : InputControllerBase
                 //}
             }
 
-            //else if (Input.GetKeyDown(KeyCode.Tab))
-            //{
-            //    RotateActiveCharacter(gameEvent);
-            //    return;
-            //}
+            else if (Input.GetKeyDown(KeyCode.Tab))
+            {
+                RotateActiveCharacter(gameEvent);
+                return;
+            }
 
             else if (Input.GetKeyDown(KeyCode.Escape))
                 GameObject.FindObjectOfType<SaveSystem>().Save();

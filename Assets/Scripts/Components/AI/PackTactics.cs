@@ -4,8 +4,14 @@ using UnityEngine;
 
 public class PackTactics : Component
 {
-    public bool IsPartyLeader = true;
-    public bool IsInParty;
+    //public bool IsPartyLeader = true;
+    //public bool IsInParty
+    //{
+    //    get
+    //    {
+    //        return PartyLeaderId != Self.ID;
+    //    }
+    //}
     public string PartyLeaderId;
     public int PackRange;
 
@@ -14,8 +20,8 @@ public class PackTactics : Component
 
     public PackTactics(bool isPartyLeader, bool isInParty, string partyLeaderId, int packRange)
     {
-        IsPartyLeader = isPartyLeader;
-        IsInParty = isInParty;
+        //IsPartyLeader = isPartyLeader;
+        //IsInParty = isInParty;
         PartyLeaderId = partyLeaderId;
         PackRange = packRange;
     }
@@ -24,7 +30,7 @@ public class PackTactics : Component
     {
         base.Init(self);
         RegisteredEvents.Add(GameEventId.GetActionToTake);
-        RegisteredEvents.Add(GameEventId.GetPackInformation);
+        //RegisteredEvents.Add(GameEventId.GetPackInformation);
         RegisteredEvents.Add(GameEventId.GetCombatRating);
         RegisteredEvents.Add(GameEventId.BreakRank);
     }
@@ -34,7 +40,7 @@ public class PackTactics : Component
         if(gameEvent.ID == GameEventId.GetPackInformation)
         {
             gameEvent.Paramters[EventParameters.Entity] = Self.ID;
-            gameEvent.Paramters[EventParameters.IsPartyLeader] = IsPartyLeader;
+            //gameEvent.Paramters[EventParameters.IsPartyLeader] = IsPartyLeader;
         }
         else if(gameEvent.ID == GameEventId.BreakRank)
         {
@@ -55,66 +61,89 @@ public class PackTactics : Component
         }
         else if(gameEvent.ID == GameEventId.GetActionToTake)
         {
-            if (IsInParty && !string.IsNullOrEmpty(PartyLeaderId))
+            //if (Self.Name.Contains("Dwarf"))
+            //    Debug.LogWarning("Current PL: " + PartyLeaderId);
+
+            if (!string.IsNullOrEmpty(PartyLeaderId))
             {
-                IEntity partyLeader = EntityQuery.GetEntity(PartyLeaderId);
-                if (partyLeader == null)
+                if (PartyLeaderId == Self.ID && !Self.HasComponent(typeof(PartyLeader)))
                 {
-                    IsPartyLeader = true;
                     PartyLeaderId = null;
-                    IsInParty = false;
-                    return;
+                    FindNewPartyLeader();
                 }
-
-                m_Destination = PathfindingUtility.GetValidPointWithinRange(partyLeader, PackRange);
-
-                AIAction moveWithPack = new AIAction()
+                else
                 {
-                    Priority = 3,
-                    ActionToTake = MoveWithPack
-                };
-                gameEvent.GetValue<PriorityQueue<AIAction>>(EventParameters.AIActionList).Add(moveWithPack);
+                    IEntity partyLeader = EntityQuery.GetEntity(PartyLeaderId);
+                    if (partyLeader == null)
+                    {
+                        //IsPartyLeader = true;
+                        PartyLeaderId = null;
+                        //IsInParty = false;
+                        return;
+                    }
+
+                    m_Destination = PathfindingUtility.GetValidPointWithinRange(partyLeader, PackRange);
+
+                    AIAction moveWithPack = new AIAction()
+                    {
+                        Priority = 3,
+                        ActionToTake = MoveWithPack
+                    };
+                    gameEvent.GetValue<PriorityQueue<AIAction>>(EventParameters.AIActionList).Add(moveWithPack);
+                }
             }
             else
             {
-                EventBuilder getVisiblePoints = new EventBuilder(GameEventId.GetVisibleTiles)
-                                            .With(EventParameters.VisibleTiles, new List<Point>());
-                m_VisiblePoints = FireEvent(Self, getVisiblePoints.CreateEvent()).GetValue<List<Point>>(EventParameters.VisibleTiles);
-                bool partyLeaderInSight = false;
-                foreach (var point in m_VisiblePoints)
-                {
-                    IEntity entityAtTile = WorldUtility.GetEntityAtPosition(point);
-
-                    if (entityAtTile == null || entityAtTile == Self) continue;
-
-                    EventBuilder getPackInformation = new EventBuilder(GameEventId.GetPackInformation)
-                                                        .With(EventParameters.Entity, null)
-                                                        .With(EventParameters.IsPartyLeader, false)
-                                                        .With(EventParameters.TilePosition, point);
-
-                    var getInfoEvent = FireEvent(entityAtTile, getPackInformation.CreateEvent());
-                    var demeanor = Factions.GetDemeanorForTarget(Self, entityAtTile);
-
-                    if (getInfoEvent.GetValue<bool>(EventParameters.IsPartyLeader) && demeanor == Demeanor.Friendly)
-                    {
-                        IsPartyLeader = false;
-                        PartyLeaderId = getInfoEvent.GetValue<string>(EventParameters.Entity);
-                        IsInParty = true;
-                        partyLeaderInSight = true;
-                    }
-
-                    if (!partyLeaderInSight)
-                        ClearPartyStatus();
-                }
+                FindNewPartyLeader();
             }
+        }
+    }
+
+    void FindNewPartyLeader()
+    {
+        if (Self.Name.Contains("Dwarf"))
+            Debug.LogWarning("Finding a new party leader");
+
+        EventBuilder getVisiblePoints = new EventBuilder(GameEventId.GetVisibleTiles)
+                                            .With(EventParameters.VisibleTiles, new List<Point>());
+        m_VisiblePoints = FireEvent(Self, getVisiblePoints.CreateEvent()).GetValue<List<Point>>(EventParameters.VisibleTiles);
+        //bool partyLeaderInSight = false;
+        foreach (var point in m_VisiblePoints)
+        {
+            IEntity entityAtTile = WorldUtility.GetEntityAtPosition(point);
+
+            if (entityAtTile == null || entityAtTile == Self)
+                continue;
+
+            EventBuilder getPackInformation = new EventBuilder(GameEventId.GetPackInformation)
+                                                .With(EventParameters.Entity, null)
+                                                .With(EventParameters.IsPartyLeader, false)
+                                                .With(EventParameters.TilePosition, point);
+
+            var getInfoEvent = FireEvent(entityAtTile, getPackInformation.CreateEvent());
+            var demeanor = Factions.GetDemeanorForTarget(Self, entityAtTile);
+
+            if (getInfoEvent.GetValue<bool>(EventParameters.IsPartyLeader) && demeanor == Demeanor.Friendly)
+            {
+                //IsPartyLeader = false;
+                PartyLeaderId = getInfoEvent.GetValue<string>(EventParameters.Entity);
+                //IsInParty = true;
+                //partyLeaderInSight = true;
+            }
+
+            //if (!partyLeaderInSight)
+            //    ClearPartyStatus();
         }
     }
 
     void ClearPartyStatus()
     {
-        IsPartyLeader = true;
+        if (Self.Name.Contains("Dwarf"))
+            Debug.LogWarning("Dwarf is breaking rank");
+
+        //IsPartyLeader = true;
         PartyLeaderId = null;
-        IsInParty = false;
+        //IsInParty = false;
     }
 
     MoveDirection MoveWithPack()
@@ -167,6 +196,6 @@ public class DTO_PackTactics : IDataTransferComponent
     public string CreateSerializableData(IComponent component)
     {
         PackTactics tactics = (PackTactics)component;
-        return $"{nameof(PackTactics)}: IsPartyLeader={tactics.IsPartyLeader}, IsInParty={tactics.IsInParty}, PackRange={tactics.PackRange}, PartyLeaderId={tactics.PartyLeaderId}";
+        return $"{nameof(PackTactics)}: PackRange={tactics.PackRange}, PartyLeaderId={tactics.PartyLeaderId}";
     }
 }
