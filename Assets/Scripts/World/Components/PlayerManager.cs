@@ -100,9 +100,6 @@ public class PlayerManager : WorldComponent
 
         m_TimeProgression.RegisterEntity(entity);
 
-        if (!m_ActivePlayer.Value.HasComponent(typeof(PartyLeader)))
-            m_ActivePlayer.Value.AddComponent(new PartyLeader());
-
         if (m_ActivePlayer != null)
         {
             EventBuilder setCamera = new EventBuilder(GameEventId.SetCameraPosition)
@@ -146,7 +143,6 @@ public class PlayerManager : WorldComponent
 
         bool hasUIController = m_ActivePlayer.Value.GetComponents().Any(comp => comp.GetType() == typeof(PlayerUIController));
         m_ActivePlayer.Value.RemoveComponent(typeof(InputControllerBase));
-        m_ActivePlayer.Value.RemoveComponent(typeof(PartyLeader)); //We're going to need to start tracking the memebers of a party if we want to be able to split parties up intentionally
         m_ActivePlayer.Value.AddComponent(new AIController());
         //m_ActivePlayer.Value.CleanupComponents();
 
@@ -164,7 +160,9 @@ public class PlayerManager : WorldComponent
         else
         {
             m_ActivePlayer.Value.AddComponent(new PlayerInputController());
-            m_ActivePlayer.Value.AddComponent(new PartyLeader());
+            EventBuilder makePartyLeader = new EventBuilder(GameEventId.MakePartyLeader)
+                                            .With(EventParameters.Entity, m_ActivePlayer.Value.ID);
+            FireEvent(Self, makePartyLeader.CreateEvent());
         }
         m_ActivePlayer.Value.CleanupComponents();
 

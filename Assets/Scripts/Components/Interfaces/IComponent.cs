@@ -11,6 +11,7 @@ public interface IComponent
     GameEvent FireEvent(IEntity target, GameEvent gameEvent, bool logEvent = false);
     void HandleEvent(GameEvent gameEvent);
     int Priority { get; }
+    void Start();
 }
 
 public class Component : IComponent
@@ -24,6 +25,8 @@ public class Component : IComponent
 
     //Priority right now is from 1 to 10
     public virtual int Priority { get { return 5; } }
+
+    public virtual void Start() { }
 
     IEntity m_Self;
     public IEntity Self { get { return m_Self; } }

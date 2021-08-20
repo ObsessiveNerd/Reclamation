@@ -217,6 +217,12 @@ public static class GameEventId
     public const string GetSpells = nameof(GetSpells);
     public const string SpellSelected = nameof(SpellSelected);
     public const string OpenSpellSelector = nameof(OpenSpellSelector);
+
+    //Party
+    public const string LookingForGroup = nameof(LookingForGroup);
+    public const string SetLeader = nameof(SetLeader);
+    public const string MakePartyLeader = nameof(MakePartyLeader);
+    public const string RemoveFromParty = nameof(RemoveFromParty);
 }
 
 public static class EventParameters

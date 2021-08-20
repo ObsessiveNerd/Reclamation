@@ -45,6 +45,7 @@ public class World : MonoBehaviour
         m_World.AddComponent(new Pathfinder());
         m_World.AddComponent(new CameraController());
         m_World.AddComponent(new StateManager());
+        m_World.AddComponent(new PartyController());
 
         m_World.CleanupComponents();
 
