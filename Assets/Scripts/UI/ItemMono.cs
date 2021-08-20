@@ -44,6 +44,11 @@ public class ItemMono : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         m_PopupInstance.transform.SetParent(GameObject.Find("Canvas").transform);
     }
 
+    private void OnDisable()
+    {
+        DestroyPopup();
+    }
+
     public void OnPointerExit(PointerEventData eventData)
     {
         DestroyPopup();

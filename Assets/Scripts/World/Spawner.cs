@@ -34,6 +34,21 @@ public static class Spawner
                                                                             new KeyValuePair<string, object>(EventParameters.EntityType, entityType)));
     }
 
+    public static void Swap(IEntity lhs, IEntity rhs)
+    {
+        var lhsPos = WorldUtility.GetEntityPosition(lhs);
+        var rhsPos = WorldUtility.GetEntityPosition(rhs);
+
+        Despawn(lhs);
+        Despawn(rhs);
+
+        Spawn(lhs, rhsPos);
+        Spawn(rhs, lhsPos);
+
+        lhsPos = WorldUtility.GetEntityPosition(lhs);
+        rhsPos = WorldUtility.GetEntityPosition(rhs);
+    }
+
     public static void Move(IEntity e, Point newPoint)
     {
         if (e == null)
