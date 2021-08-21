@@ -45,6 +45,13 @@ public static class WorldUtility
         return entityId == World.Instance.Self.FireEvent(isActivePlayer.CreateEvent()).GetValue<string>(EventParameters.Value);
     }
 
+    public static string GetActivePlayerId()
+    {
+        EventBuilder isActivePlayer = new EventBuilder(GameEventId.GetActivePlayerId)
+                                        .With(EventParameters.Value, null);
+        return World.Instance.Self.FireEvent(isActivePlayer.CreateEvent()).GetValue<string>(EventParameters.Value);
+    }
+
     public static void RegisterUI(IUpdatableUI ui)
     {
         EventBuilder e = new EventBuilder(GameEventId.RegisterUI)

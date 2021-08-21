@@ -14,7 +14,7 @@ public class CharacterStatsMono : MonoBehaviour, IUpdatableUI
 
     }
 
-    public void UpdateUI()
+    public void UpdateUI(IEntity newSource)
     {
 
     }

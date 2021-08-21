@@ -28,10 +28,12 @@ public class InventoryItemMono : ItemMono, IPointerClickHandler
 
             var result = m_Object.FireEvent(getContextMenuActions.CreateEvent()).GetValue<List<ContextMenuButton>>(EventParameters.InventoryContextActions );
 
-            var contextMenu = FindObjectOfType<ContextMenuMono>();
+
+            var contextMenu = ContextMenuMono.CreateNewContextMenu(); //FindObjectOfType<ContextMenuMono>();
+            var cmm = contextMenu.GetComponent<ContextMenuMono>();
 
             foreach (var action in result)
-                contextMenu.AddButton(action);
+                cmm.AddButton(action);
         }
     }
 

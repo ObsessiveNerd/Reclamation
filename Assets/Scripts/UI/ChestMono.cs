@@ -25,10 +25,10 @@ public class ChestMono : EscapeableMono, IUpdatableUI
         ChestUI.SetActive(true);
         WorldUtility.RegisterUI(this);
         UIManager.Push(this);
-        UpdateUI();
+        UpdateUI(m_Character);
     }
 
-    public void UpdateUI()
+    public void UpdateUI(IEntity newSource)
     {
         Cleanup();
         GameObject go = Resources.Load<GameObject>("UI/InventoryItem");
@@ -48,13 +48,13 @@ public class ChestMono : EscapeableMono, IUpdatableUI
                 Image spriteRenderer = spriteGo.GetComponent<Image>();
                 spriteRenderer.sprite = sprite;
                 spriteGo.transform.SetParent(ChestContent);
-                spriteGo.AddComponent<ChestItemMono>().Init(m_Chest, item, m_Character);
+                spriteGo.AddComponent<ChestItemMono>().Init(m_Chest, item, newSource);
                 m_Items.Add(spriteGo);
             }
         }
 
         m_Inventory = ChestUI.GetComponentInChildren<InventoryManagerMono>();
-        m_Inventory.Setup(m_Character);
+        m_Inventory.Setup(newSource);
     }
 
     public void Cleanup()

@@ -7,34 +7,54 @@ using UnityEngine.UI;
 
 public class ContextMenuMono : EscapeableMono
 {
-    public GameObject ContextMenuButton;
-    public GameObject ContextMenu;
+    public Transform Content;
+    //List<GameObject> m_Buttons = new List<GameObject>();
 
-    List<GameObject> m_Buttons = new List<GameObject>();
-
-    public void AddButton(ContextMenuButton cmb)
+    public static GameObject CreateNewContextMenu()
     {
-        ContextMenu.SetActive(true);
+        var contextMenu = Instantiate(Resources.Load<GameObject>("UI/ContextMenu"));
+        contextMenu.transform.SetParent(GameObject.FindObjectOfType<Canvas>().transform, false);
+        UIManager.Push(contextMenu.GetComponent<ContextMenuMono>());
+        return contextMenu;
+    }
 
-        GameObject instance = cmb.CreateButton(ContextMenuButton);
+    public void AddButton(ContextMenuButton cmb, Action afterClickCallback = null)
+    {
+        GameObject instance = cmb.CreateButton(Resources.Load<GameObject>("UI/ContextMenuButton"));
         Button button = instance.GetComponent<Button>();
 
-        button.onClick.AddListener(() => UIManager.ForcePop());
-        button.onClick.AddListener(() => OnEscape());
+        //button.onClick.AddListener(() => OnEscape());
+        button.onClick.AddListener(() => UIManager.ForcePop(this));
         button.onClick.AddListener(() =>
         {
-            World.Instance.Self.FireEvent(new GameEvent(GameEventId.UpdateUI));
+            World.Instance.Self.FireEvent(new GameEvent(GameEventId.UpdateUI, new KeyValuePair<string, object>(EventParameters.Entity, WorldUtility.GetActivePlayerId())));
         });
+        if (afterClickCallback != null)
+            button.onClick.AddListener(() => afterClickCallback());
 
-        instance.transform.SetParent(ContextMenu.transform);
-        m_Buttons.Add(instance);
-        UIManager.Push(this);
+        instance.transform.SetParent(Content);
+        //m_Buttons.Add(instance);
+    }
+
+    public void SelectPlayer(Action<string> actionForSelectedPlayer, List<string> playerIds)
+    {
+        foreach (string id in playerIds)
+        {
+            ContextMenuButton button = new ContextMenuButton(id, () =>
+            {
+                actionForSelectedPlayer(id);
+            });
+            
+            AddButton(button, () => UIManager.ForcePop());
+        }
     }
 
     public override void OnEscape()
     {
-        foreach (var button in m_Buttons)
-            Destroy(button);
-        ContextMenu.SetActive(false);
+        //if(UIManager.GetTopStack() == this)
+            Destroy(gameObject);
+        //foreach (var button in m_Buttons)
+        //    Destroy(button);
+        //m_Buttons.Clear();
     }
 }

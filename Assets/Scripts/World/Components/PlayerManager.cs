@@ -23,6 +23,7 @@ public class PlayerManager : WorldComponent
         if (gameEvent.ID == GameEventId.RotateActiveCharacter)
         {
             RotateCharacter();
+            UIManager.RemovePopUntilAllOfTypeRemoved<ContextMenuMono>();
             FireEvent(Self, new GameEvent(GameEventId.UpdateUI, new KeyValuePair<string, object>(EventParameters.Entity, m_ActivePlayer.Value.ID)));
         }
 
@@ -158,12 +159,12 @@ public class PlayerManager : WorldComponent
         if(hasUIController)
             m_ActivePlayer.Value.AddComponent(new PlayerUIController());
         else
-        {
             m_ActivePlayer.Value.AddComponent(new PlayerInputController());
-            EventBuilder makePartyLeader = new EventBuilder(GameEventId.MakePartyLeader)
+
+        EventBuilder makePartyLeader = new EventBuilder(GameEventId.MakePartyLeader)
                                             .With(EventParameters.Entity, m_ActivePlayer.Value.ID);
             FireEvent(Self, makePartyLeader.CreateEvent());
-        }
+
         m_ActivePlayer.Value.CleanupComponents();
 
         m_TimeProgression.SetActiveEntity(m_ActivePlayer.Value);

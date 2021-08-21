@@ -16,9 +16,29 @@ public class UIManager : MonoBehaviour
             UIMonoBehaviors.Push(mono);
     }
 
+    public static void ForcePop(EscapeableMono mono)
+    {
+        if (UIMonoBehaviors.Peek() == mono)
+            UIMonoBehaviors.Pop().OnEscape();
+    }
+
     public static void ForcePop()
     {
-        UIMonoBehaviors.Pop();
+        UIMonoBehaviors.Pop().OnEscape();
+    }
+
+    public static EscapeableMono GetTopStack()
+    {
+        return UIMonoBehaviors.Peek();
+    }
+
+    public static void RemovePopUntilAllOfTypeRemoved<T>()
+    {
+        if(UIMonoBehaviors.Count == 0)
+            return;
+
+        while (UIMonoBehaviors.Peek().GetType() == typeof(T))
+            ForcePop();
     }
 
     void Update()

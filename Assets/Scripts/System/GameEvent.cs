@@ -59,6 +59,7 @@ public static class GameEventId
     public const string DropItemsOnMap = nameof(DropItemsOnMap);
     public const string AddItemsToInventory = nameof(AddItemsToInventory);
     public const string GetBodyPartType = nameof(GetBodyPartType);
+    public const string PromptToGiveItem = nameof(PromptToGiveItem);
 
     //Debug
     public const string RevealAllTiles = nameof(RevealAllTiles);
@@ -105,10 +106,12 @@ public static class GameEventId
     public const string SetEntityPosition = nameof(SetEntityPosition);
     public const string SetPoint = nameof(SetPoint);
     public const string GetPoint = nameof(GetPoint);
+
     public const string Interact = nameof(Interact);
     public const string ForceInteract = nameof(ForceInteract);
     public const string InteractInDirection = nameof(InteractInDirection);
     public const string InteractWithTarget = nameof(InteractWithTarget);
+
     public const string StopMovement = nameof(StopMovement);
 
     //Time progression

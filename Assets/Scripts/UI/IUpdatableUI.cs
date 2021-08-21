@@ -4,5 +4,5 @@ using UnityEngine;
 
 public interface IUpdatableUI
 {
-    void UpdateUI();
+    void UpdateUI(IEntity newSource);
 }

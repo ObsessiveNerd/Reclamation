@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class WorldUIController : WorldComponent
@@ -18,6 +19,7 @@ public class WorldUIController : WorldComponent
         RegisteredEvents.Add(GameEventId.OpenChestUI);
         RegisteredEvents.Add(GameEventId.RegisterUI);
         RegisteredEvents.Add(GameEventId.UnRegisterUI);
+        RegisteredEvents.Add(GameEventId.PromptToGiveItem);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
@@ -43,9 +45,9 @@ public class WorldUIController : WorldComponent
 
         else if(gameEvent.ID == GameEventId.UpdateUI)
         {
-
+            string newId = gameEvent.GetValue<string>(EventParameters.Entity);
             foreach (var ui in UpdatableUI)
-                ui.UpdateUI();
+                ui.UpdateUI(EntityQuery.GetEntity(newId));
 
             //if (gameEvent.Paramters.ContainsKey(EventParameters.Entity))
             //{
@@ -77,6 +79,29 @@ public class WorldUIController : WorldComponent
             IUpdatableUI go = gameEvent.GetValue<IUpdatableUI>(EventParameters.GameObject);
             if (UpdatableUI.Contains(go))
                 UpdatableUI.Remove(go);
+        }
+
+        else if(gameEvent.ID == GameEventId.PromptToGiveItem)
+        {
+            IEntity source = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameters.Entity));
+            IEntity item = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameters.Item));
+
+            ContextMenuMono.CreateNewContextMenu().GetComponent<ContextMenuMono>().SelectPlayer((target) =>
+            {
+                EventBuilder unEquip = new EventBuilder(GameEventId.Unequip)
+                                            .With(EventParameters.Entity, source.ID)
+                                            .With(EventParameters.Item, item.ID);
+                source.FireEvent(unEquip.CreateEvent());
+
+                EventBuilder removeFromInventory = new EventBuilder(GameEventId.RemoveFromInventory)
+                                                    .With(EventParameters.Entity, item.ID);
+                source.FireEvent(removeFromInventory.CreateEvent());
+
+                EventBuilder addToInventory = new EventBuilder(GameEventId.AddToInventory)
+                                                .With(EventParameters.Entity, item.ID);
+                EntityQuery.GetEntity(target).FireEvent(addToInventory.CreateEvent());
+
+            }, m_Players.Select(player => player.ID).ToList());
         }
     }
 }

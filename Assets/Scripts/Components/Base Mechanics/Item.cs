@@ -52,14 +52,23 @@ public class Item : Component
         if (gameEvent.ID == GameEventId.GetContextMenuActions)
         {
             IEntity source = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameters.Entity));
-            ContextMenuButton button = new ContextMenuButton("Drop", () =>
+            ContextMenuButton dropButton = new ContextMenuButton("Drop", () =>
             {
                 EventBuilder drop = new EventBuilder(GameEventId.Drop)
                                         .With(EventParameters.Entity, source.ID);
 
                 FireEvent(Self, drop.CreateEvent(), true);
             });
-            gameEvent.GetValue<List<ContextMenuButton>>(EventParameters.InventoryContextActions).Add(button);
+            gameEvent.GetValue<List<ContextMenuButton>>(EventParameters.InventoryContextActions).Add(dropButton);
+
+            ContextMenuButton giveTo = new ContextMenuButton("Give to...", () =>
+            {
+                EventBuilder giveItemTo = new EventBuilder(GameEventId.PromptToGiveItem)
+                                             .With(EventParameters.Entity, gameEvent.GetValue<string>(EventParameters.Entity))
+                                             .With(EventParameters.Item, Self.ID);
+                World.Instance.Self.FireEvent(giveItemTo.CreateEvent());
+            });
+            gameEvent.GetValue<List<ContextMenuButton>>(EventParameters.InventoryContextActions).Add(giveTo);
         }
 
         if(gameEvent.ID == GameEventId.GetRarity)

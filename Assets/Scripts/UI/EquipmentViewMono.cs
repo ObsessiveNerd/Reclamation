@@ -17,7 +17,9 @@ public class EquipmentViewMono : MonoBehaviour, IUpdatableUI
 
     public void Setup(IEntity source)
     {
-        m_Source = source;
+        if(source != null)
+            m_Source = source;
+
         WorldUtility.RegisterUI(this);
         EventBuilder getEquipment = new EventBuilder(GameEventId.GetCurrentEquipment)
                                     .With(EventParameters.Head, null)
@@ -26,7 +28,7 @@ public class EquipmentViewMono : MonoBehaviour, IUpdatableUI
                                     .With(EventParameters.RightArm, null)
                                     .With(EventParameters.Legs, null);
 
-        var firedEvent = source.FireEvent(getEquipment.CreateEvent());
+        var firedEvent = m_Source.FireEvent(getEquipment.CreateEvent());
 
         SetEquipment(firedEvent.GetValue<string>(EventParameters.Head), Head);
         SetEquipment(firedEvent.GetValue<string>(EventParameters.Torso), Torso);
@@ -64,9 +66,9 @@ public class EquipmentViewMono : MonoBehaviour, IUpdatableUI
         WorldUtility.UnRegisterUI(this);
     }
 
-    public void UpdateUI()
+    public void UpdateUI(IEntity newSource)
     {
         Cleanup();
-        Setup(m_Source);
+        Setup(newSource);
     }
 }

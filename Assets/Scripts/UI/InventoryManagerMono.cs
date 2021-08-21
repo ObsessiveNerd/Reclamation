@@ -12,7 +12,8 @@ public class InventoryManagerMono : MonoBehaviour, IUpdatableUI
 
     public void Setup(IEntity source)
     {
-        m_Source = source;
+        if(source != null)
+            m_Source = source;
 
         Cleanup();
 
@@ -33,7 +34,7 @@ public class InventoryManagerMono : MonoBehaviour, IUpdatableUI
                 Image spriteRenderer = spriteGo.GetComponent<Image>();
                 spriteRenderer.sprite = sprite;
                 spriteGo.transform.SetParent(InventoryView);
-                spriteGo.AddComponent<InventoryItemMono>().Init(source, item);
+                spriteGo.AddComponent<InventoryItemMono>().Init(m_Source, item);
                 m_Items.Add(spriteGo);
             }
         }
@@ -46,10 +47,10 @@ public class InventoryManagerMono : MonoBehaviour, IUpdatableUI
         m_Items.Clear();
     }
 
-    public void UpdateUI()
+    public void UpdateUI(IEntity newSource)
     {
         Cleanup();
-        Setup(m_Source);
+        Setup(newSource);
     }
 
     public void Close()
