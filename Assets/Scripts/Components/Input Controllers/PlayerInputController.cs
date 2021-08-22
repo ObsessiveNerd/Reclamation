@@ -31,11 +31,12 @@ public class PlayerInputController : InputControllerBase
                 Self.AddComponent(new PlayerUIController());
             }
 
-            //else if(Input.GetKeyDown(KeyCode.M))
-            //{
-            //    FireEvent(World.Instance.Self, new GameEvent(GameEventId.RevealAllTiles));
-            //}
-
+#if UNITY_EDITOR
+            else if (Input.GetKeyDown(KeyCode.M))
+            {
+                FireEvent(World.Instance.Self, new GameEvent(GameEventId.RevealAllTiles));
+            }
+#endif
             else if (InputBinder.PerformRequestedAction(RequestedAction.FireRangedWeapon))
             {
                 GameEvent getRangedWeapon = FireEvent(Self, new GameEvent(GameEventId.GetRangedWeapon, new KeyValuePair<string, object>(EventParameters.Value, null)));
@@ -71,10 +72,10 @@ public class PlayerInputController : InputControllerBase
             //    gameEvent.Paramters[EventParameters.UpdateWorldView] = true;
             //}
 
-            else if (InputBinder.PerformRequestedAction(RequestedAction.CastSpell))
+            else if (SpellSelected(out int spellIndex))
             {
                 Self.RemoveComponent(this);
-                Self.AddComponent(new SpellcasterPlayerController());
+                Self.AddComponent(new SpellcasterPlayerController(spellIndex));
             }
 
             else if (InputBinder.PerformRequestedAction(RequestedAction.PickupItem))
@@ -104,7 +105,7 @@ public class PlayerInputController : InputControllerBase
                 //}
             }
 
-            else if (Input.GetKeyDown(KeyCode.Tab))
+            else if (InputBinder.PerformRequestedAction(RequestedAction.RotateCharacter))
             {
                 RotateActiveCharacter(gameEvent);
                 return;

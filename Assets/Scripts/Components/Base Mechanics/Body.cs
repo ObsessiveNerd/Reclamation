@@ -60,6 +60,7 @@ public class Body : Component
         RegisteredEvents.Add(GameEventId.EndTurn);
         RegisteredEvents.Add(GameEventId.GetCombatRating);
         RegisteredEvents.Add(GameEventId.GetCurrentEquipment);
+        RegisteredEvents.Add(GameEventId.GetSpells);
         RegisteredEvents.Add(GameEventId.CheckItemEquiped);
     }
 
@@ -132,6 +133,12 @@ public class Body : Component
                     break;
                 }
             }
+        }
+
+        else if(gameEvent.ID == GameEventId.GetSpells)
+        {
+            foreach (IEntity item in m_AllBodyParts)
+                FireEvent(item, gameEvent);
         }
 
         else if(gameEvent.ID == GameEventId.Unequip)

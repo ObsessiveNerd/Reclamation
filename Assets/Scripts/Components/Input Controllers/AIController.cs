@@ -36,9 +36,6 @@ public class AIController : InputControllerBase
             if (actions.Count > 0)
                 desiredDirection = actions[0].ActionToTake();
 
-            if (Self.Name.Contains("Dwarf"))
-                Debug.LogWarning($"{Self.ID} wants to move {desiredDirection}");
-
             if (desiredDirection == MoveDirection.None)
                 FireEvent(Self, new GameEvent(GameEventId.SkipTurn));
 

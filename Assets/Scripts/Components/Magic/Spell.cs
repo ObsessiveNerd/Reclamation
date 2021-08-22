@@ -13,7 +13,7 @@ public class Spell : Component
     public override void HandleEvent(GameEvent gameEvent)
     {
         if (gameEvent.ID == GameEventId.GetSpells)
-            gameEvent.GetValue<List<string>>(EventParameters.SpellList).Add(Self.ID);
+            gameEvent.GetValue<HashSet<string>>(EventParameters.SpellList).Add(Self.ID);
     }
 }
 

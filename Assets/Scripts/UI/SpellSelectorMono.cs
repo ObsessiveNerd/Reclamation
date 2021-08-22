@@ -1,16 +1,24 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SpellSelectorMono : EscapeableMono
+public class SpellSelectorMono : MonoBehaviour, IUpdatableUI
 {
     public GameObject SpellObject;
     public GameObject SpellView;
 
-    public void Setup(IEntity source, IEnumerable<string> spellList)
+    public void Setup(IEntity source)
     {
-        foreach(string spellId in spellList)
+        Close();
+        EventBuilder getSpells = new EventBuilder(GameEventId.GetSpells)
+                                    .With(EventParameters.SpellList, new HashSet<string>());
+
+        var spellList = source.FireEvent(getSpells.CreateEvent()).GetValue<HashSet<string>>(EventParameters.SpellList);
+
+        int index = 1;
+        foreach (string spellId in spellList)
         {
             IEntity spell = EntityQuery.GetEntity(spellId);
 
@@ -24,27 +32,38 @@ public class SpellSelectorMono : EscapeableMono
                 spriteRenderer.sprite = sprite;
                 spriteGo.transform.SetParent(SpellView.transform);
 
-                Button button = spriteGo.AddComponent<Button>();
-                button.onClick.AddListener(() =>
-                {
-                    source.FireEvent(new GameEvent(GameEventId.SpellSelected, new KeyValuePair<string, object>(EventParameters.Spell, spellId)));
-                    Close();
-                });
+                spriteGo.GetComponentInChildren<TextMeshProUGUI>().text = index.ToString();
+
+                //Button button = spriteGo.AddComponent<Button>();
+                //button.onClick.AddListener(() =>
+                //{
+                //    source.FireEvent(new GameEvent(GameEventId.SpellSelected, new KeyValuePair<string, object>(EventParameters.Spell, spellId)));
+                //    //Close();
+                //});
+                index++;
             }
         }
 
+        WorldUtility.RegisterUI(this);
         SpellObject.SetActive(true);
-        UIManager.Push(this);
+        //UIManager.Push(this);
     }
 
-    public override void OnEscape()
+    public void UpdateUI(IEntity newSource)
     {
+        Debug.Log("Update Spellselector");
         Close();
+        Setup(newSource);
     }
+
+    //public override void OnEscape()
+    //{
+    //    Close();
+    //}
 
     void Close()
     {
-        SpellObject.SetActive(false);
+        //SpellObject.SetActive(false);
         foreach (Transform go in SpellView.GetComponentsInChildren<Transform>())
             if(SpellView.transform != go)
                 Destroy(go.gameObject);

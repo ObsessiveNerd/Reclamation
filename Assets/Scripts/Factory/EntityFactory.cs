@@ -22,7 +22,18 @@ public static class EntityFactory
 
     private static string m_BluePrintPath = "Blueprints";
     private static Dictionary<string, string> m_Blueprints = new Dictionary<string, string>();
+
+    private static bool s_InitializingBluePrints = false;
     private static Dictionary<string, List<string>> m_BlueprintTypeMap = new Dictionary<string, List<string>>();
+    private static Dictionary<string, List<string>> BlueprintTypeMap
+    {
+        get
+        {
+            if (m_BlueprintTypeMap.Count == 0 && !s_InitializingBluePrints)
+                InitBlueprints();
+            return m_BlueprintTypeMap;
+        }
+    }
 
     private static string kArmorPath = "Blueprints\\Armor";
     private static string kWeaponPath = "Blueprints\\Weapons";
@@ -51,13 +62,14 @@ public static class EntityFactory
 
     private static void InitBlueprints()
     {
+        s_InitializingBluePrints = true;
         foreach (var bpPath in Directory.EnumerateFiles(m_BluePrintPath, "*", SearchOption.AllDirectories))
         {
             string bpName = Path.GetFileNameWithoutExtension(bpPath);
             string directoryOnly = Path.GetDirectoryName(bpPath);
-            if (!m_BlueprintTypeMap.ContainsKey(directoryOnly))
-                m_BlueprintTypeMap.Add(directoryOnly, new List<string>());
-            m_BlueprintTypeMap[directoryOnly].Add(bpName);
+            if (!BlueprintTypeMap.ContainsKey(directoryOnly))
+                BlueprintTypeMap.Add(directoryOnly, new List<string>());
+            BlueprintTypeMap[directoryOnly].Add(bpName);
             m_Blueprints.Add(bpName, bpPath);
 
             if (bpPath.StartsWith(kArmorPath) || bpPath.StartsWith(kWeaponPath) || bpPath.StartsWith(kItemsPath))
@@ -85,13 +97,19 @@ public static class EntityFactory
 
     public static string GetRandomMonsterBPName()
     {
-        var list = m_BlueprintTypeMap[kMonstersPath];
+        var list = BlueprintTypeMap[kMonstersPath];
         return list[RecRandom.Instance.GetRandomValue(0, list.Count)];
     }
 
     public static string GetRandomItemBPName(int rarity)
     {
         return string.Empty;
+    }
+
+    public static string GetRandomSpellBPName(int rarity)
+    {
+        var list = BlueprintTypeMap[kSpellsPath];
+        return list[RecRandom.Instance.GetRandomValue(0, list.Count)];
     }
 
     public static IEntity GetEntity(string path, string entityID = "")

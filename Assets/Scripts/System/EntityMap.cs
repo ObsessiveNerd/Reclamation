@@ -45,6 +45,9 @@ public class EntityMap : WorldComponent
 
     public IEntity GetEntity(string id)
     {
+        if (!m_EntityIdToEntityMap.ContainsKey(id))
+            return EntityFactory.CreateEntity(id);
+
         if (m_EntityIdToEntityMap.ContainsKey(id))
             return m_EntityIdToEntityMap[id];
         return null;

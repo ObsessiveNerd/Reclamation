@@ -14,7 +14,7 @@ public class Inventory : Component
         RegisteredEvents.Add(GameEventId.RemoveFromInventory);
         RegisteredEvents.Add(GameEventId.EmptyBag);
         RegisteredEvents.Add(GameEventId.Died);
-        RegisteredEvents.Add(GameEventId.GetSpells);
+        //RegisteredEvents.Add(GameEventId.GetSpells);
         RegisteredEvents.Add(GameEventId.GetCurrentInventory);
     }
 
@@ -57,11 +57,11 @@ public class Inventory : Component
             InventoryItems.Clear();
         }
 
-        if(gameEvent.ID == GameEventId.GetSpells)
-        {
-            foreach (IEntity item in InventoryItems)
-                FireEvent(item, gameEvent);
-        }
+        //if(gameEvent.ID == GameEventId.GetSpells)
+        //{
+        //    foreach (IEntity item in InventoryItems)
+        //        FireEvent(item, gameEvent);
+        //}
 
         if(gameEvent.ID == GameEventId.GetCurrentInventory)
         {

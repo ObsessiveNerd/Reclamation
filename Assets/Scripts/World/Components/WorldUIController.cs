@@ -34,7 +34,7 @@ public class WorldUIController : WorldComponent
         else if(gameEvent.ID == GameEventId.OpenSpellUI)
         {
             IEntity source = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Entity]);
-            GameObject.FindObjectOfType<SpellSelectorMono>().Setup(source, (List<string>)gameEvent.Paramters[EventParameters.SpellList]);
+            GameObject.FindObjectOfType<SpellSelectorMono>().Setup(source);
         }
 
         else if(gameEvent.ID == GameEventId.RegisterPlayableCharacter)

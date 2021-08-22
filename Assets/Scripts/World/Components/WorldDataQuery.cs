@@ -77,7 +77,7 @@ public class WorldDataQuery : WorldComponent
                 }
             }
 
-            gameEvent.Paramters[EventParameters.Value] = closestEnemy.ID;
+            gameEvent.Paramters[EventParameters.Value] = closestEnemy?.ID;
         }
         else if(gameEvent.ID == GameEventId.GetPlayableCharacters)
         {

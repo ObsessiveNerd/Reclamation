@@ -12,6 +12,9 @@ public class UIManager : MonoBehaviour
 
     public static void Push(EscapeableMono mono)
     {
+        if (mono == null)
+            Debug.LogWarning("pushing null to the UI manager stack.  Could cause issues");
+
         if (!UIMonoBehaviors.Contains(mono))
             UIMonoBehaviors.Push(mono);
     }
@@ -24,7 +27,7 @@ public class UIManager : MonoBehaviour
 
     public static void ForcePop()
     {
-        UIMonoBehaviors.Pop().OnEscape();
+        UIMonoBehaviors.Pop()?.OnEscape();
     }
 
     public static EscapeableMono GetTopStack()

@@ -33,20 +33,25 @@ public class RangedPlayerAttackController : InputControllerBase
         if (!isInFoVResult)
             startingTarget = Self;
 
-        Debug.Log($"Target is {startingTarget.Name}");
-
         GameEvent selectTile = new GameEvent(GameEventId.SelectTile, new KeyValuePair<string, object>(EventParameters.Entity, Self.ID),
                                                                                 new KeyValuePair<string, object>(EventParameters.Target, startingTarget.ID),
                                                                                 new KeyValuePair<string, object>(EventParameters.TilePosition, null));
         FireEvent(World.Instance.Self, selectTile);
         m_TileSelection = (Point)selectTile.Paramters[EventParameters.TilePosition];
         FireEvent(World.Instance.Self, new GameEvent(GameEventId.UpdateWorldView));
+        UIManager.Push(null);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
     {
         if(gameEvent.ID == GameEventId.UpdateEntity)
         {
+            if (m_Attack == null)
+            {
+                EndSelection(gameEvent, m_TileSelection);
+                return;
+            }
+
             MoveDirection desiredDirection = InputUtility.GetMoveDirection();
 
             if (desiredDirection != MoveDirection.None)
@@ -58,7 +63,7 @@ public class RangedPlayerAttackController : InputControllerBase
                 gameEvent.Paramters[EventParameters.UpdateWorldView] = true;
             }
 
-            if(Input.GetKeyDown(KeyCode.Return))
+            if(Input.GetKeyDown(KeyCode.Return) || InputBinder.PerformRequestedAction(RequestedAction.FireRangedWeapon))
             {
                 TypeWeapon weaponType = CombatUtility.GetWeaponType(m_Attack);
                 IEntity target = WorldUtility.GetEntityAtPosition(m_TileSelection);

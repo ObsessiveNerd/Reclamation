@@ -35,7 +35,8 @@ public static class WorldUtility
                                     .With(EventParameters.Value, null);
 
         string id = World.Instance.Self.FireEvent(eventBuilder.CreateEvent()).GetValue<string>(EventParameters.Value);
-        return EntityQuery.GetEntity(id);
+        var entity = EntityQuery.GetEntity(id);
+        return entity;
     }
 
     public static bool IsActivePlayer(string entityId)

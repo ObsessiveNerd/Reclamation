@@ -1,66 +1,99 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class SpellcasterPlayerController : InputControllerBase
 {
-    List<string> m_Spells = new List<string>();
+    int m_SpellIndex = 0;
     Point m_TileSelection = Point.InvalidPoint;
+    IEntity m_Attack;
+
+    public SpellcasterPlayerController(int spellIndex)
+    {
+        m_SpellIndex = spellIndex;
+    }
 
     public override void Init(IEntity self)
     {
         base.Init(self);
+
         EventBuilder getSpells = new EventBuilder(GameEventId.GetSpells)
-                                    .With(EventParameters.SpellList, m_Spells);
+                                    .With(EventParameters.SpellList, new HashSet<string>());
 
-        FireEvent(Self, getSpells.CreateEvent());
+        var eventResult = Self.FireEvent(getSpells.CreateEvent());
+        var spellList = eventResult.GetValue<HashSet<string>>(EventParameters.SpellList);
+        if(spellList.ToList().Count() > m_SpellIndex)
+            m_Attack = EntityQuery.GetEntity(spellList.ToList()[m_SpellIndex]);
 
-        EventBuilder openSpellUI = new EventBuilder(GameEventId.OpenSpellUI)
-                                    .With(EventParameters.Entity, Self.ID)
-                                    .With(EventParameters.SpellList, m_Spells);
+        IEntity startingTarget = WorldUtility.GetClosestEnemyTo(Self);
 
-        FireEvent(World.Instance.Self, openSpellUI.CreateEvent());
+        if (startingTarget != null)
+        {
+            EventBuilder isVisible = new EventBuilder(GameEventId.EntityVisibilityState)
+                                        .With(EventParameters.Entity, startingTarget.ID)
+                                        .With(EventParameters.Value, false);
 
-        //Self.RemoveComponent(this);
-        //Self.AddComponent(new PlayerUIController());
+            //Here we can check isVisible to see if the target is invisible or something
+            //FireEvent(startingTarget, isVisible.CreateEvent());
 
-        RegisteredEvents.Add(GameEventId.SpellSelected);
+            EventBuilder isInFOV = new EventBuilder(GameEventId.IsInFOV)
+                                    .With(EventParameters.Entity, startingTarget.ID)
+                                    .With(EventParameters.Value, false);
+
+            bool isInFoVResult = FireEvent(Self, isInFOV.CreateEvent()).GetValue<bool>(EventParameters.Value);
+            if (!isInFoVResult)
+                startingTarget = Self;
+        }
+        else
+            startingTarget = Self;
+
+        GameEvent selectTile = new GameEvent(GameEventId.SelectTile, new KeyValuePair<string, object>(EventParameters.Entity, Self.ID),
+                                                                                new KeyValuePair<string, object>(EventParameters.Target, startingTarget.ID),
+                                                                                new KeyValuePair<string, object>(EventParameters.TilePosition, null));
+        FireEvent(World.Instance.Self, selectTile);
+        m_TileSelection = (Point)selectTile.Paramters[EventParameters.TilePosition];
+        FireEvent(World.Instance.Self, new GameEvent(GameEventId.UpdateWorldView));
+        UIManager.Push(null);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
     {
-        if (gameEvent.ID == GameEventId.UpdateEntity)
+        if(gameEvent.ID == GameEventId.UpdateEntity)
         {
-            //MoveDirection desiredDirection = InputUtility.GetMoveDirection();
-            //if (desiredDirection == MoveDirection.E)
-            //{
-            //    m_CurrentSpellIndex++;
-            //    if (m_CurrentSpellIndex >= m_Spells.Count)
-            //        m_CurrentSpellIndex = 0;
-            //}
-            //else if (desiredDirection == MoveDirection.W)
-            //{
-            //    m_CurrentSpellIndex--;
-            //    if (m_CurrentSpellIndex < 0)
-            //        m_CurrentSpellIndex = m_Spells.Count - 1;
-            //}
+            if(m_Attack == null)
+            {
+                EndSelection(gameEvent, m_TileSelection);
+                return;
+            }
 
-            //if (Input.GetKeyDown(KeyCode.Return))
-            //{
-            //    //Todo: determine type of spell and perform appropriate actions.  For instance, ranged attacks work fine as shown below but things like "hold person" won't work that way.
-            //    Self.RemoveComponent(this);
-            //    Self.AddComponent(new RangedPlayerAttackController(EntityQuery.GetEntity(m_Spells[m_CurrentSpellIndex])));
-            //}
+            MoveDirection desiredDirection = InputUtility.GetMoveDirection();
+
+            if (desiredDirection != MoveDirection.None)
+            {
+                GameEvent moveSelection = new GameEvent(GameEventId.SelectNewTileInDirection, new KeyValuePair<string, object>(EventParameters.InputDirection, desiredDirection),
+                                                                                                    new KeyValuePair<string, object>(EventParameters.TilePosition, m_TileSelection));
+                FireEvent(World.Instance.Self, moveSelection);
+                m_TileSelection = (Point)moveSelection.Paramters[EventParameters.TilePosition];
+                gameEvent.Paramters[EventParameters.UpdateWorldView] = true;
+            }
+
+            if(Input.GetKeyDown(KeyCode.Return) || SpellSelected(out int spell) && spell == m_SpellIndex)
+            {
+                TypeWeapon weaponType = CombatUtility.GetWeaponType(m_Attack);
+                IEntity target = WorldUtility.GetEntityAtPosition(m_TileSelection);
+
+                CombatUtility.Attack(Self, target, m_Attack);
+
+                EndSelection(gameEvent, m_TileSelection);
+
+                GameEvent checkForEnergy = new GameEvent(GameEventId.HasEnoughEnergyToTakeATurn, new KeyValuePair<string, object>(EventParameters.TakeTurn, false));
+                FireEvent(Self, checkForEnergy);
+                gameEvent.Paramters[EventParameters.TakeTurn] = (bool)checkForEnergy.Paramters[EventParameters.TakeTurn];
+            }
 
             if (Input.GetKeyDown(KeyCode.Escape))
                 EndSelection(gameEvent, m_TileSelection);
-        }
-
-        else if(gameEvent.ID == GameEventId.SpellSelected)
-        {
-            string spellId = gameEvent.GetValue<string>(EventParameters.Spell);
-            Self.RemoveComponent(this);
-            Self.AddComponent(new RangedPlayerAttackController(EntityQuery.GetEntity(spellId)));
         }
     }
 }

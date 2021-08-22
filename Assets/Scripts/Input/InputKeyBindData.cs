@@ -17,7 +17,13 @@ public enum RequestedAction
     FireRangedWeapon,
     Look,
     CastSpell,
-    PickupItem
+    PickupItem,
+    RotateCharacter,
+    SpellSelect1,
+    SpellSelect2,
+    SpellSelect3,
+    SpellSelect4,
+    SpellSelect5
 }
 
 [Serializable]
@@ -49,6 +55,18 @@ public class InputKeyBindData
     KeyCode CastSpell;
     [SerializeField]
     KeyCode PickupItem;
+    [SerializeField]
+    KeyCode RotateCharacter;
+    [SerializeField]
+    KeyCode SpellSelect1;
+    [SerializeField]
+    KeyCode SpellSelect2;
+    [SerializeField]
+    KeyCode SpellSelect3;
+    [SerializeField]
+    KeyCode SpellSelect4;
+    [SerializeField]
+    KeyCode SpellSelect5;
 
     public InputKeyBindData()
     {
@@ -66,5 +84,12 @@ public class InputKeyBindData
         Look = KeyCode.L;
         CastSpell = KeyCode.C;
         PickupItem = KeyCode.Space;
+
+        RotateCharacter = KeyCode.Tab;
+        SpellSelect1 = KeyCode.Alpha1;
+        SpellSelect2 = KeyCode.Alpha2;
+        SpellSelect3 = KeyCode.Alpha3;
+        SpellSelect4 = KeyCode.Alpha4;
+        SpellSelect5 = KeyCode.Alpha5;
     }
 }

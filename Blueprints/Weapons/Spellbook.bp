@@ -5,5 +5,7 @@
 	InteractOnTileOvertake
 	EntityTypeContainer:Type=Item
 	Item:Rarity=Epic
-	SpellContainer:SpellNameToIdMap=<Firebolt>&<IceRay>
+	SpellContainer
+	Equipment:PreferredBodyPartWhenEquipped=Arm
+	TwoHanded
 )
