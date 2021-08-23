@@ -17,9 +17,17 @@ public class NameplateMono : MonoBehaviour
     void LateUpdate()
     {
         if (m_Target == null)
+        {
+            Destroy(gameObject);
             return;
+        }
 
         GameObject go = WorldUtility.GetGameObject(m_Target);
+        if(go == null)
+        {
+            Destroy(gameObject);
+            return;
+        }
         Vector2 newPos = (Vector2)Camera.main.WorldToScreenPoint(go.transform.position);
         newPos.y += (go.GetComponent<SpriteRenderer>().sprite.textureRect.height);
         transform.position = newPos;

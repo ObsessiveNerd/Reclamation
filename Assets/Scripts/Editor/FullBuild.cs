@@ -24,7 +24,33 @@ public class FullBuild
             locationPathName = finalBuildPath + "Relamation.exe",
             scenes = EditorBuildSettings.scenes.Select(s => s.path).ToArray(),
             target = EditorUserBuildSettings.activeBuildTarget,
-            targetGroup = EditorUserBuildSettings.selectedBuildTargetGroup
+            targetGroup = EditorUserBuildSettings.selectedBuildTargetGroup,
+            options = BuildOptions.AutoRunPlayer
+        });
+
+        CopyFilesRecursively(bpFolder, finalBuildPath + bpFolder + "/");
+        CopyFilesRecursively(levelData, finalBuildPath + levelData + "/");
+    }
+
+    [MenuItem("Reclamation/Full Debug Build")]
+    public static void DoFullDebugBuild()
+    {
+        string bpFolder = "Blueprints";
+        string levelData = "LevelData";
+
+        string finalBuildPath = "/BitDraft/ReclamationBuild/";
+
+        if (Directory.Exists(finalBuildPath))
+            Directory.Delete(finalBuildPath, true);
+        Directory.CreateDirectory(finalBuildPath);
+
+        BuildPipeline.BuildPlayer(new BuildPlayerOptions()
+        {
+            locationPathName = finalBuildPath + "Relamation.exe",
+            scenes = EditorBuildSettings.scenes.Select(s => s.path).ToArray(),
+            target = EditorUserBuildSettings.activeBuildTarget,
+            targetGroup = EditorUserBuildSettings.selectedBuildTargetGroup,
+            options = BuildOptions.AutoRunPlayer | BuildOptions.Development
         });
 
         CopyFilesRecursively(bpFolder, finalBuildPath + bpFolder + "/");
