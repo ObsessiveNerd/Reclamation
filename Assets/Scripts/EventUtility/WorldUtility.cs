@@ -39,6 +39,14 @@ public static class WorldUtility
         return entity;
     }
 
+    public static GameObject GetGameObject(IEntity e)
+    {
+        EventBuilder getGameObjectLocation = new EventBuilder(GameEventId.GameObject)
+                                                .With(EventParameters.Point, GetEntityPosition(e))
+                                                .With(EventParameters.Value, null);
+        return World.Instance.Self.FireEvent(getGameObjectLocation.CreateEvent()).GetValue<GameObject>(EventParameters.Value);
+    }
+
     public static bool IsActivePlayer(string entityId)
     {
         EventBuilder isActivePlayer = new EventBuilder(GameEventId.GetActivePlayerId)

@@ -7,5 +7,6 @@
 	Item:Rarity=Common
 	FOVModifier:Modifier=4
 	ActiveWhileEquiped
+	Equipment:PreferredBodyPartWhenEquipped=Arm
 	DestroyAfterTurns:CurrentTurnCount=0,DestroyAfterTurnCount=30,Active=False
 )

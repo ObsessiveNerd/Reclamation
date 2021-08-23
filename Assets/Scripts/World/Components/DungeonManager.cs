@@ -267,6 +267,8 @@ public class DungeonManager : WorldComponent
 
     void SpawnPlayers()
     {
+        var lines = File.ReadAllLines($"{Application.streamingAssetsPath}/random_names.txt");
+
         for (int i = 0; i < 4; i++)
         {
             IEntity player = EntityFactory.CreateEntity("DwarfWarrior");
@@ -277,6 +279,19 @@ public class DungeonManager : WorldComponent
                 player.CleanupComponents();
 
             FireEvent(player, new GameEvent(GameEventId.InitFOV));
+
+            
+            var randomLineNumber = RecRandom.Instance.GetRandomValue(0, lines.Length - 1);
+            var line = lines[randomLineNumber];
+
+            EventBuilder setName = new EventBuilder(GameEventId.SetName)
+                                    .With(EventParameters.Name, line);
+            FireEvent(player, setName.CreateEvent());
+
+            GameObject namePlate = GameObject.Instantiate(Resources.Load<GameObject>("UI/Nameplate"));
+            namePlate.GetComponent<NameplateMono>().Setup(player);
+            namePlate.transform.SetParent(GameObject.FindObjectOfType<Canvas>().transform);
+            namePlate.transform.SetAsFirstSibling();
         }
 
         FireEvent(Self, new GameEvent(GameEventId.ProgressTime));

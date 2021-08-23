@@ -1,7 +1,7 @@
-<IceRay>(
-	Spell
-	DealDamage:DamageType=Ice, Damage=1d6
-	Range:8
-	WeaponType:IntSpell
-	GraphicContainer:Textures/Spells/SpellBook06_04
+<IceRay> (
+	GraphicContainer: Textures/Spells/SpellBook06_04
+	Spell:ManaCost=1
+	DealDamage:DamageType=Ice,Dice=1d6
+	Range
+	WeaponType:TypeWeapon=IntSpell
 )

@@ -1,29 +1,31 @@
-<DwarfWarrior> (
+<> (
 	GraphicContainer: Textures/Characters/td_monsters_dwarf_d2
 	Portrait: Portraits/Characters/Tex_Dwarf_warrior_male_bg
 	Defense
-	InteractsWithWorld
-	PackTactics:IsPartyLeader=True,IsInParty=False,PartyLeaderId=,PackRange=2
-	FOV:FOVRange=5
-	Faction:ID=DwarvenExpedition
-	Energy:EnergyRegineration=1,CurrentEnergy=0,HasHadTurnStarted=False
-	Stats:Str=10,Agi=9,Con=13,Wis=11,Int=12,Cha=10
-	Move
-	Inventory:InventoryItems=
-	Aggression
-	EntityTypeContainer:Type=Creature
-	PrimaryStatType:PrimaryStat=Str
-	RegisterWithTimeSystem
-	AIFOVHandler
-	Body:Head=1[], Torso=1[], Arm=2[<Short Sword>], Leg=2[]
-	BlocksNonHostileMovement
-	CombatRating
-	AIController
-	Wander
-	Fear
-	Position:PositionPoint=0,0
-	InteractOnTileOvertake
 	HealthRegen:RegenAmount=1,RegenSpeed=5
+	InteractOnTileOvertake
+	Position:PositionPoint=0,0
+	Fear
+	Wander
+	AIController
+	CombatRating
+	BlocksNonHostileMovement
+	Body:Head=1[], Torso=1[], Arm=2[<Short Sword>], Leg=2[]
+	AIFOVHandler
+	RegisterWithTimeSystem
+	PrimaryStatType:PrimaryStat=Str
+	EntityTypeContainer:Type=Creature
+	Aggression
+	Inventory:InventoryItems=
+	Move
+	Stats:Str=10,Agi=9,Con=13,Wis=11,Int=12,Cha=10
+	Energy:EnergyRegineration=1,CurrentEnergy=0,HasHadTurnStarted=False
+	Faction:ID=DwarvenExpedition
+	FOV:FOVRange=5
+	PackTactics:PartyLeaderId=1802
+	InteractsWithWorld
+	Name:PrettyName=
 	Health:MaxHealth=10,CurrentHealth=10
-	Name
+	Mana:MaxMana=5,CurrentMana=5
+	ManaRegen:RegenAmount=1,RegenSpeed=15
 )

@@ -17,6 +17,7 @@ public class WorldDataQuery : WorldComponent
         RegisteredEvents.Add(GameEventId.GetClosestEnemy);
         RegisteredEvents.Add(GameEventId.GetPlayableCharacters);
         RegisteredEvents.Add(GameEventId.GetActivePlayerId);
+        RegisteredEvents.Add(GameEventId.GameObject);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
@@ -82,6 +83,15 @@ public class WorldDataQuery : WorldComponent
         else if(gameEvent.ID == GameEventId.GetPlayableCharacters)
         {
             gameEvent.GetValue<List<string>>(EventParameters.Value).AddRange(m_Players.Select(e => e.ID));
+        }
+
+        else if(gameEvent.ID == GameEventId.GameObject)
+        {
+            Point p = gameEvent.GetValue<Point>(EventParameters.Point);
+            if(m_GameObjectMap.ContainsKey(p))
+            {
+                gameEvent.Paramters[EventParameters.Value] = m_GameObjectMap[p];
+            }
         }
     }
 

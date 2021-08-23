@@ -1,14 +1,14 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HealthRegen : Component
+public class ManaRegen : Component
 {
     public int RegenAmount;
     public int RegenSpeed;
 
     int currentTurns = 0;
-    public HealthRegen(int regenAmount, int speed)
+    public ManaRegen(int regenAmount, int speed)
     {
         RegenAmount = regenAmount;
         RegenSpeed = speed;
@@ -27,16 +27,16 @@ public class HealthRegen : Component
             currentTurns++;
             if(currentTurns >= RegenSpeed)
             {
-                EventBuilder regenHealth = new EventBuilder(GameEventId.RegenHealth)
-                                            .With(EventParameters.Healing, RegenAmount);
-                FireEvent(Self, regenHealth.CreateEvent());
+                EventBuilder regenMana = new EventBuilder(GameEventId.RestoreMana)
+                                            .With(EventParameters.Mana, RegenAmount);
+                FireEvent(Self, regenMana.CreateEvent());
                 currentTurns = 0;
             }
         }
     }
 }
 
-public class DTO_HealthRegen : IDataTransferComponent
+public class DTO_ManaRegen : IDataTransferComponent
 {
     public IComponent Component { get; set; }
 
@@ -58,12 +58,12 @@ public class DTO_HealthRegen : IDataTransferComponent
                 Debug.LogError("Unable to parse health regen value.");
         }
 
-        Component = new HealthRegen(regen, speed);
+        Component = new ManaRegen(regen, speed);
     }
 
     public string CreateSerializableData(IComponent component)
     {
-        HealthRegen hr = (HealthRegen)component;
-        return $"{nameof(HealthRegen)}: {nameof(hr.RegenAmount)}={hr.RegenAmount}, {nameof(hr.RegenSpeed)}={hr.RegenSpeed}";
+        ManaRegen mr = (ManaRegen)component;
+        return $"{nameof(ManaRegen)}: {nameof(mr.RegenAmount)}={mr.RegenAmount}, {nameof(mr.RegenSpeed)}={mr.RegenSpeed}";
     }
 }

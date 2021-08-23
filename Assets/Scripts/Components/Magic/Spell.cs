@@ -4,16 +4,27 @@ using UnityEngine;
 
 public class Spell : Component
 {
+    public int ManaCost;
+
+    public Spell(int cost)
+    {
+        ManaCost = cost;
+    }
+
     public override void Init(IEntity self)
     {
         base.Init(self);
         RegisteredEvents.Add(GameEventId.GetSpells);
+        RegisteredEvents.Add(GameEventId.ManaCost);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
     {
         if (gameEvent.ID == GameEventId.GetSpells)
             gameEvent.GetValue<HashSet<string>>(EventParameters.SpellList).Add(Self.ID);
+
+        if (gameEvent.ID == GameEventId.ManaCost)
+            gameEvent.Paramters[EventParameters.Value] = ManaCost;
     }
 }
 
@@ -23,11 +34,12 @@ public class DTO_Spell : IDataTransferComponent
 
     public void CreateComponent(string data)
     {
-        Component = new Spell();
+        Component = new Spell(int.Parse(data.Split('=')[1]));
     }
 
     public string CreateSerializableData(IComponent component)
     {
-        return nameof(Spell);
+        Spell s = (Spell)component;
+        return $"{nameof(Spell)}: {nameof(s.ManaCost)}={s.ManaCost}";
     }
 }

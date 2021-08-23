@@ -18,6 +18,7 @@ public class Health : Component
 
         RegisteredEvents.Add(GameEventId.TakeDamage);
         RegisteredEvents.Add(GameEventId.RestoreHealth);
+        RegisteredEvents.Add(GameEventId.RegenHealth);
         RegisteredEvents.Add(GameEventId.GetCombatRating);
         RegisteredEvents.Add(GameEventId.GetHealth);
     }
@@ -30,6 +31,12 @@ public class Health : Component
             {
                 RecLog.Log($"{Self.Name} took {damage.DamageAmount} damage of type {damage.DamageType}");
                 CurrentHealth -= damage.DamageAmount;
+
+                EventBuilder entityTookDamage = new EventBuilder(GameEventId.EntityTookDamage)
+                                                    .With(EventParameters.Entity, Self.ID)
+                                                    .With(EventParameters.Damage, damage.DamageAmount);
+                World.Instance.Self.FireEvent(entityTookDamage.CreateEvent());
+
                 if (CurrentHealth <= 0)
                 {
                     EventBuilder swapActivePlayer = new EventBuilder(GameEventId.RotateActiveCharacter)
@@ -44,10 +51,21 @@ public class Health : Component
             }
         }
 
+        else if(gameEvent.ID == GameEventId.RegenHealth)
+        {
+            int healAmount = (int)gameEvent.Paramters[EventParameters.Healing];
+            CurrentHealth = Mathf.Min(CurrentHealth + healAmount, MaxHealth);
+        }
+
         else if(gameEvent.ID == GameEventId.RestoreHealth)
         {
             int healAmount = (int)gameEvent.Paramters[EventParameters.Healing];
             CurrentHealth = Mathf.Min(CurrentHealth + healAmount, MaxHealth);
+
+            EventBuilder entityHealedDamage = new EventBuilder(GameEventId.EntityHealedDamage)
+                                                    .With(EventParameters.Entity, Self.ID)
+                                                    .With(EventParameters.Healing, healAmount);
+            World.Instance.Self.FireEvent(entityHealedDamage.CreateEvent());
         }
 
         else if(gameEvent.ID == GameEventId.GetHealth)

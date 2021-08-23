@@ -6,6 +6,7 @@ using UnityEngine;
 public class SpellcasterPlayerController : InputControllerBase
 {
     int m_SpellIndex = 0;
+    int m_ManaCost = 0;
     Point m_TileSelection = Point.InvalidPoint;
     IEntity m_Attack;
 
@@ -24,7 +25,25 @@ public class SpellcasterPlayerController : InputControllerBase
         var eventResult = Self.FireEvent(getSpells.CreateEvent());
         var spellList = eventResult.GetValue<HashSet<string>>(EventParameters.SpellList);
         if(spellList.ToList().Count() > m_SpellIndex)
+        {
             m_Attack = EntityQuery.GetEntity(spellList.ToList()[m_SpellIndex]);
+
+            EventBuilder getCurrentMana = new EventBuilder(GameEventId.GetMana)
+                                            .With(EventParameters.Value, 0);
+            int currentMana = Self.FireEvent(getCurrentMana.CreateEvent()).GetValue<int>(EventParameters.Value);
+
+            EventBuilder getManaCost = new EventBuilder(GameEventId.ManaCost)
+                                        .With(EventParameters.Value, 1);
+            m_ManaCost = m_Attack.FireEvent(getManaCost.CreateEvent()).GetValue<int>(EventParameters.Value);
+
+            if (m_ManaCost <= currentMana)
+                Debug.Log("Had enough mana");
+            else
+            {
+                Debug.Log("not enough mana");
+                m_Attack = null;
+            }
+        } 
 
         IEntity startingTarget = WorldUtility.GetClosestEnemyTo(Self);
 
@@ -90,6 +109,9 @@ public class SpellcasterPlayerController : InputControllerBase
                 GameEvent checkForEnergy = new GameEvent(GameEventId.HasEnoughEnergyToTakeATurn, new KeyValuePair<string, object>(EventParameters.TakeTurn, false));
                 FireEvent(Self, checkForEnergy);
                 gameEvent.Paramters[EventParameters.TakeTurn] = (bool)checkForEnergy.Paramters[EventParameters.TakeTurn];
+
+                GameEvent depleteMana = new GameEvent(GameEventId.DepleteMana, new KeyValuePair<string, object>(EventParameters.Mana, m_ManaCost));
+                FireEvent(Self, depleteMana);
             }
 
             if (Input.GetKeyDown(KeyCode.Escape))

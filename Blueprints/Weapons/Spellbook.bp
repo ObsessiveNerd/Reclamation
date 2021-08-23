@@ -8,4 +8,5 @@
 	SpellContainer
 	Equipment:PreferredBodyPartWhenEquipped=Arm
 	TwoHanded
+	WeaponType:TypeWeapon=Wand
 )

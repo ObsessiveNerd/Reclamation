@@ -16,7 +16,7 @@ public class BlocksNonHostileMovement : Component
             IEntity overtakingEntity = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameters.Entity));
             Demeanor getDemeanor = Factions.GetDemeanorForTarget(Self, overtakingEntity);
             if (getDemeanor == Demeanor.Friendly || getDemeanor == Demeanor.Neutral)
-                if (WorldUtility.IsActivePlayer(overtakingEntity.ID) || !WorldUtility.IsPlayableCharacter(overtakingEntity.ID))
+                if (WorldUtility.IsActivePlayer(overtakingEntity.ID) /*|| !WorldUtility.IsPlayableCharacter(overtakingEntity.ID)*/)
                     Spawner.Swap(Self, overtakingEntity);
             //else
 

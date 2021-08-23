@@ -32,6 +32,6 @@ public class CharacterManagerMono : EscapeableMono
     {
         InventoryView.GetComponent<InventoryManagerMono>().Close();
         EquipmentView.GetComponent<EquipmentViewMono>().Close();
-        //CharacterStats.GetComponent<CharacterStatsMono>().Cleanup();
+        CharacterStats.GetComponent<CharacterStatsMono>().Close();
     }
 }

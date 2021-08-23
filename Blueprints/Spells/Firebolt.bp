@@ -1,7 +1,7 @@
-<Firebolt>(
-	Spell
-	DealDamage:DamageType=Fire, Damage=1d6
-	Range:8
-	WeaponType:IntSpell
-	GraphicContainer:Textures/Spells/SpellBook06_18
+<Firebolt> (
+	GraphicContainer: Textures/Spells/SpellBook06_18
+	Spell:ManaCost=1
+	DealDamage:DamageType=Fire,Dice=1d6
+	Range
+	WeaponType:TypeWeapon=IntSpell
 )

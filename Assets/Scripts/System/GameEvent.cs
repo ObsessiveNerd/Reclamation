@@ -89,6 +89,7 @@ public static class GameEventId
     public const string GameWin = nameof(GameWin);
     public const string GameFailure = nameof(GameFailure);
     public const string CleanFoVData = nameof(CleanFoVData);
+    public const string GameObject = nameof(GameObject);
 
     //Dungeon
     public const string GetRandomValidPoint = nameof(GetRandomValidPoint);
@@ -175,6 +176,9 @@ public static class GameEventId
     public const string TakeDamage = nameof(TakeDamage);
     public const string Died = nameof(Died);
     public const string RestoreHealth = nameof(RestoreHealth);
+    public const string RegenHealth = nameof(RegenHealth);
+    public const string RestoreMana = nameof(RestoreMana);
+    public const string DepleteMana = nameof(DepleteMana);
     public const string ApplyEffectToTarget = nameof(ApplyEffectToTarget);
     public const string GetWeaponType = nameof(GetWeaponType);
     public const string GetEquipment = nameof(GetEquipment);
@@ -182,6 +186,8 @@ public static class GameEventId
     public const string Sharpness = nameof(Sharpness);
     public const string SeverBodyPart = nameof(SeverBodyPart);
     public const string GetHealth = nameof(GetHealth);
+    public const string GetMana = nameof(GetMana);
+    public const string ManaCost = nameof(ManaCost);
     public const string Quaff = nameof(Quaff);
 
     //Stats
@@ -211,10 +217,15 @@ public static class GameEventId
     public const string OpenSpellUI = nameof(OpenSpellUI);
     public const string GetPlayableCharacters = nameof(GetPlayableCharacters);
     public const string SetInfo = nameof(SetInfo);
+    public const string SetName = nameof(SetName);
     public const string GetInfo = nameof(GetInfo);
     public const string GetPortrait = nameof(GetPortrait);
     public const string UpdateUI = nameof(UpdateUI);
     public const string GetContextMenuActions = nameof(GetContextMenuActions);
+    public const string EntityTookDamage = nameof(EntityTookDamage);
+    public const string EntityHealedDamage = nameof(EntityHealedDamage);
+    public const string EntityUsedMana = nameof(EntityUsedMana);
+    public const string EntityRegainedMana = nameof(EntityRegainedMana);
 
     //Spellcasting
     public const string GetSpells = nameof(GetSpells);
@@ -256,6 +267,7 @@ public static class EventParameters
     public const string Damage = nameof(Damage);
     public const string DamageList = nameof(DamageList);
     public const string Healing = nameof(Healing);
+    public const string Mana = nameof(Mana);
     public const string DamageType = nameof(DamageType);
     public const string RollToHit = nameof(RollToHit);
     public const string WeaponType = nameof(WeaponType);

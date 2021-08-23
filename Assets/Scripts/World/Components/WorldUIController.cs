@@ -20,6 +20,8 @@ public class WorldUIController : WorldComponent
         RegisteredEvents.Add(GameEventId.RegisterUI);
         RegisteredEvents.Add(GameEventId.UnRegisterUI);
         RegisteredEvents.Add(GameEventId.PromptToGiveItem);
+        RegisteredEvents.Add(GameEventId.EntityTookDamage);
+        RegisteredEvents.Add(GameEventId.EntityHealedDamage);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
@@ -102,6 +104,44 @@ public class WorldUIController : WorldComponent
                 EntityQuery.GetEntity(target).FireEvent(addToInventory.CreateEvent());
 
             }, m_Players.Select(player => player.ID).ToList());
+        }
+
+        else if(gameEvent.ID == GameEventId.EntityTookDamage)
+        {
+            string entityId = gameEvent.GetValue<string>(EventParameters.Entity);
+            var entity = EntityQuery.GetEntity(entityId);
+            int damage = gameEvent.GetValue<int>(EventParameters.Damage);
+
+            if (!m_EntityToPointMap.ContainsKey(entity))
+                return;
+
+            Point p = m_EntityToPointMap[entity];
+            GameObject mapObject = m_GameObjectMap[p];
+            Vector2 newPos = (Vector2)Camera.main.WorldToScreenPoint(mapObject.transform.position);
+            newPos.y += (mapObject.GetComponent<SpriteRenderer>().sprite.textureRect.height);
+
+            GameObject go = GameObject.Instantiate(Resources.Load<GameObject>("UI/FadeText"));
+            go.GetComponent<FadeTextMono>().Setup($"-{damage}", 1, entity, Color.red);
+            go.transform.SetParent(GameObject.FindObjectOfType<Canvas>().transform);
+        }
+
+        else if(gameEvent.ID == GameEventId.EntityHealedDamage)
+        {
+            string entityId = gameEvent.GetValue<string>(EventParameters.Entity);
+            var entity = EntityQuery.GetEntity(entityId);
+            int healing = gameEvent.GetValue<int>(EventParameters.Healing);
+
+            if (!m_EntityToPointMap.ContainsKey(entity))
+                return;
+
+            Point p = m_EntityToPointMap[entity];
+            GameObject mapObject = m_GameObjectMap[p];
+            Vector2 newPos = (Vector2)Camera.main.WorldToScreenPoint(mapObject.transform.position);
+            newPos.y += (mapObject.GetComponent<SpriteRenderer>().sprite.textureRect.height);
+
+            GameObject go = GameObject.Instantiate(Resources.Load<GameObject>("UI/FadeText"));
+            go.GetComponent<FadeTextMono>().Setup($"+{healing}", 1, entity, Color.green);
+            go.transform.SetParent(GameObject.FindObjectOfType<Canvas>().transform);
         }
     }
 }
