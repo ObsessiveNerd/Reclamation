@@ -21,11 +21,18 @@ public class Stats : Component
     public int Int;
     public int Cha;
 
-    public Stats(int Str, int Agi, int Con, int Wis, int Int, int Cha)
+    public int AttributePoints;
+
+    public Stats(int Str, int Agi, int Con, int Wis, int Int, int Cha, int attributePoints)
     {
         SetStats(Str, Agi, Con, Wis, Int, Cha);
+        AttributePoints = attributePoints;
         RegisteredEvents.Add(GameEventId.RollToHit);
         RegisteredEvents.Add(GameEventId.GetStat);
+        RegisteredEvents.Add(GameEventId.GetStatRaw);
+        RegisteredEvents.Add(GameEventId.LevelUp);
+        RegisteredEvents.Add(GameEventId.BoostStat);
+        RegisteredEvents.Add(GameEventId.GetAttributePoints);
     }
 
     void SetStats(int Str, int Agi, int Con, int Wis, int Int, int Cha)
@@ -96,6 +103,70 @@ public class Stats : Component
                     break;
             }
         }
+        else if(gameEvent.ID == GameEventId.GetStatRaw)
+        {
+            Stat s = gameEvent.GetValue<Stat>(EventParameters.StatType);
+            switch (s)
+            {
+                case Stat.Str:
+                    gameEvent.Paramters[EventParameters.Value] = Str;
+                    break;
+                case Stat.Agi:
+                    gameEvent.Paramters[EventParameters.Value] = Agi;
+                    break;
+                case Stat.Con:
+                    gameEvent.Paramters[EventParameters.Value] = Con;
+                    break;
+                case Stat.Wis:
+                    gameEvent.Paramters[EventParameters.Value] = Wis;
+                    break;
+                case Stat.Int:
+                    gameEvent.Paramters[EventParameters.Value] = Int;
+                    break;
+                case Stat.Cha:
+                    gameEvent.Paramters[EventParameters.Value] = Cha;
+                    break;
+            }
+        }
+        else if(gameEvent.ID == GameEventId.LevelUp)
+        {
+            int newLevel = gameEvent.GetValue<int>(EventParameters.Level);
+            if(newLevel % 2 == 0)
+                AttributePoints += 2;
+        }
+        else if(gameEvent.ID == GameEventId.BoostStat)
+        {
+            Stat s = gameEvent.GetValue<Stat>(EventParameters.StatType);
+            int amountToBoost = gameEvent.GetValue<int>(EventParameters.StatBoostAmount);
+
+            switch (s)
+            {
+                case Stat.Str:
+                    Str += amountToBoost;
+                    break;
+                case Stat.Agi:
+                    Agi += amountToBoost;
+                    break;
+                case Stat.Con:
+                    Con += amountToBoost;
+                    break;
+                case Stat.Wis:
+                    Wis += amountToBoost;
+                    break;
+                case Stat.Int:
+                    Int += amountToBoost;
+                    break;
+                case Stat.Cha:
+                    Cha += amountToBoost;
+                    break;
+            }
+
+            AttributePoints = Mathf.Max(0, AttributePoints - 1);
+        }
+        else if(gameEvent.ID == GameEventId.GetAttributePoints)
+        {
+            gameEvent.Paramters[EventParameters.AttributePoints] = AttributePoints;
+        }
     }
 
     int GetModifier(int value)
@@ -114,6 +185,8 @@ public class DTO_Stats : IDataTransferComponent
     int Con;
     int Int;
     int Cha;
+
+    int AttributePoints = 0;
 
     public void CreateComponent(string data)
     {
@@ -141,14 +214,17 @@ public class DTO_Stats : IDataTransferComponent
                 case nameof(Cha):
                     Cha = int.Parse(statValue[1]);
                     break;
+                case nameof(AttributePoints):
+                    AttributePoints = int.Parse(statValue[1]);
+                    break;
             }
         }
-        Component = new Stats(Str, Agi, Con, Wis, Int, Cha);
+        Component = new Stats(Str, Agi, Con, Wis, Int, Cha, AttributePoints);
     }
 
     public string CreateSerializableData(IComponent component)
     {
         Stats stats = (Stats)component;
-        return $"{nameof(Stats)}: Str={stats.Str}, Agi={stats.Agi}, Con={stats.Con}, Wis={stats.Wis}, Int={stats.Int}, Cha={stats.Cha}";
+        return $"{nameof(Stats)}: Str={stats.Str}, Agi={stats.Agi}, Con={stats.Con}, Wis={stats.Wis}, Int={stats.Int}, Cha={stats.Cha}, AttributePoints={stats.AttributePoints}";
     }
 }

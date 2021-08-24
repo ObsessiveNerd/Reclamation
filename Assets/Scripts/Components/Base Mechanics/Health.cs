@@ -43,7 +43,7 @@ public class Health : Component
                                                     .With(EventParameters.UpdateWorldView, true);
                     FireEvent(Self, swapActivePlayer.CreateEvent());
 
-                    FireEvent(Self, new GameEvent(GameEventId.Died));
+                    FireEvent(Self, new GameEvent(GameEventId.Died, new KeyValuePair<string, object>(EventParameters.DamageSource, gameEvent.GetValue<string>(EventParameters.DamageSource))));
                     Spawner.Despawn(Self); //Todo: temp - we need to just send a "I'm dead event" to Self and then have a death handler handle it (that way a goblin dying doesn't trigger a save delete and all that
                     RecLog.Log("...and died");
                     break;

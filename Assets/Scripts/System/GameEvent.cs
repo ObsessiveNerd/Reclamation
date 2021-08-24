@@ -193,6 +193,13 @@ public static class GameEventId
     //Stats
     public const string GetPrimaryStatType = nameof(GetPrimaryStatType);
     public const string GetStat = nameof(GetStat);
+    public const string GetStatRaw = nameof(GetStatRaw);
+    public const string GainExperience = nameof(GainExperience);
+    public const string GetExperience = nameof(GetExperience);
+    public const string LevelUp = nameof(LevelUp);
+    public const string GetLevel = nameof(GetLevel);
+    public const string BoostStat = nameof(BoostStat);
+    public const string GetAttributePoints = nameof(GetAttributePoints);
 
     //Body
     public const string GrowBodyPart = nameof(GrowBodyPart);
@@ -265,6 +272,7 @@ public static class EventParameters
     public const string Attack = nameof(Attack);
     public const string Color = nameof(Color);
     public const string Damage = nameof(Damage);
+    public const string DamageSource = nameof(DamageSource);
     public const string DamageList = nameof(DamageList);
     public const string Healing = nameof(Healing);
     public const string Mana = nameof(Mana);
@@ -305,6 +313,9 @@ public static class EventParameters
     public const string NewGame = nameof(NewGame);
     public const string Rarity = nameof(Rarity);
     public const string Info = nameof(Info);
+    public const string Exp = nameof(Exp);
+    public const string StatBoostAmount = nameof(StatBoostAmount);
+    public const string AttributePoints = nameof(AttributePoints);
 }
 
 [Serializable]

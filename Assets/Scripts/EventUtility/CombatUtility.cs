@@ -20,6 +20,7 @@ public static class CombatUtility
                                 .With(EventParameters.DamageList, new List<Damage>());
 
         GameEvent checkWeaponAttack = source.FireEvent(weapon, builder.CreateEvent());
+        checkWeaponAttack.Paramters.Add(EventParameters.DamageSource, source.ID);
 
         GameEvent attack = new GameEvent(GameEventId.TakeDamage, checkWeaponAttack.Paramters);
         source.FireEvent(target, attack);

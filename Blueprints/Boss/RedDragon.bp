@@ -1,27 +1,28 @@
 <RedDragon> (
 	GraphicContainer: Textures/Monsters/td_monsters_dragon_d1
 	Defense
-	Desire:Greed=3
-	FOV:FOVRange=5
-	Faction:ID=Dragons
-	Move
-	Body:Torso=1,Head=1,Arm=2,Leg=2
-	Aggression
-	PrimaryStatType:PrimaryStat=Str
-	RegisterWithTimeSystem
-	EntityTypeContainer:Type=Creature
-	AIFOVHandler
-	Energy:EnergyRegineration=1,CurrentEnergy=0,HasHadTurnStarted=False
-	BlocksNonHostileMovement
-	CombatRating
-	AIController
-	Wander
-	Fear
-	Position:PositionPoint=0,0
-	InteractOnTileOvertake
-	InteractsWithWorld
-	Stats:Str=15,Agi=10,Con=18,Wis=13,Int=12,Cha=15
 	TriggerOnDeath:EventId=GameWin
+	Stats:Str=15,Agi=10,Con=18,Wis=13,Int=12,Cha=15
+	InteractsWithWorld
+	InteractOnTileOvertake
+	Position:PositionPoint=0,0
+	Fear
+	Wander
+	AIController
+	CombatRating
+	BlocksNonHostileMovement
+	Energy:EnergyRegineration=1,CurrentEnergy=0,HasHadTurnStarted=False
+	AIFOVHandler
+	EntityTypeContainer:Type=Creature
+	RegisterWithTimeSystem
+	PrimaryStatType:PrimaryStat=Str
+	Aggression
+	Body:Head=1[], Torso=1[], Arm=2[], Leg=2[]
+	Move
+	Faction:ID=Dragons
+	FOV:FOVRange=5
+	Desire:Greed=3
 	Inventory:InventoryItems=
 	Health:MaxHealth=15,CurrentHealth=15
+	Level:CurrentLevel=5,CurrentExp=0
 )

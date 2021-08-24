@@ -51,7 +51,14 @@ public class PlayerInputController : InputControllerBase
                 else
                     RecLog.Log("No ranged weapon equiped");
             }
-
+#if UNITY_EDITOR
+            else if (Input.GetKeyDown(KeyCode.P))
+            {
+                EventBuilder giveExp = new EventBuilder(GameEventId.GainExperience)
+                                    .With(EventParameters.Exp, 10);
+                Self.FireEvent(giveExp.CreateEvent());
+            }
+#endif
             else if (InputBinder.PerformRequestedAction(RequestedAction.Look))
             {
                 Self.RemoveComponent(this);

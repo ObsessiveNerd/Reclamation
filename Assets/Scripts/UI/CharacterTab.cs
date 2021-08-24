@@ -8,8 +8,10 @@ public class CharacterTab : MonoBehaviour
 {
     public Image m_Portrait;
     public TextMeshProUGUI m_PrettyName;
+    public TextMeshProUGUI m_Level;
     public Slider m_HealthBar;
     public Slider m_ManaBar;
+    public Slider m_ExpBar;
     public GameObject m_ActivePlayerIcon;
 
     private IEntity m_Entity;
@@ -50,6 +52,21 @@ public class CharacterTab : MonoBehaviour
         EventBuilder getInfo = new EventBuilder(GameEventId.GetName)
                                 .With(EventParameters.Name, "");
         m_PrettyName.text = m_Entity.FireEvent(getInfo.CreateEvent()).GetValue<string>(EventParameters.Name);
+
+         EventBuilder getExp = new EventBuilder(GameEventId.GetExperience)
+                                    .With(EventParameters.Value, 0)
+                                    .With(EventParameters.MaxValue, 0);
+
+        var getExpResult = m_Entity.FireEvent(getExp.CreateEvent());
+
+        m_ExpBar.maxValue = getExpResult.GetValue<int>(EventParameters.MaxValue);
+        m_ExpBar.value = getExpResult.GetValue<int>(EventParameters.Value);
+
+        EventBuilder getLevel = new EventBuilder(GameEventId.GetLevel)
+                                    .With(EventParameters.Level, 0);
+
+        var getLevelResult = m_Entity.FireEvent(getLevel.CreateEvent());
+        m_Level.text = getLevelResult.GetValue<int>(EventParameters.Level).ToString();
 
         if (WorldUtility.IsActivePlayer(m_Entity.ID))
             m_ActivePlayerIcon.SetActive(true);
