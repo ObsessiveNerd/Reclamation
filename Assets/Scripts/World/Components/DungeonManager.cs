@@ -81,8 +81,7 @@ public class DungeonManager : WorldComponent
             Debug.Log("Start world called");
             Seed = (string)gameEvent.Paramters[EventParameters.Seed];
             m_TilePrefab = (GameObject)gameEvent.Paramters[EventParameters.GameObject];
-            m_Tiles.Clear();
-            m_GameObjectMap.Clear();
+            Clean();
             CreateTiles(m_Tiles);
 
             m_DungeonGenerator = new BasicDungeonGenerator(World.Instance.MapRows, World.Instance.MapColumns);
@@ -98,6 +97,12 @@ public class DungeonManager : WorldComponent
             }
 
             FireEvent(Self, new GameEvent(GameEventId.SaveLevel));
+            m_TimeProgression.Resume();
+
+            EventBuilder makeActivePlayer = new EventBuilder(GameEventId.MakePartyLeader)
+                                            .With(EventParameters.Entity, m_ActivePlayer.Value.ID);
+            FireEvent(Self, makeActivePlayer.CreateEvent());
+
         }
         else if (gameEvent.ID == GameEventId.GetCurrentLevel)
         {
@@ -214,9 +219,6 @@ public class DungeonManager : WorldComponent
                 IEntity entity = EntityFactory.ParseEntityData(entityData);
                 if (entity != null)
                 {
-                    if (entity.Name.Contains("Dwarf"))
-                        Debug.Log("dwarf created");
-
                     EventBuilder getPoint = new EventBuilder(GameEventId.GetPoint)
                                             .With(EventParameters.Value, Point.InvalidPoint);
                     Point p = FireEvent(entity, getPoint.CreateEvent()).GetValue<Point>(EventParameters.Value);

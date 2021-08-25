@@ -8,7 +8,6 @@ public class PlayerManager : WorldComponent
     public override void Init(IEntity self)
     {
         base.Init(self);
-        RegisteredEvents.Add(GameEventId.StartWorld);
         RegisteredEvents.Add(GameEventId.RotateActiveCharacter);
         RegisteredEvents.Add(GameEventId.SetActiveCharacter);
         RegisteredEvents.Add(GameEventId.ConvertToPlayableCharacter);
@@ -67,7 +66,10 @@ public class PlayerManager : WorldComponent
         {
             UnregisterPlayer(EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Entity]));
             if (m_Players.Count == 0)
+            {
+                m_TimeProgression.Stop();
                 FireEvent(Self, new GameEvent(GameEventId.GameFailure));
+            }
         }
 
         if (gameEvent.ID == GameEventId.UpdateCamera)

@@ -71,8 +71,8 @@ public class DTO_Energy : IDataTransferComponent
     public void CreateComponent(string data)
     {
         string[] parameters = data.Split(',');
-        int energyRegen = 0;
-        int currentEnergy = 0;
+        float energyRegen = 0;
+        float currentEnergy = 0;
         bool turnStarted = false;
         foreach(string param in parameters)
         {
@@ -80,12 +80,15 @@ public class DTO_Energy : IDataTransferComponent
             switch(values[0])
             {
                 case "EnergyRegineration":
-                    energyRegen = int.Parse(values[1]);
+                case "Regen":
+                    energyRegen = float.Parse(values[1]);
                     break;
                 case "CurrentEnergy":
-                    currentEnergy = int.Parse(values[1]);
+                case "Current":
+                    currentEnergy = float.Parse(values[1]);
                     break;
                 case "HasHadTurnStarted":
+                case "TurnStarted":
                     turnStarted = bool.Parse(values[1]);
                     break;
             }

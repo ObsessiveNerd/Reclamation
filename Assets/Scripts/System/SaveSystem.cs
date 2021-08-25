@@ -41,6 +41,7 @@ public class SaveSystem : MonoBehaviour
 
     public void CleanCurrentSave()
     {
+        EntityFactory.Clean();
         string path = $"{kSaveDataPath}/{CurrentSaveName}";
         Directory.Delete(path, true);
         Directory.CreateDirectory(path);

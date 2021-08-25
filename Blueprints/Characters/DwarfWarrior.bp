@@ -2,7 +2,7 @@
 	GraphicContainer: Textures/Characters/td_monsters_dwarf_d2
 	Portrait: Portraits/Characters/Tex_Dwarf_warrior_male_bg
 	Defense
-	Name:PrettyName=PrettyName=
+	Name
 	InteractsWithWorld
 	PackTactics:PartyLeaderId=1740
 	FOV:FOVRange=5

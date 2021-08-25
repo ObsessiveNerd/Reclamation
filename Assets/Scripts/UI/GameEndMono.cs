@@ -16,10 +16,11 @@ public class GameEndMono : MonoBehaviour
 
     public void RestartNewGame()
     {
+        string cachedSaveName = SaveSystem.Instance.CurrentSaveName;
+        SaveSystem.Instance.CleanCurrentSave();
         SceneManager.LoadSceneAsync("Dungeon").completed += (scene) =>
                 {
-                    SaveSystem.Instance.CleanCurrentSave();
-                    FindObjectOfType<World>().StartWorld(true, SaveSystem.Instance.CurrentSaveName);
+                    FindObjectOfType<World>().StartWorld(true, cachedSaveName);
                 };
     }
 

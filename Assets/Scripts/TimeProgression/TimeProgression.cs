@@ -9,6 +9,7 @@ public class TimeProgression
     LinkedListNode<IEntity> m_Previous;
     LinkedListNode<IEntity> m_Current;
     Action m_PostFrameCallback;
+    bool m_IsStopped = false;
 
     public void RegisterEntity(IEntity entity)
     {
@@ -30,6 +31,17 @@ public class TimeProgression
     public void SetPostFrameCallback(Action callback)
     {
         m_PostFrameCallback = callback;
+    }
+
+    public void Resume()
+    {
+        m_IsStopped = false;
+    }
+
+
+    public void Stop()
+    {
+        m_IsStopped = true;
     }
 
     public void SetActiveEntity(IEntity entity)
@@ -71,7 +83,7 @@ public class TimeProgression
 
     public void Update()
     {
-        if (m_EntityList.Count == 0)
+        if (m_EntityList.Count == 0 || m_IsStopped)
             return;
         if (m_Current == null)
         {

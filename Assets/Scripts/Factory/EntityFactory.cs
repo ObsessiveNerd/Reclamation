@@ -35,6 +35,8 @@ public static class EntityFactory
         }
     }
 
+    private static bool m_LoadedTempBlueprints = false;
+
     private static string kArmorPath = "Blueprints\\Armor";
     private static string kWeaponPath = "Blueprints\\Weapons";
     private static string kMonstersPath = "Blueprints\\Monsters";
@@ -47,6 +49,8 @@ public static class EntityFactory
     {
         if(m_Blueprints.Count == 0)
             InitBlueprints();
+
+        InitTempBlueprints();
 
         if (!m_Blueprints.ContainsKey(blueprintName))
             return null;
@@ -75,10 +79,22 @@ public static class EntityFactory
             if (bpPath.StartsWith(kArmorPath) || bpPath.StartsWith(kWeaponPath) || bpPath.StartsWith(kItemsPath))
                 s_InventoryEntities.Add(bpName);
         }
+    }
 
-        if (World.Instance != null)
+    public static void Clean()
+    {
+        m_LoadedTempBlueprints = false;
+        s_InitializingBluePrints = false;
+        s_InventoryEntities.Clear();
+        m_Blueprints.Clear();
+        m_BlueprintTypeMap.Clear();
+    }
+
+    private static void InitTempBlueprints()
+    {
+        if (World.Instance != null && !m_LoadedTempBlueprints)
         {
-            string tempBlueprints = $"{SaveSystem.kSaveDataPath}/{World.Instance.Seed}/Blueprints";
+            string tempBlueprints = $"{SaveSystem.kSaveDataPath}/{SaveSystem.Instance.CurrentSaveName}/Blueprints";
             if (Directory.Exists(tempBlueprints))
             {
                 foreach (var bpPath in Directory.EnumerateFiles(tempBlueprints, "*", SearchOption.AllDirectories))
@@ -86,6 +102,7 @@ public static class EntityFactory
                     string bpName = Path.GetFileNameWithoutExtension(bpPath);
                     m_Blueprints.Add(bpName, bpPath);
                 }
+                m_LoadedTempBlueprints = true;
             }
         }
     }
@@ -120,12 +137,19 @@ public static class EntityFactory
             string header = stream.ReadLine();
             int firstIndex = header.IndexOf('<');
             int lastIndex = header.IndexOf('>');
+            
 
             int nameStart = firstIndex + 1;
             int nameLength = lastIndex - firstIndex - 1;
             string name = header.Substring(nameStart, nameLength);
 
-            a = new Actor(name, entityID);
+            string[] nameAndID = name.Split(',');
+            if (nameAndID.Length == 1)
+                a = new Actor(name, entityID);
+            else
+                a = new Actor(nameAndID[0], nameAndID[1]);
+
+            //a = new Actor(name, entityID);
 
             string line;
             while ((line = stream.ReadLine()) != null && line != ")")
@@ -279,6 +303,8 @@ public static class EntityFactory
 
     public static void CreateTemporaryBlueprint(string blueprintName, string data)
     {
+        if (!int.TryParse(blueprintName, out int result))
+            Debug.Log("bad");
         string path = $"Blueprints/{blueprintName}.bp";
         SaveSystem.Instance.WriteData(path, data);
     }

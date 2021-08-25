@@ -13,7 +13,14 @@ public class CombatLogMono : MonoBehaviour
     //public int MaxLineCount;
 
     //public GameObject TMPPRefab;
-    public RectTransform Content;
+    public GameObject ContentObject;
+    RectTransform Content
+    {
+        get
+        {
+            return GameObject.Find("CombatLogContent").GetComponent<RectTransform>();
+        }
+    }
 
     private List<string> m_EventLog = new List<string>();
     private List<string> m_BacklogEvents = new List<string>();
@@ -23,6 +30,7 @@ public class CombatLogMono : MonoBehaviour
 
     void Start()
     {
+        RecLog.MessageLogged -= LogMessage;
         RecLog.MessageLogged += LogMessage;
         //MoveCombatLogTo(RHSAnchor.transform);
     }

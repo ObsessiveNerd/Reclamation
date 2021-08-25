@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 public abstract class WorldComponent : Component
 {
@@ -13,13 +14,27 @@ public abstract class WorldComponent : Component
     protected static Dictionary<Point, UnityEngine.GameObject> m_GameObjectMap = new Dictionary<Point, UnityEngine.GameObject>();
     protected static Dictionary<int, DungeonGenerationResult> m_DungeonLevelMap = new Dictionary<int, DungeonGenerationResult>();
     protected static int m_CurrentLevel = 1;
-    protected static bool PerformingBatchOperation = false;
 
     public Point GetPointWhereEntityIs(IEntity e)
     {
         if (m_EntityToPointMap.ContainsKey(e))
             return m_EntityToPointMap[e];
         return new Point(-1, -1);
+    }
+
+    protected void Clean()
+    {
+        m_TimeProgression = new TimeProgression();
+        m_Tiles.Clear();
+        m_EntityToPointMap.Clear();
+        m_Players.Clear();
+        m_ActivePlayer = null;
+        m_ValidDungeonPoints.Clear();
+        foreach (var go in m_GameObjectMap.Values)
+            GameObject.Destroy(go);
+        m_GameObjectMap.Clear();
+        m_DungeonLevelMap.Clear();
+        m_CurrentLevel = 1;
     }
 
     protected Point GetTilePointInDirection(Point basePoint, MoveDirection direction)

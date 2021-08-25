@@ -58,6 +58,15 @@ public class PlayerInputController : InputControllerBase
                                     .With(EventParameters.Exp, 10);
                 Self.FireEvent(giveExp.CreateEvent());
             }
+
+            else if (Input.GetKeyDown(KeyCode.O))
+            {
+                EventBuilder takeDamage = new EventBuilder(GameEventId.TakeDamage)
+                                    .With(EventParameters.DamageList, new List<Damage>() { new Damage(10, DamageType.Slashing) })
+                                    .With(EventParameters.RollToHit, 20)
+                                    .With(EventParameters.DamageSource, Self.ID);
+                Self.FireEvent(takeDamage.CreateEvent());
+            }
 #endif
             else if (InputBinder.PerformRequestedAction(RequestedAction.Look))
             {

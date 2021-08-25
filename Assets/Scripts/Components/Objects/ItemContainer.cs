@@ -86,7 +86,7 @@ public class ItemContainer : Component
         if (entity == null)
             entity = EntityQuery.GetEntity(name);
         if (entity != null)
-            IDToEntityMap.Add(name, entity);
+            IDToEntityMap.Add(entity.ID, entity);
     }
 }
 
@@ -107,7 +107,10 @@ public class DTO_ItemContainer : IDataTransferComponent
         ItemContainer ic = (ItemContainer)component;
         StringBuilder itemNameBuilder = new StringBuilder();
         foreach (var name in ic.IDToEntityMap.Keys)
+        {
             itemNameBuilder.Append($"<{name}>,");
+            EntityFactory.CreateTemporaryBlueprint(ic.IDToEntityMap[name].ID, ic.IDToEntityMap[name].Serialize());
+        }
         return $"{nameof(ItemContainer)}: [{itemNameBuilder.ToString().TrimEnd(',')}]";
     }
 }

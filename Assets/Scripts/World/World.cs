@@ -16,12 +16,13 @@ public class World : MonoBehaviour
 
     private void Start()
     {
-        StartWorld(true, $"{SaveSystem.kSaveDataPath}/{RecRandom.Instance.GetRandomValue(0, 1000).ToString()}");
+        if(m_Instance == null)
+            StartWorld(true, $"{SaveSystem.kSaveDataPath}/{RecRandom.Instance.GetRandomValue(0, 1000).ToString()}");
     }
 
     public void StartWorld(bool startNew, string loadPath)
     {
-        if (m_Instance == null)
+        if (m_Instance == null || startNew)
             m_Instance = this;
         else
             return;
