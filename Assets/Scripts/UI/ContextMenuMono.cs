@@ -40,7 +40,7 @@ public class ContextMenuMono : EscapeableMono
     {
         foreach (string id in playerIds)
         {
-            ContextMenuButton button = new ContextMenuButton(id, () =>
+            ContextMenuButton button = new ContextMenuButton(EntityQuery.GetEntity(id).Name, () =>
             {
                 actionForSelectedPlayer(id);
             });

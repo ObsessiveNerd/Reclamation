@@ -58,7 +58,8 @@ public static class PathfindingUtility
 
     public static Point GetValidPointWithinRange(IEntity target, int range)
     {
-        Point startPos = GetEntityLocation(target); 
+        Point startPos = GetEntityLocation(target);
+        return startPos;
 
         List<Point> validPoints = new List<Point>();
         for(int i = startPos.x - range; i < startPos.x + range; i++)
