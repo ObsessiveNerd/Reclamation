@@ -1,8 +1,8 @@
 <GoblinWarrior> (
 	GraphicContainer: Textures/Monsters/td_monsters_goblin_captain_l1
 	Defense
-	PackTactics:PartyLeaderId=1729
-	Desire:Greed=1
+	PackTactics
+	Desire:Greed=4
 	AIFOVHandler
 	Body:Head=1[], Torso=1[], Arm=2[<Short Sword>], Leg=2[]
 	Faction:ID=Goblins

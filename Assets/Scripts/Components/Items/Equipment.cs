@@ -16,6 +16,7 @@ public class Equipment : Component
     {
         base.Init(self);
         RegisteredEvents.Add(GameEventId.GetContextMenuActions);
+        RegisteredEvents.Add(GameEventId.TryEquip);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
@@ -55,6 +56,16 @@ public class Equipment : Component
                 });
                 gameEvent.GetValue<List<ContextMenuButton>>(EventParameters.InventoryContextActions).Add(button);
             }
+        }
+
+        if (gameEvent.ID == GameEventId.TryEquip)
+        {
+            IEntity source = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameters.Entity));
+            EventBuilder equip = new EventBuilder(GameEventId.Equip)
+                                            .With(EventParameters.EntityType, PreferredBodyPartWhenEquipped)
+                                            .With(EventParameters.Equipment, Self.ID);
+            Debug.LogWarning($"{source?.Name} is trying to equip {Self?.Name}");
+            source.FireEvent(equip.CreateEvent(), true);
         }
     }
 }

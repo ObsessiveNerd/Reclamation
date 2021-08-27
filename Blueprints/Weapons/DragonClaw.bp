@@ -8,4 +8,5 @@
 	WeaponType:TypeWeapon=Melee
 	DealDamage:DamageType=Slashing,Dice=1d12
 	Equipment:PreferredBodyPartWhenEquipped=Arm
+	Value:Amount=50
 )

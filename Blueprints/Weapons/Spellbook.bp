@@ -9,4 +9,5 @@
 	Equipment:PreferredBodyPartWhenEquipped=Arm
 	TwoHanded
 	WeaponType:TypeWeapon=Wand
+	Value:Amount=100
 )

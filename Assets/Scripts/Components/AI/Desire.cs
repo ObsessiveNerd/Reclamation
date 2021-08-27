@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
 public class Desire : Component
 {
@@ -76,6 +77,11 @@ public class Desire : Component
             EventBuilder pickupItem = new EventBuilder(GameEventId.Pickup)
                                         .With(EventParameters.Entity, Self.ID);
             FireEvent(World.Instance.Self, pickupItem.CreateEvent());
+
+            EventBuilder tryEquip = new EventBuilder(GameEventId.TryEquip)
+                                        .With(EventParameters.Entity, Self.ID);
+            Self.FireEvent(tryEquip.CreateEvent());
+
             return MoveDirection.None;
         }
         else
@@ -89,7 +95,7 @@ public class Desire : Component
 
     int GetPriority()
     {
-        return 5 - ((m_DesiredValue / 100) + Greed);
+        return Mathf.Max(0, 5 - ((m_DesiredValue / 100) + Greed));
     }
 }
 

@@ -9,4 +9,5 @@
 	DealDamage:DamageType=Piercing,Dice=1d8
 	Equipment:PreferredBodyPartWhenEquipped=Arm
 	TwoHanded
+	Value:Amount=20
 )

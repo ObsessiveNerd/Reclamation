@@ -7,4 +7,5 @@
 	Item:Rarity=Common
 	Armor:ArmorAmount=2
 	Equipment:PreferredBodyPartWhenEquipped=Arm
+	Value:Amount=25
 )

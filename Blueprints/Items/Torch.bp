@@ -9,4 +9,5 @@
 	ActiveWhileEquiped
 	Equipment:PreferredBodyPartWhenEquipped=Arm
 	DestroyAfterTurns:CurrentTurnCount=0,DestroyAfterTurnCount=30,Active=False
+	Value:Amount=5
 )

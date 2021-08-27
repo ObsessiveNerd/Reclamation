@@ -42,6 +42,7 @@ public static class GameEventId
     public const string OnAfterEquip = nameof(OnAfterEquip);
     public const string GetMultiBodyPartUse = nameof(GetMultiBodyPartUse);
     public const string Equip = nameof(Equip);
+    public const string TryEquip = nameof(TryEquip);
     public const string Unequip = nameof(Unequip);
     public const string GetRangedWeapon = nameof(GetRangedWeapon);
     public const string GetWeapon = nameof(GetWeapon);

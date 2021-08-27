@@ -7,4 +7,5 @@
 	Item:Rarity=Uncommon
 	Potion
 	Heal:HealAmount=2
+	Value:Amount=30
 )

@@ -4,6 +4,7 @@
 	PrimaryStatType:PrimaryStat=Str
 	Position:PositionPoint=0,0
 	Move
+	Desire:Greed=2
 	InteractOnTileOvertake
 	EntityTypeContainer:Type=Creature
 	RegisterWithTimeSystem
