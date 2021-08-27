@@ -44,6 +44,7 @@ public static class GameEventId
     public const string Equip = nameof(Equip);
     public const string Unequip = nameof(Unequip);
     public const string GetRangedWeapon = nameof(GetRangedWeapon);
+    public const string GetWeapon = nameof(GetWeapon);
     public const string GetIcon = nameof(GetIcon);
     public const string GetCurrentInventory = nameof(GetCurrentInventory);
 
@@ -279,6 +280,7 @@ public static class EventParameters
     public const string DamageType = nameof(DamageType);
     public const string RollToHit = nameof(RollToHit);
     public const string WeaponType = nameof(WeaponType);
+    public const string Weapon = nameof(Weapon);
     public const string GameEvent = nameof(GameEvent);
     public const string Enemy = nameof(Enemy);
     public const string Equipment = nameof(Equipment);

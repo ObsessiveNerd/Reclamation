@@ -210,6 +210,7 @@ public class DungeonManager : WorldComponent
 
         if (m_DungeonLevelMap.ContainsKey(m_CurrentLevel))
         {
+            EntityFactory.ReloadTempBlueprints();
             DungeonGenerationResult dungeonLevel = m_DungeonLevelMap[m_CurrentLevel];
             foreach (var room in dungeonLevel.RoomData)
                 m_DungeonGenerator.Rooms.Add(room);

@@ -28,6 +28,33 @@ public static class CombatUtility
         source.FireEvent(source, new GameEvent(GameEventId.UseEnergy, new KeyValuePair<string, object>(EventParameters.Value, 1f))); //todo: temp energy value.  Energy value should come from the weapon probably
     }
 
+    public static bool CastSpell(IEntity source, IEntity target, IEntity spellSource)
+    {
+        EventBuilder getMana = new EventBuilder(GameEventId.GetMana)
+                                .With(EventParameters.Value, 0);
+        int mana = source.FireEvent(getMana.CreateEvent()).GetValue<int>(EventParameters.Value);
+
+        EventBuilder getSpells = new EventBuilder(GameEventId.GetSpells)
+                                    .With(EventParameters.SpellList, new HashSet<string>());
+
+        HashSet<string> spells = spellSource.FireEvent(getSpells.CreateEvent()).GetValue<HashSet<string>>(EventParameters.SpellList);
+        foreach(string id in spells)
+        {
+            IEntity spell = EntityQuery.GetEntity(id);
+            EventBuilder manaCost = new EventBuilder(GameEventId.ManaCost)
+                                    .With(EventParameters.Value, 0);
+            int cost = spell.FireEvent(manaCost.CreateEvent()).GetValue<int>(EventParameters.Value);
+            if (cost <= mana)
+            {
+                Attack(source, target, spell);
+                GameEvent depleteMana = new GameEvent(GameEventId.DepleteMana, new KeyValuePair<string, object>(EventParameters.Mana, cost));
+                source.FireEvent(depleteMana);
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static TypeWeapon GetWeaponType(IEntity weapon)
     {
         TypeWeapon weaponType = (TypeWeapon)weapon.FireEvent(weapon, new GameEvent(GameEventId.GetWeaponType,

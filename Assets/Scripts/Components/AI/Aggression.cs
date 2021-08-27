@@ -62,6 +62,23 @@ public class Aggression : Component
     //Todo: will need to check for ranged weapons and perform ranged attack if it wants to
     MoveDirection MakeAttack()
     {
+        EventBuilder getWeapon = new EventBuilder(GameEventId.GetWeapon)
+                                .With(EventParameters.Weapon, new List<string>());
+        var list = FireEvent(Self, getWeapon.CreateEvent()).GetValue<List<string>>(EventParameters.Weapon);
+        foreach(var id in list)
+        {
+            TypeWeapon weaponType = CombatUtility.GetWeaponType(EntityQuery.GetEntity(id));
+            if(weaponType == TypeWeapon.Ranged)
+            {
+                CombatUtility.Attack(Self, WorldUtility.GetEntityAtPosition(m_TargetLocation), EntityQuery.GetEntity(id));
+                return MoveDirection.None;
+            }
+            else if(weaponType == TypeWeapon.Wand || weaponType == TypeWeapon.MagicStaff)
+            {
+                CombatUtility.CastSpell(Self, WorldUtility.GetEntityAtPosition(m_TargetLocation), EntityQuery.GetEntity(id));
+                return MoveDirection.None;
+            }
+        }
         var path = PathfindingUtility.GetPath(m_CurrentLocation, m_TargetLocation);
         if (path.Count == 0)
             return MoveDirection.None;

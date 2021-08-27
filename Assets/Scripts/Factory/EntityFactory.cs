@@ -81,6 +81,12 @@ public static class EntityFactory
         }
     }
 
+    public static void ReloadTempBlueprints()
+    {
+        m_LoadedTempBlueprints = false;
+        InitTempBlueprints();
+    }
+
     public static void Clean()
     {
         m_LoadedTempBlueprints = false;
@@ -100,7 +106,8 @@ public static class EntityFactory
                 foreach (var bpPath in Directory.EnumerateFiles(tempBlueprints, "*", SearchOption.AllDirectories))
                 {
                     string bpName = Path.GetFileNameWithoutExtension(bpPath);
-                    m_Blueprints.Add(bpName, bpPath);
+                    if(!m_Blueprints.ContainsKey(bpName))
+                        m_Blueprints.Add(bpName, bpPath);
                 }
                 m_LoadedTempBlueprints = true;
             }

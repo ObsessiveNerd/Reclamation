@@ -54,6 +54,7 @@ public class Body : Component
         RegisteredEvents.Add(GameEventId.AddArmorValue);
         RegisteredEvents.Add(GameEventId.PerformAttack);
         RegisteredEvents.Add(GameEventId.GetRangedWeapon);
+        RegisteredEvents.Add(GameEventId.GetWeapon);
         RegisteredEvents.Add(GameEventId.Equip);
         RegisteredEvents.Add(GameEventId.Unequip);
         RegisteredEvents.Add(GameEventId.CheckEquipment);
@@ -215,6 +216,18 @@ public class Body : Component
                 FireEvent(arm, gameEvent);
             foreach (var leg in Leg)
                 FireEvent(leg, gameEvent);
+        }
+
+        else if(gameEvent.ID == GameEventId.GetWeapon)
+        {
+            foreach(IEntity hand in Arm)
+            {
+                string id = FireEvent(hand, new GameEvent(GameEventId.GetEquipment,
+                    new KeyValuePair<string, object>(EventParameters.Equipment, null))).GetValue<string>(EventParameters.Equipment);
+
+                if(!string.IsNullOrEmpty(id))
+                    gameEvent.GetValue<List<string>>(EventParameters.Weapon).Add(id);
+            }
         }
 
         else if (gameEvent.ID == GameEventId.GetRangedWeapon)
