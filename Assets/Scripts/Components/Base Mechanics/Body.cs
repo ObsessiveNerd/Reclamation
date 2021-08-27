@@ -63,6 +63,7 @@ public class Body : Component
         RegisteredEvents.Add(GameEventId.GetCurrentEquipment);
         RegisteredEvents.Add(GameEventId.GetSpells);
         RegisteredEvents.Add(GameEventId.CheckItemEquiped);
+        RegisteredEvents.Add(GameEventId.Died);
     }
 
     bool HasEquipment(IEntity e)
@@ -204,6 +205,17 @@ public class Body : Component
                     else
                         throw new Exception($"Attempted to equip item {EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameters.Equipment)).Name}");
                 }
+            }
+        }
+
+        else if(gameEvent.ID == GameEventId.Died)
+        {
+            foreach(var bp in m_AllBodyParts)
+            {
+                EventBuilder drop = new EventBuilder(GameEventId.Drop)
+                                    .With(EventParameters.Item, GetEquipmentIdForBodyPart(bp))
+                                    .With(EventParameters.Entity, Self.ID);
+                bp.FireEvent(drop.CreateEvent());
             }
         }
 

@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class RegisterPlayableCharacter : Component
 {
+    public override int Priority => 10;
     public RegisterPlayableCharacter()
     {
         RegisteredEvents.Add(GameEventId.RegisterPlayableCharacter);
