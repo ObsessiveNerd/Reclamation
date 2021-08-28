@@ -23,7 +23,12 @@ public class Name : Component
     public override void HandleEvent(GameEvent gameEvent)
     {
         if(gameEvent.ID == GameEventId.GetName)
-            gameEvent.Paramters[EventParameters.Name] = PrettyName;
+        {
+            if(!string.IsNullOrEmpty(PrettyName))
+                gameEvent.Paramters[EventParameters.Name] = PrettyName;
+            else
+                gameEvent.Paramters[EventParameters.Name] = Self.InternalName;
+        }
 
         if(gameEvent.ID == GameEventId.SetName)
             PrettyName = gameEvent.GetValue<string>(EventParameters.Name);
@@ -36,12 +41,15 @@ public class DTO_Name : IDataTransferComponent
 
     public void CreateComponent(string data)
     {
-        Component = new Name(data);
+        string value = data;
+        if (value.Contains("="))
+            value = value.Split('=')[1];
+        Component = new Name(value);
     }
 
     public string CreateSerializableData(IComponent component)
     {
         Name gc = (Name)component;
-        return $"{nameof(Name)}:{gc.PrettyName}";
+        return $"{nameof(Name)}: {nameof(gc.PrettyName)}={gc.PrettyName}";
     }
 }

@@ -49,16 +49,11 @@ public class BlueprintCreator
         if(comp.GetType() == typeof(GraphicContainer))
         {
             string sp = ((GraphicContainer)comp).SpritePath;
-            //if (sp.EndsWith(".png"))
-            //    sp = sp.Replace(".png", "");
-
             Icon = AssetDatabase.LoadAssetAtPath<Sprite>($"Assets/Resources/{sp}.png");
         }
         else if(comp.GetType() == typeof(Portrait))
         {
             string sp = ((Portrait)comp).SpritePath;
-            //if (sp.EndsWith(".png"))
-            //    sp = sp.Replace(".png", "");
             Portrait = AssetDatabase.LoadAssetAtPath<Sprite>($"Assets/Resources/{sp}.png");
         }
         else
@@ -69,16 +64,6 @@ public class BlueprintCreator
                 {
                     bpv.FieldToValue.Add(field.Name, comp.ToString());
                     break;
-                    //if (field.FieldType == typeof(List<IEntity>))
-                    //{
-                    //    var value = field.GetValue(comp);
-                    //    if (value != null)
-                    //        bpv.FieldToValue.Add(field.Name, (value as List<IEntity>).Count.ToString());
-                    //    else
-                    //        bpv.FieldToValue.Add(field.Name, "0");
-                    //}
-                    //else
-                    //    bpv.FieldToValue.Add(field.Name, "1");
                 }
                 else
                 {

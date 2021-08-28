@@ -16,6 +16,7 @@ public interface IEntity
     T GetComponent<T>() where T : IComponent;
     void CleanupComponents();
     string Name { get; }
+    string InternalName { get; }
     string ID { get; }
     bool NeedsCleanup { get; }
     string Serialize();

@@ -246,6 +246,9 @@ public static class GameEventId
     public const string SetLeader = nameof(SetLeader);
     public const string MakePartyLeader = nameof(MakePartyLeader);
     public const string RemoveFromParty = nameof(RemoveFromParty);
+
+    //Sound
+    public const string Playsound = nameof(Playsound);
 }
 
 public static class EventParameters
@@ -319,6 +322,7 @@ public static class EventParameters
     public const string Exp = nameof(Exp);
     public const string StatBoostAmount = nameof(StatBoostAmount);
     public const string AttributePoints = nameof(AttributePoints);
+    public const string Key = nameof(Key);
 }
 
 [Serializable]
