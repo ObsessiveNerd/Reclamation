@@ -4,4 +4,5 @@
 	DealDamage:DamageType=Ice,Dice=1d6
 	Range
 	WeaponType:TypeWeapon=IntSpell
+	Sound:SoundPath=Sounds/MAGIC_SPELLS/MAGIC_SPELL_Gather_Blast_mono.wav,Key=Cast
 )

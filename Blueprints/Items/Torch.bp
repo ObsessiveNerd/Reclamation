@@ -8,6 +8,9 @@
 	FOVModifier:Modifier=4
 	ActiveWhileEquiped
 	Equipment:PreferredBodyPartWhenEquipped=Arm
-	DestroyAfterTurns:CurrentTurnCount=0,DestroyAfterTurnCount=30,Active=False
 	Value:Amount=5
+	DestroyAfterTurns:CurrentTurnCount=0,DestroyAfterTurnCount=30,Active=False
+	Sound:SoundPath=Sounds/FOLEY/VARIOUS/FOLEY_Light_Match_mono.wav,Key=Activate
+	Sound:SoundPath=Sounds/Melee/Hammer/HAMMER_Hit_Wood_Shield_Break_Much_Debris_stereo.wav,Key=AttackHIt
+	Sound:SoundPath=Sounds/Air/WHOOSH_Air_Very_Fast_RR7_mono.wav,Key=AttackMiss
 )

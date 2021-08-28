@@ -8,4 +8,5 @@
 	Potion
 	Heal:HealAmount=2
 	Value:Amount=30
+	Sound:SoundPath=Sounds/FOLEY/VARIOUS/FOLEY_Lid_Removal_Bottle_mono.wav,Key=Quaff
 )

@@ -6,4 +6,5 @@
 	BlocksNonHostileMovement
 	ItemContainer:IDToEntityMap=
 	EnvironmentalObject
+	Sound:SoundPath=Sounds/DOORS_GATES_DRAWERS/GATE_Metal_Open_01_stereo.wav,Key=Open
 )

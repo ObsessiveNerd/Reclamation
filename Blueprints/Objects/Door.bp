@@ -1,5 +1,9 @@
-<Door>(
-	Inherits:Object
-	Door: Closed=true, Locked=false, OpenSpritePath=Textures/Environment/td_world_door_wood_h_open, ClosedSpritePath=Textures/Environment/td_world_door_wood_h_closed
-	Info: "It's a door."
+<Door> (
+	Position:PositionPoint=0,0
+	InteractOnTileOvertake
+	EntityTypeContainer:Type=Object
+	Door:Closed=True,Locked=False,OpenSpritePath=Textures/Environment/td_world_door_wood_h_open,ClosedSpritePath=Textures/Environment/td_world_door_wood_h_closed
+	Info:InfoMessage= "It's a door."
+	Sound:SoundPath=Sounds/DOORS_GATES_DRAWERS/DOOR_Owen_Open_stereo.wav,Key=Open
+	Sound:SoundPath=Sounds/DOORS_GATES_DRAWERS/DOOR_Owen_Close_stereo.wav,Key=Close
 )

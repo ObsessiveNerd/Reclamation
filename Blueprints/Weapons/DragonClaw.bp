@@ -9,4 +9,6 @@
 	DealDamage:DamageType=Slashing,Dice=1d12
 	Equipment:PreferredBodyPartWhenEquipped=Arm
 	Value:Amount=50
+	Sound:SoundPath=Sounds/Melee/Swords/SWORD_Hit_Sword_Hard_RR5_mono.wav,Key=AttackHit
+	Sound:SoundPath=Sounds/Melee/Swords/SWORD_Whoosh_Hit_Sword_Hard_RR7_mono.wav,Key=AttackMiss
 )

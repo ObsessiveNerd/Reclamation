@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,14 +9,31 @@ public static class SoundKey
     public static string CastSpell = nameof(CastSpell);
 }
 
+[Serializable]
+public class SoundPath
+{
+    [SerializeField]
+    public string Path;
+
+    public SoundPath(string path)
+    {
+        Path = path;
+    }
+
+    public override string ToString()
+    {
+        return Path;
+    }
+}
+
 public class Sound : Component
 {
-    public string SoundPath;
+    public SoundPath SoundPath;
     public string Key;
 
     public Sound(string path, string key)
     {
-        SoundPath = path;
+        SoundPath = new SoundPath(path);
         Key = key;
     }
 
@@ -32,7 +50,7 @@ public class Sound : Component
             string key = gameEvent.GetValue<string>(EventParameters.Key);
             if(key == Key)
             {
-                var clip = Resources.Load<AudioClip>(SoundPath);
+                var clip = Resources.Load<AudioClip>(SoundPath.Path);
                 GameObject.FindObjectOfType<AudioSource>()?.PlayOneShot(clip);
             }
         }
@@ -71,6 +89,6 @@ public class DTO_Sound : IDataTransferComponent
     public string CreateSerializableData(IComponent component)
     {
         Sound s = (Sound)component;
-        return $"{nameof(Sound)}: {nameof(s.Key)}={s.Key}, {nameof(s.SoundPath)}={s.SoundPath}";
+        return $"{nameof(Sound)}: {nameof(s.Key)}={s.Key}, {nameof(s.SoundPath)}={s.SoundPath.Path}";
     }
 }

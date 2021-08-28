@@ -1,5 +1,8 @@
-<StairsDown>(
-	Inherits:Object
-	Stairs: Down
-	GraphicContainer:Textures/Environment/td_world_wall_cave_stair_down
+<StairsDown> (
+	GraphicContainer: Textures/Environment/td_world_wall_cave_stair_down
+	Position:PositionPoint=0,0
+	InteractOnTileOvertake
+	EntityTypeContainer:Type=Object
+	Stairs:Direction=Down
+	Sound:SoundPath=Sounds/HUMAN/Footsteps/Trainers_Wood_Boards_Walk/FOOTSTEPS_Trainers_Wood_Boards_Walk_x8_loop_mono.wav,Key=Activate
 )

@@ -10,4 +10,5 @@
 	Equipment:PreferredBodyPartWhenEquipped=Arm
 	TwoHanded
 	Value:Amount=20
+	Sound:SoundPath=Sounds/Bow_Arrow/BOW_Release_Arrow_Large_mono.wav,Key=BowAttack
 )
