@@ -34,7 +34,7 @@ public class ItemMono : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         entity.FireEvent(getInfo.CreateEvent());
 
         List<string> sortedKeys = classToInfoMap.Keys.ToList();
-        sortedKeys.Sort();
+        //sortedKeys.Sort();
 
         StringBuilder sb = new StringBuilder();
         foreach (var key in sortedKeys)

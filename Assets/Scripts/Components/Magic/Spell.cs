@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -16,6 +17,7 @@ public class Spell : Component
         base.Init(self);
         RegisteredEvents.Add(GameEventId.GetSpells);
         RegisteredEvents.Add(GameEventId.ManaCost);
+        RegisteredEvents.Add(GameEventId.GetInfo);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
@@ -25,6 +27,12 @@ public class Spell : Component
 
         if (gameEvent.ID == GameEventId.ManaCost)
             gameEvent.Paramters[EventParameters.Value] = ManaCost;
+
+        if(gameEvent.ID == GameEventId.GetInfo)
+        {
+            Dictionary<string, string> info = gameEvent.GetValue<Dictionary<string, string>>(EventParameters.Info);
+            info.Add($"{nameof(Spell)}{Guid.NewGuid()}", $"Mana cost: {ManaCost}");
+        }
     }
 }
 

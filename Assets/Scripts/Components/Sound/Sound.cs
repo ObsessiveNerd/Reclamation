@@ -6,7 +6,10 @@ using UnityEngine;
 public static class SoundKey
 {
     public static string WeaponAttack = nameof(WeaponAttack);
-    public static string CastSpell = nameof(CastSpell);
+    public static string Cast = nameof(Cast);
+    public static string AttackHit = nameof(AttackHit);
+    public static string AttackMiss = nameof(AttackMiss);
+    public static string Activate = nameof(Activate);
 }
 
 [Serializable]

@@ -48,13 +48,13 @@ public class DTO_Stairs : IDataTransferComponent
 
     public void CreateComponent(string data)
     {
-        StairDirection dir = (StairDirection)Enum.Parse(typeof(StairDirection), data);
+        StairDirection dir = (StairDirection)Enum.Parse(typeof(StairDirection), data.Split('=')[1]);
         Component = new Stairs(dir);
     }
 
     public string CreateSerializableData(IComponent component)
     {
         Stairs stairs = (Stairs)component;
-        return $"{nameof(Stairs)}: {stairs.Direction.ToString()}";
+        return $"{nameof(Stairs)}: {nameof(stairs.Direction)}={stairs.Direction.ToString()}";
     }
 }
