@@ -181,6 +181,9 @@ public class Body : Component
             bool unequipThroughIteration = false;
             for (int i = 0; i < target.Count && bodyPartsTaken < numberOfBodyPartsRequired; i++)
             {
+                if (GetEquipmentIdForBodyPart(target[i]) == gameEvent.GetValue<string>(EventParameters.Equipment))
+                    break;
+
                 if (unequipThroughIteration && GetEquipmentIdForBodyPart(target[i]) != gameEvent.GetValue<string>(EventParameters.Equipment))
                 {
                     EventBuilder unequip = new EventBuilder(GameEventId.Unequip)
