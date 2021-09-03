@@ -99,10 +99,6 @@ public class DungeonManager : WorldComponent
             FireEvent(Self, new GameEvent(GameEventId.SaveLevel));
             m_TimeProgression.Resume();
 
-            EventBuilder makeActivePlayer = new EventBuilder(GameEventId.MakePartyLeader)
-                                            .With(EventParameters.Entity, m_ActivePlayer.Value.ID);
-            FireEvent(Self, makeActivePlayer.CreateEvent());
-
         }
         else if (gameEvent.ID == GameEventId.GetCurrentLevel)
         {

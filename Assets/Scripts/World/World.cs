@@ -75,6 +75,6 @@ public class World : MonoBehaviour
 
     private void Update()
     {
-        m_World.FireEvent(m_World, new GameEvent(GameEventId.ProgressTime));
+        m_World?.FireEvent(m_World, new GameEvent(GameEventId.ProgressTime));
     }
 }
