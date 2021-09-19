@@ -195,7 +195,12 @@ public class Body : Component
                 if (!HasEquipment(target[i]))
                 {
                     bodyPartsTaken++;
-                    FireEvent(target[i], gameEvent);
+
+                    EventBuilder itemEquiped = new EventBuilder(GameEventId.ItemEquipped)
+                                                .With(EventParameters.Equipment, gameEvent.GetValue<string>(EventParameters.Equipment))
+                                                .With(EventParameters.Owner, Self?.ID);
+
+                    FireEvent(target[i], itemEquiped.CreateEvent());
                     FireEvent(Self, new GameEvent(GameEventId.RemoveFromInventory,
                         new KeyValuePair<string, object>(EventParameters.Entity, gameEvent.Paramters[EventParameters.Equipment])));
                 }

@@ -323,6 +323,7 @@ public static class EventParameters
     public const string StatBoostAmount = nameof(StatBoostAmount);
     public const string AttributePoints = nameof(AttributePoints);
     public const string Key = nameof(Key);
+    public const string Owner = nameof(Owner);
 }
 
 [Serializable]

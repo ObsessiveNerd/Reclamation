@@ -62,7 +62,8 @@ public class SpellContainer : Component
 
         else if (gameEvent.ID == GameEventId.ItemEquipped)
         {
-            if (WorldUtility.IsActivePlayer(Self.ID))
+            string sourceId = gameEvent.GetValue<string>(EventParameters.Owner);
+            if (WorldUtility.IsActivePlayer(sourceId))
             {
                 EventBuilder openSpellUI = new EventBuilder(GameEventId.OpenSpellUI)
                                             .With(EventParameters.Entity, Self.ID)

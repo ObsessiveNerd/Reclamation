@@ -12,7 +12,7 @@ public class EquipmentSlot : Component
         RegisteredEvents.Add(GameEventId.AddArmorValue);
         RegisteredEvents.Add(GameEventId.GetEquipment);
         RegisteredEvents.Add(GameEventId.GetSpells);
-        RegisteredEvents.Add(GameEventId.Equip);
+        RegisteredEvents.Add(GameEventId.ItemEquipped);
         RegisteredEvents.Add(GameEventId.Unequip);
         RegisteredEvents.Add(GameEventId.CheckEquipment);
         RegisteredEvents.Add(GameEventId.GetCombatRating);
@@ -36,7 +36,7 @@ public class EquipmentSlot : Component
         if (gameEvent.ID == GameEventId.GetEquipment)
             gameEvent.Paramters[EventParameters.Equipment] = EquipmentId;
 
-        if (gameEvent.ID == GameEventId.Equip)
+        if (gameEvent.ID == GameEventId.ItemEquipped)
         {
             var entity = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameters.Equipment));
             if(entity == null)
@@ -44,7 +44,7 @@ public class EquipmentSlot : Component
                 Debug.LogError("Attempting to equip a null item");
                 return;
             }
-            FireEvent(entity, new GameEvent(GameEventId.ItemEquipped));
+            FireEvent(entity, gameEvent);
             EquipmentId = (string)gameEvent.Paramters[EventParameters.Equipment];
             EquipmentName = entity?.Name;
         }
