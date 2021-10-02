@@ -1,0 +1,6 @@
+<Bones1> (
+	GraphicContainer: Textures/Environment/td_world_bones_a
+	Position:PositionPoint=0,0
+	InteractOnTileOvertake
+	EntityTypeContainer:Type=Object
+)

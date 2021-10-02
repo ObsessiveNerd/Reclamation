@@ -1,0 +1,6 @@
+<OldCampire> (
+	GraphicContainer: Textures/Environment/td_world_campfire_stones
+	Position:PositionPoint=0,0
+	InteractOnTileOvertake
+	EntityTypeContainer:Type=Object
+)

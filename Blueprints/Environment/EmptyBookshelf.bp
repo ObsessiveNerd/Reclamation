@@ -1,0 +1,8 @@
+<EmptyBookshelf> (
+	GraphicContainer: Textures/Environment/td_world_bookshelf_b
+	Position:PositionPoint=0,0
+	InteractOnTileOvertake
+	EntityTypeContainer:Type=Object
+	BlocksNonHostileMovement
+	EnvironmentalObject
+)

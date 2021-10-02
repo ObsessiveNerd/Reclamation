@@ -7,6 +7,19 @@ using UnityEngine;
 
 public static class EntityFactory
 {
+    private static List<string> s_EnvironmentEntities = new List<string>();
+    public static List<string> EnvironmentEntities
+    {
+        get
+        {
+            if (s_EnvironmentEntities == null)
+                s_EnvironmentEntities = new List<string>();
+            if (m_Blueprints.Count == 0)
+                InitBlueprints();
+            return s_EnvironmentEntities;
+        }
+    }
+
     private static List<string> s_InventoryEntities = new List<string>();
     public static List<string> InventoryEntities
     {
@@ -38,6 +51,7 @@ public static class EntityFactory
     private static bool m_LoadedTempBlueprints = false;
 
     private static string kArmorPath = "Blueprints\\Armor";
+    private static string kEnvironmentPath = "Blueprints\\Environment";
     private static string kWeaponPath = "Blueprints\\Weapons";
     private static string kMonstersPath = "Blueprints\\Monsters";
     private static string kBossesPath = "Blueprints\\Boss";
@@ -78,6 +92,9 @@ public static class EntityFactory
 
             if (bpPath.StartsWith(kArmorPath) || bpPath.StartsWith(kWeaponPath) || bpPath.StartsWith(kItemsPath))
                 s_InventoryEntities.Add(bpName);
+
+            if (bpPath.StartsWith(kEnvironmentPath))
+                s_EnvironmentEntities.Add(bpName);
         }
     }
 
@@ -112,6 +129,11 @@ public static class EntityFactory
                 m_LoadedTempBlueprints = true;
             }
         }
+    }
+
+    public static string GetRandomEnvironmentBPName()
+    {
+        return EnvironmentEntities[RecRandom.Instance.GetRandomValue(0, s_EnvironmentEntities.Count)];
     }
 
     public static string GetRandomCharacterBPName()

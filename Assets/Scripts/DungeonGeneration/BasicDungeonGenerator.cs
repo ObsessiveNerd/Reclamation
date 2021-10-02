@@ -28,6 +28,14 @@ public class Room
         return new Point(x, y);
     }
 
+    public int SurfaceArea
+    {
+        get
+        {
+            return (m_Size.x - 2) * (m_Size.y - 2);
+        }
+    }
+
     public void CreateWalls()
     {
         List<Point> validPoints = new List<Point>();
@@ -166,9 +174,22 @@ public class Room
 
     public Point GetValidPoint()
     {
-        int x = RecRandom.Instance.GetRandomValue(m_StartPoint.x + 1, (m_StartPoint.x + m_Size.x) - 1);
-        int y = RecRandom.Instance.GetRandomValue(m_StartPoint.y + 1, (m_StartPoint.y + m_Size.y) - 1);
+        int x = -1;
+        int y = -1;
+        while(true)
+        {
+            x = RecRandom.Instance.GetRandomValue(m_StartPoint.x + 1, (m_StartPoint.x + m_Size.x) - 1);
+            y = RecRandom.Instance.GetRandomValue(m_StartPoint.y + 1, (m_StartPoint.y + m_Size.y) - 1);
 
+            var entity = WorldUtility.GetEntityAtPosition(new Point(x, y), false);
+            EventBuilder getPathfindingData = new EventBuilder(GameEventId.PathfindingData)
+                                                .With(EventParameters.Weight, 0)
+                                                .With(EventParameters.BlocksMovement, false);
+
+            bool blocksMovement = World.Instance.Self.FireEvent(getPathfindingData.CreateEvent()).GetValue<bool>(EventParameters.BlocksMovement);
+            if (!blocksMovement)
+                break;
+        }
         return new Point(x, y);
     }
 
@@ -257,7 +278,7 @@ public class BasicDungeonGenerator : IDungeonGenerator
     private List<DungeonPartition> m_LeafNodes = new List<DungeonPartition>();
     private DungeonPartition m_Root;
     private DungeonMetaData m_DMD;
-    private int m_MinRoomSize = 5;
+    private int m_MinRoomSize = 6;
     private DungeonGenerationResult m_Result;
     Dictionary<ItemRarity, List<string>> m_ItemRarityToBPName = new Dictionary<ItemRarity, List<string>>();
 
@@ -419,6 +440,13 @@ public class BasicDungeonGenerator : IDungeonGenerator
                     foreach (var item in items)
                         Spawner.Spawn(EntityQuery.GetEntity(item), room.GetValidPoint());
                 }
+            }
+
+            int environmentObjectsToSpawn = RecRandom.Instance.GetRandomValue((int)(room.SurfaceArea * .1f), (int)(room.SurfaceArea * .4f));
+            for(int i = 0; i < environmentObjectsToSpawn; i++)
+            {
+                string bpName = EntityFactory.GetRandomEnvironmentBPName();
+                Spawner.Spawn(EntityFactory.CreateEntity(bpName), room.GetValidPoint());
             }
         }
     }

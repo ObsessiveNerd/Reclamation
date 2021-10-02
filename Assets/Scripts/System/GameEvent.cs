@@ -361,9 +361,9 @@ public class GameEventSerializable
     }
 }
 
-public class GameEvent
+public struct GameEvent
 {
-    public bool ContinueProcessing = true;
+    public bool ContinueProcessing;
     public string ID { get { return m_ID; } }
     string m_ID { get; }
 
@@ -372,6 +372,7 @@ public class GameEvent
 
     public GameEvent(string id, params KeyValuePair<string, object>[] parameters)
     {
+        ContinueProcessing = true;
         m_ID = id;
         m_Parameters = new Dictionary<string, object>();
         foreach (var param in parameters)
@@ -380,6 +381,7 @@ public class GameEvent
 
     public GameEvent(string id, Dictionary<string, object> parameters)
     {
+        ContinueProcessing = true;
         m_ID = id;
         m_Parameters = parameters;
     }

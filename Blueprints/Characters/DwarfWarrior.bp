@@ -2,6 +2,8 @@
 	GraphicContainer: Textures/Characters/td_monsters_dwarf_d2
 	Portrait: Portraits/Characters/Tex_Dwarf_warrior_male_bg
 	Defense
+	Desire:Greed=0
+	AIFOVHandler
 	ManaRegen:RegenAmount=1,RegenSpeed=15
 	RegisterWithTimeSystem
 	HealthRegen:RegenAmount=1,RegenSpeed=5
@@ -13,7 +15,6 @@
 	CombatRating
 	BlocksNonHostileMovement
 	Body:Head=1[], Torso=1[], Arm=2[<Short Sword>], Leg=2[]
-	AIFOVHandler
 	PrimaryStatType:PrimaryStat=Str
 	EntityTypeContainer:Type=Creature
 	Aggression
@@ -23,11 +24,10 @@
 	Energy:EnergyRegineration=1,CurrentEnergy=0,HasHadTurnStarted=False
 	Faction:ID=DwarvenExpedition
 	FOV:FOVRange=5
-	PackTactics
+	PackTactics:PartyLeaderId=4542
 	InteractsWithWorld
 	Name:PrettyName=
 	Level:CurrentLevel=1,CurrentExp=0
-	Mana:MaxMana=5,CurrentMana=5
 	Health:MaxHealth=10,CurrentHealth=10
-	Desire:Greed=1
+	Mana:MaxMana=5,CurrentMana=5
 )

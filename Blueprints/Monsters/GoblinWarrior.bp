@@ -1,29 +1,28 @@
 <GoblinWarrior> (
 	GraphicContainer: Textures/Monsters/td_monsters_goblin_captain_l1
 	Defense
-	PackTactics
-	Desire:Greed=4
-	AIFOVHandler
-	Body:Head=1[], Torso=1[], Arm=2[<Short Sword>], Leg=2[]
-	Faction:ID=Goblins
-	Aggression
-	Inventory:InventoryItems=<Short Sword>
-	RegisterWithTimeSystem
-	EntityTypeContainer:Type=Creature
-	Stats:Str=10,Agi=12,Con=10,Wis=9,Int=7,Cha=8
-	Move
-	Energy:EnergyRegineration=1,CurrentEnergy=0,HasHadTurnStarted=False
-	FOV:FOVRange=5
-	BlocksNonHostileMovement
-	CombatRating
-	AIController
-	Wander
-	Fear
-	Position:PositionPoint=0,0
-	InteractOnTileOvertake
-	InteractsWithWorld
 	PrimaryStatType:PrimaryStat=Str
+	InteractsWithWorld
+	InteractOnTileOvertake
+	Position:PositionPoint=0,0
+	Fear
+	Wander
+	AIController
+	CombatRating
+	BlocksNonHostileMovement
+	FOV:FOVRange=5
+	Energy:EnergyRegineration=1,CurrentEnergy=0,HasHadTurnStarted=False
+	Stats:Str=10,Agi=12,Con=10,Wis=9,Int=7,Cha=8,AttributePoints=0
+	EntityTypeContainer:Type=Creature
+	RegisterWithTimeSystem
+	Inventory:InventoryItems=<Short Sword>
+	Aggression
+	Faction:ID=Goblins
+	Body:Head=1[], Torso=1[], Arm=2[<Short Sword>], Leg=2[]
+	AIFOVHandler
+	PackTactics:PartyLeaderId=4526
+	Move
+	Level:CurrentLevel=2,CurrentExp=0
 	Info:InfoMessage="It's a nasty little goblin.  Its slimy green skin reeks with the pungent odor of dirt and mold."
 	Health:MaxHealth=10,CurrentHealth=10
-	Level:CurrentLevel=2,CurrentExp=0
 )

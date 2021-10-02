@@ -4,14 +4,13 @@
 	PrimaryStatType:PrimaryStat=Str
 	Position:PositionPoint=0,0
 	Move
-	Desire:Greed=2
 	InteractOnTileOvertake
 	EntityTypeContainer:Type=Creature
 	RegisterWithTimeSystem
 	AIController
 	AIFOVHandler
 	InteractsWithWorld
-	Stats:Str=10,Agi=12,Con=10,Wis=9,Int=7,Cha=8
+	Stats:Str=10,Agi=12,Con=10,Wis=9,Int=7,Cha=8,AttributePoints=0
 	Faction:ID=Demons
 	FOV:FOVRange=2
 	Aggression
@@ -21,6 +20,6 @@
 	BlocksNonHostileMovement
 	Energy:EnergyRegineration=1,CurrentEnergy=0,HasHadTurnStarted=False
 	Body:Head=1[], Torso=1[], Arm=2[], Leg=2[]
-	Health:MaxHealth=15,CurrentHealth=15
 	Level:CurrentLevel=2,CurrentExp=0
+	Health:MaxHealth=15,CurrentHealth=15
 )
