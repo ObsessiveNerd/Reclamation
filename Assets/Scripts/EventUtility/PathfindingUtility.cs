@@ -61,29 +61,29 @@ public static class PathfindingUtility
         Point startPos = GetEntityLocation(target);
         return startPos;
 
-        List<Point> validPoints = new List<Point>();
-        for(int i = startPos.x - range; i < startPos.x + range; i++)
-        {
-            for(int j = startPos.y - range; j < startPos.y + range; j++)
-            {
-                Point p = new Point(i, j);
-                validPoints.Add(p);
-            }
-        }
+        //List<Point> validPoints = new List<Point>();
+        //for(int i = startPos.x - range; i < startPos.x + range; i++)
+        //{
+        //    for(int j = startPos.y - range; j < startPos.y + range; j++)
+        //    {
+        //        Point p = new Point(i, j);
+        //        validPoints.Add(p);
+        //    }
+        //}
 
-        if (validPoints.Count == 0 || (validPoints.Count == 1 && validPoints[0] == startPos))
-            return startPos;
+        //if (validPoints.Count == 0 || (validPoints.Count == 1 && validPoints[0] == startPos))
+        //    return startPos;
 
-        if (validPoints.Contains(startPos))
-            validPoints.Remove(startPos);
+        //if (validPoints.Contains(startPos))
+        //    validPoints.Remove(startPos);
 
-        validPoints = validPoints.OrderBy(x => RecRandom.Instance.GetRandomValue(0, 100)).ToList();
-        foreach(Point vp in validPoints)
-        {
-            if (IsValidDungeonTile(vp))
-                return vp;
-        }
-        return startPos;
+        //validPoints = validPoints.OrderBy(x => RecRandom.Instance.GetRandomValue(0, 100)).ToList();
+        //foreach(Point vp in validPoints)
+        //{
+        //    if (IsValidDungeonTile(vp))
+        //        return vp;
+        //}
+        //return startPos;
     }
 
     public static bool IsValidDungeonTile(Point p)

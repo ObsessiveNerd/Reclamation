@@ -162,7 +162,7 @@ public class DTO_PackTactics : IDataTransferComponent
                     break;
                 //case "PackRange":
                 //    packRange = int.Parse(keyValue[1]);
-                    break;
+                    //break;
                 case "PartyLeaderId":
                     partyLeaderId = keyValue[1];
                     break;

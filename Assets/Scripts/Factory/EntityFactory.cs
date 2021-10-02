@@ -50,6 +50,7 @@ public static class EntityFactory
 
     private static bool m_LoadedTempBlueprints = false;
 
+#pragma warning disable 0414
     private static string kArmorPath = "Blueprints\\Armor";
     private static string kEnvironmentPath = "Blueprints\\Environment";
     private static string kWeaponPath = "Blueprints\\Weapons";
@@ -58,6 +59,7 @@ public static class EntityFactory
     private static string kSpellsPath = "Blueprints\\Spells";
     private static string kObjectsPath = "Blueprints\\Objects";
     private static string kItemsPath = "Blueprints\\Items";
+#pragma warning restore 0414
 
     public static IEntity CreateEntity(string blueprintName)
     {

@@ -29,6 +29,7 @@ public enum RequestedAction
 [Serializable]
 public class InputKeyBindData
 {
+#pragma warning disable 0414
     [SerializeField]
     KeyCode MoveN;
     [SerializeField]
@@ -67,6 +68,7 @@ public class InputKeyBindData
     KeyCode SpellSelect4;
     [SerializeField]
     KeyCode SpellSelect5;
+#pragma warning restore 0414
 
     public InputKeyBindData()
     {

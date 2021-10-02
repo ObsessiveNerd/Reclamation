@@ -213,14 +213,17 @@ namespace PygmyMonkey.GifCreator
             {
 				yield return null;
             }
-
-			if (webRequest.isHttpError || webRequest.isNetworkError)
+#pragma warning disable 0414
+#pragma warning disable 0618
+            if (webRequest.isHttpError || webRequest.isNetworkError)
 			{
 				gifCreatorWindow.ProgressRenderer.UpdateProgress("Error uploading to imgur.com", 0.0f);
 				Debug.LogError("An unknown error occured while uploading to imgur.com: " + webRequest.error + "\n" + webRequest.downloadHandler.text);
 			}
-			else
-			{
+#pragma warning restore 0414
+#pragma warning restore 0618
+            else
+            {
 				ImgurResult result = null;
 
 				try
