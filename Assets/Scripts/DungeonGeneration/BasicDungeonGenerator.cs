@@ -176,20 +176,20 @@ public class Room
     {
         int x = -1;
         int y = -1;
-        while(true)
-        {
-            x = RecRandom.Instance.GetRandomValue(m_StartPoint.x + 1, (m_StartPoint.x + m_Size.x) - 1);
-            y = RecRandom.Instance.GetRandomValue(m_StartPoint.y + 1, (m_StartPoint.y + m_Size.y) - 1);
+        //while(true)
+        //{
+            x = RecRandom.Instance.GetRandomValue(m_StartPoint.x + 2, (m_StartPoint.x + m_Size.x) - 2);
+            y = RecRandom.Instance.GetRandomValue(m_StartPoint.y + 2, (m_StartPoint.y + m_Size.y) - 2);
 
             var entity = WorldUtility.GetEntityAtPosition(new Point(x, y), false);
             EventBuilder getPathfindingData = new EventBuilder(GameEventId.PathfindingData)
                                                 .With(EventParameters.Weight, 0)
                                                 .With(EventParameters.BlocksMovement, false);
 
-            bool blocksMovement = World.Instance.Self.FireEvent(getPathfindingData.CreateEvent()).GetValue<bool>(EventParameters.BlocksMovement);
-            if (!blocksMovement)
-                break;
-        }
+        //    bool blocksMovement = World.Instance.Self.FireEvent(getPathfindingData.CreateEvent()).GetValue<bool>(EventParameters.BlocksMovement);
+        //    if (!blocksMovement)
+        //        break;
+        //}
         return new Point(x, y);
     }
 
