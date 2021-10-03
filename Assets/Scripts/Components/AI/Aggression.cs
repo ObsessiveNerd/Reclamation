@@ -73,20 +73,12 @@ public class Aggression : Component
             {
                 var target = WorldUtility.GetEntityAtPosition(m_TargetLocation);
                 CombatUtility.Attack(Self, target, EntityQuery.GetEntity(id));
-                EventBuilder fireRangedWeapon = new EventBuilder(GameEventId.FireRangedAttack)
-                                                .With(EventParameters.Entity, WorldUtility.GetGameObject(Self).transform.position)
-                                                .With(EventParameters.Target, WorldUtility.GetGameObject(target).transform.position);
-                FireEvent(weapon, fireRangedWeapon.CreateEvent());
                 return MoveDirection.None;
             }
             else if(weaponType == TypeWeapon.Wand || weaponType == TypeWeapon.MagicStaff)
             {
                 var target = WorldUtility.GetEntityAtPosition(m_TargetLocation);
                 CombatUtility.CastSpell(Self, target, EntityQuery.GetEntity(id));
-                EventBuilder fireRangedWeapon = new EventBuilder(GameEventId.FireRangedAttack)
-                                                .With(EventParameters.Entity, WorldUtility.GetGameObject(Self).transform.position)
-                                                .With(EventParameters.Target, WorldUtility.GetGameObject(target).transform.position);
-                FireEvent(weapon, fireRangedWeapon.CreateEvent());
                 return MoveDirection.None;
             }
         }

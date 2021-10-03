@@ -25,6 +25,13 @@ public static class CombatUtility
         GameEvent attack = new GameEvent(GameEventId.TakeDamage, checkWeaponAttack.Paramters);
         source.FireEvent(target, attack);
 
+        if(weaponType != TypeWeapon.Melee && weaponType != TypeWeapon.Finesse)
+        {
+            EventBuilder fireRangedWeapon = new EventBuilder(GameEventId.FireRangedAttack)
+                                                    .With(EventParameters.Entity, WorldUtility.GetGameObject(source).transform.position)
+                                                    .With(EventParameters.Target, WorldUtility.GetGameObject(target).transform.position);
+            weapon.FireEvent(fireRangedWeapon.CreateEvent());
+        }
         source.FireEvent(source, new GameEvent(GameEventId.UseEnergy, new KeyValuePair<string, object>(EventParameters.Value, 1f))); //todo: temp energy value.  Energy value should come from the weapon probably
     }
 
@@ -49,6 +56,10 @@ public static class CombatUtility
                 Attack(source, target, spell);
                 GameEvent depleteMana = new GameEvent(GameEventId.DepleteMana, new KeyValuePair<string, object>(EventParameters.Mana, cost));
                 source.FireEvent(depleteMana);
+                EventBuilder fireRangedWeapon = new EventBuilder(GameEventId.FireRangedAttack)
+                                                    .With(EventParameters.Entity, WorldUtility.GetGameObject(source).transform.position)
+                                                    .With(EventParameters.Target, WorldUtility.GetGameObject(target).transform.position);
+                spell.FireEvent(fireRangedWeapon.CreateEvent());
                 return true;
             }
         }
