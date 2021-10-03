@@ -5,4 +5,5 @@
 	Range
 	WeaponType:TypeWeapon=IntSpell
 	Sound:SoundPath=Sounds/MAGIC_SPELLS/MAGIC_SPELL_Flame_01_mono.wav,Key=Cast
+	Ammo:TexturePath=Textures/Effects/tiny_dungeon_fx_fireball
 )

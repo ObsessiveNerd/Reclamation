@@ -11,4 +11,5 @@
 	TwoHanded
 	Value:Amount=20
 	Sound:SoundPath=Sounds/Bow_Arrow/BOW_Release_Arrow_Large_mono.wav,Key=BowAttack
+	Ammo:TexturePath=Textures/Items/td_items_arrow
 )

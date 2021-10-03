@@ -104,6 +104,11 @@ public class SpellcasterPlayerController : InputControllerBase
 
                 CombatUtility.Attack(Self, target, m_Attack);
 
+                EventBuilder fireRangedWeapon = new EventBuilder(GameEventId.FireRangedAttack)
+                                                .With(EventParameters.Entity, WorldUtility.GetGameObject(Self).transform.position)
+                                                .With(EventParameters.Target, WorldUtility.GetGameObject(target).transform.position);
+                FireEvent(m_Attack, fireRangedWeapon.CreateEvent());
+
                 EndSelection(gameEvent, m_TileSelection);
 
                 GameEvent checkForEnergy = new GameEvent(GameEventId.HasEnoughEnergyToTakeATurn, new KeyValuePair<string, object>(EventParameters.TakeTurn, false));

@@ -191,6 +191,7 @@ public static class GameEventId
     public const string GetMana = nameof(GetMana);
     public const string ManaCost = nameof(ManaCost);
     public const string Quaff = nameof(Quaff);
+    public const string FireRangedAttack = nameof(FireRangedAttack);
 
     //Stats
     public const string GetPrimaryStatType = nameof(GetPrimaryStatType);

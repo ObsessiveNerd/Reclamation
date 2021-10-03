@@ -72,6 +72,11 @@ public class RangedPlayerAttackController : InputControllerBase
 
                 EndSelection(gameEvent, m_TileSelection);
 
+                EventBuilder fireRangedWeapon = new EventBuilder(GameEventId.FireRangedAttack)
+                                                .With(EventParameters.Entity, WorldUtility.GetGameObject(Self).transform.position)
+                                                .With(EventParameters.Target, WorldUtility.GetGameObject(target).transform.position);
+                FireEvent(m_Attack, fireRangedWeapon.CreateEvent());
+
                 GameEvent checkForEnergy = new GameEvent(GameEventId.HasEnoughEnergyToTakeATurn, new KeyValuePair<string, object>(EventParameters.TakeTurn, false));
                 FireEvent(Self, checkForEnergy);
                 gameEvent.Paramters[EventParameters.TakeTurn] = (bool)checkForEnergy.Paramters[EventParameters.TakeTurn];
