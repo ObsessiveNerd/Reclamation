@@ -53,12 +53,13 @@ public class SpellContainer : Component
         else if (gameEvent.ID == GameEventId.GetInfo)
         {
             Dictionary<string, string> info = gameEvent.GetValue<Dictionary<string, string>>(EventParameters.Info);
-            foreach (var spell in SpellNameToIdMap.Values)
-            {
-                info.Add($"{nameof(SpellContainer)}{Guid.NewGuid()}", spell.Name);
-                spell.FireEvent(gameEvent);
-                info.Add($"{nameof(SpellContainer)}{Guid.NewGuid()}", "\n");
-            }
+            info.Add($"{nameof(SpellContainer)}{Guid.NewGuid()}", "An object that contains arcane magics.  Use carefully.  Or don't.  I'm not your dad.");
+
+            //foreach (var spell in SpellNameToIdMap.Values)
+            //{
+            //    spell.FireEvent(gameEvent);
+            //    info.Add($"{nameof(SpellContainer)}{Guid.NewGuid()}", "\n");
+            //}
         }
 
         else if (gameEvent.ID == GameEventId.ItemEquipped)
