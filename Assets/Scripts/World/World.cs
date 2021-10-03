@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Linq;
 using UnityEngine;
@@ -17,7 +18,7 @@ public class World : MonoBehaviour
     private void Start()
     {
         if(m_Instance == null)
-            StartWorld(true, $"{SaveSystem.kSaveDataPath}/{RecRandom.Instance.GetRandomValue(0, 1000).ToString()}");
+            StartWorld(true, $"{SaveSystem.kSaveDataPath}/{Guid.NewGuid().ToString()}");
     }
 
     public void StartWorld(bool startNew, string loadPath)
@@ -52,7 +53,7 @@ public class World : MonoBehaviour
 
         if (startNew)
         {
-            Seed = RecRandom.InitRecRandom(Random.Range(0, int.MaxValue));
+            Seed = RecRandom.InitRecRandom(UnityEngine.Random.Range(0, int.MaxValue));
             m_World.FireEvent(m_World, new GameEvent(GameEventId.StartWorld, new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.Seed, Seed.ToString()),
                                                                             new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.GameObject, TilePrefab),
                                                                             new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.NewGame, true)));
