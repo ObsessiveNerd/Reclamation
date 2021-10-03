@@ -67,15 +67,26 @@ public class Aggression : Component
         var list = FireEvent(Self, getWeapon.CreateEvent()).GetValue<List<string>>(EventParameters.Weapon);
         foreach(var id in list)
         {
-            TypeWeapon weaponType = CombatUtility.GetWeaponType(EntityQuery.GetEntity(id));
+            var weapon = EntityQuery.GetEntity(id);
+            TypeWeapon weaponType = CombatUtility.GetWeaponType(weapon);
             if(weaponType == TypeWeapon.Ranged)
             {
-                CombatUtility.Attack(Self, WorldUtility.GetEntityAtPosition(m_TargetLocation), EntityQuery.GetEntity(id));
+                var target = WorldUtility.GetEntityAtPosition(m_TargetLocation);
+                CombatUtility.Attack(Self, target, EntityQuery.GetEntity(id));
+                EventBuilder fireRangedWeapon = new EventBuilder(GameEventId.FireRangedAttack)
+                                                .With(EventParameters.Entity, WorldUtility.GetGameObject(Self).transform.position)
+                                                .With(EventParameters.Target, WorldUtility.GetGameObject(target).transform.position);
+                FireEvent(weapon, fireRangedWeapon.CreateEvent());
                 return MoveDirection.None;
             }
             else if(weaponType == TypeWeapon.Wand || weaponType == TypeWeapon.MagicStaff)
             {
-                CombatUtility.CastSpell(Self, WorldUtility.GetEntityAtPosition(m_TargetLocation), EntityQuery.GetEntity(id));
+                var target = WorldUtility.GetEntityAtPosition(m_TargetLocation);
+                CombatUtility.CastSpell(Self, target, EntityQuery.GetEntity(id));
+                EventBuilder fireRangedWeapon = new EventBuilder(GameEventId.FireRangedAttack)
+                                                .With(EventParameters.Entity, WorldUtility.GetGameObject(Self).transform.position)
+                                                .With(EventParameters.Target, WorldUtility.GetGameObject(target).transform.position);
+                FireEvent(weapon, fireRangedWeapon.CreateEvent());
                 return MoveDirection.None;
             }
         }

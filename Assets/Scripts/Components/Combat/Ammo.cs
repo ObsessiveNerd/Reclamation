@@ -24,9 +24,9 @@ public class Ammo : Component
         if(gameEvent.ID == GameEventId.FireRangedAttack)
         {
             GameObject go = Resources.Load<GameObject>("Prefabs/RangedAttack");
-            go.GetComponent<SpriteRenderer>().sprite = Texture;
-            go.GetComponent<RangedAttackMono>().Setup(gameEvent.GetValue<Vector3>(EventParameters.Target));
-            GameObject.Instantiate(go, gameEvent.GetValue<Vector3>(EventParameters.Entity), Quaternion.identity);
+            var instance = GameObject.Instantiate(go, gameEvent.GetValue<Vector3>(EventParameters.Entity), Quaternion.identity);
+            instance.GetComponent<SpriteRenderer>().sprite = Texture;
+            instance.GetComponent<RangedAttackMono>().Setup(gameEvent.GetValue<Vector3>(EventParameters.Target));
         }
     }
 }
