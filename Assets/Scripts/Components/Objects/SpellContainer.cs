@@ -36,6 +36,7 @@ public class SpellContainer : Component
     public override void Init(IEntity self)
     {
         base.Init(self);
+        RegisteredEvents.Add(GameEventId.GetContextMenuActions);
         RegisteredEvents.Add(GameEventId.GetSpells);
         RegisteredEvents.Add(GameEventId.GetInfo);
         RegisteredEvents.Add(GameEventId.ItemEquipped);
@@ -71,6 +72,19 @@ public class SpellContainer : Component
 
                 FireEvent(World.Instance.Self, openSpellUI.CreateEvent());
             }
+        }
+
+        else if(gameEvent.ID == GameEventId.GetContextMenuActions)
+        {
+            ContextMenuButton button = new ContextMenuButton("Examine", () =>
+            {
+                EventBuilder openSpellExamination = new EventBuilder(GameEventId.OpenSpellExaminationUI)
+                                                    .With(EventParameters.SpellList, SpellNameToIdMap.Keys.ToList());
+
+                World.Instance.Self.FireEvent(openSpellExamination.CreateEvent());
+            });
+
+            gameEvent.GetValue<List<ContextMenuButton>>(EventParameters.InventoryContextActions).Add(button);
         }
     }
 }

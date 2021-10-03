@@ -235,6 +235,7 @@ public static class GameEventId
     public const string EntityHealedDamage = nameof(EntityHealedDamage);
     public const string EntityUsedMana = nameof(EntityUsedMana);
     public const string EntityRegainedMana = nameof(EntityRegainedMana);
+    public const string OpenSpellExaminationUI = nameof(OpenSpellExaminationUI);
 
     //Spellcasting
     public const string GetSpells = nameof(GetSpells);

@@ -22,6 +22,7 @@ public class WorldUIController : WorldComponent
         RegisteredEvents.Add(GameEventId.PromptToGiveItem);
         RegisteredEvents.Add(GameEventId.EntityTookDamage);
         RegisteredEvents.Add(GameEventId.EntityHealedDamage);
+        RegisteredEvents.Add(GameEventId.OpenSpellExaminationUI);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
@@ -49,7 +50,7 @@ public class WorldUIController : WorldComponent
         {
             string newId = gameEvent.GetValue<string>(EventParameters.Entity);
             foreach (var ui in UpdatableUI)
-                ui.UpdateUI(EntityQuery.GetEntity(newId));
+                ui?.UpdateUI(EntityQuery.GetEntity(newId));
 
             //if (gameEvent.Paramters.ContainsKey(EventParameters.Entity))
             //{
@@ -60,6 +61,11 @@ public class WorldUIController : WorldComponent
             //    GameObject.FindObjectOfType<CharacterManagerMono>().UpdateUI(m_ActivePlayer.Value.ID);
 
             //GameObject.FindObjectOfType<ChestMono>().UpdateUI();
+        }
+
+        else if(gameEvent.ID == GameEventId.OpenSpellExaminationUI)
+        {
+            GameObject.FindObjectOfType<SpellExaminationUI>().Setup(gameEvent.GetValue<List<string>>(EventParameters.SpellList));
         }
 
         else if(gameEvent.ID == GameEventId.OpenChestUI)

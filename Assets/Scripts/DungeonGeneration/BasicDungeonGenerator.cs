@@ -446,7 +446,17 @@ public class BasicDungeonGenerator : IDungeonGenerator
             for(int i = 0; i < environmentObjectsToSpawn; i++)
             {
                 string bpName = EntityFactory.GetRandomEnvironmentBPName();
-                Spawner.Spawn(EntityFactory.CreateEntity(bpName), room.GetValidPoint());
+                var e = EntityFactory.CreateEntity(bpName);
+                if(bpName == "Bookshelf")
+                {
+                    EventBuilder addItems = new EventBuilder(GameEventId.AddItems)
+                                            .With(EventParameters.Items, new List<string>(){
+                                                "Spellbook"
+                                            });
+                    e.FireEvent(addItems.CreateEvent());
+                }
+
+                Spawner.Spawn(e, room.GetValidPoint());
             }
         }
     }

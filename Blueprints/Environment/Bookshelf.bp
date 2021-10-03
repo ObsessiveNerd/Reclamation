@@ -5,4 +5,5 @@
 	EntityTypeContainer:Type=Object
 	BlocksNonHostileMovement
 	EnvironmentalObject
+	ItemContainer:IDToEntityMap=
 )
