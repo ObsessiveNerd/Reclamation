@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [Serializable]
-public class Room
+public struct Room
 {
     [SerializeField]
     private Point m_StartPoint;

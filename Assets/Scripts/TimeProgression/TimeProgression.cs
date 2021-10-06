@@ -118,7 +118,7 @@ public class TimeProgression
             World.Instance.Self.FireEvent(World.Instance.Self, new GameEvent(GameEventId.UpdateWorldView));
         }
 
-        if(m_PostFrameCallback != null)
+        if (m_PostFrameCallback != null)
         {
             m_PostFrameCallback.Invoke();
             m_PostFrameCallback = null;

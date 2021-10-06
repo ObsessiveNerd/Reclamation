@@ -86,26 +86,26 @@ public static class PathfindingUtility
         //return startPos;
     }
 
-    public static bool IsValidDungeonTile(Point p)
-    {
-        EventBuilder isValidPoint = new EventBuilder(GameEventId.IsValidDungeonTile)
-                                    .With(EventParameters.TilePosition, p)
-                                    .With(EventParameters.Value, false);
-        return World.Instance.Self.FireEvent(isValidPoint.CreateEvent()).GetValue<bool>(EventParameters.Value);
-    }
+    //public static bool IsValidDungeonTile(Point p)
+    //{
+    //    EventBuilder isValidPoint = new EventBuilder(GameEventId.IsValidDungeonTile)
+    //                                .With(EventParameters.TilePosition, p)
+    //                                .With(EventParameters.Value, false);
+    //    return World.Instance.Self.FireEvent(isValidPoint.CreateEvent()).GetValue<bool>(EventParameters.Value);
+    //}
 
-    public static bool CanNavigateTo(Point startPos, Point destination)
-    {
-        EventBuilder calculatePathEventBuilder = new EventBuilder(GameEventId.CalculatePath)
-                            .With(EventParameters.StartPos, startPos)
-                            .With(EventParameters.EndPos, destination)
-                            .With(EventParameters.Path, null);
+    //public static bool CanNavigateTo(Point startPos, Point destination)
+    //{
+    //    EventBuilder calculatePathEventBuilder = new EventBuilder(GameEventId.CalculatePath)
+    //                        .With(EventParameters.StartPos, startPos)
+    //                        .With(EventParameters.EndPos, destination)
+    //                        .With(EventParameters.Path, null);
 
-        var path = World.Instance.Self.FireEvent(calculatePathEventBuilder.CreateEvent()).GetValue<List<IMapNode>>(EventParameters.Path);
-        if (path.Count > 0)
-            return true;
-        return false;
-    }
+    //    var path = World.Instance.Self.FireEvent(calculatePathEventBuilder.CreateEvent()).GetValue<List<IMapNode>>(EventParameters.Path);
+    //    if (path.Count > 0)
+    //        return true;
+    //    return false;
+    //}
 
     public static List<IMapNode> GetPath(Point start, Point destination)
     {

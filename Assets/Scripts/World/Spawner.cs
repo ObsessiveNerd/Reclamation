@@ -20,6 +20,9 @@ public static class Spawner
         World.Instance.Self.FireEvent(World.Instance.Self, new GameEvent(GameEventId.Spawn, new KeyValuePair<string, object>(EventParameters.Entity, e.ID),
                                                                             new KeyValuePair<string, object>(EventParameters.EntityType, entityType),
                                                                             new KeyValuePair<string, object>(EventParameters.Point, new Point(x, y))));
+
+        foreach (var comp in e.GetComponents())
+            comp.Start();
     }
 
     public static void Despawn(IEntity e)
@@ -45,8 +48,8 @@ public static class Spawner
         Spawn(lhs, rhsPos);
         Spawn(rhs, lhsPos);
 
-        lhsPos = WorldUtility.GetEntityPosition(lhs);
-        rhsPos = WorldUtility.GetEntityPosition(rhs);
+        //lhsPos = WorldUtility.GetEntityPosition(lhs);
+        //rhsPos = WorldUtility.GetEntityPosition(rhs);
     }
 
     public static void Move(IEntity e, Point newPoint)

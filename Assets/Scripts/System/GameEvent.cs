@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -328,40 +328,40 @@ public static class EventParameters
     public const string Owner = nameof(Owner);
 }
 
-[Serializable]
-public class GameEventSerializable
-{
-    [SerializeField]
-    public string TargetEntityId;
-    [SerializeField]
-    public string Id;
-    [SerializeField]
-    public List<string> ParameterKeys;
-    [SerializeField]
-    public List<string> ParameterValues;
+//[Serializable]
+//public class GameEventSerializable
+//{
+//    [SerializeField]
+//    public string TargetEntityId;
+//    [SerializeField]
+//    public string Id;
+//    [SerializeField]
+//    public List<string> ParameterKeys;
+//    [SerializeField]
+//    public List<string> ParameterValues;
 
-    public GameEventSerializable(string targetId, GameEvent ge)
-    {
-        TargetEntityId = targetId;
-        Id = ge.ID;
-        ParameterKeys = new List<string>();
-        ParameterValues = new List<string>();
-        foreach(var key in ge.Paramters.Keys)
-        {
-            ParameterKeys.Add(key);
-            ParameterValues.Add(ge.Paramters[key].ToString());
-        }
-    }
+//    public GameEventSerializable(string targetId, GameEvent ge)
+//    {
+//        TargetEntityId = targetId;
+//        Id = ge.ID;
+//        ParameterKeys = new List<string>();
+//        ParameterValues = new List<string>();
+//        foreach(var key in ge.Paramters.Keys)
+//        {
+//            ParameterKeys.Add(key);
+//            ParameterValues.Add(ge.Paramters[key].ToString());
+//        }
+//    }
 
-    public GameEvent CreateGameEvent()
-    {
-        Dictionary<string, object> parameters = new Dictionary<string, object>();
-        for(int i = 0; i < ParameterKeys.Count; i++)
-            parameters.Add(ParameterKeys[i], ParameterValues[i]);
-        GameEvent ge = new GameEvent(Id, parameters);
-        return ge;
-    }
-}
+//    public GameEvent CreateGameEvent()
+//    {
+//        Dictionary<string, object> parameters = new Dictionary<string, object>();
+//        for(int i = 0; i < ParameterKeys.Count; i++)
+//            parameters.Add(ParameterKeys[i], ParameterValues[i]);
+//        GameEvent ge = new GameEvent(Id, parameters);
+//        return ge;
+//    }
+//}
 
 public struct GameEvent
 {
@@ -378,7 +378,11 @@ public struct GameEvent
         m_ID = id;
         m_Parameters = new Dictionary<string, object>();
         foreach (var param in parameters)
+        {
+            if (string.IsNullOrEmpty(param.Key))
+                break;
             m_Parameters[param.Key] = param.Value;
+        }
     }
 
     public GameEvent(string id, Dictionary<string, object> parameters)

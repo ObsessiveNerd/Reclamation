@@ -10,9 +10,6 @@ public class EntityMap : WorldComponent
         IDToNameMap[e.ID] = e.Name;
     }
 
-
-    private Dictionary<string, IEntity> m_EntityIdToEntityMap = new Dictionary<string, IEntity>();
-
     public override void Init(IEntity self)
     {
         base.Init(self);

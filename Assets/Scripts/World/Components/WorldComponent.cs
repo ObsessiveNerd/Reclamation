@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -14,6 +14,7 @@ public abstract class WorldComponent : Component
     protected static Dictionary<Point, UnityEngine.GameObject> m_GameObjectMap = new Dictionary<Point, UnityEngine.GameObject>();
     protected static Dictionary<int, DungeonGenerationResult> m_DungeonLevelMap = new Dictionary<int, DungeonGenerationResult>();
     protected static int m_CurrentLevel = 1;
+    protected static Dictionary<string, IEntity> m_EntityIdToEntityMap = new Dictionary<string, IEntity>();
 
     public Point GetPointWhereEntityIs(IEntity e)
     {

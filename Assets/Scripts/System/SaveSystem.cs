@@ -23,6 +23,7 @@ public class SaveData
 public class SaveSystem : MonoBehaviour
 {
     public const string kSaveDataPath = "SaveData";
+    [HideInInspector]
     public string CurrentSaveName;
     SaveData m_Data;
 

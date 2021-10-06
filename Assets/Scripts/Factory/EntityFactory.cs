@@ -213,8 +213,8 @@ public static class EntityFactory
             }
         }
         a.CleanupComponents();
-        foreach (var comp in a.GetComponents())
-            comp.Start();
+        //foreach (var comp in a.GetComponents())
+        //    comp.Start();
         return a;
     }
 
