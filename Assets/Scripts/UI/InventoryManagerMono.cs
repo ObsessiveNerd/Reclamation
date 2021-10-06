@@ -18,7 +18,7 @@ public class InventoryManagerMono : MonoBehaviour, IUpdatableUI
         Cleanup();
 
         WorldUtility.RegisterUI(this);
-        EventBuilder getCurrentInventory = new EventBuilder(GameEventId.GetCurrentInventory)
+        EventBuilder getCurrentInventory = EventBuilderPool.Get(GameEventId.GetCurrentInventory)
                                             .With(EventParameters.Value, new List<IEntity>());
 
         List<IEntity> inventory = m_Source.FireEvent(getCurrentInventory.CreateEvent()).GetValue<List<IEntity>>(EventParameters.Value);

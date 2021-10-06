@@ -12,7 +12,7 @@ public class SpellSelectorMono : MonoBehaviour, IUpdatableUI
     public void Setup(IEntity source)
     {
         Close();
-        EventBuilder getSpells = new EventBuilder(GameEventId.GetSpells)
+        EventBuilder getSpells = EventBuilderPool.Get(GameEventId.GetSpells)
                                     .With(EventParameters.SpellList, new HashSet<string>());
 
         var spellList = source.FireEvent(getSpells.CreateEvent()).GetValue<HashSet<string>>(EventParameters.SpellList);

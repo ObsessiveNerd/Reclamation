@@ -40,12 +40,12 @@ public class EntityMovement : WorldComponent
             Point newPoint = gameEvent.GetValue<Point>(EventParameters.TilePosition);
             EntityType entityType = (EntityType)gameEvent.Paramters[EventParameters.EntityType];
 
-            EventBuilder removeEntityFromTile = new EventBuilder(GameEventId.Despawn)
+            EventBuilder removeEntityFromTile = EventBuilderPool.Get(GameEventId.Despawn)
                                                 .With(EventParameters.Entity, entity.ID)
                                                 .With(EventParameters.EntityType, entityType);
             FireEvent(m_Tiles[currentPoint], removeEntityFromTile.CreateEvent());
             m_EntityToPointMap[entity] = newPoint;
-            EventBuilder addEntityToTile = new EventBuilder(GameEventId.Spawn)
+            EventBuilder addEntityToTile = EventBuilderPool.Get(GameEventId.Spawn)
                                             .With(EventParameters.Entity, entity.ID)
                                             .With(EventParameters.EntityType, entityType);
             FireEvent(m_Tiles[newPoint], addEntityToTile.CreateEvent());

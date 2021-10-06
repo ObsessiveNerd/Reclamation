@@ -96,16 +96,16 @@ public class WorldUIController : WorldComponent
 
             ContextMenuMono.CreateNewContextMenu().GetComponent<ContextMenuMono>().SelectPlayer((target) =>
             {
-                EventBuilder unEquip = new EventBuilder(GameEventId.Unequip)
+                EventBuilder unEquip = EventBuilderPool.Get(GameEventId.Unequip)
                                             .With(EventParameters.Entity, source.ID)
                                             .With(EventParameters.Item, item.ID);
                 source.FireEvent(unEquip.CreateEvent());
 
-                EventBuilder removeFromInventory = new EventBuilder(GameEventId.RemoveFromInventory)
+                EventBuilder removeFromInventory = EventBuilderPool.Get(GameEventId.RemoveFromInventory)
                                                     .With(EventParameters.Entity, item.ID);
                 source.FireEvent(removeFromInventory.CreateEvent());
 
-                EventBuilder addToInventory = new EventBuilder(GameEventId.AddToInventory)
+                EventBuilder addToInventory = EventBuilderPool.Get(GameEventId.AddToInventory)
                                                 .With(EventParameters.Entity, item.ID);
                 EntityQuery.GetEntity(target).FireEvent(addToInventory.CreateEvent());
 

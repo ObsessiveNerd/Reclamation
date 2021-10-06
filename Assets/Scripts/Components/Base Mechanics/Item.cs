@@ -41,7 +41,7 @@ public class Item : Component
                                                                            new KeyValuePair<string, object>(EventParameters.EntityType, EntityType.Item),
                                                                            new KeyValuePair<string, object>(EventParameters.Creature, droppingEntity.ID)));
 
-            EventBuilder unequip = new EventBuilder(GameEventId.Unequip)
+            EventBuilder unequip = EventBuilderPool.Get(GameEventId.Unequip)
                                 .With(EventParameters.Entity, droppingEntity.ID)
                                 .With(EventParameters.Item, Self.ID);
 
@@ -54,7 +54,7 @@ public class Item : Component
             IEntity source = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameters.Entity));
             ContextMenuButton dropButton = new ContextMenuButton("Drop", () =>
             {
-                EventBuilder drop = new EventBuilder(GameEventId.Drop)
+                EventBuilder drop = EventBuilderPool.Get(GameEventId.Drop)
                                         .With(EventParameters.Entity, source.ID);
 
                 FireEvent(Self, drop.CreateEvent(), true);
@@ -63,7 +63,7 @@ public class Item : Component
 
             ContextMenuButton giveTo = new ContextMenuButton("Give to...", () =>
             {
-                EventBuilder giveItemTo = new EventBuilder(GameEventId.PromptToGiveItem)
+                EventBuilder giveItemTo = EventBuilderPool.Get(GameEventId.PromptToGiveItem)
                                              .With(EventParameters.Entity, gameEvent.GetValue<string>(EventParameters.Entity))
                                              .With(EventParameters.Item, Self.ID);
                 World.Instance.Self.FireEvent(giveItemTo.CreateEvent());

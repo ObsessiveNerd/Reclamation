@@ -31,7 +31,7 @@ public class AIController : InputControllerBase
             {
                 MoveDirection desiredDirection = MoveDirection.None; //InputUtility.GetRandomMoveDirection(); //obviously temp
 
-                EventBuilder getActionEventBuilder = new EventBuilder(GameEventId.GetActionToTake)
+                EventBuilder getActionEventBuilder = EventBuilderPool.Get(GameEventId.GetActionToTake)
                                                         .With(EventParameters.AIActionList, new PriorityQueue<AIAction>(new AIActionPriorityComparer()));
 
                 PriorityQueue<AIAction> actions = FireEvent(Self, getActionEventBuilder.CreateEvent()).GetValue<PriorityQueue<AIAction>>(EventParameters.AIActionList);

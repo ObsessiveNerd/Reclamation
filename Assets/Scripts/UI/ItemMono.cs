@@ -27,7 +27,7 @@ public class ItemMono : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         var itemInfo = m_PopupInstance.GetComponent<InfoMono>();
 
         Dictionary<string, string> classToInfoMap = new Dictionary<string, string>();
-        EventBuilder getInfo = new EventBuilder(GameEventId.GetInfo)
+        EventBuilder getInfo = EventBuilderPool.Get(GameEventId.GetInfo)
                                 .With(EventParameters.Info, classToInfoMap);
 
         var entity = EntityQuery.GetEntity(id);

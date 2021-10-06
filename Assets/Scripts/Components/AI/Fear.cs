@@ -20,19 +20,19 @@ public class Fear : Component
         if(gameEvent.ID == GameEventId.GetActionToTake)
         {
             m_CurrentLocation = PathfindingUtility.GetEntityLocation(Self);
-            EventBuilder getMyAggressionLevel = new EventBuilder(GameEventId.GetCombatRating)
+            EventBuilder getMyAggressionLevel = EventBuilderPool.Get(GameEventId.GetCombatRating)
                                                         .With(EventParameters.Value, -1);
 
             int myCombatLevel = FireEvent(Self, getMyAggressionLevel.CreateEvent()).GetValue<int>(EventParameters.Value);
 
-            EventBuilder getVisiblePoints = new EventBuilder(GameEventId.GetVisibleTiles)
+            EventBuilder getVisiblePoints = EventBuilderPool.Get(GameEventId.GetVisibleTiles)
                                             .With(EventParameters.VisibleTiles, new List<Point>());
             List<Point> visiblePoints = FireEvent(Self, getVisiblePoints.CreateEvent()).GetValue<List<Point>>(EventParameters.VisibleTiles);
             foreach(var point in visiblePoints)
             {
                 if (point == m_CurrentLocation) continue;
 
-                EventBuilder getEntity = new EventBuilder(GameEventId.GetEntityOnTile)
+                EventBuilder getEntity = EventBuilderPool.Get(GameEventId.GetEntityOnTile)
                                                         .With(EventParameters.TilePosition, point)
                                                         .With(EventParameters.Entity, "");
 
@@ -41,7 +41,7 @@ public class Fear : Component
 
                 if (Factions.GetDemeanorForTarget(Self, target) != Demeanor.Hostile) continue;
 
-                EventBuilder getCombatRatingOfTile = new EventBuilder(GameEventId.GetCombatRating)
+                EventBuilder getCombatRatingOfTile = EventBuilderPool.Get(GameEventId.GetCombatRating)
                                                         .With(EventParameters.TilePosition, point)
                                                         .With(EventParameters.Value, -1);
 

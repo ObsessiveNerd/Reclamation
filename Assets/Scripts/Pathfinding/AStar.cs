@@ -65,7 +65,7 @@ public class AStar : IPathfindingAlgorithm
         var dy = goal.y - start.y;
         int distanceH = Math.Abs(dx) + Math.Abs(dy);
 
-        EventBuilder getPathData = new EventBuilder(GameEventId.PathfindingData)
+        EventBuilder getPathData = EventBuilderPool.Get(GameEventId.PathfindingData)
                                     .With(EventParameters.TilePosition, new Point(start.x, start.y))
                                     .With(EventParameters.BlocksMovement, false)
                                     .With(EventParameters.Weight, 1);
@@ -128,7 +128,7 @@ public class AStar : IPathfindingAlgorithm
 
     public bool IsValidNeighbor(IMapNode pt)
     {
-        EventBuilder getPathData = new EventBuilder(GameEventId.PathfindingData)
+        EventBuilder getPathData = EventBuilderPool.Get(GameEventId.PathfindingData)
                                     .With(EventParameters.TilePosition, pt)
                                     .With(EventParameters.BlocksMovement, false)
                                     .With(EventParameters.Weight, 1);

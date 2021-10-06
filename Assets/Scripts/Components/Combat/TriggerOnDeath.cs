@@ -20,7 +20,7 @@ public class TriggerOnDeath : Component
     {
         if(gameEvent.ID == GameEventId.Died)
         {
-            EventBuilder eb = new EventBuilder(EventId)
+            EventBuilder eb = EventBuilderPool.Get(EventId)
                                 .With(EventParameters.Entity, Self.ID);
             FireEvent(World.Instance.Self, eb.CreateEvent());
         }

@@ -22,7 +22,7 @@ public class InventoryItemMono : ItemMono, IPointerClickHandler
             if (m_Source == null || m_Object == null)
                 return;
 
-            EventBuilder getContextMenuActions = new EventBuilder(GameEventId.GetContextMenuActions)
+            EventBuilder getContextMenuActions = EventBuilderPool.Get(GameEventId.GetContextMenuActions)
                                     .With(EventParameters.Entity, m_Source.ID)
                                     .With(EventParameters.InventoryContextActions , new List<ContextMenuButton>());
 

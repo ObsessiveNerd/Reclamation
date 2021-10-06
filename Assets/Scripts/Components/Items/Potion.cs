@@ -17,7 +17,7 @@ public class Potion : Component
         {
             IEntity target = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameters.Entity));
 
-            EventBuilder builder = new EventBuilder(GameEventId.ApplyEffectToTarget)
+            EventBuilder builder = EventBuilderPool.Get(GameEventId.ApplyEffectToTarget)
                                     .With(EventParameters.Entity, target.ID);
             FireEvent(Self, builder.CreateEvent());
         }
@@ -28,11 +28,11 @@ public class Potion : Component
             {
                 IEntity source = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameters.Entity));
 
-                EventBuilder quaff = new EventBuilder(GameEventId.Quaff)
+                EventBuilder quaff = EventBuilderPool.Get(GameEventId.Quaff)
                                         .With(EventParameters.Entity, source.ID);
                 Self.FireEvent(quaff.CreateEvent());
 
-                EventBuilder remove = new EventBuilder(GameEventId.RemoveFromInventory)
+                EventBuilder remove = EventBuilderPool.Get(GameEventId.RemoveFromInventory)
                                         .With(EventParameters.Entity, Self.ID);
                 source.FireEvent(remove.CreateEvent());
             });

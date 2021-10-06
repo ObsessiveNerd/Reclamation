@@ -88,7 +88,7 @@ public struct Room
             }
         }
 
-        EventBuilder sendValidPoints = new EventBuilder(GameEventId.AddValidPoints)
+        EventBuilder sendValidPoints = EventBuilderPool.Get(GameEventId.AddValidPoints)
                                         .With(EventParameters.Value, m_RoomTiles);
 
         World.Instance.Self.FireEvent(sendValidPoints.CreateEvent());
@@ -120,7 +120,7 @@ public struct Room
         //        (WorldUtility.GetEntityAtPosition(right, false) != null && WorldUtility.GetEntityAtPosition(left, false) != null))
         //    {
 
-        //        EventBuilder getEntity = new EventBuilder(GameEventId.GetEntityOnTile)
+        //        EventBuilder getEntity = EventBuilderPool.Get(GameEventId.GetEntityOnTile)
         //                                    .With(EventParameters.TilePosition, wall)
         //                                    .With(EventParameters.Entity, null)
         //                                    .With(EventParameters.IncludeSelf, false);
@@ -144,7 +144,7 @@ public struct Room
             for (int x = midPoint.x; x != otherMidPoint.x; x += xDirection)
             {
                 Point hallPoint = new Point(x, midPoint.y);
-                //EventBuilder builder = new EventBuilder(GameEventId.DestroyObject)
+                //EventBuilder builder = EventBuilderPool.Get(GameEventId.DestroyObject)
                 //                      .With(EventParameters.Point, hallPoint);
                 AddHallwayPoint(hallPoint);
 
@@ -165,7 +165,7 @@ public struct Room
             for (int y = midPoint.y; y != otherMidPoint.y; y += yDirection)
             {
                 Point hallPoint = new Point(otherMidPoint.x, y);
-                //EventBuilder builder = new EventBuilder(GameEventId.DestroyObject)
+                //EventBuilder builder = EventBuilderPool.Get(GameEventId.DestroyObject)
                 //                         .With(EventParameters.Point, hallPoint);
                 AddHallwayPoint(hallPoint);
 
@@ -188,7 +188,7 @@ public struct Room
             for (int y = midPoint.y; y != otherMidPoint.y; y += yDirection)
             {
                 Point hallPoint = new Point(midPoint.x, y);
-                //EventBuilder builder = new EventBuilder(GameEventId.DestroyObject)
+                //EventBuilder builder = EventBuilderPool.Get(GameEventId.DestroyObject)
                 //                         .With(EventParameters.Point, hallPoint);
                 AddHallwayPoint(hallPoint);
 
@@ -210,7 +210,7 @@ public struct Room
             for (int x = midPoint.x; x != otherMidPoint.x; x += xDirection)
             {
                 Point hallPoint = new Point(x, otherMidPoint.y);
-                //EventBuilder builder = new EventBuilder(GameEventId.DestroyObject)
+                //EventBuilder builder = EventBuilderPool.Get(GameEventId.DestroyObject)
                 //                      .With(EventParameters.Point, hallPoint);
                 AddHallwayPoint(hallPoint);
 
@@ -240,7 +240,7 @@ public struct Room
             y = RecRandom.Instance.GetRandomValue(m_StartPoint.y + 2, (m_StartPoint.y + m_Size.y) - 2);
 
             var entity = WorldUtility.GetEntityAtPosition(new Point(x, y), false);
-            EventBuilder getPathfindingData = new EventBuilder(GameEventId.PathfindingData)
+            EventBuilder getPathfindingData = EventBuilderPool.Get(GameEventId.PathfindingData)
                                                 .With(EventParameters.Weight, 0)
                                                 .With(EventParameters.BlocksMovement, false);
 
@@ -259,7 +259,7 @@ public struct Room
     //        for (int y = m_StartPoint.y + 1; y < (m_StartPoint.y + m_Size.y) - 1; y++)
     //        {
     //            //m_Walls.Remove(new Point(x, y));
-    //            //EventBuilder builder = new EventBuilder(GameEventId.DestroyObject)
+    //            //EventBuilder builder = EventBuilderPool.Get(GameEventId.DestroyObject)
     //            //                     .With(EventParameters.Point, new Point(x, y));
 
     //            //World.Instance.Self.FireEvent(World.Instance.Self, builder.CreateEvent());
@@ -272,12 +272,12 @@ public struct Room
     //    return;
     //    foreach (Point p in m_Hallways)
     //    {
-    //        EventBuilder builder = new EventBuilder(GameEventId.DestroyObject)
+    //        EventBuilder builder = EventBuilderPool.Get(GameEventId.DestroyObject)
     //                                  .With(EventParameters.Point, p);
     //        World.Instance.Self.FireEvent(World.Instance.Self, builder.CreateEvent());
     //    }
 
-    //    EventBuilder sendValidPoints = new EventBuilder(GameEventId.AddValidPoints)
+    //    EventBuilder sendValidPoints = EventBuilderPool.Get(GameEventId.AddValidPoints)
     //                                    .With(EventParameters.Value, m_Hallways);
 
     //    World.Instance.Self.FireEvent(sendValidPoints.CreateEvent());
@@ -506,7 +506,7 @@ public class BasicDungeonGenerator : IDungeonGenerator
                 if (spawnChest)
                 {
                     IEntity chest = EntityFactory.CreateEntity("Chest");
-                    EventBuilder addItems = new EventBuilder(GameEventId.AddItems)
+                    EventBuilder addItems = EventBuilderPool.Get(GameEventId.AddItems)
                                             .With(EventParameters.Items, items);
                     if (chest == null)
                         continue;
@@ -530,7 +530,7 @@ public class BasicDungeonGenerator : IDungeonGenerator
                 var e = EntityFactory.CreateEntity(bpName);
                 if(bpName == "Bookshelf")
                 {
-                    EventBuilder addItems = new EventBuilder(GameEventId.AddItems)
+                    EventBuilder addItems = EventBuilderPool.Get(GameEventId.AddItems)
                                             .With(EventParameters.Items, new List<string>(){
                                                 "Spellbook"
                                             });

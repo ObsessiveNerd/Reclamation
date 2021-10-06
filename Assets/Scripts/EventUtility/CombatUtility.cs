@@ -14,7 +14,7 @@ public static class CombatUtility
                                                                           new KeyValuePair<string, object>(EventParameters.WeaponType, weaponType))).Paramters[EventParameters.RollToHit];
         RecLog.Log($"Roll to hit was {rollToHit}");
 
-        EventBuilder builder = new EventBuilder(GameEventId.AmAttacking)
+        EventBuilder builder = EventBuilderPool.Get(GameEventId.AmAttacking)
                                 .With(EventParameters.RollToHit, rollToHit)
                                 .With(EventParameters.Attack, weapon)
                                 .With(EventParameters.DamageList, new List<Damage>());
@@ -27,7 +27,7 @@ public static class CombatUtility
 
         if(weaponType != TypeWeapon.Melee && weaponType != TypeWeapon.Finesse)
         {
-            EventBuilder fireRangedWeapon = new EventBuilder(GameEventId.FireRangedAttack)
+            EventBuilder fireRangedWeapon = EventBuilderPool.Get(GameEventId.FireRangedAttack)
                                                     .With(EventParameters.Entity, WorldUtility.GetGameObject(source).transform.position)
                                                     .With(EventParameters.Target, WorldUtility.GetGameObject(target).transform.position);
             weapon.FireEvent(fireRangedWeapon.CreateEvent());
@@ -37,18 +37,18 @@ public static class CombatUtility
 
     public static bool CastSpell(IEntity source, IEntity target, IEntity spellSource)
     {
-        EventBuilder getMana = new EventBuilder(GameEventId.GetMana)
+        EventBuilder getMana = EventBuilderPool.Get(GameEventId.GetMana)
                                 .With(EventParameters.Value, 0);
         int mana = source.FireEvent(getMana.CreateEvent()).GetValue<int>(EventParameters.Value);
 
-        EventBuilder getSpells = new EventBuilder(GameEventId.GetSpells)
+        EventBuilder getSpells = EventBuilderPool.Get(GameEventId.GetSpells)
                                     .With(EventParameters.SpellList, new HashSet<string>());
 
         HashSet<string> spells = spellSource.FireEvent(getSpells.CreateEvent()).GetValue<HashSet<string>>(EventParameters.SpellList);
         foreach(string id in spells)
         {
             IEntity spell = EntityQuery.GetEntity(id);
-            EventBuilder manaCost = new EventBuilder(GameEventId.ManaCost)
+            EventBuilder manaCost = EventBuilderPool.Get(GameEventId.ManaCost)
                                     .With(EventParameters.Value, 0);
             int cost = spell.FireEvent(manaCost.CreateEvent()).GetValue<int>(EventParameters.Value);
             if (cost <= mana)
@@ -56,7 +56,7 @@ public static class CombatUtility
                 Attack(source, target, spell);
                 GameEvent depleteMana = new GameEvent(GameEventId.DepleteMana, new KeyValuePair<string, object>(EventParameters.Mana, cost));
                 source.FireEvent(depleteMana);
-                EventBuilder fireRangedWeapon = new EventBuilder(GameEventId.FireRangedAttack)
+                EventBuilder fireRangedWeapon = EventBuilderPool.Get(GameEventId.FireRangedAttack)
                                                     .With(EventParameters.Entity, WorldUtility.GetGameObject(source).transform.position)
                                                     .With(EventParameters.Target, WorldUtility.GetGameObject(target).transform.position);
                 spell.FireEvent(fireRangedWeapon.CreateEvent());

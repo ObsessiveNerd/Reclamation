@@ -93,7 +93,7 @@ public class Tile : Component
                 return false;
             else
             {
-                EventBuilder b = new EventBuilder(GameEventId.PathfindingData)
+                EventBuilder b = EventBuilderPool.Get(GameEventId.PathfindingData)
                                 .With(EventParameters.BlocksMovement, false)
                                 .With(EventParameters.Weight, 1);
                 foreach (var t in GetTarget(false))
@@ -296,7 +296,7 @@ public class Tile : Component
             int totalValue = 0;
             foreach(var item in Items)
             {
-                EventBuilder getValue = new EventBuilder(GameEventId.GetValue)
+                EventBuilder getValue = EventBuilderPool.Get(GameEventId.GetValue)
                                         .With(EventParameters.Value, 0);
                 int itemValue = FireEvent(item, getValue.CreateEvent()).GetValue<int>(EventParameters.Value);
                 totalValue += itemValue;
@@ -311,7 +311,7 @@ public class Tile : Component
                 if(target != null)
                     levelData.Entities.Add(target.Serialize());
 
-            EventBuilder getVisibilityData = new EventBuilder(GameEventId.GetVisibilityData)
+            EventBuilder getVisibilityData = EventBuilderPool.Get(GameEventId.GetVisibilityData)
                                                 .With(EventParameters.HasBeenVisited, m_IsVisible);
 
             var getVis = FireEvent(Self, getVisibilityData.CreateEvent());

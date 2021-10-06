@@ -14,7 +14,7 @@ public class CombatRating : Component
     {
         if(gameEvent.ID == GameEventId.GetCombatRating)
         {
-            EventBuilder getPrimaryStat = new EventBuilder(GameEventId.GetPrimaryStatType)
+            EventBuilder getPrimaryStat = EventBuilderPool.Get(GameEventId.GetPrimaryStatType)
                                             .With(EventParameters.Value, null);
             Stat primaryType = FireEvent(Self, getPrimaryStat.CreateEvent()).GetValue<Stat>(EventParameters.Value);
 
@@ -27,7 +27,7 @@ public class CombatRating : Component
 
     int GetStatMod(Stat statType)
     {
-        EventBuilder getPrimaryStatModifier = new EventBuilder(GameEventId.GetStat)
+        EventBuilder getPrimaryStatModifier = EventBuilderPool.Get(GameEventId.GetStat)
                                                     .With(EventParameters.StatType, statType)
                                                     .With(EventParameters.Value, 0);
         return FireEvent(Self, getPrimaryStatModifier.CreateEvent()).GetValue<int>(EventParameters.Value);

@@ -55,7 +55,7 @@ public class SpellExaminationUI : EscapeableMono//, IUpdatableUI
         Title.text = newSource.Name;
 
         Dictionary<string, string> classToInfoMap = new Dictionary<string, string>();
-        EventBuilder getInfo = new EventBuilder(GameEventId.GetInfo)
+        EventBuilder getInfo = EventBuilderPool.Get(GameEventId.GetInfo)
                                 .With(EventParameters.Info, classToInfoMap);
 
         var result = newSource.FireEvent(getInfo.CreateEvent()).GetValue<Dictionary<string, string>>(EventParameters.Info);

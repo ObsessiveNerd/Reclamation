@@ -18,14 +18,14 @@ public class RangedPlayerAttackController : InputControllerBase
 
         IEntity startingTarget = WorldUtility.GetClosestEnemyTo(Self);
 
-        EventBuilder isVisible = new EventBuilder(GameEventId.EntityVisibilityState)
+        EventBuilder isVisible = EventBuilderPool.Get(GameEventId.EntityVisibilityState)
                                     .With(EventParameters.Entity, startingTarget.ID)
                                     .With(EventParameters.Value, false);
 
         //Here we can check isVisible to see if the target is invisible or something
         //FireEvent(startingTarget, isVisible.CreateEvent());
 
-        EventBuilder isInFOV = new EventBuilder(GameEventId.IsInFOV)
+        EventBuilder isInFOV = EventBuilderPool.Get(GameEventId.IsInFOV)
                                 .With(EventParameters.Entity, startingTarget.ID)
                                 .With(EventParameters.Value, false);
 
@@ -72,7 +72,7 @@ public class RangedPlayerAttackController : InputControllerBase
 
                 EndSelection(gameEvent, m_TileSelection);
 
-                //EventBuilder fireRangedWeapon = new EventBuilder(GameEventId.FireRangedAttack)
+                //EventBuilder fireRangedWeapon = EventBuilderPool.Get(GameEventId.FireRangedAttack)
                 //                                .With(EventParameters.Entity, WorldUtility.GetGameObject(Self).transform.position)
                 //                                .With(EventParameters.Target, WorldUtility.GetGameObject(target).transform.position);
                 //FireEvent(m_Attack, fireRangedWeapon.CreateEvent());

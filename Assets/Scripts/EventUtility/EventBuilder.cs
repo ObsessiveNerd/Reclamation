@@ -13,7 +13,9 @@ public static class EventBuilderPool
             return e;
         }
 
-        return m_Pool.Pop();
+        var pooledObj = m_Pool.Pop();
+        pooledObj.Id = id;
+        return pooledObj;
     }
 
     public static void Return(EventBuilder e)
@@ -25,14 +27,14 @@ public static class EventBuilderPool
 
 public struct EventBuilder
 {
-    private string m_Id;
+    public string Id;
     //private Dictionary<string, object> m_Values;
     private KeyValuePair<string, object>[] m_Values;
     int index;
 
     public EventBuilder(string eventId)
     {
-        m_Id = eventId;
+        Id = eventId;
         m_Values = new KeyValuePair<string, object>[10];//new Dictionary<string, object>();
         index = 0;
     }
@@ -47,13 +49,14 @@ public struct EventBuilder
 
     public GameEvent CreateEvent()
     {
-        GameEvent ge = ObjectPool.Get(m_Id, m_Values); //new GameEvent(m_Id, m_Values);
+        GameEvent ge = ObjectPool.Get(Id, m_Values); //new GameEvent(m_Id, m_Values);
+        EventBuilderPool.Return(this);
         return ge;
     }
 
     public void Clean()
     {
-        m_Id = "";
+        Id = "";
         for (int i = 0; i < 10; i++)
             m_Values[i] = default(KeyValuePair<string, object>);
         index = 0;

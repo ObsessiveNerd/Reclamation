@@ -16,13 +16,13 @@ public class TileSelection : WorldComponent
     {
         if (gameEvent.ID == GameEventId.SelectTile)
         {
-            EventBuilder getEntity = new EventBuilder(GameEventId.GetEntity)
+            EventBuilder getEntity = EventBuilderPool.Get(GameEventId.GetEntity)
                                         .With(EventParameters.Entity, null)
                                         .With(EventParameters.Value, gameEvent.Paramters[EventParameters.Entity]);
             
             IEntity entity = FireEvent(Self, getEntity.CreateEvent()).GetValue<IEntity>(EventParameters.Entity);
 
-            EventBuilder getTarget = new EventBuilder(GameEventId.GetEntity)
+            EventBuilder getTarget = EventBuilderPool.Get(GameEventId.GetEntity)
                                         .With(EventParameters.Entity, null)
                                         .With(EventParameters.Value, gameEvent.Paramters[EventParameters.Target]);
             IEntity target = FireEvent(Self, getTarget.CreateEvent()).GetValue<IEntity>(EventParameters.Entity);

@@ -21,7 +21,7 @@ public class EquipmentViewMono : MonoBehaviour, IUpdatableUI
             m_Source = source;
 
         WorldUtility.RegisterUI(this);
-        EventBuilder getEquipment = new EventBuilder(GameEventId.GetCurrentEquipment)
+        EventBuilder getEquipment = EventBuilderPool.Get(GameEventId.GetCurrentEquipment)
                                     .With(EventParameters.Head, null)
                                     .With(EventParameters.Torso, null)
                                     .With(EventParameters.LeftArm, null)
@@ -46,7 +46,7 @@ public class EquipmentViewMono : MonoBehaviour, IUpdatableUI
         }
 
         IEntity equipment = EntityQuery.GetEntity(equipmentId);
-        EventBuilder getImage = new EventBuilder(GameEventId.GetPortrait)
+        EventBuilder getImage = EventBuilderPool.Get(GameEventId.GetPortrait)
                                 .With(EventParameters.RenderSprite, null);
         var equipmentInfo = equipment.FireEvent(getImage.CreateEvent());
         slot.GetComponent<Image>().sprite = equipmentInfo.GetValue<Sprite>(EventParameters.RenderSprite);

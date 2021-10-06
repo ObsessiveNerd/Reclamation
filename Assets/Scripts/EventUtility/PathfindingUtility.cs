@@ -36,7 +36,7 @@ public static class PathfindingUtility
 
     public static Point GetRandomValidPoint()
     {
-        EventBuilder builder = new EventBuilder(GameEventId.GetRandomValidPoint)
+        EventBuilder builder = EventBuilderPool.Get(GameEventId.GetRandomValidPoint)
                                 .With(EventParameters.Value, null);
 
         if (World.Instance == null)
@@ -47,7 +47,7 @@ public static class PathfindingUtility
 
     public static Point GetEntityLocation(IEntity entity)
     {
-        EventBuilder getEntityPointBuilder = new EventBuilder(GameEventId.GetEntityLocation)
+        EventBuilder getEntityPointBuilder = EventBuilderPool.Get(GameEventId.GetEntityLocation)
                                             .With(EventParameters.Entity, entity.ID)
                                             .With(EventParameters.TilePosition, null);
         if (World.Instance == null)
@@ -88,7 +88,7 @@ public static class PathfindingUtility
 
     //public static bool IsValidDungeonTile(Point p)
     //{
-    //    EventBuilder isValidPoint = new EventBuilder(GameEventId.IsValidDungeonTile)
+    //    EventBuilder isValidPoint = EventBuilderPool.Get(GameEventId.IsValidDungeonTile)
     //                                .With(EventParameters.TilePosition, p)
     //                                .With(EventParameters.Value, false);
     //    return World.Instance.Self.FireEvent(isValidPoint.CreateEvent()).GetValue<bool>(EventParameters.Value);
@@ -96,7 +96,7 @@ public static class PathfindingUtility
 
     //public static bool CanNavigateTo(Point startPos, Point destination)
     //{
-    //    EventBuilder calculatePathEventBuilder = new EventBuilder(GameEventId.CalculatePath)
+    //    EventBuilder calculatePathEventBuilder = EventBuilderPool.Get(GameEventId.CalculatePath)
     //                        .With(EventParameters.StartPos, startPos)
     //                        .With(EventParameters.EndPos, destination)
     //                        .With(EventParameters.Path, null);
@@ -109,7 +109,7 @@ public static class PathfindingUtility
 
     public static List<IMapNode> GetPath(Point start, Point destination)
     {
-        EventBuilder e = new EventBuilder(GameEventId.CalculatePath)
+        EventBuilder e = EventBuilderPool.Get(GameEventId.CalculatePath)
                             .With(EventParameters.StartPos, start)
                             .With(EventParameters.EndPos, destination)
                             .With(EventParameters.Path, null);

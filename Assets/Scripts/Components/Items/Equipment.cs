@@ -26,7 +26,7 @@ public class Equipment : Component
         if(gameEvent.ID == GameEventId.GetContextMenuActions)
         {
             IEntity source = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameters.Entity));
-            EventBuilder amIEquiped = new EventBuilder(GameEventId.CheckItemEquiped)
+            EventBuilder amIEquiped = EventBuilderPool.Get(GameEventId.CheckItemEquiped)
                                         .With(EventParameters.Item, Self.ID)
                                         .With(EventParameters.Value, false);
 
@@ -36,7 +36,7 @@ public class Equipment : Component
             {
                 ContextMenuButton button = new ContextMenuButton("Unequip", () =>
                 {
-                    EventBuilder unequip = new EventBuilder(GameEventId.Unequip)
+                    EventBuilder unequip = EventBuilderPool.Get(GameEventId.Unequip)
                                 .With(EventParameters.Entity, source.ID)
                                 .With(EventParameters.Item, Self.ID);
 
@@ -48,7 +48,7 @@ public class Equipment : Component
             {
                 ContextMenuButton button = new ContextMenuButton("Equip", () =>
                 {
-                    EventBuilder equip = new EventBuilder(GameEventId.Equip)
+                    EventBuilder equip = EventBuilderPool.Get(GameEventId.Equip)
                                             .With(EventParameters.EntityType, PreferredBodyPartWhenEquipped)
                                             .With(EventParameters.Equipment, Self.ID);
 
@@ -61,7 +61,7 @@ public class Equipment : Component
         if (gameEvent.ID == GameEventId.TryEquip)
         {
             IEntity source = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameters.Entity));
-            EventBuilder equip = new EventBuilder(GameEventId.Equip)
+            EventBuilder equip = EventBuilderPool.Get(GameEventId.Equip)
                                             .With(EventParameters.EntityType, PreferredBodyPartWhenEquipped)
                                             .With(EventParameters.Equipment, Self.ID);
             Debug.LogWarning($"{source?.Name} is trying to equip {Self?.Name}");

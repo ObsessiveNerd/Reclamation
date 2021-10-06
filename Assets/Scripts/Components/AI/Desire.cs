@@ -39,7 +39,7 @@ public class Desire : Component
                 return;
             }
 
-            EventBuilder getVisiblePoints = new EventBuilder(GameEventId.GetVisibleTiles)
+            EventBuilder getVisiblePoints = EventBuilderPool.Get(GameEventId.GetVisibleTiles)
                                            .With(EventParameters.VisibleTiles, new List<Point>());
 
             List<Point> visiblePoints = FireEvent(Self, getVisiblePoints.CreateEvent()).GetValue<List<Point>>(EventParameters.VisibleTiles);
@@ -47,7 +47,7 @@ public class Desire : Component
             m_DesiredValue = 0;
             foreach (var point in visiblePoints)
             {
-                EventBuilder getTileValue = new EventBuilder(GameEventId.GetValueOnTile)
+                EventBuilder getTileValue = EventBuilderPool.Get(GameEventId.GetValueOnTile)
                                             .With(EventParameters.TilePosition, point)
                                             .With(EventParameters.Value, 0);
                 int valueOnTile = FireEvent(World.Instance.Self, getTileValue.CreateEvent()).GetValue<int>(EventParameters.Value);
@@ -74,11 +74,11 @@ public class Desire : Component
     {
         if (m_CurrentPosition == m_CurrentDestination)
         {
-            EventBuilder pickupItem = new EventBuilder(GameEventId.Pickup)
+            EventBuilder pickupItem = EventBuilderPool.Get(GameEventId.Pickup)
                                         .With(EventParameters.Entity, Self.ID);
             FireEvent(World.Instance.Self, pickupItem.CreateEvent());
 
-            EventBuilder tryEquip = new EventBuilder(GameEventId.TryEquip)
+            EventBuilder tryEquip = EventBuilderPool.Get(GameEventId.TryEquip)
                                         .With(EventParameters.Entity, Self.ID);
             Self.FireEvent(tryEquip.CreateEvent());
 

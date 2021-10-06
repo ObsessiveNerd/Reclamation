@@ -52,7 +52,7 @@ public class SaveSystem : MonoBehaviour
     {
         m_Data = new SaveData(World.Instance.Seed);
 
-        EventBuilder getCurrentLevel = new EventBuilder(GameEventId.GetCurrentLevel)
+        EventBuilder getCurrentLevel = EventBuilderPool.Get(GameEventId.GetCurrentLevel)
                                         .With(EventParameters.Level, -1);
         m_Data.CurrentDungeonLevel = World.Instance.Self.FireEvent(getCurrentLevel.CreateEvent()).GetValue<int>(EventParameters.Level);
         m_Data.SaveName = CurrentSaveName = saveName;
@@ -125,7 +125,7 @@ public class SaveSystem : MonoBehaviour
         //    IEntity target = EntityQuery.GetEntity(targetID);
 
         //    target.FireEvent(target, ge);
-        //    EventBuilder builder = new EventBuilder(GameEventId.ProgressTimeUntilIdHasTakenTurn)
+        //    EventBuilder builder = EventBuilderPool.Get(GameEventId.ProgressTimeUntilIdHasTakenTurn)
         //                            .With(EventParameters.Entity, targetID);
         //    World.Instance.Self.FireEvent(World.Instance.Self, builder.CreateEvent());
         //}
@@ -144,7 +144,7 @@ public class SaveSystem : MonoBehaviour
     //        IEntity target = EntityQuery.GetEntity(targetID);
 
     //        target.FireEvent(target, ge);
-    //        EventBuilder builder = new EventBuilder(GameEventId.ProgressTimeUntilIdHasTakenTurn)
+    //        EventBuilder builder = EventBuilderPool.Get(GameEventId.ProgressTimeUntilIdHasTakenTurn)
     //                                .With(EventParameters.Entity, targetID);
     //        World.Instance.Self.FireEvent(World.Instance.Self, builder.CreateEvent());
 

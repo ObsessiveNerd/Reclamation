@@ -31,7 +31,7 @@ public class StatsUIMono : MonoBehaviour, IUpdatableUI
 
         m_Source = source;
 
-        EventBuilder getStat = new EventBuilder(GameEventId.GetStatRaw)
+        EventBuilder getStat = EventBuilderPool.Get(GameEventId.GetStatRaw)
                                 .With(EventParameters.StatType, ControlledStat)
                                 .With(EventParameters.Value, Stat.Str);
 

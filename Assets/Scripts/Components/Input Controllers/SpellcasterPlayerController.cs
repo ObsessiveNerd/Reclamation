@@ -19,7 +19,7 @@ public class SpellcasterPlayerController : InputControllerBase
     {
         base.Init(self);
 
-        EventBuilder getSpells = new EventBuilder(GameEventId.GetSpells)
+        EventBuilder getSpells = EventBuilderPool.Get(GameEventId.GetSpells)
                                     .With(EventParameters.SpellList, new HashSet<string>());
 
         var eventResult = Self.FireEvent(getSpells.CreateEvent());
@@ -28,11 +28,11 @@ public class SpellcasterPlayerController : InputControllerBase
         {
             m_Attack = EntityQuery.GetEntity(spellList.ToList()[m_SpellIndex]);
 
-            EventBuilder getCurrentMana = new EventBuilder(GameEventId.GetMana)
+            EventBuilder getCurrentMana = EventBuilderPool.Get(GameEventId.GetMana)
                                             .With(EventParameters.Value, 0);
             int currentMana = Self.FireEvent(getCurrentMana.CreateEvent()).GetValue<int>(EventParameters.Value);
 
-            EventBuilder getManaCost = new EventBuilder(GameEventId.ManaCost)
+            EventBuilder getManaCost = EventBuilderPool.Get(GameEventId.ManaCost)
                                         .With(EventParameters.Value, 1);
             m_ManaCost = m_Attack.FireEvent(getManaCost.CreateEvent()).GetValue<int>(EventParameters.Value);
 
@@ -49,14 +49,14 @@ public class SpellcasterPlayerController : InputControllerBase
 
         if (startingTarget != null)
         {
-            EventBuilder isVisible = new EventBuilder(GameEventId.EntityVisibilityState)
+            EventBuilder isVisible = EventBuilderPool.Get(GameEventId.EntityVisibilityState)
                                         .With(EventParameters.Entity, startingTarget.ID)
                                         .With(EventParameters.Value, false);
 
             //Here we can check isVisible to see if the target is invisible or something
             //FireEvent(startingTarget, isVisible.CreateEvent());
 
-            EventBuilder isInFOV = new EventBuilder(GameEventId.IsInFOV)
+            EventBuilder isInFOV = EventBuilderPool.Get(GameEventId.IsInFOV)
                                     .With(EventParameters.Entity, startingTarget.ID)
                                     .With(EventParameters.Value, false);
 
@@ -104,7 +104,7 @@ public class SpellcasterPlayerController : InputControllerBase
 
                 CombatUtility.Attack(Self, target, m_Attack);
 
-                //EventBuilder fireRangedWeapon = new EventBuilder(GameEventId.FireRangedAttack)
+                //EventBuilder fireRangedWeapon = EventBuilderPool.Get(GameEventId.FireRangedAttack)
                 //                                .With(EventParameters.Entity, WorldUtility.GetGameObject(Self).transform.position)
                 //                                .With(EventParameters.Target, WorldUtility.GetGameObject(target).transform.position);
                 //FireEvent(m_Attack, fireRangedWeapon.CreateEvent());

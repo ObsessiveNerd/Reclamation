@@ -76,7 +76,7 @@ public class PlayerManager : WorldComponent
         {
             if (m_ActivePlayer != null)
             {
-                EventBuilder setCamera = new EventBuilder(GameEventId.SetCameraPosition)
+                EventBuilder setCamera = EventBuilderPool.Get(GameEventId.SetCameraPosition)
                                     .With(EventParameters.Point, PathfindingUtility.GetEntityLocation(m_ActivePlayer.Value));
                 FireEvent(Self, setCamera.CreateEvent());
             }
@@ -105,11 +105,11 @@ public class PlayerManager : WorldComponent
 
         if (m_ActivePlayer != null)
         {
-            EventBuilder setCamera = new EventBuilder(GameEventId.SetCameraPosition)
+            EventBuilder setCamera = EventBuilderPool.Get(GameEventId.SetCameraPosition)
                                         .With(EventParameters.Point, PathfindingUtility.GetEntityLocation(m_ActivePlayer.Value));
             FireEvent(Self, setCamera.CreateEvent());
 
-            EventBuilder makeActivePlayer = new EventBuilder(GameEventId.MakePartyLeader)
+            EventBuilder makeActivePlayer = EventBuilderPool.Get(GameEventId.MakePartyLeader)
                                             .With(EventParameters.Entity, m_ActivePlayer.Value.ID);
             FireEvent(Self, makeActivePlayer.CreateEvent());
         }
@@ -167,7 +167,7 @@ public class PlayerManager : WorldComponent
         else
             m_ActivePlayer.Value.AddComponent(new PlayerInputController());
 
-        EventBuilder makePartyLeader = new EventBuilder(GameEventId.MakePartyLeader)
+        EventBuilder makePartyLeader = EventBuilderPool.Get(GameEventId.MakePartyLeader)
                                             .With(EventParameters.Entity, m_ActivePlayer.Value.ID);
             FireEvent(Self, makePartyLeader.CreateEvent());
 
@@ -175,7 +175,7 @@ public class PlayerManager : WorldComponent
 
         m_TimeProgression.SetActiveEntity(m_ActivePlayer.Value);
 
-        EventBuilder setCamera = new EventBuilder(GameEventId.SetCameraPosition)
+        EventBuilder setCamera = EventBuilderPool.Get(GameEventId.SetCameraPosition)
                                 .With(EventParameters.Point, PathfindingUtility.GetEntityLocation(m_ActivePlayer.Value));
         FireEvent(Self, setCamera.CreateEvent());
     }

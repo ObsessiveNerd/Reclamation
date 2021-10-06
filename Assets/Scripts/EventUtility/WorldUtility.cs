@@ -22,7 +22,7 @@ public static class WorldUtility
 
     public static bool IsPlayableCharacter(string id)
     {
-        EventBuilder isPlayableCharacter = new EventBuilder(GameEventId.IsPlayableCharacter)
+        EventBuilder isPlayableCharacter = EventBuilderPool.Get(GameEventId.IsPlayableCharacter)
                                             .With(EventParameters.Entity, id)
                                             .With(EventParameters.Value, false);
         return World.Instance.Self.FireEvent(isPlayableCharacter.CreateEvent()).GetValue<bool>(EventParameters.Value);
@@ -30,7 +30,7 @@ public static class WorldUtility
 
     public static IEntity GetClosestEnemyTo(IEntity e)
     {
-        EventBuilder eventBuilder = new EventBuilder(GameEventId.GetClosestEnemy)
+        EventBuilder eventBuilder = EventBuilderPool.Get(GameEventId.GetClosestEnemy)
                                     .With(EventParameters.Entity, e.ID)
                                     .With(EventParameters.Value, null);
 
@@ -41,7 +41,7 @@ public static class WorldUtility
 
     public static GameObject GetGameObject(IEntity e)
     {
-        EventBuilder getGameObjectLocation = new EventBuilder(GameEventId.GameObject)
+        EventBuilder getGameObjectLocation = EventBuilderPool.Get(GameEventId.GameObject)
                                                 .With(EventParameters.Point, GetEntityPosition(e))
                                                 .With(EventParameters.Value, null);
         return World.Instance.Self.FireEvent(getGameObjectLocation.CreateEvent()).GetValue<GameObject>(EventParameters.Value);
@@ -49,21 +49,21 @@ public static class WorldUtility
 
     public static bool IsActivePlayer(string entityId)
     {
-        EventBuilder isActivePlayer = new EventBuilder(GameEventId.GetActivePlayerId)
+        EventBuilder isActivePlayer = EventBuilderPool.Get(GameEventId.GetActivePlayerId)
                                         .With(EventParameters.Value, null);
         return entityId == World.Instance.Self.FireEvent(isActivePlayer.CreateEvent()).GetValue<string>(EventParameters.Value);
     }
 
     public static string GetActivePlayerId()
     {
-        EventBuilder isActivePlayer = new EventBuilder(GameEventId.GetActivePlayerId)
+        EventBuilder isActivePlayer = EventBuilderPool.Get(GameEventId.GetActivePlayerId)
                                         .With(EventParameters.Value, null);
         return World.Instance.Self.FireEvent(isActivePlayer.CreateEvent()).GetValue<string>(EventParameters.Value);
     }
 
     public static void RegisterUI(IUpdatableUI ui)
     {
-        EventBuilder e = new EventBuilder(GameEventId.RegisterUI)
+        EventBuilder e = EventBuilderPool.Get(GameEventId.RegisterUI)
                             .With(EventParameters.GameObject, ui);
 
         World.Instance.Self.FireEvent(e.CreateEvent());
@@ -71,7 +71,7 @@ public static class WorldUtility
 
     public static void UnRegisterUI(IUpdatableUI ui)
     {
-        EventBuilder e = new EventBuilder(GameEventId.UnRegisterUI)
+        EventBuilder e = EventBuilderPool.Get(GameEventId.UnRegisterUI)
                             .With(EventParameters.GameObject, ui);
 
         World.Instance.Self.FireEvent(e.CreateEvent());

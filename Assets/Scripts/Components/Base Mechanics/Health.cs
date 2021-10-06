@@ -32,14 +32,14 @@ public class Health : Component
                 RecLog.Log($"{Self.Name} took {damage.DamageAmount} damage of type {damage.DamageType}");
                 CurrentHealth -= damage.DamageAmount;
 
-                EventBuilder entityTookDamage = new EventBuilder(GameEventId.EntityTookDamage)
+                EventBuilder entityTookDamage = EventBuilderPool.Get(GameEventId.EntityTookDamage)
                                                     .With(EventParameters.Entity, Self.ID)
                                                     .With(EventParameters.Damage, damage.DamageAmount);
                 World.Instance.Self.FireEvent(entityTookDamage.CreateEvent());
 
                 if (CurrentHealth <= 0)
                 {
-                    EventBuilder swapActivePlayer = new EventBuilder(GameEventId.RotateActiveCharacter)
+                    EventBuilder swapActivePlayer = EventBuilderPool.Get(GameEventId.RotateActiveCharacter)
                                                     .With(EventParameters.UpdateWorldView, true);
                     FireEvent(Self, swapActivePlayer.CreateEvent());
 
@@ -62,7 +62,7 @@ public class Health : Component
             int healAmount = (int)gameEvent.Paramters[EventParameters.Healing];
             CurrentHealth = Mathf.Min(CurrentHealth + healAmount, MaxHealth);
 
-            EventBuilder entityHealedDamage = new EventBuilder(GameEventId.EntityHealedDamage)
+            EventBuilder entityHealedDamage = EventBuilderPool.Get(GameEventId.EntityHealedDamage)
                                                     .With(EventParameters.Entity, Self.ID)
                                                     .With(EventParameters.Healing, healAmount);
             World.Instance.Self.FireEvent(entityHealedDamage.CreateEvent());

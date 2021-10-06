@@ -13,7 +13,7 @@ public class Actor : IEntity
     public string Name {
         get
         {
-            EventBuilder getName = new EventBuilder(GameEventId.GetName)
+            EventBuilder getName = EventBuilderPool.Get(GameEventId.GetName)
                                     .With(EventParameters.Name, InternalName);
             return FireEvent(getName.CreateEvent()).GetValue<string>(EventParameters.Name);
         }

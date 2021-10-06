@@ -16,7 +16,7 @@ public class PackTactics : Component
 
     public override void Start()
     {
-        EventBuilder registerWithPartyManager = new EventBuilder(GameEventId.LookingForGroup)
+        EventBuilder registerWithPartyManager = EventBuilderPool.Get(GameEventId.LookingForGroup)
                                                 .With(EventParameters.Entity, Self.ID);
         FireEvent(World.Instance.Self, registerWithPartyManager.CreateEvent());
     }
@@ -39,7 +39,7 @@ public class PackTactics : Component
         }
         else if(gameEvent.ID == GameEventId.Died)
         {
-            EventBuilder registerWithPartyManager = new EventBuilder(GameEventId.RemoveFromParty)
+            EventBuilder registerWithPartyManager = EventBuilderPool.Get(GameEventId.RemoveFromParty)
                                                 .With(EventParameters.Entity, Self.ID);
             FireEvent(World.Instance.Self, registerWithPartyManager.CreateEvent());
         }
@@ -88,7 +88,7 @@ public class PackTactics : Component
     //    if (Self.Name.Contains("Dwarf"))
     //        Debug.LogWarning("Finding a new party leader");
 
-    //    EventBuilder getVisiblePoints = new EventBuilder(GameEventId.GetVisibleTiles)
+    //    EventBuilder getVisiblePoints = EventBuilderPool.Get(GameEventId.GetVisibleTiles)
     //                                        .With(EventParameters.VisibleTiles, new List<Point>());
     //    m_VisiblePoints = FireEvent(Self, getVisiblePoints.CreateEvent()).GetValue<List<Point>>(EventParameters.VisibleTiles);
     //    //bool partyLeaderInSight = false;
@@ -99,7 +99,7 @@ public class PackTactics : Component
     //        if (entityAtTile == null || entityAtTile == Self)
     //            continue;
 
-    //        EventBuilder getPackInformation = new EventBuilder(GameEventId.GetPackInformation)
+    //        EventBuilder getPackInformation = EventBuilderPool.Get(GameEventId.GetPackInformation)
     //                                            .With(EventParameters.Entity, null)
     //                                            .With(EventParameters.IsPartyLeader, false)
     //                                            .With(EventParameters.TilePosition, point);

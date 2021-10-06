@@ -186,7 +186,7 @@ public class Body : Component
 
                 if (unequipThroughIteration && GetEquipmentIdForBodyPart(target[i]) != gameEvent.GetValue<string>(EventParameters.Equipment))
                 {
-                    EventBuilder unequip = new EventBuilder(GameEventId.Unequip)
+                    EventBuilder unequip = EventBuilderPool.Get(GameEventId.Unequip)
                                             .With(EventParameters.Entity, Self.ID)
                                             .With(EventParameters.Item, GetEquipmentIdForBodyPart(target[i]));
                     FireEvent(Self, unequip.CreateEvent());
@@ -196,7 +196,7 @@ public class Body : Component
                 {
                     bodyPartsTaken++;
 
-                    EventBuilder itemEquiped = new EventBuilder(GameEventId.ItemEquipped)
+                    EventBuilder itemEquiped = EventBuilderPool.Get(GameEventId.ItemEquipped)
                                                 .With(EventParameters.Equipment, gameEvent.GetValue<string>(EventParameters.Equipment))
                                                 .With(EventParameters.Owner, Self?.ID);
 
@@ -220,7 +220,7 @@ public class Body : Component
         {
             foreach(var bp in m_AllBodyParts)
             {
-                EventBuilder drop = new EventBuilder(GameEventId.Drop)
+                EventBuilder drop = EventBuilderPool.Get(GameEventId.Drop)
                                     .With(EventParameters.Item, GetEquipmentIdForBodyPart(bp))
                                     .With(EventParameters.Entity, Self.ID);
                 bp.FireEvent(drop.CreateEvent());
@@ -274,7 +274,7 @@ public class Body : Component
             TypeWeapon desiredWeaponToAttack = (TypeWeapon)gameEvent.Paramters[EventParameters.WeaponType];
             foreach (IEntity hand in Arm)
             {
-                EventBuilder getEquipment = new EventBuilder(GameEventId.GetEquipment)
+                EventBuilder getEquipment = EventBuilderPool.Get(GameEventId.GetEquipment)
                                             .With(EventParameters.Equipment, null);
 
                 string equipment = FireEvent(hand, getEquipment.CreateEvent()).GetValue<string>(EventParameters.Equipment);
@@ -335,7 +335,7 @@ public class Body : Component
 
     string GetEquipmentIdForBodyPart(IEntity bodyPart)
     {
-        EventBuilder getEquipment = new EventBuilder(GameEventId.GetEquipment)
+        EventBuilder getEquipment = EventBuilderPool.Get(GameEventId.GetEquipment)
                                             .With(EventParameters.Equipment, null);
 
         string equipment = FireEvent(bodyPart, getEquipment.CreateEvent()).GetValue<string>(EventParameters.Equipment);

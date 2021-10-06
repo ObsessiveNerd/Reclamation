@@ -192,7 +192,7 @@ public class DungeonManager : WorldComponent
 
         foreach (var tile in m_Tiles.Values)
         {
-            EventBuilder serializeTile = new EventBuilder(GameEventId.SerializeTile)
+            EventBuilder serializeTile = EventBuilderPool.Get(GameEventId.SerializeTile)
                                          .With(EventParameters.Value, level);
             FireEvent(tile, serializeTile.CreateEvent());
         }
@@ -224,7 +224,7 @@ public class DungeonManager : WorldComponent
                 IEntity entity = EntityFactory.ParseEntityData(entityData);
                 if (entity != null)
                 {
-                    EventBuilder getPoint = new EventBuilder(GameEventId.GetPoint)
+                    EventBuilder getPoint = EventBuilderPool.Get(GameEventId.GetPoint)
                                             .With(EventParameters.Value, Point.InvalidPoint);
                     Point p = FireEvent(entity, getPoint.CreateEvent()).GetValue<Point>(EventParameters.Value);
                     if (p != Point.InvalidPoint)
@@ -294,7 +294,7 @@ public class DungeonManager : WorldComponent
             var randomLineNumber = RecRandom.Instance.GetRandomValue(0, lines.Length - 1);
             var line = lines[randomLineNumber];
 
-            EventBuilder setName = new EventBuilder(GameEventId.SetName)
+            EventBuilder setName = EventBuilderPool.Get(GameEventId.SetName)
                                     .With(EventParameters.Name, line);
             FireEvent(player, setName.CreateEvent());
 

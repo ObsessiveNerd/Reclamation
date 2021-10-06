@@ -13,7 +13,7 @@ public class CharacterStatsMono : MonoBehaviour, IUpdatableUI
     public void Setup(IEntity source)
     {
         Name.text = source.Name;
-        EventBuilder getAttributePoints = new EventBuilder(GameEventId.GetAttributePoints)
+        EventBuilder getAttributePoints = EventBuilderPool.Get(GameEventId.GetAttributePoints)
                                             .With(EventParameters.AttributePoints, 0);
         int attrPoints = source.FireEvent(getAttributePoints.CreateEvent()).GetValue<int>(EventParameters.AttributePoints);
 
@@ -38,7 +38,7 @@ public class CharacterStatsMono : MonoBehaviour, IUpdatableUI
                 statMono.Button.gameObject.SetActive(true);
                 statMono.Button.onClick.AddListener(() =>
                 {
-                    EventBuilder boostStat = new EventBuilder(GameEventId.BoostStat)
+                    EventBuilder boostStat = EventBuilderPool.Get(GameEventId.BoostStat)
                                                 .With(EventParameters.StatType, statMono.ControlledStat)
                                                 .With(EventParameters.StatBoostAmount, 1);
                     source.FireEvent(boostStat.CreateEvent());

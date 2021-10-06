@@ -17,7 +17,7 @@ public class Party
     public int SizeLimit = 4;
     public void AssignLeader(string entity)
     {
-        EventBuilder setLeader = new EventBuilder(GameEventId.SetLeader)
+        EventBuilder setLeader = EventBuilderPool.Get(GameEventId.SetLeader)
                                     .With(EventParameters.Entity, m_Leader);
 
         EntityQuery.GetEntity(entity).FireEvent(setLeader.CreateEvent());
@@ -59,7 +59,7 @@ public class Party
         else
             m_Members.Remove(entity);
 
-        EventBuilder setLeader = new EventBuilder(GameEventId.SetLeader)
+        EventBuilder setLeader = EventBuilderPool.Get(GameEventId.SetLeader)
                                     .With(EventParameters.Entity, null);
 
         EntityQuery.GetEntity(entity).FireEvent(setLeader.CreateEvent());

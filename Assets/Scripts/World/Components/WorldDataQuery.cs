@@ -37,7 +37,7 @@ public class WorldDataQuery : WorldComponent
 
         if(gameEvent.ID == GameEventId.GetEntityLocation)
         {
-            EventBuilder eBuilder = new EventBuilder(GameEventId.GetEntity)
+            EventBuilder eBuilder = EventBuilderPool.Get(GameEventId.GetEntity)
                                     .With(EventParameters.Entity, null)
                                     .With(EventParameters.Value, gameEvent.Paramters[EventParameters.Entity]);
 

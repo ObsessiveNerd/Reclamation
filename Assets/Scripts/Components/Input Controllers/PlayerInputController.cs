@@ -19,7 +19,7 @@ public class PlayerInputController : InputControllerBase
             if (desiredDirection != MoveDirection.None)
             {
                 FireEvent(Self, new GameEvent(GameEventId.MoveKeyPressed, new KeyValuePair<string, object>(EventParameters.InputDirection, desiredDirection)), true);
-                EventBuilder setCamera = new EventBuilder(GameEventId.SetCameraPosition)
+                EventBuilder setCamera = EventBuilderPool.Get(GameEventId.SetCameraPosition)
                                     .With(EventParameters.Point, PathfindingUtility.GetEntityLocation(Self));
                 FireEvent(World.Instance.Self, setCamera.CreateEvent());
             }
@@ -54,14 +54,14 @@ public class PlayerInputController : InputControllerBase
 #if UNITY_EDITOR
             else if (Input.GetKeyDown(KeyCode.P))
             {
-                EventBuilder giveExp = new EventBuilder(GameEventId.GainExperience)
+                EventBuilder giveExp = EventBuilderPool.Get(GameEventId.GainExperience)
                                     .With(EventParameters.Exp, 10);
                 Self.FireEvent(giveExp.CreateEvent());
             }
 
             else if (Input.GetKeyDown(KeyCode.O))
             {
-                EventBuilder takeDamage = new EventBuilder(GameEventId.TakeDamage)
+                EventBuilder takeDamage = EventBuilderPool.Get(GameEventId.TakeDamage)
                                     .With(EventParameters.DamageList, new List<Damage>() { new Damage(10, DamageType.Slashing) })
                                     .With(EventParameters.RollToHit, 20)
                                     .With(EventParameters.DamageSource, Self.ID);
@@ -96,7 +96,7 @@ public class PlayerInputController : InputControllerBase
 
             else if (InputBinder.PerformRequestedAction(RequestedAction.PickupItem))
             {
-                EventBuilder pickupItems = new EventBuilder(GameEventId.Pickup)
+                EventBuilder pickupItems = EventBuilderPool.Get(GameEventId.Pickup)
                                             .With(EventParameters.Entity, Self.ID);
 
                 FireEvent(World.Instance.Self, pickupItems.CreateEvent());
