@@ -82,11 +82,17 @@ public class DungeonManager : WorldComponent
             Seed = (string)gameEvent.Paramters[EventParameters.Seed];
             m_TilePrefab = (GameObject)gameEvent.Paramters[EventParameters.GameObject];
             Clean();
+            System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+            sw.Start();
             CreateTiles(m_Tiles);
+            sw.Stop();
+            Debug.LogWarning($"Creating tiles: {sw.Elapsed.Seconds}");
 
             m_DungeonGenerator = new BasicDungeonGenerator(World.Instance.MapRows, World.Instance.MapColumns);
 
             LoadOrCreateDungeon();
+            sw.Reset();
+            sw.Start();
             if (gameEvent.GetValue<bool>(EventParameters.NewGame))
                 SpawnPlayers();
             else
@@ -98,6 +104,8 @@ public class DungeonManager : WorldComponent
 
             FireEvent(Self, new GameEvent(GameEventId.SaveLevel));
             m_TimeProgression.Resume();
+            sw.Stop();
+            Debug.LogWarning($"Other shit: {sw.Elapsed.Seconds}");
 
         }
         else if (gameEvent.ID == GameEventId.GetCurrentLevel)
@@ -138,7 +146,7 @@ public class DungeonManager : WorldComponent
         }
         else if (gameEvent.ID == GameEventId.AddValidPoints)
         {
-            List<Point> validPoints = gameEvent.GetValue<List<Point>>(EventParameters.Value);
+            HashSet<Point> validPoints = gameEvent.GetValue<HashSet<Point>>(EventParameters.Value);
             foreach (Point p in validPoints)
                 m_ValidDungeonPoints.Add(p);
         }
@@ -234,10 +242,13 @@ public class DungeonManager : WorldComponent
         {
             DungeonMetaData dmd = new DungeonMetaData($"{LevelMetaData.MetadataPath}/{m_CurrentLevel}.lvl");
             DungeonGenerationResult dr = m_DungeonGenerator.GenerateDungeon(dmd);
-            foreach (var point in m_Tiles.Keys)
+            using (new DiagnosticsTimer("Setting visited status"))
             {
-                FireEvent(m_Tiles[point], new GameEvent(GameEventId.SetHasBeenVisited,
-                    new KeyValuePair<string, object>(EventParameters.HasBeenVisited, false)));
+                foreach (var point in m_Tiles.Keys)
+                {
+                    FireEvent(m_Tiles[point], new GameEvent(GameEventId.SetHasBeenVisited,
+                        new KeyValuePair<string, object>(EventParameters.HasBeenVisited, true)));
+                }
             }
             m_DungeonLevelMap.Add(m_CurrentLevel, dr);
         }

@@ -367,7 +367,7 @@ public struct GameEvent
 {
     public bool ContinueProcessing;
     public string ID { get { return m_ID; } }
-    string m_ID { get; }
+    string m_ID { get; set; }
 
     public Dictionary<string, object> Paramters { get { return m_Parameters; } }
     Dictionary<string, object> m_Parameters;
@@ -392,6 +392,28 @@ public struct GameEvent
         m_Parameters = parameters;
     }
 
+    public void Setup(string id, params KeyValuePair<string, object>[] parameters)
+    {
+        ContinueProcessing = true;
+        m_ID = id;
+        if(m_Parameters == null) m_Parameters = new Dictionary<string, object>();
+
+        m_Parameters.Clear(); //= new Dictionary<string, object>();
+        foreach (var param in parameters)
+        {
+            if (string.IsNullOrEmpty(param.Key))
+                break;
+            m_Parameters[param.Key] = param.Value;
+        }
+    }
+
+    public void Setup(string id, Dictionary<string, object> parameters)
+    {
+        ContinueProcessing = true;
+        m_ID = id;
+        m_Parameters = parameters;
+    }
+
     public bool HasParameter(string parameterId)
     {
         return Paramters.ContainsKey(parameterId);
@@ -406,5 +428,12 @@ public struct GameEvent
             return (T)value;
         }
         return default(T);
+    }
+
+    public void Clean()
+    {
+        ContinueProcessing = true;
+        m_ID = "";
+        m_Parameters.Clear();
     }
 }

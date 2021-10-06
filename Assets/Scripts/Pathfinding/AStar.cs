@@ -3,13 +3,13 @@ using System.Collections.Generic;
 
 public class AStar : IPathfindingAlgorithm
 {
-    Dictionary<IMapNode, bool> closedSet = new Dictionary<IMapNode, bool>();
-    Dictionary<IMapNode, bool> openSet = new Dictionary<IMapNode, bool>();
+    Dictionary<IMapNode, bool> closedSet = new Dictionary<IMapNode, bool>(World.Instance.MapColumns * World.Instance.MapRows);
+    Dictionary<IMapNode, bool> openSet = new Dictionary<IMapNode, bool>(World.Instance.MapColumns * World.Instance.MapRows);
 
     //cost of start to this key node
-    Dictionary<IMapNode, int> gScore = new Dictionary<IMapNode, int>();
+    Dictionary<IMapNode, int> gScore = new Dictionary<IMapNode, int>(World.Instance.MapColumns * World.Instance.MapRows);
     //cost of start to goal, passing through key node
-    Dictionary<IMapNode, int> fScore = new Dictionary<IMapNode, int>();
+    Dictionary<IMapNode, int> fScore = new Dictionary<IMapNode, int>(World.Instance.MapColumns * World.Instance.MapRows);
 
     Dictionary<IMapNode, IMapNode> nodeLinks = new Dictionary<IMapNode, IMapNode>();
 
@@ -128,23 +128,13 @@ public class AStar : IPathfindingAlgorithm
 
     public bool IsValidNeighbor(IMapNode pt)
     {
-        EventBuilder isValidTileEventBuilder = new EventBuilder(GameEventId.IsValidTile)
-                                .With(EventParameters.TilePosition, pt)
-                                .With(EventParameters.Value, true);
-
-        bool isValidTile = World.Instance.Self.FireEvent(World.Instance.Self, isValidTileEventBuilder.CreateEvent()).GetValue<bool>(EventParameters.Value);
-        if (!isValidTile)
-            return false;
-
         EventBuilder getPathData = new EventBuilder(GameEventId.PathfindingData)
                                     .With(EventParameters.TilePosition, pt)
                                     .With(EventParameters.BlocksMovement, false)
                                     .With(EventParameters.Weight, 1);
 
-        bool blocksMovement = World.Instance.Self.FireEvent(World.Instance.Self, getPathData.CreateEvent()).GetValue<bool>(EventParameters.BlocksMovement);
-        if (blocksMovement)
-            closedSet[pt] = true;
-        return !blocksMovement;
+        Tile t = World.Instance.Self.GetComponent<TileInteractions>().GetTile(new Point(pt.x, pt.y));
+        return !t.BlocksMovement;
     }
 
     private List<IMapNode> Reconstruct(IMapNode current)

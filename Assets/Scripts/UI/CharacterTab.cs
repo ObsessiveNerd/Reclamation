@@ -31,6 +31,7 @@ public class CharacterTab : MonoBehaviour
 
     public void Update()
     {
+        return;
         EventBuilder getHealth = new EventBuilder(GameEventId.GetHealth)
                                     .With(EventParameters.Value, 0)
                                     .With(EventParameters.MaxValue, 0);

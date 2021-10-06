@@ -11,9 +11,9 @@ public class GraphicContainer : Component
 
     public GraphicContainer(string spritePath)
     {
-        Sprite sprite = Resources.Load<Sprite>(spritePath);
-        m_Sprite = sprite;
         SpritePath = spritePath;
+        Sprite sprite = Resources.Load<Sprite>(SpritePath);
+        m_Sprite = sprite;
         RegisteredEvents.Add(GameEventId.GetSprite);
     }
 

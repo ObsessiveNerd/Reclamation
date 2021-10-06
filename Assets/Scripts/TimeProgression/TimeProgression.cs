@@ -81,6 +81,8 @@ public class TimeProgression
         Update();
     }
 
+    GameEvent m_Update = new GameEvent(GameEventId.UpdateEntity,  new KeyValuePair<string, object>(EventParameters.TakeTurn, false),
+                                                                    new KeyValuePair<string, object>(EventParameters.UpdateWorldView, false));
     public void Update()
     {
         if (m_EntityList.Count == 0 || m_IsStopped)
@@ -92,17 +94,24 @@ public class TimeProgression
             m_Current.Value.HandleEvent(startTurn);
         }
 
-        GameEvent update = new GameEvent(GameEventId.UpdateEntity,  new KeyValuePair<string, object>(EventParameters.TakeTurn, false),
-                                                                    new KeyValuePair<string, object>(EventParameters.UpdateWorldView, false));
-        m_Current.Value.HandleEvent(update);
+        using (new DiagnosticsTimer("Update entity"))
+        {
+            m_Update.Setup(GameEventId.UpdateEntity, new KeyValuePair<string, object>(EventParameters.TakeTurn, false),
+                                                                        new KeyValuePair<string, object>(EventParameters.UpdateWorldView, false));
+
+            m_Current.Value.HandleEvent(m_Update);
+        }
 
         if (m_Current.Value.NeedsCleanup)
             m_Current.Value.CleanupComponents();
 
-        if ((bool)update.Paramters[EventParameters.UpdateWorldView])
-            World.Instance.Self.FireEvent(World.Instance.Self, new GameEvent(GameEventId.UpdateWorldView));
+        using (new DiagnosticsTimer("Update world view"))
+        {
+            if ((bool)m_Update.Paramters[EventParameters.UpdateWorldView])
+                World.Instance.Self.FireEvent(World.Instance.Self, new GameEvent(GameEventId.UpdateWorldView));
+        }
 
-        if ((bool)update.Paramters[EventParameters.TakeTurn])
+        if ((bool)m_Update.Paramters[EventParameters.TakeTurn])
         {
             GameEvent endTurn = new GameEvent(GameEventId.EndTurn);
             m_Current.Value.HandleEvent(endTurn);
@@ -112,12 +121,14 @@ public class TimeProgression
 
             if (m_Current != null)
             {
+                ObjectPool.ReturnAll();
                 GameEvent startTurn = new GameEvent(GameEventId.StartTurn);
                 m_Current.Value.HandleEvent(startTurn);
             }
             World.Instance.Self.FireEvent(World.Instance.Self, new GameEvent(GameEventId.UpdateWorldView));
         }
 
+        //ObjectPool.Return(update);
         if (m_PostFrameCallback != null)
         {
             m_PostFrameCallback.Invoke();

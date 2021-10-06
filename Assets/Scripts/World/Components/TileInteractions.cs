@@ -16,6 +16,11 @@ public class TileInteractions : WorldComponent
         RegisteredEvents.Add(GameEventId.GetInteractableObjects);
     }
 
+    public Tile GetTile(Point p)
+    {
+        return m_Tiles[p].GetComponent<Tile>();
+    }
+
     public override void HandleEvent(GameEvent gameEvent)
     {
         //if (gameEvent.ID == GameEventId.Interact)

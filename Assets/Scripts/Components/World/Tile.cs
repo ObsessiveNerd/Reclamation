@@ -85,6 +85,27 @@ public class Tile : Component
     public IEntity CreatureSlot;
     public IEntity ObjectSlot;
     public List<IEntity> Items = new List<IEntity>();
+    public bool BlocksMovement
+    {
+        get
+        {
+            if (CreatureSlot == null && ObjectSlot == null)
+                return false;
+            else
+            {
+                EventBuilder b = new EventBuilder(GameEventId.PathfindingData)
+                                .With(EventParameters.BlocksMovement, false)
+                                .With(EventParameters.Weight, 1);
+                foreach (var t in GetTarget(false))
+                {
+                    var e = FireEvent(t, b.CreateEvent());
+                    if (e.GetValue<bool>(EventParameters.BlocksMovement))
+                        return true;
+                }
+                return false;
+            }
+        }
+    }
 
     List<IEntity> AllEntities
     {

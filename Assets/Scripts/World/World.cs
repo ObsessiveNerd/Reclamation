@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using UnityEngine;
@@ -54,11 +55,14 @@ public class World : MonoBehaviour
         if (startNew)
         {
             Seed = RecRandom.InitRecRandom(UnityEngine.Random.Range(0, int.MaxValue));
-            m_World.FireEvent(m_World, new GameEvent(GameEventId.StartWorld, new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.Seed, Seed.ToString()),
-                                                                            new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.GameObject, TilePrefab),
-                                                                            new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.NewGame, true)));
-
-            m_World.FireEvent(m_World, new GameEvent(GameEventId.UpdateWorldView));
+            using (new DiagnosticsTimer("Start World"))
+            {
+                m_World.FireEvent(m_World, new GameEvent(GameEventId.StartWorld, new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.Seed, Seed.ToString()),
+                                                                                new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.GameObject, TilePrefab),
+                                                                                new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.NewGame, true)));
+            }
+            using (new DiagnosticsTimer("Update world view"))
+                m_World.FireEvent(m_World, new GameEvent(GameEventId.UpdateWorldView));
         }
         else
         {
@@ -68,14 +72,20 @@ public class World : MonoBehaviour
 
     public void InitWorld(int seed)
     {
+        Stopwatch sw = new Stopwatch();
+        sw.Start();
         Seed = RecRandom.InitRecRandom(seed);
         m_World.FireEvent(m_World, new GameEvent(GameEventId.StartWorld, new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.Seed, Seed.ToString()),
                                                                             new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.GameObject, TilePrefab),
                                                                             new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.NewGame, false)));
+        sw.Stop();
+        UnityEngine.Debug.LogWarning($"Start World: {sw.Elapsed.Seconds}");
     }
 
+    GameEvent m_ProgressTime = new GameEvent(GameEventId.ProgressTime);
     private void Update()
     {
-        m_World?.FireEvent(m_World, new GameEvent(GameEventId.ProgressTime));
+        using(new DiagnosticsTimer("Progress time"))
+            m_World?.FireEvent(m_World, m_ProgressTime);
     }
 }
