@@ -87,7 +87,7 @@ public class Desire : Component
         else
         {
             m_CurrentPath = PathfindingUtility.GetPath(m_CurrentPosition, m_CurrentDestination);
-            var retValue = PathfindingUtility.GetDirectionTo(m_CurrentPosition, m_CurrentPath[0]);
+            var retValue = PathfindingUtility.GetDirectionTo(m_CurrentPosition, m_CurrentPath.Count == 0 ? m_CurrentPosition : m_CurrentPath[0]);
             m_CurrentPath.RemoveAt(0);
             return retValue;
         }

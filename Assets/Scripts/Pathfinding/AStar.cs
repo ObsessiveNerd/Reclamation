@@ -134,7 +134,7 @@ public class AStar : IPathfindingAlgorithm
                                     .With(EventParameters.Weight, 1);
 
         Tile t = World.Instance.Self.GetComponent<TileInteractions>().GetTile(new Point(pt.x, pt.y));
-        return !t.BlocksMovement;
+        return t == null ? false : !t.BlocksMovement;
     }
 
     private List<IMapNode> Reconstruct(IMapNode current)

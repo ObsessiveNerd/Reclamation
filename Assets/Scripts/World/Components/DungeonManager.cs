@@ -252,7 +252,7 @@ public class DungeonManager : WorldComponent
                 foreach (var point in m_Tiles.Keys)
                 {
                     FireEvent(m_Tiles[point], new GameEvent(GameEventId.SetHasBeenVisited,
-                        new KeyValuePair<string, object>(EventParameters.HasBeenVisited, true)));
+                        new KeyValuePair<string, object>(EventParameters.HasBeenVisited, false)));
                 }
             }
             m_DungeonLevelMap.Add(m_CurrentLevel, dr);

@@ -5392,8 +5392,8 @@ MonoBehaviour:
   TilePrefab: {fileID: 6901715319108000600, guid: bf8a7134af4c2944cba826274e0f314d,
     type: 3}
   BlueprintCreation: 0
-  MapColumns: 50
-  MapRows: 50
+  MapColumns: 35
+  MapRows: 35
 --- !u!4 &855845759
 Transform:
   m_ObjectHideFlags: 0

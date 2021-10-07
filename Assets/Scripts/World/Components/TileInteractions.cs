@@ -18,6 +18,8 @@ public class TileInteractions : WorldComponent
 
     public Tile GetTile(Point p)
     {
+        if (!m_Tiles.ContainsKey(p))
+            return null;
         return m_Tiles[p].GetComponent<Tile>();
     }
 
