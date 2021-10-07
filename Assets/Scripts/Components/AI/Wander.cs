@@ -12,9 +12,13 @@ public class Wander : Component
     public override void Init(IEntity self)
     {
         base.Init(self);
+        RegisteredEvents.Add(GameEventId.GetActionToTake);
+    }
+
+    public override void Start()
+    {
         m_Destination = PathfindingUtility.GetRandomValidPoint();
         m_CurrentPath = new List<IMapNode>();
-        RegisteredEvents.Add(GameEventId.GetActionToTake);
     }
 
     public override void HandleEvent(GameEvent gameEvent)

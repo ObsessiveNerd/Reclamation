@@ -1,0 +1,30 @@
+<GoblinMage> (
+	GraphicContainer: Textures/Monsters/td_monsters_goblin_mage_d1
+	Defense
+	Energy:EnergyRegineration=1,CurrentEnergy=0,HasHadTurnStarted=False
+	PrimaryStatType:PrimaryStat=Int
+	InteractsWithWorld
+	InteractOnTileOvertake
+	Position:PositionPoint=0,0
+	Fear
+	Wander
+	AIController
+	CombatRating
+	BlocksNonHostileMovement
+	FOV:FOVRange=5
+	EntityTypeContainer:Type=Creature
+	RegisterWithTimeSystem
+	Inventory:InventoryItems=
+	Aggression
+	Faction:ID=Goblins
+	Body:Head=1[], Torso=1[], Arm=2[<Spellbook>&<Spellbook>], Leg=2[]
+	AIFOVHandler
+	PackTactics:PartyLeaderId=2
+	Move
+	Level:CurrentLevel=2,CurrentExp=0
+	Stats:Str=8,Agi=10,Con=10,Wis=9,Int=13,Cha=8,AttributePoints=0
+	Info:InfoMessage="It's a nasty little goblin.  Its slimy green skin reeks with the pungent odor of dirt and mold."
+	Health:MaxHealth=10,CurrentHealth=10
+	Mana:MaxMana=10,CurrentMana=10
+	ManaRegen:RegenAmount=1,RegenSpeed=2
+)

@@ -1,0 +1,12 @@
+<DragonHead> (
+	GraphicContainer: Textures/Armor/td_items_leather_helm
+	Portrait: Portraits/Items/addons/71_t
+	Position:PositionPoint=0,0
+	InteractOnTileOvertake
+	EntityTypeContainer:Type=Item
+	Item:Rarity=Mythic
+	Equipment:PreferredBodyPartWhenEquipped=Arm
+	DealDamage:DamageType=Fire,Dice=1d10
+	SpellContainer:MaxSpell=5,RandomSpells=False,SpecificSpell=Firebolt
+	WeaponType:TypeWeapon=Wand
+)

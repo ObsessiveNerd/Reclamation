@@ -8,12 +8,15 @@ using UnityEngine;
 public class SpellContainer : Component
 {
     public int MaxSpell = 5;
+    public bool RandomSpells = true;
+    public string SpecificSpell;
+
     Dictionary<string, IEntity> m_SpellNameToIdMap = new Dictionary<string, IEntity>();
     public Dictionary<string, IEntity> SpellNameToIdMap
     {
         get
         {
-            if (m_SpellNameToIdMap.Count == 0)
+            if (RandomSpells && m_SpellNameToIdMap.Count == 0)
             {
                 for (int i = 0; i < RecRandom.Instance.GetRandomValue(1, MaxSpell); i++)
                 {
@@ -21,6 +24,11 @@ public class SpellContainer : Component
                     if (!m_SpellNameToIdMap.ContainsKey(bp))
                         m_SpellNameToIdMap.Add(bp, EntityQuery.GetEntity(bp));
                 }
+            }
+            else if(!RandomSpells)
+            {
+                if (!m_SpellNameToIdMap.ContainsKey(SpecificSpell))
+                    m_SpellNameToIdMap.Add(SpecificSpell, EntityQuery.GetEntity(SpecificSpell));
             }
             return m_SpellNameToIdMap;
         }
@@ -31,6 +39,16 @@ public class SpellContainer : Component
         var spellArray = EntityFactory.GetEntitiesFromArray(data);
         foreach(var spell in spellArray)
             m_SpellNameToIdMap.Add(spell.Name, spell);
+    }
+
+    public SpellContainer(string data, string specSpec)
+    {
+        var spellArray = EntityFactory.GetEntitiesFromArray(data);
+        foreach(var spell in spellArray)
+            m_SpellNameToIdMap.Add(spell.Name, spell);
+        SpecificSpell = specSpec;
+        if (!string.IsNullOrEmpty(specSpec))
+            RandomSpells = false;
     }
 
     public override void Init(IEntity self)
@@ -97,9 +115,10 @@ public class DTO_SpellContainer : IDataTransferComponent
     public void CreateComponent(string data)
     {
         string dataToPass = "";
+        string specSpell = "";
         if (!string.IsNullOrEmpty(data))
         {
-            string[] kvp = data.Split('|');
+            string[] kvp = data.Split(',');
             foreach (var dataPair in kvp)
             {
                 string key = dataPair.Split('=')[0];
@@ -107,23 +126,30 @@ public class DTO_SpellContainer : IDataTransferComponent
 
                 if (key == "SpellNameToIdMap")
                     dataToPass = value;
+                if (key == "SpecificSpell")
+                    specSpell = value;
             }
         }
 
-        Component = new SpellContainer(dataToPass);
+        Component = new SpellContainer(dataToPass, specSpell);
     }
 
     public string CreateSerializableData(IComponent component)
     {
         SpellContainer sc = (SpellContainer)component;
-        StringBuilder spellNameBuilder = new StringBuilder();
-        spellNameBuilder.Append($"{nameof(sc.MaxSpell)}={sc.MaxSpell}|");
-        spellNameBuilder.Append($"{nameof(sc.SpellNameToIdMap)}=[");
-        foreach (var name in sc.SpellNameToIdMap.Keys)
-            spellNameBuilder.Append($"<{name}>&");
-        var totalString = spellNameBuilder.ToString().TrimEnd('&');
-        totalString += "]";
-        return $"{nameof(SpellContainer)}: {totalString}";
+        if (sc.RandomSpells)
+        {
+            StringBuilder spellNameBuilder = new StringBuilder();
+            spellNameBuilder.Append($"{nameof(sc.MaxSpell)}={sc.MaxSpell},");
+            spellNameBuilder.Append($"{nameof(sc.SpellNameToIdMap)}=[");
+            foreach (var name in sc.SpellNameToIdMap.Keys)
+                spellNameBuilder.Append($"<{name}>&");
+            var totalString = spellNameBuilder.ToString().TrimEnd('&');
+            totalString += "]";
+            return $"{nameof(SpellContainer)}: {totalString}, {nameof(sc.SpecificSpell)}={sc.SpecificSpell}, {nameof(sc.RandomSpells)}={sc.RandomSpells}";
+        }
+        else
+            return $"{nameof(SpellContainer)}: {nameof(sc.SpellNameToIdMap)}=[<{sc.SpecificSpell}>], {nameof(sc.RandomSpells)}={sc.RandomSpells}, {nameof(sc.SpecificSpell)}={sc.SpecificSpell}, {nameof(sc.MaxSpell)}={sc.MaxSpell}";
         //return $"{nameof(SpellContainer)}";
     }
 }

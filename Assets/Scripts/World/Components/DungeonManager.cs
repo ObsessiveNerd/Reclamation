@@ -141,8 +141,13 @@ public class DungeonManager : WorldComponent
         }
         else if (gameEvent.ID == GameEventId.GetRandomValidPoint)
         {
-            int roomIndex = RecRandom.Instance.GetRandomValue(0, m_DungeonGenerator.Rooms.Count - 1);
-            gameEvent.Paramters[EventParameters.Value] = m_DungeonGenerator.Rooms[roomIndex].GetValidPoint();
+            if (m_DungeonGenerator == null)
+                gameEvent.Paramters[EventParameters.Value] = new Point(1, 1);
+            else
+            {
+                int roomIndex = RecRandom.Instance.GetRandomValue(0, m_DungeonGenerator.Rooms.Count - 1);
+                gameEvent.Paramters[EventParameters.Value] = m_DungeonGenerator.Rooms[roomIndex].GetValidPoint();
+            }
         }
         else if (gameEvent.ID == GameEventId.AddValidPoints)
         {

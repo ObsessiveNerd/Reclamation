@@ -117,7 +117,7 @@ public static class EntityFactory
 
     private static void InitTempBlueprints()
     {
-        if (World.Instance != null && !m_LoadedTempBlueprints)
+        if (World.Instance != null && !m_LoadedTempBlueprints && SaveSystem.Instance != null)
         {
             string tempBlueprints = $"{SaveSystem.kSaveDataPath}/{SaveSystem.Instance.CurrentSaveName}/Blueprints";
             if (Directory.Exists(tempBlueprints))

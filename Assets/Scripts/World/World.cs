@@ -13,6 +13,9 @@ public class World : MonoBehaviour
     public int Seed;
     public GameObject TilePrefab;
     IEntity m_World;
+#if UNITY_EDITOR
+    public bool BlueprintCreation;
+#endif
 
     public int MapColumns, MapRows;
 
@@ -29,8 +32,12 @@ public class World : MonoBehaviour
         else
             return;
 
-        SaveSystem.Instance.CurrentSaveName = Path.GetFileName(loadPath);
-        Application.quitting += () => GameObject.FindObjectOfType<SaveSystem>()?.Save();
+        var saveSystem = GameObject.FindObjectOfType<SaveSystem>();
+        if(saveSystem != null)
+        {
+            SaveSystem.Instance.CurrentSaveName = Path.GetFileName(loadPath);
+            Application.quitting += () => saveSystem.Save();
+        }
 
         m_World = new Actor("World");
 
@@ -51,6 +58,11 @@ public class World : MonoBehaviour
         m_World.AddComponent(new PartyController());
 
         m_World.CleanupComponents();
+
+#if UNITY_EDITOR
+        if (BlueprintCreation)
+            return;
+#endif
 
         if (startNew)
         {

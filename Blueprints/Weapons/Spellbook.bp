@@ -5,7 +5,7 @@
 	InteractOnTileOvertake
 	EntityTypeContainer:Type=Item
 	Item:Rarity=Epic
-	SpellContainer
+	SpellContainer:MaxSpell=5,RandomSpells=True,SpecificSpell=
 	Equipment:PreferredBodyPartWhenEquipped=Arm
 	TwoHanded
 	WeaponType:TypeWeapon=Wand

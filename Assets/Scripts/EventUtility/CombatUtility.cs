@@ -60,6 +60,8 @@ public static class CombatUtility
                                                     .With(EventParameters.Entity, WorldUtility.GetGameObject(source).transform.position)
                                                     .With(EventParameters.Target, WorldUtility.GetGameObject(target).transform.position);
                 spell.FireEvent(fireRangedWeapon.CreateEvent());
+                GameEvent useEnergy = new GameEvent(GameEventId.UseEnergy, new KeyValuePair<string, object>(EventParameters.Value, 1f));
+                source.FireEvent(useEnergy);
                 return true;
             }
         }

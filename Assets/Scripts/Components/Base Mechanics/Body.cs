@@ -66,6 +66,20 @@ public class Body : Component
         RegisteredEvents.Add(GameEventId.Died);
     }
 
+    public override void Start()
+    {
+        foreach (GameEvent ge in OnSpawn)
+            HandleEvent(ge);
+        OnSpawn.Clear();
+    }
+
+    List<GameEvent> OnSpawn = new List<GameEvent>();
+    public void EquipOnSpawn(BodyPart bp, string id)
+    {
+        OnSpawn.Add(new GameEvent(GameEventId.Equip, new KeyValuePair<string, object>(EventParameters.EntityType, bp),
+                                                                        new KeyValuePair<string, object>(EventParameters.Equipment, id)));
+    }
+
     bool HasEquipment(IEntity e)
     {
         GameEvent result = FireEvent(e, new GameEvent(GameEventId.GetEquipment, new KeyValuePair<string, object>(EventParameters.Equipment, null)));
@@ -426,8 +440,7 @@ public class DTO_Body : IDataTransferComponent
         {
             foreach (var e in equipment[key])
                 if (e != null)
-                    Component.HandleEvent(new GameEvent(GameEventId.Equip, new KeyValuePair<string, object>(EventParameters.EntityType, key),
-                                                                        new KeyValuePair<string, object>(EventParameters.Equipment, e.ID)));
+                    ((Body)Component).EquipOnSpawn(key, e.ID);
         }
     }
 
