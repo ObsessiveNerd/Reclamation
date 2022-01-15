@@ -2,11 +2,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 
 [Serializable]
-public struct Room
+public class Room
 {
     [SerializeField]
     private Point m_StartPoint;
@@ -17,7 +18,18 @@ public struct Room
     private static HashSet<Point> m_Hallways = new HashSet<Point>();
     private static HashSet<Point> m_Doors = new HashSet<Point>();
 
+    private HashSet<Point> m_MyWalls = new HashSet<Point>();
+
+
     void AddWallPoint(Point p)
+    {
+        if (m_RoomTiles.Contains(p) || m_Hallways.Contains(p))
+            return;
+        m_Walls.Add(p);
+        m_MyWalls.Add(p);
+    }
+
+    void AddHallwayWallPoint(Point p)
     {
         if (m_RoomTiles.Contains(p) || m_Hallways.Contains(p))
             return;
@@ -29,12 +41,14 @@ public struct Room
         if (m_Walls.Contains(p) && !m_Hallways.Contains(p))
             m_Doors.Add(p);
         m_Walls.Remove(p);
+        m_MyWalls.Remove(p);
         m_Hallways.Add(p);
     }
 
     void AddRoomPoint(Point p)
     {
         m_Walls.Remove(p);
+        m_MyWalls.Remove(p);
         m_RoomTiles.Add(p);
     }
 
@@ -151,15 +165,15 @@ public struct Room
                 Point above = new Point(x, hallPoint.y + 1);
                 Point below = new Point(x, hallPoint.y - 1);
 
-                AddWallPoint(above);
-                AddWallPoint(below);
+                AddHallwayWallPoint(above);
+                AddHallwayWallPoint(below);
                 //Spawner.Spawn(EntityFactory.CreateEntity("Wall"), above);
                 //Spawner.Spawn(EntityFactory.CreateEntity("Wall"), below);
 
                 //World.Instance.Self.FireEvent(World.Instance.Self, builder.CreateEvent());
             }
 
-            SurroundPointWithWalls(new Point(otherMidPoint.x, midPoint.y));
+            SurroundHallwayPointWithWalls(new Point(otherMidPoint.x, midPoint.y));
 
             int yDirection = (int)Mathf.Sign(otherMidPoint.y - midPoint.y);
             for (int y = midPoint.y; y != otherMidPoint.y; y += yDirection)
@@ -172,8 +186,8 @@ public struct Room
                 Point left = new Point(hallPoint.x + 1, y);
                 Point right = new Point(hallPoint.x - 1, y);
 
-                AddWallPoint(left);
-                AddWallPoint(right);
+                AddHallwayWallPoint(left);
+                AddHallwayWallPoint(right);
                 //Spawner.Spawn(EntityFactory.CreateEntity("Wall"), left);
                 //Spawner.Spawn(EntityFactory.CreateEntity("Wall"), right);
 
@@ -195,8 +209,8 @@ public struct Room
                 Point left = new Point(hallPoint.x + 1, y);
                 Point right = new Point(hallPoint.x - 1, y);
 
-                AddWallPoint(left);
-                AddWallPoint(right);
+                AddHallwayWallPoint(left);
+                AddHallwayWallPoint(right);
 
                 //Spawner.Spawn(EntityFactory.CreateEntity("Wall"), left);
                 //Spawner.Spawn(EntityFactory.CreateEntity("Wall"), right);
@@ -204,7 +218,7 @@ public struct Room
                 //World.Instance.Self.FireEvent(World.Instance.Self, builder.CreateEvent());
             }
 
-            SurroundPointWithWalls(new Point(midPoint.x, otherMidPoint.y));
+            SurroundHallwayPointWithWalls(new Point(midPoint.x, otherMidPoint.y));
 
             int xDirection = (int)Mathf.Sign(otherMidPoint.x - midPoint.x);
             for (int x = midPoint.x; x != otherMidPoint.x; x += xDirection)
@@ -217,8 +231,8 @@ public struct Room
                 Point above = new Point(x, hallPoint.y + 1);
                 Point below = new Point(x, hallPoint.y - 1);
 
-                AddWallPoint(above);
-                AddWallPoint(below);
+                AddHallwayWallPoint(above);
+                AddHallwayWallPoint(below);
 
                 //Spawner.Spawn(EntityFactory.CreateEntity("Wall"), above);
                 //Spawner.Spawn(EntityFactory.CreateEntity("Wall"), below);
@@ -230,12 +244,13 @@ public struct Room
         
     }
 
-    public Point GetValidPoint()
+    public Point GetValidPoint(HashSet<string> restrictions = null)
     {
         int x = -1;
         int y = -1;
-        //while(true)
-        //{
+
+        if (restrictions == null || restrictions.Count == 0)
+        {
             x = RecRandom.Instance.GetRandomValue(m_StartPoint.x + 2, (m_StartPoint.x + m_Size.x) - 2);
             y = RecRandom.Instance.GetRandomValue(m_StartPoint.y + 2, (m_StartPoint.y + m_Size.y) - 2);
 
@@ -243,11 +258,42 @@ public struct Room
             EventBuilder getPathfindingData = EventBuilderPool.Get(GameEventId.PathfindingData)
                                                 .With(EventParameters.Weight, 0)
                                                 .With(EventParameters.BlocksMovement, false);
+        }
+        else
+        {
+            //Temp maybe
+            string spawnRestriction = restrictions.First();
+            switch (spawnRestriction)
+            {
+                case SpawnRestrictionTags.AgainstWall:
 
-        //    bool blocksMovement = World.Instance.Self.FireEvent(getPathfindingData.CreateEvent()).GetValue<bool>(EventParameters.BlocksMovement);
-        //    if (!blocksMovement)
-        //        break;
-        //}
+                    var tempList = m_MyWalls; //.Except(m_Hallways).ToList();
+                    int randomWallIndex = RecRandom.Instance.GetRandomValue(0, tempList.Count - 1);
+                    Point wall = tempList.ToArray()[randomWallIndex];
+                    Point center = GetMiddleOfTheRoom();
+
+                    x = wall.x;
+                    y = wall.y;
+
+                    if (wall.x == m_StartPoint.x || wall.x == (m_StartPoint.x + m_Size.x - 1))
+                    {
+                        if (center.x > wall.x)
+                            x = wall.x + 1;
+                        else
+                            x = wall.x - 1;
+                    }
+
+                    if (wall.y == m_StartPoint.y || wall.y == (m_StartPoint.y + m_Size.y - 1))
+                    {
+                        if (center.y > wall.y)
+                            y = wall.y + 1;
+                        else
+                            y = wall.y - 1;
+                    }
+
+                    break;
+            }
+        }
         return new Point(x, y);
     }
 
@@ -284,14 +330,14 @@ public struct Room
 
     //}
 
-    void SurroundPointWithWalls(Point p)
+    void SurroundHallwayPointWithWalls(Point p)
     {
         for (int x = p.x - 1; x <= p.x + 1; x++)
         {
             for (int y = p.y - 1; y <= p.y + 1; y++)
             {
                 Point point = new Point(x, y);
-                    AddWallPoint(point);
+                    AddHallwayWallPoint(point);
                 //Spawner.Spawn(EntityFactory.CreateEntity("Wall"), new Point(x, y));
             }
         }
@@ -537,7 +583,10 @@ public class BasicDungeonGenerator : IDungeonGenerator
                     e.FireEvent(addItems.CreateEvent());
                 }
 
-                Spawner.Spawn(e, room.GetValidPoint());
+                EventBuilder builder = EventBuilderPool.Get(GameEventId.GetSpawnRestrictions)
+                                                        .With(EventParameters.Restrictions, new HashSet<string>());
+                var result = e.FireEvent(builder.CreateEvent());
+                Spawner.Spawn(e, room.GetValidPoint(result.GetValue<HashSet<string>>(EventParameters.Restrictions)));
             }
         }
     }
