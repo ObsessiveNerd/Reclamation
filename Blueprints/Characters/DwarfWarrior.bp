@@ -2,32 +2,38 @@
 	GraphicContainer: Textures/Characters/td_monsters_dwarf_d2
 	Portrait: Portraits/Characters/Tex_Dwarf_warrior_male_bg
 	Defense
-	Desire:Greed=0
+	Inventory:InventoryItems=[<Spellbook>&<BronzeHelmet>]
+	Move
+	Stats:Str=10,Agi=9,Con=13,Wis=11,Int=12,Cha=10,AttributePoints=0
+	PrimaryStatType:PrimaryStat=Str
+	Faction:ID=DwarvenExpedition
+	Energy:EnergyRegineration=1,CurrentEnergy=0,HasHadTurnStarted=False
+	PackTactics:PartyLeaderId=1879
+	InteractsWithWorld
+	Name:PrettyName=
+	Level:CurrentLevel=1,CurrentExp=0
+	EquipmentSlot:EquipmentId=,BodyPartType=Arm
+	EquipmentSlot:EquipmentId=ShortSword,BodyPartType=Arm
+	FOV:FOVRange=5
+	EquipmentSlot:EquipmentId=,BodyPartType=Leg
+	Aggression
+	EntityTypeContainer:Type=Creature
+	HealthRegen:RegenAmount=1,RegenSpeed=5
+	EquipmentSlot:EquipmentId=,BodyPartType=Leg
 	AIFOVHandler
 	ManaRegen:RegenAmount=1,RegenSpeed=15
 	RegisterWithTimeSystem
-	HealthRegen:RegenAmount=1,RegenSpeed=5
-	InteractOnTileOvertake
+	Body
+	EquipmentSlot:EquipmentId=,BodyPartType=Head
 	Position:PositionPoint=0,0
 	Fear
 	Wander
 	AIController
 	CombatRating
 	BlocksNonHostileMovement
-	Body:Head=1[], Torso=1[], Arm=2[<Short Sword>], Leg=2[]
-	PrimaryStatType:PrimaryStat=Str
-	EntityTypeContainer:Type=Creature
-	Aggression
-	Inventory:InventoryItems=
-	Move
-	Stats:Str=10,Agi=9,Con=13,Wis=11,Int=12,Cha=10,AttributePoints=0
-	Energy:EnergyRegineration=1,CurrentEnergy=0,HasHadTurnStarted=False
-	Faction:ID=DwarvenExpedition
-	FOV:FOVRange=5
-	PackTactics:PartyLeaderId=4542
-	InteractsWithWorld
-	Name:PrettyName=
-	Level:CurrentLevel=1,CurrentExp=0
+	InteractOnTileOvertake
+	EquipmentSlot:EquipmentId=,BodyPartType=Torso
+	Desire:Greed=0
 	Health:MaxHealth=30,CurrentHealth=30
 	Mana:MaxMana=5,CurrentMana=5
 )

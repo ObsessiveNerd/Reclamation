@@ -1,9 +1,10 @@
 <Bookshelf> (
-	GraphicContainer: Textures/Environment/td_world_bookshelf_a
 	Position:PositionPoint=0,0
 	InteractOnTileOvertake
 	EntityTypeContainer:Type=Object
 	BlocksNonHostileMovement
 	EnvironmentalObject
 	ItemContainer:IDToEntityMap=
+	SpawnRestrictor:Restrictions=AgainstWall
+	StorageGraphic:HasItemsGraphicPath=Textures/Environment/td_world_bookshelf_a,EmptyGraphicPath=Textures/Environment/td_world_bookshelf_b
 )
