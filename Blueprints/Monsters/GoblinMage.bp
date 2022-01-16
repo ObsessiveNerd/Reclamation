@@ -19,7 +19,7 @@
 	Faction:ID=Goblins
 	Body:Head=1[], Torso=1[], Arm=2[<Spellbook>&<Spellbook>], Leg=2[]
 	AIFOVHandler
-	PackTactics:PartyLeaderId=2
+	PackTactics:PartyLeaderId=
 	Move
 	Level:CurrentLevel=2,CurrentExp=0
 	Stats:Str=8,Agi=10,Con=10,Wis=9,Int=13,Cha=8,AttributePoints=0

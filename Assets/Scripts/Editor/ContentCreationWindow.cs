@@ -41,6 +41,8 @@ public class ContentCreationWindow : EditorWindow
     Vector2 m_CurrentScrollPos = Vector2.zero;
     bool m_ShowFullComponentList = false;
 
+    string m_SearchString = "";
+
     void OnGUI()
     {
         if (m_Creator == null)
@@ -59,9 +61,13 @@ public class ContentCreationWindow : EditorWindow
         }
         EditorGUILayout.Space();
 
+        //EditorGUILayout.BeginHorizontal();
+        //m_Creator.Portrait = (Sprite)EditorGUILayout.ObjectField("Portrait", m_Creator.Portrait, typeof(Sprite), false);
+        //m_Creator.Icon = (Sprite)EditorGUILayout.ObjectField("Map Icon", m_Creator.Icon, typeof(Sprite), false);
+        //EditorGUILayout.EndHorizontal();
+
         EditorGUILayout.BeginHorizontal();
-        m_Creator.Portrait = (Sprite)EditorGUILayout.ObjectField("Portrait", m_Creator.Portrait, typeof(Sprite), false);
-        m_Creator.Icon = (Sprite)EditorGUILayout.ObjectField("Map Icon", m_Creator.Icon, typeof(Sprite), false);
+        m_SearchString = EditorGUILayout.TextField("Search", m_SearchString);
         EditorGUILayout.EndHorizontal();
 
         EditorGUILayout.BeginHorizontal(GUILayout.Width(1));
@@ -84,14 +90,20 @@ public class ContentCreationWindow : EditorWindow
                     {
                         ComponentName = m_ComponentTypes[(int)value].Name,
                         ComponentNameIndex = (int)value
-                    }, (IComponent)FormatterServices.GetUninitializedObject(m_ComponentTypes[(int)value]), m_ComponentTypes[(int)value]);
+                    }, m_ComponentTypes[(int)value], null);
                 }, i);
             gm.ShowAsContext();
         }
         EditorGUILayout.EndHorizontal();
         GuiLine();
         List<BlueprintValues> componenetsToRemove = new List<BlueprintValues>();
-        foreach (var component in m_Creator.Components)
+        foreach (var component in m_Creator.Components.Where(c =>
+        {
+            if (string.IsNullOrEmpty(m_SearchString))
+                return true;
+            else
+                return c.ComponentName.Contains(m_SearchString);
+        }))
         {
             if (component == null)
                 continue;
@@ -177,7 +189,7 @@ public class ContentCreationWindow : EditorWindow
                 var bpValue = new BlueprintValues()
                 {
                     ComponentName = comp.ComponentType.ToString(), //.GetType().ToString(),
-                    ComponentNameIndex = GetTypeIndex(comp.GetType().ToString())
+                    ComponentNameIndex = GetTypeIndex(comp.ComponentType.ToString())
                 };
                 m_Creator.AddComponent(bpValue, comp.ComponentType, comp.KeyValuePairs);
 
@@ -201,30 +213,31 @@ public class ContentCreationWindow : EditorWindow
     void CreateNewBPBuilder(string name = "")
     {
         m_Creator = new BlueprintCreator(name);
-        //LoadArchetype();
+        LoadArchetype();
     }
 
     void Clear()
     {
         m_Creator = new BlueprintCreator();
-        //LoadArchetype();
+        LoadArchetype();
     }
 
-    //void LoadArchetype()
-    //{
-    //    if (m_Creator.Archetype == BlueprintArchetype.None)
-    //        return;
+    void LoadArchetype()
+    {
+        if (m_Creator.Archetype == BlueprintArchetype.None)
+            return;
 
-    //    IEntity archetype = EntityFactory.GetEntity($"{Application.dataPath}/../Blueprints/Architype/{m_Creator.Archetype.ToString()}.bp", "");
-    //    foreach (var comp in archetype.GetComponents())
-    //    {
-    //        m_Creator.AddComponent(new BlueprintValues()
-    //        {
-    //            ComponentName = comp.GetType().ToString(),
-    //            ComponentNameIndex = GetTypeIndex(comp.GetType().ToString())
-    //        }, comp);
-    //    }
-    //}
+        //IEntity archetype = EntityFactory.GetEntity($"{Application.dataPath}/../Blueprints/Architype/{m_Creator.Archetype.ToString()}.bp", "");
+        var archetype = EntityFactory.GetEntityDataWithoutCreation(File.ReadAllText($"{Application.dataPath}/../Blueprints/Architype/{m_Creator.Archetype.ToString()}.bp"));
+        foreach (var comp in archetype.Components)
+        {
+            m_Creator.AddComponent(new BlueprintValues()
+            {
+                ComponentName = comp.ComponentType.ToString(),
+                ComponentNameIndex = GetTypeIndex(comp.ComponentType.ToString())
+            }, comp.ComponentType, comp.KeyValuePairs);
+        }
+    }
 
     void OverrideEntity()
     {

@@ -28,8 +28,12 @@ public class NameplateMono : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-        Vector2 newPos = (Vector2)Camera.main.WorldToScreenPoint(go.transform.position);
-        newPos.y += (go.GetComponent<SpriteRenderer>().sprite.textureRect.height);
-        transform.position = newPos;
+
+        if (go.GetComponent<SpriteRenderer>().sprite != null)
+        {
+            Vector2 newPos = (Vector2)Camera.main.WorldToScreenPoint(go.transform.position);
+            newPos.y += (go.GetComponent<SpriteRenderer>().sprite.textureRect.height);
+            transform.position = newPos;
+        }
     }
 }

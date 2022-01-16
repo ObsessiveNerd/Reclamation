@@ -24,6 +24,8 @@ public class Portrait : Component
     {
         if(gameEvent.ID == GameEventId.GetPortrait)
         {
+            if(m_Sprite == null)
+                Debug.Log("Sprite null");
             gameEvent.Paramters[EventParameters.RenderSprite] = m_Sprite;
         }
     }
@@ -35,12 +37,15 @@ public class DTO_Portrait : IDataTransferComponent
 
     public void CreateComponent(string data)
     {
-        Component = new Portrait(data);
+        if(data.Contains("="))
+            Component = new Portrait(data.Split('=')[1]);
+        else
+            Component = new Portrait(data);
     }
 
     public string CreateSerializableData(IComponent component)
     {
         Portrait gc = (Portrait)component;
-        return $"{nameof(Portrait)}:{gc.SpritePath}";
+        return $"{nameof(Portrait)}:{nameof(gc.SpritePath)}={gc.SpritePath}";
     }
 }

@@ -12,6 +12,8 @@ public class GraphicContainer : Component
     public GraphicContainer(string spritePath)
     {
         SpritePath = spritePath;
+        if(SpritePath != "Textures/Environment/td_world_floor_cobble_b-120")
+            Debug.Log("notta fuckin tile");
         Sprite sprite = Resources.Load<Sprite>(SpritePath);
         m_Sprite = sprite;
         RegisteredEvents.Add(GameEventId.GetSprite);
@@ -19,6 +21,8 @@ public class GraphicContainer : Component
 
     public override void HandleEvent(GameEvent gameEvent)
     {
+        if(m_Sprite == null)
+            Debug.Log("Sprite null");
         gameEvent.Paramters[EventParameters.RenderSprite] = m_Sprite;
     }
 }
@@ -29,12 +33,15 @@ public class DTO_GraphicContainer : IDataTransferComponent
 
     public void CreateComponent(string data)
     {
-        Component = new GraphicContainer(data);
+        if(data.Contains("="))
+            Component = new GraphicContainer(data.Split('=')[1]);
+        else
+            Component = new GraphicContainer(data);
     }
 
     public string CreateSerializableData(IComponent component)
     {
         GraphicContainer gc = (GraphicContainer)component;
-        return $"{nameof(GraphicContainer)}:{gc.SpritePath}";
+        return $"{nameof(GraphicContainer)}:{nameof(gc.SpritePath)}={gc.SpritePath}";
     }
 }

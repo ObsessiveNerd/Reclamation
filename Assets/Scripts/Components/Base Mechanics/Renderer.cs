@@ -21,6 +21,8 @@ public class Renderer : Component
             GameEvent checkForAlteredSprite = FireEvent(Self, new GameEvent(GameEventId.AlterSprite, new KeyValuePair<string, object>(EventParameters.Renderer, m_Image),
                                                                     new KeyValuePair<string, object>(EventParameters.RenderSprite, gameEvent.Paramters[EventParameters.RenderSprite])));
             m_Image.sprite = (Sprite)checkForAlteredSprite.Paramters[EventParameters.RenderSprite];
+            if(m_Image.sprite == null)
+                Debug.Log("help");
         }
     }
 }

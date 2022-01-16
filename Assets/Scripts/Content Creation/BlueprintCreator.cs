@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UI;
 
 public enum BlueprintArchetype
 {
@@ -28,8 +29,8 @@ public class BlueprintCreator
 {
     public string BlueprintName;
     public List<BlueprintValues> Components;
-    public Sprite Portrait = null;
-    public Sprite Icon = null;
+    //public Sprite Portrait = null;
+    //public Sprite Icon = null;
     public BlueprintArchetype Archetype;
 
     public BlueprintCreator()
@@ -47,10 +48,26 @@ public class BlueprintCreator
     public void AddComponent(BlueprintValues bpv, Type comp, string[] data)
     {
         Dictionary<string, string> kvp = new Dictionary<string, string>();
-        foreach(var s in data)
-            kvp.Add(s.Split('=')[0], s.Split('=')[1]);
-        
-        
+        if (data == null)
+        {
+            foreach(var field in comp.GetFields())
+                kvp.Add(field.Name, "");
+        }
+        else if (comp == typeof(GraphicContainer) || comp == typeof(Portrait))
+        {
+            kvp.Add("SpritePath", data[0]);
+        }
+        else
+        {
+            foreach (var s in data)
+            {
+                if(s.Split('=').Length == 1)
+                    kvp.Add(s.Split('=')[0], "");
+                else
+                    kvp.Add(s.Split('=')[0], s.Split('=')[1]);
+            }
+        }
+
         //if(comp.GetType() == typeof(GraphicContainer))
         //{
         //    string sp = ((GraphicContainer)comp).SpritePath;
@@ -65,24 +82,11 @@ public class BlueprintCreator
         {
             foreach (var field in comp.GetFields())
             {
-                //if (comp.GetType() == typeof(Body))
-                //{
-                //    bpv.FieldToValue.Add(field.Name, comp.ToString());
-                //    break;
-                //}
-                //else
-                {
-                    //string value = "";
-                    //if (field.FieldType == typeof(List<IEntity>))
-                    //    value = EntityFactory.ConvertEntitiesToStringArrayWithName(field.GetValue(comp) as List<IEntity>);
-                    //else if (field.FieldType == typeof(Dictionary<string, IEntity>))
-                    //{
-                    //    value = EntityFactory.ConvertEntitiesToStringArrayWithName((field.GetValue(comp) as Dictionary<string, IEntity>)?.Values.ToList());
-                    //}
-                    //else
-                    //    value = field.GetValue(comp)?.ToString();
+
+                if (!kvp.ContainsKey(field.Name))
+                    bpv.FieldToValue.Add(field.Name, "");
+                else
                     bpv.FieldToValue.Add(field.Name, kvp[field.Name]);
-                }
             }
         }
         Components.Add(bpv);
@@ -93,10 +97,10 @@ public class BlueprintCreator
         StringBuilder sb = new StringBuilder();
         sb.AppendLine($"<{BlueprintName}> (");
 
-        if (Icon != null)
-            sb.AppendLine($"\tGraphicContainer: {AssetDatabase.GetAssetPath(Icon).Replace("Assets/Resources/","").Replace(".png", "")}");
-        if(Portrait != null)
-            sb.AppendLine($"\tPortrait: {AssetDatabase.GetAssetPath(Portrait).Replace("Assets/Resources/","").Replace(".png", "")}");
+        //if (Icon != null)
+        //    sb.AppendLine($"\tGraphicContainer: {AssetDatabase.GetAssetPath(Icon).Replace("Assets/Resources/","").Replace(".png", "")}");
+        //if(Portrait != null)
+        //    sb.AppendLine($"\tPortrait: {AssetDatabase.GetAssetPath(Portrait).Replace("Assets/Resources/","").Replace(".png", "")}");
 
         foreach (var comp in Components)
         {

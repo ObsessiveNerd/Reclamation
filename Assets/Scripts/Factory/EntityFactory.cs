@@ -63,21 +63,7 @@ public static class EntityFactory
 
     public static IEntity CreateEntity(string blueprintName)
     {
-        if(m_Blueprints.Count == 0)
-            InitBlueprints();
-
-        InitTempBlueprints();
-
-        if (!m_Blueprints.ContainsKey(blueprintName))
-            return null;
-
-        Actor a = new Actor("<empty>");
-        string path = m_Blueprints[blueprintName]; //$"{m_BluePrintPath}/{blueprintName}.bp";
-        if(!File.Exists(path))
-            path = $"{SaveSystem.kSaveDataPath}/{World.Instance.Seed}/Blueprints/{blueprintName}.bp"; //todo: need proper seed
-        if (!File.Exists(path))
-            return null;
-        return GetEntity(path, a.ID);
+        return GetEntity(blueprintName);
     }
 
     private static void InitBlueprints()
@@ -160,9 +146,23 @@ public static class EntityFactory
         return list[RecRandom.Instance.GetRandomValue(0, list.Count)];
     }
 
-    public static IEntity GetEntity(string path, string entityID = "")
+    public static IEntity GetEntity(string blueprintName /*string path, string entityID = ""*/)
     {
-        Actor a = null;
+        if(m_Blueprints.Count == 0)
+            InitBlueprints();
+
+        InitTempBlueprints();
+
+        if (!m_Blueprints.ContainsKey(blueprintName))
+            return null;
+
+        Actor a = new Actor("<empty>");
+        string path = m_Blueprints[blueprintName]; //$"{m_BluePrintPath}/{blueprintName}.bp";
+        if(!File.Exists(path))
+            path = $"{SaveSystem.kSaveDataPath}/{World.Instance.Seed}/Blueprints/{blueprintName}.bp"; //todo: need proper seed
+        if (!File.Exists(path))
+            return null;
+
         using (var stream = new StreamReader(path))
         {
             string header = stream.ReadLine();
@@ -176,7 +176,7 @@ public static class EntityFactory
 
             string[] nameAndID = name.Split(',');
             if (nameAndID.Length == 1)
-                a = new Actor(name, entityID);
+                a = new Actor(name, a.ID);
             else
                 a = new Actor(nameAndID[0], nameAndID[1]);
 
@@ -403,7 +403,7 @@ public class DTO_Inherits
         foreach(string parameter in parameters)
         {
             string fullArchitypePath = $"{architypePath}/{parameter}.bp";
-            IEntity e = EntityFactory.GetEntity(fullArchitypePath);
+            IEntity e = EntityFactory.GetEntity(parameter);
             retValue.AddRange(e.GetComponents());
         }
         return retValue;

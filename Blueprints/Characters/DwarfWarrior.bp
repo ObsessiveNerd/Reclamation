@@ -1,6 +1,6 @@
 <DwarfWarrior> (
-	GraphicContainer: Textures/Characters/td_monsters_dwarf_d2
-	Portrait: Portraits/Characters/Tex_Dwarf_warrior_male_bg
+	GraphicContainer:SpritePath=Textures/Characters/td_monsters_dwarf_d2
+	Portrait:SpritePath=Portraits/Characters/Tex_Dwarf_warrior_male_bg
 	Defense
 	Inventory:InventoryItems=[<Spellbook>&<BronzeHelmet>]
 	Move
@@ -8,7 +8,7 @@
 	PrimaryStatType:PrimaryStat=Str
 	Faction:ID=DwarvenExpedition
 	Energy:EnergyRegineration=1,CurrentEnergy=0,HasHadTurnStarted=False
-	PackTactics:PartyLeaderId=1879
+	PackTactics:PartyLeaderId=
 	InteractsWithWorld
 	Name:PrettyName=
 	Level:CurrentLevel=1,CurrentExp=0
@@ -25,7 +25,7 @@
 	RegisterWithTimeSystem
 	Body
 	EquipmentSlot:EquipmentId=,BodyPartType=Head
-	Position:PositionPoint=0,0
+	Position:PositionPoint=0
 	Fear
 	Wander
 	AIController

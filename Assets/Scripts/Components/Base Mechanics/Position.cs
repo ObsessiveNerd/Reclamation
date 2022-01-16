@@ -40,8 +40,15 @@ public class DTO_Position : IDataTransferComponent
         if(kvp.Length == 2)
         {
             string[] parameters = kvp[1].Split(',');
-            int x = int.Parse(parameters[0]);
-            int y = int.Parse(parameters[1]);
+            int x = 0;
+            int y = 0;
+
+            if (parameters.Length == 2)
+            {
+                x = int.Parse(parameters[0]);
+                y = int.Parse(parameters[1]);
+            }
+
             Point point = new Point(x, y);
             Component = new Position(point);
         }
