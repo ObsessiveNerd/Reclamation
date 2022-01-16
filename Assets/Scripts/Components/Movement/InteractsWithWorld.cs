@@ -11,20 +11,23 @@ public class InteractsWithWorld : Component
 
     public override void HandleEvent(GameEvent gameEvent)
     {
-        IEntity target = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Target]);
-        Demeanor demeanor = Factions.GetDemeanorForTarget(Self, target);
-
-        switch(demeanor)
+        if (gameEvent.ID == GameEventId.InteractWithTarget)
         {
-            case Demeanor.Friendly:
-            case Demeanor.None:
-            case Demeanor.Neutral:
-                FireEvent(target, new GameEvent(GameEventId.Interact, new KeyValuePair<string, object>(EventParameters.Entity, Self.ID)));
-                break;
-            case Demeanor.Hostile:
-                FireEvent(Self, new GameEvent(GameEventId.PerformAttack, new KeyValuePair<string, object>(EventParameters.Target, target.ID),
-                                                                         new KeyValuePair<string, object>(EventParameters.WeaponType, TypeWeapon.Melee & TypeWeapon.Finesse)));
-                break;
+            IEntity target = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Target]);
+            Demeanor demeanor = Factions.GetDemeanorForTarget(Self, target);
+
+            switch (demeanor)
+            {
+                case Demeanor.Friendly:
+                case Demeanor.None:
+                case Demeanor.Neutral:
+                    FireEvent(target, new GameEvent(GameEventId.Interact, new KeyValuePair<string, object>(EventParameters.Entity, Self.ID)));
+                    break;
+                case Demeanor.Hostile:
+                    FireEvent(Self, new GameEvent(GameEventId.PerformAttack, new KeyValuePair<string, object>(EventParameters.Target, target.ID),
+                                                                             new KeyValuePair<string, object>(EventParameters.WeaponType, TypeWeapon.Melee & TypeWeapon.Finesse)));
+                    break;
+            }
         }
     }
 }

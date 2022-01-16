@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Runtime.Serialization;
 using UnityEditor;
 using UnityEngine;
+using static EntityFactory;
 
 public class ContentCreationWindow : EditorWindow
 {
@@ -83,7 +84,7 @@ public class ContentCreationWindow : EditorWindow
                     {
                         ComponentName = m_ComponentTypes[(int)value].Name,
                         ComponentNameIndex = (int)value
-                    }, (IComponent)FormatterServices.GetUninitializedObject(m_ComponentTypes[(int)value]));
+                    }, (IComponent)FormatterServices.GetUninitializedObject(m_ComponentTypes[(int)value]), m_ComponentTypes[(int)value]);
                 }, i);
             gm.ShowAsContext();
         }
@@ -169,16 +170,16 @@ public class ContentCreationWindow : EditorWindow
         {
             string path = EditorUtility.OpenFilePanel("Load Blueprint", $"{Application.dataPath}/../Blueprints", "bp");
             string fileContents = File.ReadAllText(path);
-            IEntity e = EntityFactory.ParseEntityData(fileContents);
+            EntityData e = EntityFactory.GetEntityDataWithoutCreation(fileContents);
             CreateNewBPBuilder(e.Name);
-            foreach (var comp in e.GetComponents())
+            foreach (var comp in e.Components)
             {
                 var bpValue = new BlueprintValues()
                 {
-                    ComponentName = comp.GetType().ToString(),
+                    ComponentName = comp.ComponentType.ToString(), //.GetType().ToString(),
                     ComponentNameIndex = GetTypeIndex(comp.GetType().ToString())
                 };
-                m_Creator.AddComponent(bpValue, comp);
+                m_Creator.AddComponent(bpValue, comp.ComponentType, comp.KeyValuePairs);
 
                 if (comp.GetType() == typeof(GraphicContainer) || comp.GetType() == typeof(Portrait))
                     m_Creator.Components.Remove(bpValue);
@@ -200,30 +201,30 @@ public class ContentCreationWindow : EditorWindow
     void CreateNewBPBuilder(string name = "")
     {
         m_Creator = new BlueprintCreator(name);
-        LoadArchetype();
+        //LoadArchetype();
     }
 
     void Clear()
     {
         m_Creator = new BlueprintCreator();
-        LoadArchetype();
+        //LoadArchetype();
     }
 
-    void LoadArchetype()
-    {
-        if (m_Creator.Archetype == BlueprintArchetype.None)
-            return;
+    //void LoadArchetype()
+    //{
+    //    if (m_Creator.Archetype == BlueprintArchetype.None)
+    //        return;
 
-        IEntity archetype = EntityFactory.GetEntity($"{Application.dataPath}/../Blueprints/Architype/{m_Creator.Archetype.ToString()}.bp", "");
-        foreach (var comp in archetype.GetComponents())
-        {
-            m_Creator.AddComponent(new BlueprintValues()
-            {
-                ComponentName = comp.GetType().ToString(),
-                ComponentNameIndex = GetTypeIndex(comp.GetType().ToString())
-            }, comp);
-        }
-    }
+    //    IEntity archetype = EntityFactory.GetEntity($"{Application.dataPath}/../Blueprints/Architype/{m_Creator.Archetype.ToString()}.bp", "");
+    //    foreach (var comp in archetype.GetComponents())
+    //    {
+    //        m_Creator.AddComponent(new BlueprintValues()
+    //        {
+    //            ComponentName = comp.GetType().ToString(),
+    //            ComponentNameIndex = GetTypeIndex(comp.GetType().ToString())
+    //        }, comp);
+    //    }
+    //}
 
     void OverrideEntity()
     {

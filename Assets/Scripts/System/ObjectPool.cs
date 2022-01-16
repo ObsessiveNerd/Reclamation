@@ -16,8 +16,7 @@ public class ObjectPool
     {
         if (m_Pool.Count == 0)
         {
-            var newGe = new GameEvent();
-            newGe.Setup(id, parameters);
+            var newGe = new GameEvent(id, parameters);
             m_InUse.Add(newGe);
             return newGe;
         }
@@ -31,8 +30,7 @@ public class ObjectPool
     {
         if (m_Pool.Count == 0)
         {
-            var newGe = new GameEvent();
-            newGe.Setup(id, values);
+            var newGe = new GameEvent(id, values);
             m_InUse.Add(newGe);
             return newGe;
         }

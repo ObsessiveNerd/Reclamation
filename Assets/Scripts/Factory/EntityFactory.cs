@@ -218,6 +218,59 @@ public static class EntityFactory
         return a;
     }
 
+    public struct ComponentData
+    {
+        public Type ComponentType;
+        public string[] KeyValuePairs;
+
+        public ComponentData(Type t, string[] data)
+        {
+            ComponentType = t;
+            KeyValuePairs = data;
+        }
+    }
+
+    public struct EntityData
+    {
+        public string Name;
+        public List<ComponentData> Components;
+    }
+
+    public static EntityData GetEntityDataWithoutCreation(string entityData)
+    {
+        string name = "";
+        List<ComponentData> cd = new List<ComponentData>();
+        using (var stream = new StringReader(entityData))
+        {
+            string header = stream.ReadLine();
+            int firstIndex = header.IndexOf('<');
+            int lastIndex = header.IndexOf('>');
+
+            int nameStart = firstIndex + 1;
+            int nameLength = lastIndex - firstIndex - 1;
+            name = header.Substring(nameStart, nameLength);
+
+            string line;
+            while ((line = stream.ReadLine()) != null && line != ")")
+            {
+                string[] componentToValues = line.Split(':');
+                string componentName = $"{componentToValues[0].Replace("\t", string.Empty)}";
+                Type componentType = Type.GetType(componentName);
+
+                if (componentToValues.Length > 1)
+                    cd.Add(new ComponentData(componentType, componentToValues[1].Split(',')));
+                else
+                    cd.Add(new ComponentData(componentType, null));
+
+            }
+        }
+        return new EntityData
+        {
+            Name = name,
+            Components = cd
+        };
+    }
+
     public static IEntity ParseEntityData(string entityData)
     {
         Actor a = null;

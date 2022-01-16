@@ -16,12 +16,12 @@ public class Defense : Component
     public override void HandleEvent(GameEvent gameEvent)
     {
         //Todo: we need to check what the weapon type is and decide if we need to get armor/resistances/other...
-        int rollToHit = (int)gameEvent.Paramters[EventParameters.RollToHit];
-        GameEvent getArmor = new GameEvent(GameEventId.AddArmorValue, new KeyValuePair<string, object>(EventParameters.Value, 0));
-        int armorBonus = (int)FireEvent(Self, getArmor).Paramters[EventParameters.Value];
-
         if (gameEvent.ID == GameEventId.TakeDamage)
         {
+            int rollToHit = (int)gameEvent.Paramters[EventParameters.RollToHit];
+            GameEvent getArmor = new GameEvent(GameEventId.AddArmorValue, new KeyValuePair<string, object>(EventParameters.Value, 0));
+            int armorBonus = (int)FireEvent(Self, getArmor).Paramters[EventParameters.Value];
+
             if (rollToHit >= kBaseAC + armorBonus)
                 RecLog.Log($"{Self.Name} was hit!");
             else
@@ -33,6 +33,10 @@ public class Defense : Component
 
         if (gameEvent.ID == GameEventId.Sharpness)
         {
+            int rollToHit = (int)gameEvent.Paramters[EventParameters.RollToHit];
+            GameEvent getArmor = new GameEvent(GameEventId.AddArmorValue, new KeyValuePair<string, object>(EventParameters.Value, 0));
+            int armorBonus = (int)FireEvent(Self, getArmor).Paramters[EventParameters.Value];
+
             if (rollToHit < kBaseAC + armorBonus)
                 RecLog.Log("Nothing was severed.");
             else

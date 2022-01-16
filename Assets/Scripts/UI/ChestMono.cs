@@ -33,9 +33,9 @@ public class ChestMono : EscapeableMono, IUpdatableUI
         Cleanup();
         GameObject go = Resources.Load<GameObject>("UI/InventoryItem");
         EventBuilder getItems = EventBuilderPool.Get(GameEventId.GetItems)
-                                .With(EventParameters.Item, new List<string>());
+                                .With(EventParameters.Items, new List<string>());
 
-        List<string> itemIds = m_Chest.FireEvent(getItems.CreateEvent()).GetValue<List<string>>(EventParameters.Item);
+        List<string> itemIds = m_Chest.FireEvent(getItems.CreateEvent()).GetValue<List<string>>(EventParameters.Items);
         foreach(var itemId in itemIds)
         {
             var item = EntityQuery.GetEntity(itemId);

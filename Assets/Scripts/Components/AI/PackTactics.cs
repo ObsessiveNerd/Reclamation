@@ -18,7 +18,7 @@ public class PackTactics : Component
     {
         EventBuilder registerWithPartyManager = EventBuilderPool.Get(GameEventId.LookingForGroup)
                                                 .With(EventParameters.Entity, Self.ID);
-        FireEvent(World.Instance.Self, registerWithPartyManager.CreateEvent());
+        FireEvent(World.Instance?.Self, registerWithPartyManager.CreateEvent());
     }
 
     public override void Init(IEntity self)

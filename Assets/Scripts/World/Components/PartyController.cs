@@ -89,6 +89,8 @@ public class PartyController : WorldComponent
         {
             string id = gameEvent.GetValue<string>(EventParameters.Entity);
             IEntity entity = EntityQuery.GetEntity(id);
+            if (entity == null)
+                return;
 
             GameEvent getFaction = new GameEvent(GameEventId.GetFaction, new KeyValuePair<string, object>(EventParameters.Value, null));
             FactionId factionId = FireEvent(entity, getFaction).GetValue<Faction>(EventParameters.Value).ID;

@@ -16,6 +16,14 @@ public abstract class WorldComponent : Component
     protected static int m_CurrentLevel = 1;
     protected static Dictionary<string, IEntity> m_EntityIdToEntityMap = new Dictionary<string, IEntity>();
 
+    public static int CurrentLevel
+    {
+        get
+        {
+            return m_CurrentLevel;
+        }
+    }
+
     public Point GetPointWhereEntityIs(IEntity e)
     {
         if (m_EntityToPointMap.ContainsKey(e))

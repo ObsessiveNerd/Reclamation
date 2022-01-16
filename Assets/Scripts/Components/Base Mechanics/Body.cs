@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using UnityEngine;
 
@@ -15,48 +16,17 @@ public enum BodyPart
 
 public class Body : Component
 {
-    public IEntity Torso;
-    public List<IEntity> Head = new List<IEntity>();
-    public List<IEntity> Arm = new List<IEntity>();
-    public List<IEntity> Leg = new List<IEntity>();
-
-    private List<IEntity> m_AllBodyParts
+    public Body()
     {
-        get
-        {
-            List<IEntity> list = new List<IEntity>();
-            list.Add(Torso);
-            list.AddRange(Head);
-            list.AddRange(Arm);
-            list.AddRange(Leg);
-            return list;
-        }
-    }
-
-    public Body(int numHeads, int numArms = 0, int numLegs = 0)
-    {
-        Actor body = new Actor("Body");
-        body.AddComponent(new EquipmentSlot());
-        body.CleanupComponents();
-        Torso = body;
-
-        for (int i = 0; i < numHeads; i++)
-            GrowBodyPart(BodyPart.Head);
-
-        for (int i = 0; i < numArms; i++)
-            GrowBodyPart(BodyPart.Arm);
-
-        for (int i = 0; i < numLegs; i++)
-            GrowBodyPart(BodyPart.Leg);
-
-        RegisteredEvents.Add(GameEventId.SeverBodyPart);
-        RegisteredEvents.Add(GameEventId.GrowBodyPart);
+        //RegisteredEvents.Add(GameEventId.SeverBodyPart);
+        //    //RegisteredEvents.Add(GameEventId.GrowBodyPart);
         RegisteredEvents.Add(GameEventId.AddArmorValue);
         RegisteredEvents.Add(GameEventId.PerformAttack);
         RegisteredEvents.Add(GameEventId.GetRangedWeapon);
         RegisteredEvents.Add(GameEventId.GetWeapon);
         RegisteredEvents.Add(GameEventId.Equip);
         RegisteredEvents.Add(GameEventId.Unequip);
+        //RegisteredEvents.Add(GameEventId.Equip2Hand);
         RegisteredEvents.Add(GameEventId.CheckEquipment);
         RegisteredEvents.Add(GameEventId.EndTurn);
         RegisteredEvents.Add(GameEventId.GetCombatRating);
@@ -66,147 +36,83 @@ public class Body : Component
         RegisteredEvents.Add(GameEventId.Died);
     }
 
-    public override void Start()
-    {
-        foreach (GameEvent ge in OnSpawn)
-            HandleEvent(ge);
-        OnSpawn.Clear();
-    }
+    //public Body(int numHeads, int numArms = 0, int numLegs = 0)
+    //{
+    //    //RegisteredEvents.Add(GameEventId.SeverBodyPart);
+    //    //RegisteredEvents.Add(GameEventId.GrowBodyPart);
+    //    RegisteredEvents.Add(GameEventId.AddArmorValue);
+    //    RegisteredEvents.Add(GameEventId.PerformAttack);
+    //    RegisteredEvents.Add(GameEventId.GetRangedWeapon);
+    //    RegisteredEvents.Add(GameEventId.GetWeapon);
+    //    RegisteredEvents.Add(GameEventId.Equip);
+    //    RegisteredEvents.Add(GameEventId.Unequip);
+    //    RegisteredEvents.Add(GameEventId.CheckEquipment);
+    //    RegisteredEvents.Add(GameEventId.EndTurn);
+    //    RegisteredEvents.Add(GameEventId.GetCombatRating);
+    //    RegisteredEvents.Add(GameEventId.GetCurrentEquipment);
+    //    RegisteredEvents.Add(GameEventId.GetSpells);
+    //    RegisteredEvents.Add(GameEventId.CheckItemEquiped);
+    //    RegisteredEvents.Add(GameEventId.Died);
+    //}
 
-    List<GameEvent> OnSpawn = new List<GameEvent>();
-    public void EquipOnSpawn(BodyPart bp, string id)
-    {
-        OnSpawn.Add(new GameEvent(GameEventId.Equip, new KeyValuePair<string, object>(EventParameters.EntityType, bp),
-                                                                        new KeyValuePair<string, object>(EventParameters.Equipment, id)));
-    }
+    //public override void Start()
+    //{
+    //    foreach (GameEvent ge in OnSpawn)
+    //        HandleEvent(ge);
+    //    OnSpawn.Clear();
+    //}
 
-    bool HasEquipment(IEntity e)
+    //List<GameEvent> OnSpawn = new List<GameEvent>();
+    //public void EquipOnSpawn(BodyPart bp, string id)
+    //{
+    //    OnSpawn.Add(new GameEvent(GameEventId.Equip, new KeyValuePair<string, object>(EventParameters.EntityType, bp),
+    //                                                                    new KeyValuePair<string, object>(EventParameters.Equipment, id)));
+    //}
+
+    bool HasEquipment(Component e)
     {
-        GameEvent result = FireEvent(e, new GameEvent(GameEventId.GetEquipment, new KeyValuePair<string, object>(EventParameters.Equipment, null)));
-        return result.Paramters[EventParameters.Equipment] != null;
+        GameEvent ge = new GameEvent(GameEventId.GetEquipment, new KeyValuePair<string, object>(EventParameters.Equipment, null));
+        //GameEvent result = FireEvent(e, );
+        e.HandleEvent(ge);
+        return ge.Paramters[EventParameters.Equipment] != null;
     }
 
     public override void HandleEvent(GameEvent gameEvent)
     {
-        if (gameEvent.ID == GameEventId.SeverBodyPart)
-        {
-            BodyPart bp = (BodyPart)gameEvent.Paramters[EventParameters.EntityType];
-            IEntity dropTarget = null;
-            switch (bp)
-            {
-                case BodyPart.Head:
-                    if (Head.Count > 0)
-                    {
-                        dropTarget = Head[0];
-                        Head.RemoveAt(0);
-                    }
-                    break;
-                case BodyPart.Arm:
-                    if (Arm.Count > 0)
-                    {
-                        dropTarget = Arm[0];
-                        Arm.RemoveAt(0);
-                    }
-                    break;
-                case BodyPart.Leg:
-                    if (Leg.Count > 0)
-                    {
-                        dropTarget = Leg[0];
-                        Leg.RemoveAt(0);
-                    }
-                    break;
-            }
-
-            if (dropTarget != null)
-            {
-                FireEvent(World.Instance.Self, new GameEvent(GameEventId.Drop, new KeyValuePair<string, object>(EventParameters.Entity, dropTarget.ID),
-                                                                                new KeyValuePair<string, object>(EventParameters.Creature, Self.ID),
-                                                                                new KeyValuePair<string, object>(EventParameters.EntityType, EntityType.Item)));
-            }
-        }
-
-        //TODO this only works for bipedal monsters
-        else if(gameEvent.ID == GameEventId.GetCurrentEquipment)
-        {
-            gameEvent.Paramters[EventParameters.Head] = GetEquipmentIdForBodyPart(Head[0]);
-            gameEvent.Paramters[EventParameters.Torso] = GetEquipmentIdForBodyPart(Torso);
-            if(Arm.Count > 0)
-                gameEvent.Paramters[EventParameters.LeftArm] = GetEquipmentIdForBodyPart(Arm[0]);
-            if(Arm.Count > 1)
-                gameEvent.Paramters[EventParameters.RightArm] = GetEquipmentIdForBodyPart(Arm[1]);
-            gameEvent.Paramters[EventParameters.Legs] = GetEquipmentIdForBodyPart(Leg[0]);
-        }
-
-        else if(gameEvent.ID == GameEventId.CheckItemEquiped)
-        {
-            string equipmentId = gameEvent.GetValue<string>(EventParameters.Item);
-            foreach(var bodyPart in m_AllBodyParts)
-            {
-                string equipedId = GetEquipmentIdForBodyPart(bodyPart);
-                if(equipedId == equipmentId)
-                {
-                    gameEvent.Paramters[EventParameters.Value] = true;
-                    break;
-                }
-            }
-        }
-
-        else if(gameEvent.ID == GameEventId.GetSpells)
-        {
-            foreach (IEntity item in m_AllBodyParts)
-                FireEvent(item, gameEvent);
-        }
-
-        else if(gameEvent.ID == GameEventId.Unequip)
-        {
-            foreach (var bp in m_AllBodyParts)
-                FireEvent(bp, gameEvent);
-        }
-
-        else if(gameEvent.ID == GameEventId.Equip)
+        if(gameEvent.ID == GameEventId.Equip)
         {
             BodyPart bp = (BodyPart)gameEvent.Paramters[EventParameters.EntityType];
 
             int numberOfBodyPartsRequired = FireEvent(EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameters.Equipment)),
                 new GameEvent(GameEventId.GetMultiBodyPartUse, new KeyValuePair<string, object>(EventParameters.Value, 1))).GetValue<int>(EventParameters.Value);
 
-            List<IEntity> target = new List<IEntity>();
-            switch(bp)
-            {
-                //todo: all of this is temp.  we'll have to iterate through and see what open slots are avalible
-                case BodyPart.Head:
-                    target = Head;
-                    break;
-                case BodyPart.Arm:
-                    target = Arm;
-                    break;
-                case BodyPart.Leg:
-                    target = Leg;
-                    break;
-                case BodyPart.Torso:
-                    target = new List<IEntity>() { Torso };
-                    break;
-            }
+            EventBuilder builder = EventBuilderPool.Get(GameEventId.GetBodyPartType)
+                                    .With(EventParameters.BodyParts, new Dictionary<BodyPart, List<Component>>())
+                                    .With(EventParameters.DesiredBodyPartTypes, new List<BodyPart>(){ bp });
 
-            if (target.Count < numberOfBodyPartsRequired)
+            Dictionary<BodyPart, List<Component>> target = FireEvent(Self, builder.CreateEvent()).GetValue<Dictionary<BodyPart, List<Component>>>(EventParameters.BodyParts);
+            if (!target.ContainsKey(bp))
+                return;
+
+            if (target[bp].Count < numberOfBodyPartsRequired)
                 return;
 
             int bodyPartsTaken = 0;
             bool unequipThroughIteration = false;
-            for (int i = 0; i < target.Count && bodyPartsTaken < numberOfBodyPartsRequired; i++)
+            for (int i = 0; i < target[bp].Count && bodyPartsTaken < numberOfBodyPartsRequired; i++)
             {
-                if (GetEquipmentIdForBodyPart(target[i]) == gameEvent.GetValue<string>(EventParameters.Equipment))
+                if (GetEquipmentIdForBodyPart(target[bp][i]) == gameEvent.GetValue<string>(EventParameters.Equipment))
                     break;
 
-                if (unequipThroughIteration && GetEquipmentIdForBodyPart(target[i]) != gameEvent.GetValue<string>(EventParameters.Equipment))
+                if (unequipThroughIteration && GetEquipmentIdForBodyPart(target[bp][i]) != gameEvent.GetValue<string>(EventParameters.Equipment))
                 {
                     EventBuilder unequip = EventBuilderPool.Get(GameEventId.Unequip)
                                             .With(EventParameters.Entity, Self.ID)
-                                            .With(EventParameters.Item, GetEquipmentIdForBodyPart(target[i]));
+                                            .With(EventParameters.Item, GetEquipmentIdForBodyPart(target[bp][i]));
                     FireEvent(Self, unequip.CreateEvent());
                 }
 
-                if (!HasEquipment(target[i]))
+                if (!HasEquipment(target[bp][i]))
                 {
                     bodyPartsTaken++;
 
@@ -214,12 +120,12 @@ public class Body : Component
                                                 .With(EventParameters.Equipment, gameEvent.GetValue<string>(EventParameters.Equipment))
                                                 .With(EventParameters.Owner, Self?.ID);
 
-                    FireEvent(target[i], itemEquiped.CreateEvent());
+                    target[bp][i].HandleEvent(itemEquiped.CreateEvent());
                     FireEvent(Self, new GameEvent(GameEventId.RemoveFromInventory,
                         new KeyValuePair<string, object>(EventParameters.Entity, gameEvent.Paramters[EventParameters.Equipment])));
                 }
 
-                if(i == target.Count - 1 && bodyPartsTaken < numberOfBodyPartsRequired)
+                if(i == target[bp].Count - 1 && bodyPartsTaken < numberOfBodyPartsRequired)
                 {
                     i = -1;
                     if(!unequipThroughIteration)
@@ -229,146 +135,103 @@ public class Body : Component
                 }
             }
         }
-
-        else if(gameEvent.ID == GameEventId.Died)
-        {
-            foreach(var bp in m_AllBodyParts)
-            {
-                EventBuilder drop = EventBuilderPool.Get(GameEventId.Drop)
-                                    .With(EventParameters.Item, GetEquipmentIdForBodyPart(bp))
-                                    .With(EventParameters.Entity, Self.ID);
-                bp.FireEvent(drop.CreateEvent());
-            }
-        }
-
-        else if (gameEvent.ID == GameEventId.AddArmorValue || gameEvent.ID == GameEventId.GetCombatRating)
-        {
-            FireEvent(Torso, gameEvent);
-            foreach(var head in Head)
-                FireEvent(head, gameEvent);
-            foreach (var arm in Arm)
-                FireEvent(arm, gameEvent);
-            foreach (var leg in Leg)
-                FireEvent(leg, gameEvent);
-        }
-
-        else if(gameEvent.ID == GameEventId.GetWeapon)
-        {
-            foreach(IEntity hand in Arm)
-            {
-                string id = FireEvent(hand, new GameEvent(GameEventId.GetEquipment,
-                    new KeyValuePair<string, object>(EventParameters.Equipment, null))).GetValue<string>(EventParameters.Equipment);
-
-                if(!string.IsNullOrEmpty(id))
-                    gameEvent.GetValue<List<string>>(EventParameters.Weapon).Add(id);
-            }
-        }
-
-        else if (gameEvent.ID == GameEventId.GetRangedWeapon)
-        {
-            foreach (IEntity hand in Arm)
-            {
-                IEntity equipment = EntityQuery.GetEntity(FireEvent(hand, new GameEvent(GameEventId.GetEquipment, 
-                    new KeyValuePair<string, object>(EventParameters.Equipment, null))).GetValue<string>(EventParameters.Equipment));
-                if (equipment != null)
-                {
-                    TypeWeapon weaponType = (TypeWeapon)FireEvent(equipment, new GameEvent(GameEventId.GetWeaponType,
-                           new KeyValuePair<string, object>(EventParameters.WeaponType, null))).Paramters[EventParameters.WeaponType];
-                    if (weaponType == TypeWeapon.Ranged)
-                    {
-                        gameEvent.Paramters[EventParameters.Value] = equipment.ID;
-                        break;
-                    }
-                }
-            }
-        }
-
         else if (gameEvent.ID == GameEventId.PerformAttack)
         {
             TypeWeapon desiredWeaponToAttack = (TypeWeapon)gameEvent.Paramters[EventParameters.WeaponType];
-            foreach (IEntity hand in Arm)
+
+            EventBuilder builder = EventBuilderPool.Get(GameEventId.GetBodyPartType)
+                                    .With(EventParameters.BodyParts, new Dictionary<BodyPart, List<Component>>())
+                                    .With(EventParameters.DesiredBodyPartTypes, new List<BodyPart>(){ BodyPart.Arm, BodyPart.Leg, BodyPart.Torso, BodyPart.Head });
+
+            var result = FireEvent(Self, builder.CreateEvent());
+            if (!result.HasParameter(EventParameters.BodyParts))
+                return;
+            if (!result.GetValue<Dictionary<BodyPart, List<Component>>>(EventParameters.BodyParts).ContainsKey(BodyPart.Arm))
+                return;
+
+            var arms = result.GetValue<Dictionary<BodyPart, List<Component>>>(EventParameters.BodyParts)[BodyPart.Arm];
+
+            foreach(var arm in arms.Where(a => a.GetType() == typeof(EquipmentSlot)))
             {
-                EventBuilder getEquipment = EventBuilderPool.Get(GameEventId.GetEquipment)
-                                            .With(EventParameters.Equipment, null);
-
-                string equipment = FireEvent(hand, getEquipment.CreateEvent()).GetValue<string>(EventParameters.Equipment);
-                IEntity equipmentEntity = EntityQuery.GetEntity(equipment);
-
-                if (equipmentEntity == null)
-                    equipmentEntity = EntityFactory.CreateEntity("UnarmedStrike");
-
-                if (equipmentEntity != null && CombatUtility.GetWeaponType(equipmentEntity).HasFlag(desiredWeaponToAttack))
-                    CombatUtility.Attack(Self, EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Target]), equipmentEntity);
+                if (!string.IsNullOrEmpty(((EquipmentSlot)arm).EquipmentId))
+                    return;
             }
-        }
 
-        else if (gameEvent.ID == GameEventId.GrowBodyPart)
-        {
-            BodyPart bodyPartType = (BodyPart)gameEvent.Paramters[EventParameters.EntityType];
-            GrowBodyPart(bodyPartType);
-        }
+            var equipmentEntity = EntityFactory.CreateEntity("UnarmedStrike");
 
-        else if (gameEvent.ID == GameEventId.CheckEquipment)
-        {
-            foreach(IEntity bodyPart in m_AllBodyParts)
-                FireEvent(bodyPart, gameEvent);
+            if (equipmentEntity != null && CombatUtility.GetWeaponType(equipmentEntity).HasFlag(desiredWeaponToAttack))
+                CombatUtility.Attack(Self, EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Target]), equipmentEntity);
         }
-
-        else if (gameEvent.ID == GameEventId.EndTurn)
+        else if(gameEvent.ID == GameEventId.GetCurrentEquipment)
         {
-            GameEvent ge = new GameEvent(GameEventId.CheckEquipment, new KeyValuePair<string, object>(EventParameters.GameEvent, gameEvent));
-            foreach (IEntity bodyPart in m_AllBodyParts)
-                FireEvent(bodyPart, ge);
+            EventBuilder builder = EventBuilderPool.Get(GameEventId.GetBodyPartType)
+                                    .With(EventParameters.BodyParts, new Dictionary<BodyPart, List<Component>>())
+                                    .With(EventParameters.DesiredBodyPartTypes, new List<BodyPart>(){ BodyPart.Arm, BodyPart.Leg, BodyPart.Torso, BodyPart.Head });
+
+            var result = FireEvent(Self, builder.CreateEvent());
+
+            if(result.GetValue<Dictionary<BodyPart, List<Component>>>(EventParameters.BodyParts).ContainsKey(BodyPart.Head))
+                gameEvent.Paramters[EventParameters.Head] = result.GetValue<Dictionary<BodyPart, List<Component>>>(EventParameters.BodyParts)[BodyPart.Head];
+
+            if(result.GetValue<Dictionary<BodyPart, List<Component>>>(EventParameters.BodyParts).ContainsKey(BodyPart.Torso))
+                gameEvent.Paramters[EventParameters.Torso] = result.GetValue<Dictionary<BodyPart, List<Component>>>(EventParameters.BodyParts)[BodyPart.Torso];
+
+            if(result.GetValue<Dictionary<BodyPart, List<Component>>>(EventParameters.BodyParts).ContainsKey(BodyPart.Arm))
+                gameEvent.Paramters[EventParameters.Arms] = result.GetValue<Dictionary<BodyPart, List<Component>>>(EventParameters.BodyParts)[BodyPart.Arm];
+
+            if(result.GetValue<Dictionary<BodyPart, List<Component>>>(EventParameters.BodyParts).ContainsKey(BodyPart.Leg))
+                gameEvent.Paramters[EventParameters.Legs] = result.GetValue<Dictionary<BodyPart, List<Component>>>(EventParameters.BodyParts)[BodyPart.Leg];
         }
     }
 
-    void GrowBodyPart(BodyPart bodyPartType)
-    {
-        switch (bodyPartType)
-        {
-            case BodyPart.Head:
-                Actor head = new Actor("Head");
-                head.AddComponent(new EquipmentSlot());
-                head.CleanupComponents();
-                Head.Add(head);
-                break;
-            case BodyPart.Arm:
-                Actor arm = new Actor("Arm");
-                arm.AddComponent(new EquipmentSlot());
-                arm.CleanupComponents();
-                Arm.Add(arm);
-                break;
-            case BodyPart.Leg:
-                Actor leg = new Actor("Leg");
-                leg.AddComponent(new EquipmentSlot());
-                leg.CleanupComponents();
-                Leg.Add(leg);
-                break;
-        }
-    }
+    //void GrowBodyPart(BodyPart bodyPartType)
+    //{
+    //    switch (bodyPartType)
+    //    {
+    //        case BodyPart.Head:
+    //            Actor head = new Actor("Head");
+    //            head.AddComponent(new EquipmentSlot());
+    //            head.CleanupComponents();
+    //            Head.Add(head);
+    //            break;
+    //        case BodyPart.Arm:
+    //            Actor arm = new Actor("Arm");
+    //            arm.AddComponent(new EquipmentSlot());
+    //            arm.CleanupComponents();
+    //            Arm.Add(arm);
+    //            break;
+    //        case BodyPart.Leg:
+    //            Actor leg = new Actor("Leg");
+    //            leg.AddComponent(new EquipmentSlot());
+    //            leg.CleanupComponents();
+    //            Leg.Add(leg);
+    //            break;
+    //    }
+    //}
 
-    string GetEquipmentIdForBodyPart(IEntity bodyPart)
+    string GetEquipmentIdForBodyPart(Component bodyPart)
     {
         EventBuilder getEquipment = EventBuilderPool.Get(GameEventId.GetEquipment)
                                             .With(EventParameters.Equipment, null);
 
-        string equipment = FireEvent(bodyPart, getEquipment.CreateEvent()).GetValue<string>(EventParameters.Equipment);
-
-        return equipment;
+        var ge = getEquipment.CreateEvent();
+        bodyPart.HandleEvent(ge);
+        //string equipment = FireEvent(bodyPart, getEquipment.CreateEvent()).GetValue<string>(EventParameters.Equipment);
+        return ge.GetValue<string>(EventParameters.Equipment);
     }
 
-    public override string ToString()
-    {
-        if (Head == null)
-            return $"Head=1[], Torso=1[], Arm=2[], Leg=2[]";
+    //public override string ToString()
+    //{
+    //    if (Head == null)
+    //        return $"Head=1[], Torso=1[], Arm=2[], Leg=2[]";
 
-        string headEquipment = GetSerializedEquipment(Head);
-        string torsoEquipment = GetSerializedEquipment(new List<IEntity>() { Torso });
-        string armEquipment = GetSerializedEquipment(Arm);
-        string legEquipment = GetSerializedEquipment(Leg);
+    //    string headEquipment = GetSerializedEquipment(Head);
+    //    string torsoEquipment = GetSerializedEquipment(new List<IEntity>() { Torso });
+    //    string armEquipment = GetSerializedEquipment(Arm);
+    //    string legEquipment = GetSerializedEquipment(Leg);
 
-        return $"Head={Head.Count}[{headEquipment}], Torso=1[{torsoEquipment}], Arm={Arm.Count}[{armEquipment}], Leg={Leg.Count}[{legEquipment}]";
-    }
+    //    return $"Head={Head.Count}[{headEquipment}], Torso=1[{torsoEquipment}], Arm={Arm.Count}[{armEquipment}], Leg={Leg.Count}[{legEquipment}]";
+    //}
 
     private string GetSerializedEquipment(List<IEntity> bodyPart)
     {
@@ -400,60 +263,63 @@ public class DTO_Body : IDataTransferComponent
 
     public void CreateComponent(string data)
     {
-        Dictionary<BodyPart, List<IEntity>> equipment = new Dictionary<BodyPart, List<IEntity>>();
-        string[] bodyParts = data.Split(',');
-        foreach(string bp in bodyParts)
-        {
-            string[] bpTypeToCount = bp.Split('=');
-            BodyPart bpType = (BodyPart)Enum.Parse(typeof(BodyPart), bpTypeToCount[0]);
-            int bpCount = 0;
-            if (bpTypeToCount[1].Contains("["))
-                bpCount = int.Parse(bpTypeToCount[1].Substring(0, bpTypeToCount[1].IndexOf('[')));
-            else
-                bpCount = int.Parse(bpTypeToCount[1]);
-            string equipmentData = null;
-            if (bpTypeToCount[1].Contains("["))
-                equipmentData = bpTypeToCount[1].Substring(bpTypeToCount[1].IndexOf('['));
-            //else
-            //    equipmentData = bpTypeToCount[1];
+        Component = new Body();
+        //Dictionary<BodyPart, List<IEntity>> equipment = new Dictionary<BodyPart, List<IEntity>>();
+        //string[] bodyParts = data.Split(',');
+        //foreach(string bp in bodyParts)
+        //{
+        //    string[] bpTypeToCount = bp.Split('=');
+        //    BodyPart bpType = (BodyPart)Enum.Parse(typeof(BodyPart), bpTypeToCount[0]);
+        //    int bpCount = 0;
+        //    if (bpTypeToCount[1].Contains("["))
+        //        bpCount = int.Parse(bpTypeToCount[1].Substring(0, bpTypeToCount[1].IndexOf('[')));
+        //    else
+        //        bpCount = int.Parse(bpTypeToCount[1]);
+        //    string equipmentData = null;
+        //    if (bpTypeToCount[1].Contains("["))
+        //        equipmentData = bpTypeToCount[1].Substring(bpTypeToCount[1].IndexOf('['));
+        //    //else
+        //    //    equipmentData = bpTypeToCount[1];
 
-            if (!equipment.ContainsKey(bpType))
-                equipment[bpType] = new List<IEntity>();
-            equipment[bpType].AddRange(EntityFactory.GetEntitiesFromArray(equipmentData));
+        //    if (!equipment.ContainsKey(bpType))
+        //        equipment[bpType] = new List<IEntity>();
+        //    equipment[bpType].AddRange(EntityFactory.GetEntitiesFromArray(equipmentData));
 
-            switch (bpType)
-            {
-                case BodyPart.Arm:
-                    arms = bpCount;
-                    break;
-                case BodyPart.Head:
-                    heads = bpCount;
-                    break;
-                case BodyPart.Leg:
-                    legs = bpCount;
-                    break;
-            }
-        }
-        Component = new Body(heads, arms, legs);
+        //    switch (bpType)
+        //    {
+        //        case BodyPart.Arm:
+        //            arms = bpCount;
+        //            break;
+        //        case BodyPart.Head:
+        //            heads = bpCount;
+        //            break;
+        //        case BodyPart.Leg:
+        //            legs = bpCount;
+        //            break;
+        //    }
+        //}
+        //Component = new Body(heads, arms, legs);
 
-        foreach (var key in equipment.Keys)
-        {
-            foreach (var e in equipment[key])
-                if (e != null)
-                    ((Body)Component).EquipOnSpawn(key, e.ID);
-        }
+        //foreach (var key in equipment.Keys)
+        //{
+        //    foreach (var e in equipment[key])
+        //        if (e != null)
+        //            ((Body)Component).EquipOnSpawn(key, e.ID);
+        //}
     }
 
     public string CreateSerializableData(IComponent component)
     {
-        Body body = (Body)component;
+        return $"{nameof(Body)}";
 
-        string headEquipment = GetSerializedEquipment(body.Head);
-        string torsoEquipment = GetSerializedEquipment(new List<IEntity>() { body.Torso });
-        string armEquipment = GetSerializedEquipment(body.Arm);
-        string legEquipment = GetSerializedEquipment(body.Leg);
+        //Body body = (Body)component;
 
-        return $"Body:Head={body.Head.Count}[{headEquipment}], Torso=1[{torsoEquipment}], Arm={body.Arm.Count}[{armEquipment}], Leg={body.Leg.Count}[{legEquipment}]";
+        //string headEquipment = GetSerializedEquipment(body.Head);
+        //string torsoEquipment = GetSerializedEquipment(new List<IEntity>() { body.Torso });
+        //string armEquipment = GetSerializedEquipment(body.Arm);
+        //string legEquipment = GetSerializedEquipment(body.Leg);
+
+        //return $"Body:Head={body.Head.Count}[{headEquipment}], Torso=1[{torsoEquipment}], Arm={body.Arm.Count}[{armEquipment}], Leg={body.Leg.Count}[{legEquipment}]";
     }
 
     string GetSerializedEquipment(IList<IEntity> bodyParts)

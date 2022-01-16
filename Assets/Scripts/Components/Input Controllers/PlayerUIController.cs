@@ -12,9 +12,9 @@ public class PlayerUIController : InputControllerBase
             if (desiredDirection != MoveDirection.None)
                 FireEvent(World.Instance.Self, new GameEvent(GameEventId.UIInput, new KeyValuePair<string, object>(EventParameters.Value, desiredDirection)));
 
-            if (Input.GetKeyDown(KeyCode.Escape))
+            if (UIManager.UIClear)
             {
-                FireEvent(World.Instance.Self, new GameEvent(GameEventId.CloseUI));
+                //FireEvent(World.Instance.Self, new GameEvent(GameEventId.CloseUI));
                 Self.RemoveComponent(this);
                 Self.AddComponent(new PlayerInputController());
             }

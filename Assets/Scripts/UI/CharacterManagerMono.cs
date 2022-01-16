@@ -12,6 +12,8 @@ public class CharacterManagerMono : EscapeableMono
     public GameObject EquipmentView;
     public GameObject CharacterStats;
 
+    private bool m_OpenedThisFrame = false;
+
     public void Setup(IEntity source)
     {
         UIManager.Push(this);
@@ -20,6 +22,21 @@ public class CharacterManagerMono : EscapeableMono
         InventoryView.GetComponent<InventoryManagerMono>().Setup(source);
         EquipmentView.GetComponent<EquipmentViewMono>().Setup(source);
         CharacterStats.GetComponent<CharacterStatsMono>().Setup(source);
+
+        m_OpenedThisFrame = true;
+    }
+
+    public override bool? AlternativeEscapeKeyPressed
+    {
+        get
+        {
+            return Input.GetKeyDown(InputBinder.GetKeyCodeForAction(RequestedAction.OpenInventory)) && !m_OpenedThisFrame;
+        }
+    }
+
+    public void LateUpdate()
+    {
+        m_OpenedThisFrame = false;
     }
 
     public override void OnEscape()

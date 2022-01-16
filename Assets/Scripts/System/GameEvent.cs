@@ -60,6 +60,7 @@ public static class GameEventId
     public const string GetItems = nameof(GetItems);
     public const string DropItemsOnMap = nameof(DropItemsOnMap);
     public const string AddItemsToInventory = nameof(AddItemsToInventory);
+    public const string GetValidAppendage = nameof(GetValidAppendage);
     public const string GetBodyPartType = nameof(GetBodyPartType);
     public const string PromptToGiveItem = nameof(PromptToGiveItem);
 
@@ -92,6 +93,7 @@ public static class GameEventId
     public const string GameFailure = nameof(GameFailure);
     public const string CleanFoVData = nameof(CleanFoVData);
     public const string GameObject = nameof(GameObject);
+    public const string Tag = nameof(Tag);
 
     //Dungeon
     public const string GetRandomValidPoint = nameof(GetRandomValidPoint);
@@ -216,6 +218,7 @@ public static class GameEventId
     public const string GetInteractableObjects = nameof(GetInteractableObjects);
     public const string GetObject = nameof(GetObject);
     public const string GetName = nameof(GetName);
+    public const string GetSpawnRestrictions = nameof(GetSpawnRestrictions);
 
     //UI
     public const string UIInput = nameof(UIInput);
@@ -251,6 +254,7 @@ public static class GameEventId
 
     //Sound
     public const string Playsound = nameof(Playsound);
+
 }
 
 public static class EventParameters
@@ -264,6 +268,7 @@ public static class EventParameters
     public const string EnergyRegen = nameof(EnergyRegen);
     public const string ActionTaken = nameof(ActionTaken);
     public const string RenderSprite = nameof(RenderSprite);
+    public const string Restrictions = nameof(Restrictions);
     public const string Renderer = nameof(Renderer);
     public const string Point = nameof(Point);
     public const string Entity = nameof(Entity);
@@ -272,6 +277,7 @@ public static class EventParameters
     public const string Items = nameof(Items);
     public const string Target = nameof(Target);
     public const string EntityType = nameof(EntityType);
+    public const string DesiredBodyPartTypes = nameof(DesiredBodyPartTypes);
     public const string Creature = nameof(Creature);
     public const string Value = nameof(Value);
     public const string MaxValue = nameof(MaxValue);
@@ -310,9 +316,11 @@ public static class EventParameters
     public const string Name = nameof(Name);
     public const string Head = nameof(Head);
     public const string Torso = nameof(Torso);
-    public const string LeftArm = nameof(LeftArm);
-    public const string RightArm = nameof(RightArm);
+    //public const string LeftArm = nameof(LeftArm);
+    //public const string RightArm = nameof(RightArm);
+
     public const string Legs = nameof(Legs);
+    public const string Arms = nameof(Arms);
     public const string Objects = nameof(Objects);
     public const string InventoryContextActions = nameof(InventoryContextActions);
     public const string ChestContextActions = nameof(ChestContextActions);
@@ -326,6 +334,7 @@ public static class EventParameters
     public const string AttributePoints = nameof(AttributePoints);
     public const string Key = nameof(Key);
     public const string Owner = nameof(Owner);
+    public const string BodyParts = nameof(BodyParts);
 }
 
 //[Serializable]
@@ -363,7 +372,7 @@ public static class EventParameters
 //    }
 //}
 
-public struct GameEvent
+public class GameEvent
 {
     public bool ContinueProcessing;
     public string ID { get { return m_ID; } }

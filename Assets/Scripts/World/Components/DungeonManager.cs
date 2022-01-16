@@ -146,7 +146,7 @@ public class DungeonManager : WorldComponent
             else
             {
                 int roomIndex = RecRandom.Instance.GetRandomValue(0, m_DungeonGenerator.Rooms.Count - 1);
-                gameEvent.Paramters[EventParameters.Value] = m_DungeonGenerator.Rooms[roomIndex].GetValidPoint();
+                gameEvent.Paramters[EventParameters.Value] = m_DungeonGenerator.Rooms[roomIndex].GetValidPoint(null);
             }
         }
         else if (gameEvent.ID == GameEventId.AddValidPoints)
@@ -288,7 +288,7 @@ public class DungeonManager : WorldComponent
         {
             IEntity player = EntityFactory.CreateEntity("DwarfWarrior");
             FireEvent(Self, new GameEvent(GameEventId.ConvertToPlayableCharacter, new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.Entity, player.ID)));
-            Spawner.Spawn(player, m_DungeonGenerator.Rooms[0].GetValidPoint());
+            Spawner.Spawn(player, m_DungeonGenerator.Rooms[0].GetValidPoint(null));
 
             if (i == 0)
                 player.CleanupComponents();
@@ -319,9 +319,9 @@ public class DungeonManager : WorldComponent
             var entity = EntityQuery.GetEntity(player);
 
             if (movingDown)
-                Spawner.Spawn(entity, m_DungeonGenerator.Rooms[0].GetValidPoint());
+                Spawner.Spawn(entity, m_DungeonGenerator.Rooms[0].GetValidPoint(null));
             else
-                Spawner.Spawn(entity, m_DungeonGenerator.Rooms[m_DungeonLevelMap[m_CurrentLevel].StairsDownRoomIndex].GetValidPoint());
+                Spawner.Spawn(entity, m_DungeonGenerator.Rooms[m_DungeonLevelMap[m_CurrentLevel].StairsDownRoomIndex].GetValidPoint(null));
 
             FireEvent(entity, new GameEvent(GameEventId.RegisterPlayableCharacter));
             FireEvent(entity, new GameEvent(GameEventId.InitFOV));

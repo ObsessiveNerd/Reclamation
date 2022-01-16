@@ -30,7 +30,7 @@ public class ItemContainer : Component
     {
         if (gameEvent.ID == GameEventId.GetItems)
         {
-            gameEvent.Paramters[EventParameters.Item] = IDToEntityMap.Keys.ToList();
+            gameEvent.Paramters[EventParameters.Items] = IDToEntityMap.Keys.ToList();
         }
         else if(gameEvent.ID == GameEventId.DropItemsOnMap)
         {

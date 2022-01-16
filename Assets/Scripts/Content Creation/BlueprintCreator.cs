@@ -44,39 +44,44 @@ public class BlueprintCreator
         Components = new List<BlueprintValues>();
     }
 
-    public void AddComponent(BlueprintValues bpv, IComponent comp)
+    public void AddComponent(BlueprintValues bpv, Type comp, string[] data)
     {
-        if(comp.GetType() == typeof(GraphicContainer))
+        Dictionary<string, string> kvp = new Dictionary<string, string>();
+        foreach(var s in data)
+            kvp.Add(s.Split('=')[0], s.Split('=')[1]);
+        
+        
+        //if(comp.GetType() == typeof(GraphicContainer))
+        //{
+        //    string sp = ((GraphicContainer)comp).SpritePath;
+        //    Icon = AssetDatabase.LoadAssetAtPath<Sprite>($"Assets/Resources/{sp}.png");
+        //}
+        //else if(comp.GetType() == typeof(Portrait))
+        //{
+        //    string sp = ((Portrait)comp).SpritePath;
+        //    Portrait = AssetDatabase.LoadAssetAtPath<Sprite>($"Assets/Resources/{sp}.png");
+        //}
+        //else
         {
-            string sp = ((GraphicContainer)comp).SpritePath;
-            Icon = AssetDatabase.LoadAssetAtPath<Sprite>($"Assets/Resources/{sp}.png");
-        }
-        else if(comp.GetType() == typeof(Portrait))
-        {
-            string sp = ((Portrait)comp).SpritePath;
-            Portrait = AssetDatabase.LoadAssetAtPath<Sprite>($"Assets/Resources/{sp}.png");
-        }
-        else
-        {
-            foreach (var field in comp.GetType().GetFields())
+            foreach (var field in comp.GetFields())
             {
-                if (comp.GetType() == typeof(Body))
+                //if (comp.GetType() == typeof(Body))
+                //{
+                //    bpv.FieldToValue.Add(field.Name, comp.ToString());
+                //    break;
+                //}
+                //else
                 {
-                    bpv.FieldToValue.Add(field.Name, comp.ToString());
-                    break;
-                }
-                else
-                {
-                    string value = "";
-                    if (field.FieldType == typeof(List<IEntity>))
-                        value = EntityFactory.ConvertEntitiesToStringArrayWithName(field.GetValue(comp) as List<IEntity>);
-                    else if (field.FieldType == typeof(Dictionary<string, IEntity>))
-                    {
-                        value = EntityFactory.ConvertEntitiesToStringArrayWithName((field.GetValue(comp) as Dictionary<string, IEntity>)?.Values.ToList());
-                    }
-                    else
-                        value = field.GetValue(comp)?.ToString();
-                    bpv.FieldToValue.Add(field.Name, value);
+                    //string value = "";
+                    //if (field.FieldType == typeof(List<IEntity>))
+                    //    value = EntityFactory.ConvertEntitiesToStringArrayWithName(field.GetValue(comp) as List<IEntity>);
+                    //else if (field.FieldType == typeof(Dictionary<string, IEntity>))
+                    //{
+                    //    value = EntityFactory.ConvertEntitiesToStringArrayWithName((field.GetValue(comp) as Dictionary<string, IEntity>)?.Values.ToList());
+                    //}
+                    //else
+                    //    value = field.GetValue(comp)?.ToString();
+                    bpv.FieldToValue.Add(field.Name, kvp[field.Name]);
                 }
             }
         }

@@ -5,10 +5,7 @@ using UnityEngine;
 public class UIManager : MonoBehaviour
 {
     static Stack<EscapeableMono> UIMonoBehaviors = new Stack<EscapeableMono>();
-    private static bool m_UIClear = true;
-
-    public static bool UIClear => m_UIClear;
-    bool m_ClearUINextFrame = false;
+    public static bool UIClear => UIMonoBehaviors.Count == 0;
 
     public static void Push(EscapeableMono mono)
     {
@@ -44,21 +41,26 @@ public class UIManager : MonoBehaviour
             ForcePop();
     }
 
+    public static bool? EscapeForActiveUIPressed
+    {
+        get
+        {
+            if (Input.GetKeyDown(KeyCode.Escape))
+                return true;
+
+            return UIMonoBehaviors.Peek()?.AlternativeEscapeKeyPressed.Value;
+        }
+    }
+
     void Update()
     {
-        if (m_ClearUINextFrame)
-            m_UIClear = true;
+        if (UIMonoBehaviors.Count == 0)
+            return;
 
-        if (UIMonoBehaviors.Count > 0)
-            m_UIClear = false;
-
-        if (Input.GetKeyDown(KeyCode.Escape) && !UIClear)
+        if (EscapeForActiveUIPressed.HasValue && EscapeForActiveUIPressed.Value /*&& !UIClear*/)
         {
             var escapeMono = UIMonoBehaviors.Pop();
             escapeMono.OnEscape();
         }
-
-        if (UIMonoBehaviors.Count == 0)
-            m_ClearUINextFrame = true;
     }
 }

@@ -43,7 +43,7 @@ public class Aggression : Component
                                                         .With(EventParameters.Value, -1);
 
                 int targetCombatRating = FireEvent(target, getCombatRatingOfTile.CreateEvent()).GetValue<int>(EventParameters.Value);
-                Debug.Log($"{Self.Name} combat rating is {myCombatLevel}.  Target {target.Name} CR is {targetCombatRating}");
+                //Debug.Log($"{Self.Name} combat rating is {myCombatLevel}.  Target {target.Name} CR is {targetCombatRating}");
                 if(targetCombatRating > -1 && CombatUtility.ICanTakeThem(myCombatLevel, targetCombatRating))
                 {
                     m_TargetLocation = point;

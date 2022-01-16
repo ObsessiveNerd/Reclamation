@@ -15,10 +15,12 @@ public class CharacterTab : MonoBehaviour
     public GameObject m_ActivePlayerIcon;
 
     private IEntity m_Entity;
+    private string m_EId;
 
     public void Setup(IEntity entity)
     {
         m_Entity = entity;
+        m_EId = m_Entity.ID;
         m_PrettyName = GetComponentInChildren<TextMeshProUGUI>();
 
         EventBuilder characterInfo = EventBuilderPool.Get(GameEventId.GetPortrait)
@@ -31,6 +33,9 @@ public class CharacterTab : MonoBehaviour
 
     public void Update()
     {
+        if (m_Entity == null)
+            m_Entity = EntityQuery.GetEntity(m_EId);
+
         EventBuilder getHealth = EventBuilderPool.Get(GameEventId.GetHealth)
                                     .With(EventParameters.Value, 0)
                                     .With(EventParameters.MaxValue, 0);

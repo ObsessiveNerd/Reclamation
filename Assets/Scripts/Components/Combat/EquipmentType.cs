@@ -20,7 +20,7 @@ public class EquipmentType : Component
 
     public override void HandleEvent(GameEvent gameEvent)
     {
-        if(gameEvent.ID == GameEventId.GetBodyPartType)
+        if(gameEvent.ID == GameEventId.GetValidAppendage)
         {
             gameEvent.Paramters[EventParameters.Value] = EquipmentBodyPart;
         }

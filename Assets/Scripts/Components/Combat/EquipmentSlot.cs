@@ -1,22 +1,42 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class EquipmentSlot : Component
 {
-    public string EquipmentId;
-    public string EquipmentName;
+    private string m_EquipmentId;
+    private string m_EquipmentName;
 
-    public EquipmentSlot()
+    public string EquipmentId;
+
+    //public string EquipmentName;
+    public BodyPart BodyPartType;
+
+    public EquipmentSlot(string eID, BodyPart bp)
+    {
+        BodyPartType = bp;
+        EquipmentId = eID;
+        if (!string.IsNullOrEmpty(EquipmentId) && !int.TryParse(EquipmentId, out int res))
+            EquipmentId = EntityFactory.CreateEntity(EquipmentId).ID;
+    }
+
+    public override void Init(IEntity self)
     {
         RegisteredEvents.Add(GameEventId.AddArmorValue);
         RegisteredEvents.Add(GameEventId.GetEquipment);
         RegisteredEvents.Add(GameEventId.GetSpells);
         RegisteredEvents.Add(GameEventId.ItemEquipped);
+        RegisteredEvents.Add(GameEventId.Equip);
         RegisteredEvents.Add(GameEventId.Unequip);
-        RegisteredEvents.Add(GameEventId.CheckEquipment);
+        //RegisteredEvents.Add(GameEventId.CheckEquipment);
         RegisteredEvents.Add(GameEventId.GetCombatRating);
+        RegisteredEvents.Add(GameEventId.PerformAttack);
         RegisteredEvents.Add(GameEventId.Drop);
+        RegisteredEvents.Add(GameEventId.Died);
+        RegisteredEvents.Add(GameEventId.GetBodyPartType);
+        RegisteredEvents.Add(GameEventId.CheckItemEquiped);
+        base.Init(self);
     }
 
     //void EquipmentDestroyed(IEntity e)
@@ -30,26 +50,26 @@ public class EquipmentSlot : Component
 
     public override void HandleEvent(GameEvent gameEvent)
     {
-        if (gameEvent.ID == GameEventId.AddArmorValue)
-            FireEvent(EntityQuery.GetEntity(EquipmentId), gameEvent);
+        //if (gameEvent.ID == GameEventId.AddArmorValue)
+        //    FireEvent(EntityQuery.GetEntity(EquipmentId), gameEvent);
 
         if (gameEvent.ID == GameEventId.GetEquipment)
             gameEvent.Paramters[EventParameters.Equipment] = EquipmentId;
 
-        if (gameEvent.ID == GameEventId.ItemEquipped)
+        else if (gameEvent.ID == GameEventId.ItemEquipped)
         {
             var entity = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameters.Equipment));
-            if(entity == null)
+            if (entity == null)
             {
                 Debug.LogError("Attempting to equip a null item");
                 return;
             }
             FireEvent(entity, gameEvent);
             EquipmentId = (string)gameEvent.Paramters[EventParameters.Equipment];
-            EquipmentName = entity?.Name;
+            //EquipmentName = entity?.Name;
         }
 
-        if(gameEvent.ID == GameEventId.Unequip)
+        else if (gameEvent.ID == GameEventId.Unequip)
         {
             if (EquipmentId != null && gameEvent.GetValue<string>(EventParameters.Item) == EquipmentId)
             {
@@ -57,32 +77,122 @@ public class EquipmentSlot : Component
                 FireEvent(owner, new GameEvent(GameEventId.AddToInventory, new KeyValuePair<string, object>(EventParameters.Entity, EquipmentId)));
                 FireEvent(EntityQuery.GetEntity(EquipmentId), new GameEvent(GameEventId.ItemUnequipped));
                 EquipmentId = null;
-                EquipmentName = "";
+                //EquipmentName = "";
             }
         }
 
-        if(gameEvent.ID == GameEventId.Drop)
+        else if (gameEvent.ID == GameEventId.PerformAttack)
+        {
+            TypeWeapon desiredWeaponToAttack = (TypeWeapon)gameEvent.Paramters[EventParameters.WeaponType];
+            //foreach (IEntity hand in Arm)
+            //{
+                //EventBuilder getEquipment = EventBuilderPool.Get(GameEventId.GetEquipment)
+                //                            .With(EventParameters.Equipment, null);
+
+                //string equipment = FireEvent(hand, getEquipment.CreateEvent()).GetValue<string>(EventParameters.Equipment);
+                //IEntity equipmentEntity = EntityQuery.GetEntity(equipment);
+                IEntity equipmentEntity = EntityQuery.GetEntity(EquipmentId);
+
+                
+                //if (equipmentEntity == null)
+                //    equipmentEntity = EntityFactory.CreateEntity("UnarmedStrike");
+
+                if (equipmentEntity != null && CombatUtility.GetWeaponType(equipmentEntity).HasFlag(desiredWeaponToAttack))
+                    CombatUtility.Attack(Self, EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Target]), equipmentEntity);
+            //}
+        }
+
+        else if (gameEvent.ID == GameEventId.Drop)
         {
             if (EquipmentId != null && gameEvent.GetValue<string>(EventParameters.Item) == EquipmentId)
                 FireEvent(EntityQuery.GetEntity(EquipmentId), gameEvent);
         }
 
-        if(gameEvent.ID == GameEventId.GetSpells)
+        else if (gameEvent.ID == GameEventId.Died)
         {
-            if (!string.IsNullOrEmpty(EquipmentId))
-                FireEvent(EntityQuery.GetEntity(EquipmentId), gameEvent);
+            if (string.IsNullOrEmpty(EquipmentId))
+                return;
+
+            EventBuilder builder = EventBuilderPool.Get(GameEventId.Drop)
+                                    .With(EventParameters.Entity, Self.ID)
+                                    .With(EventParameters.Item, EquipmentId);
+
+            FireEvent(EntityQuery.GetEntity(EquipmentId), builder.CreateEvent());
         }
 
-        if(gameEvent.ID == GameEventId.CheckEquipment)
+        else if(gameEvent.ID == GameEventId.CheckItemEquiped)
         {
-            GameEvent ge = (GameEvent)gameEvent.Paramters[EventParameters.GameEvent];
-            FireEvent(EntityQuery.GetEntity(EquipmentId), ge);
+            if (gameEvent.GetValue<string>(EventParameters.Item) == EquipmentId)
+                gameEvent.Paramters[EventParameters.Value] = true;
         }
 
-        if(gameEvent.ID == GameEventId.GetCombatRating)
+        //if(gameEvent.ID == GameEventId.GetSpells)
+        //{
+        //    if (!string.IsNullOrEmpty(EquipmentId))
+        //        FireEvent(EntityQuery.GetEntity(EquipmentId), gameEvent);
+        //}
+
+        //if(gameEvent.ID == GameEventId.CheckEquipment)
+        //{
+        //    GameEvent ge = (GameEvent)gameEvent.Paramters[EventParameters.GameEvent];
+        //    FireEvent(EntityQuery.GetEntity(EquipmentId), ge);
+        //}
+
+        //if(gameEvent.ID == GameEventId.GetCombatRating)
+        //{
+        //    if(!string.IsNullOrEmpty(EquipmentId))
+        //        FireEvent(EntityQuery.GetEntity(EquipmentId), gameEvent);
+        //}
+
+        else if(gameEvent.ID == GameEventId.GetBodyPartType)
         {
-            if(!string.IsNullOrEmpty(EquipmentId))
-                FireEvent(EntityQuery.GetEntity(EquipmentId), gameEvent);
+            List<BodyPart> desiredBodyParts = gameEvent.GetValue<List<BodyPart>>(EventParameters.DesiredBodyPartTypes);
+            foreach (var desiredBodyPart in desiredBodyParts)
+            {
+                if (BodyPartType == desiredBodyPart)
+                {
+                    if (!gameEvent.GetValue<Dictionary<BodyPart, List<Component>>>(EventParameters.BodyParts).ContainsKey(BodyPartType))
+                        gameEvent.GetValue<Dictionary<BodyPart, List<Component>>>(EventParameters.BodyParts).Add(BodyPartType, new List<Component>());
+
+                    gameEvent.GetValue<Dictionary<BodyPart, List<Component>>>(EventParameters.BodyParts)[BodyPartType].Add(this);
+                }
+            }
         }
+    }
+}
+
+public class DTO_EquipmentSlot : IDataTransferComponent
+{
+    public IComponent Component { get; set; }
+
+    public void CreateComponent(string data)
+    {
+        var parsedData = data.Split(',');
+
+        string id = "";
+        BodyPart bp = BodyPart.Arm;
+
+        foreach(var kvp in parsedData)
+        {
+            string key = kvp.Split('=')[0];
+            string value = kvp.Split('=')[1];
+
+            switch(key)
+            {
+                case "EquipmentId":
+                    id = value;
+                    break;
+                case "BodyPartType":
+                    bp = (BodyPart)Enum.Parse(typeof(BodyPart), value);
+                    break;
+            }
+        }
+        Component = new EquipmentSlot(id, bp);
+    }
+
+    public string CreateSerializableData(IComponent component)
+    {
+        EquipmentSlot es = (EquipmentSlot)component;
+        return $"{nameof(EquipmentSlot)}: {nameof(es.BodyPartType)}={es.BodyPartType}, {nameof(es.EquipmentId)}={es.EquipmentId}";
     }
 }
