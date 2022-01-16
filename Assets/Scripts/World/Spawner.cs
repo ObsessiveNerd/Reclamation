@@ -23,6 +23,8 @@ public static class Spawner
 
         foreach (var comp in e.GetComponents())
             comp.Start();
+
+        e.FireEvent(new GameEvent(GameEventId.InitFOV));
     }
 
     public static void Despawn(IEntity e)
