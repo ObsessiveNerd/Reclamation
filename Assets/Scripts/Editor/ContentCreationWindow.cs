@@ -99,10 +99,11 @@ public class ContentCreationWindow : EditorWindow
         List<BlueprintValues> componenetsToRemove = new List<BlueprintValues>();
         foreach (var component in m_Creator.Components.Where(c =>
         {
+
             if (string.IsNullOrEmpty(m_SearchString))
                 return true;
             else
-                return c.ComponentName.Contains(m_SearchString);
+                return c.ComponentName.ToLower().Contains(m_SearchString.ToLower());
         }))
         {
             if (component == null)
@@ -157,7 +158,12 @@ public class ContentCreationWindow : EditorWindow
                             AssetDatabase.LoadAssetAtPath<AudioClip>($"Assets/Resources/{component.FieldToValue[fieldInfo.Name]}"), typeof(AudioClip), false)).Replace("Assets/Resources/", "");
                     }
                     else
+                    {
                         component.FieldToValue[fieldInfo.Name] = EditorGUILayout.TextField(component.FieldToValue[fieldInfo.Name]);
+                        var obj = EditorGUILayout.ObjectField("", null, typeof(UnityEngine.Object), false);
+                        if (obj != null)
+                            component.FieldToValue[fieldInfo.Name] = AssetDatabase.GetAssetPath(obj).Replace("Assets/Resources/", "").Split('.')[0];
+                    }
 
                     EditorGUILayout.EndHorizontal();
                 }

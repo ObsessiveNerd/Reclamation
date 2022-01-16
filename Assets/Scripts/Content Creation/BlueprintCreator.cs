@@ -55,7 +55,11 @@ public class BlueprintCreator
         }
         else if (comp == typeof(GraphicContainer) || comp == typeof(Portrait))
         {
-            kvp.Add("SpritePath", data[0]);
+            string[] spritePathKvp = data[0].Split('=');
+            if(spritePathKvp.Length == 2)
+                kvp.Add("SpritePath", spritePathKvp[1]);
+            else
+                kvp.Add("SpritePath", data[0]);
         }
         else
         {
