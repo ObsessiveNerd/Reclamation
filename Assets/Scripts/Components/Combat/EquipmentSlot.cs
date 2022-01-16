@@ -24,6 +24,8 @@ public class EquipmentSlot : Component
     public override void Init(IEntity self)
     {
         RegisteredEvents.Add(GameEventId.AddArmorValue);
+        RegisteredEvents.Add(GameEventId.GetSpells);
+        RegisteredEvents.Add(GameEventId.GetWeapon);
         RegisteredEvents.Add(GameEventId.GetEquipment);
         RegisteredEvents.Add(GameEventId.GetSpells);
         RegisteredEvents.Add(GameEventId.ItemEquipped);
@@ -55,7 +57,11 @@ public class EquipmentSlot : Component
 
         if (gameEvent.ID == GameEventId.GetEquipment)
             gameEvent.Paramters[EventParameters.Equipment] = EquipmentId;
-
+        else if (gameEvent.ID == GameEventId.GetWeapon)
+        {
+            if (!string.IsNullOrEmpty(EquipmentId))
+                FireEvent(EntityQuery.GetEntity(EquipmentId), gameEvent);
+        }
         else if (gameEvent.ID == GameEventId.ItemEquipped)
         {
             var entity = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameters.Equipment));
@@ -67,6 +73,12 @@ public class EquipmentSlot : Component
             FireEvent(entity, gameEvent);
             EquipmentId = (string)gameEvent.Paramters[EventParameters.Equipment];
             //EquipmentName = entity?.Name;
+        }
+
+        else if(gameEvent.ID == GameEventId.GetSpells)
+        {
+            if (!string.IsNullOrEmpty(EquipmentId))
+                FireEvent(EntityQuery.GetEntity(EquipmentId), gameEvent);
         }
 
         else if (gameEvent.ID == GameEventId.Unequip)

@@ -12,8 +12,6 @@ public class GraphicContainer : Component
     public GraphicContainer(string spritePath)
     {
         SpritePath = spritePath;
-        if(SpritePath != "Textures/Environment/td_world_floor_cobble_b-120")
-            Debug.Log("notta fuckin tile");
         Sprite sprite = Resources.Load<Sprite>(SpritePath);
         m_Sprite = sprite;
         RegisteredEvents.Add(GameEventId.GetSprite);

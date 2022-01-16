@@ -26,12 +26,16 @@ public class WeaponType : Component
     public WeaponType(TypeWeapon type)
     {
         TypeWeapon = type;
+        RegisteredEvents.Add(GameEventId.GetWeapon);
         RegisteredEvents.Add(GameEventId.GetWeaponType);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
     {
-        gameEvent.Paramters[EventParameters.WeaponType] = TypeWeapon;
+        if(gameEvent.ID == GameEventId.GetWeaponType)
+            gameEvent.Paramters[EventParameters.WeaponType] = TypeWeapon;
+        else if(gameEvent.ID == GameEventId.GetWeapon)
+            gameEvent.GetValue<List<string>>(EventParameters.Weapon).Add(Self.ID);
     }
 }
 
