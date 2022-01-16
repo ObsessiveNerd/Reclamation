@@ -101,7 +101,7 @@ public static class EntityFactory
         m_BlueprintTypeMap.Clear();
     }
 
-    private static void InitTempBlueprints()
+    public static void InitTempBlueprints()
     {
         if (World.Instance != null && !m_LoadedTempBlueprints && SaveSystem.Instance != null)
         {

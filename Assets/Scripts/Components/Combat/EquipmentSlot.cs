@@ -10,6 +10,8 @@ public class EquipmentSlot : Component
 
     public string EquipmentId;
 
+    //public string EquipmentInstanceId { get; set; }
+
     //public string EquipmentName;
     public BodyPart BodyPartType;
 
@@ -17,8 +19,15 @@ public class EquipmentSlot : Component
     {
         BodyPartType = bp;
         EquipmentId = eID;
-        if (!string.IsNullOrEmpty(EquipmentId) && !int.TryParse(EquipmentId, out int res))
-            EquipmentId = EntityFactory.CreateEntity(EquipmentId).ID;
+        var entity = EntityQuery.GetEntity(EquipmentId);
+        if (entity == null)
+            entity = EntityFactory.CreateEntity(EquipmentId);
+        if (entity != null)
+            EquipmentId = entity.ID;
+        //EquipmentInstanceId = entity.ID;
+
+        //if (!string.IsNullOrEmpty(EquipmentId) && !int.TryParse(EquipmentId, out int res))
+        //    EquipmentId = EntityFactory.CreateEntity(EquipmentId).ID;
     }
 
     public override void Init(IEntity self)
@@ -205,6 +214,10 @@ public class DTO_EquipmentSlot : IDataTransferComponent
     public string CreateSerializableData(IComponent component)
     {
         EquipmentSlot es = (EquipmentSlot)component;
-        return $"{nameof(EquipmentSlot)}: {nameof(es.BodyPartType)}={es.BodyPartType}, {nameof(es.EquipmentId)}={es.EquipmentId}";
+        //string id = string.IsNullOrEmpty(es.EquipmentInstanceId) ? es.EquipmentId : es.EquipmentInstanceId;
+        string id = es.EquipmentId;
+        if(!string.IsNullOrEmpty(id))
+            EntityFactory.CreateTemporaryBlueprint(id, EntityQuery.GetEntity(id).Serialize());
+        return $"{nameof(EquipmentSlot)}: {nameof(es.BodyPartType)}={es.BodyPartType}, {nameof(es.EquipmentId)}={id}";
     }
 }

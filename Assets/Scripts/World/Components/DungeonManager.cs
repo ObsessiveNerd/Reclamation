@@ -88,6 +88,7 @@ public class DungeonManager : WorldComponent
             sw.Stop();
             Debug.LogWarning($"Creating tiles: {sw.Elapsed.Seconds}");
 
+            m_CurrentLevel = gameEvent.GetValue<int>(EventParameters.Level);
             m_DungeonGenerator = new BasicDungeonGenerator(World.Instance.MapRows, World.Instance.MapColumns);
 
             LoadOrCreateDungeon();

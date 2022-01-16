@@ -114,8 +114,8 @@ public class SaveSystem : MonoBehaviour
 
         SaveData data = JsonUtility.FromJson<SaveData>(File.ReadAllText(path));
         CurrentSaveName = data.SaveName;
-        World.Instance.Self.FireEvent(new GameEvent(GameEventId.LoadLevel, new KeyValuePair<string, object>(EventParameters.Level, data.CurrentDungeonLevel)));
-        World.Instance.InitWorld(data.Seed);
+        //World.Instance.Self.FireEvent(new GameEvent(GameEventId.LoadLevel, new KeyValuePair<string, object>(EventParameters.Level, data.CurrentDungeonLevel)));
+        World.Instance.InitWorld(data.Seed, data.CurrentDungeonLevel);
 
         //foreach (string eventString in data.Events)
         //{

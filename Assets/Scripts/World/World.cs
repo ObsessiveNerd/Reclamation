@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -71,7 +72,8 @@ public class World : MonoBehaviour
             {
                 m_World.FireEvent(m_World, new GameEvent(GameEventId.StartWorld, new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.Seed, Seed.ToString()),
                                                                                 new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.GameObject, TilePrefab),
-                                                                                new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.NewGame, true)));
+                                                                                new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.NewGame, true),
+                                                                                new KeyValuePair<string, object>(EventParameters.Level, 1)));
             }
             using (new DiagnosticsTimer("Update world view"))
                 m_World.FireEvent(m_World, new GameEvent(GameEventId.UpdateWorldView));
@@ -82,14 +84,15 @@ public class World : MonoBehaviour
         }
     }
 
-    public void InitWorld(int seed)
+    public void InitWorld(int seed, int currentLevel = 1)
     {
         Stopwatch sw = new Stopwatch();
         sw.Start();
         Seed = RecRandom.InitRecRandom(seed);
         m_World.FireEvent(m_World, new GameEvent(GameEventId.StartWorld, new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.Seed, Seed.ToString()),
                                                                             new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.GameObject, TilePrefab),
-                                                                            new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.NewGame, false)));
+                                                                            new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.NewGame, false),
+                                                                            new KeyValuePair<string, object>(EventParameters.Level, currentLevel)));
         sw.Stop();
         UnityEngine.Debug.LogWarning($"Start World: {sw.Elapsed.Seconds}");
     }

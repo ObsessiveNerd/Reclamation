@@ -35,6 +35,7 @@ public class EntityMap : WorldComponent
 
         else if (gameEvent.ID == GameEventId.GetEntity)
         {
+            EntityFactory.InitTempBlueprints();
             string id = (string)gameEvent.Paramters[EventParameters.Value];
             gameEvent.Paramters[EventParameters.Entity] = GetEntity(id);
         }
