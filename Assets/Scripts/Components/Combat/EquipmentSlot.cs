@@ -114,6 +114,8 @@ public class EquipmentSlot : Component
                 //IEntity equipmentEntity = EntityQuery.GetEntity(equipment);
                 IEntity equipmentEntity = EntityQuery.GetEntity(EquipmentId);
 
+            if (equipmentEntity != null && equipmentEntity.HasComponent(typeof(TwoHanded)))
+                gameEvent.ContinueProcessing = false;
                 
                 //if (equipmentEntity == null)
                 //    equipmentEntity = EntityFactory.CreateEntity("UnarmedStrike");

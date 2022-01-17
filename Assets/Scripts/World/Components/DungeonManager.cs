@@ -11,6 +11,7 @@ public class DungeonMetaData
     public bool StairsDown;
     public bool SpawnEnemies;
     public bool SpawnBoss;
+    public string TileType;
 
     public DungeonMetaData(string dataPath)
     {
@@ -38,6 +39,9 @@ public class DungeonMetaData
                             break;
                         case LevelMetaData.ContainsBoss:
                             SpawnBoss = bool.Parse(keyValue[1]);
+                            break;
+                        case LevelMetaData.TileType:
+                            TileType = keyValue[1];
                             break;
                     }
                 }

@@ -4,3 +4,4 @@ ContainsBoss: false
 AverageMosterCR: 5
 MonsterTypes:
 SpecialItems:
+TileType:tile2

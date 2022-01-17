@@ -1,0 +1,14 @@
+<Long Sword> (
+	GraphicContainer:SpritePath=Textures/Weapons/td_items_weapon_sword
+	Portrait:SpritePath=Portraits/Weapons/swords/swords_t_02
+	Position:PositionPoint=0
+	InteractOnTileOvertake
+	EntityTypeContainer:Type=Item
+	Item:Rarity=Uncommon
+	WeaponType:TypeWeapon=Melee
+	DealDamage:DamageType=Slashing,Dice=1d8
+	Equipment:PreferredBodyPartWhenEquipped=Arm
+	Value:Amount=10
+	Sound:SoundPath=Sounds/Melee/Swords/SWORD_Swing_Stab_Body_Gore_stereo.wav,Key=AttackHit
+	Sound:SoundPath=Sounds/Melee/Swords/SWORD_Hit_Sword_RR6_mono.wav,Key=AttackMiss
+)

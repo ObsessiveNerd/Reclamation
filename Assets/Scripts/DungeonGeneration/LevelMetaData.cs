@@ -18,4 +18,5 @@ public static class LevelMetaData
     public const string AverageMosterCR = nameof(AverageMosterCR);
     public const string MonsterTypes = nameof(MonsterTypes);
     public const string SpecialItems = nameof(SpecialItems);
+    public const string TileType = nameof(TileType);
 }

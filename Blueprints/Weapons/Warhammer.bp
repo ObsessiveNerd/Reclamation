@@ -1,0 +1,15 @@
+<Warhammer> (
+	GraphicContainer:SpritePath=Textures/Weapons/td_items_weapon_hammer
+	Portrait:SpritePath=Portraits/Weapons/maces_and_hammers/iron_hammer_t
+	Position:PositionPoint=0
+	InteractOnTileOvertake
+	EntityTypeContainer:Type=Item
+	Item:Rarity=Uncommon
+	WeaponType:TypeWeapon=Melee
+	DealDamage:DamageType=Blunt,Dice=1d12
+	Equipment:PreferredBodyPartWhenEquipped=Arm
+	Value:Amount=10
+	Sound:SoundPath=Sounds/Melee/Swords/SWORD_Swing_Stab_Body_Gore_stereo.wav,Key=AttackHit
+	Sound:SoundPath=Sounds/Melee/Swords/SWORD_Hit_Sword_RR6_mono.wav,Key=AttackMiss
+	TwoHanded
+)

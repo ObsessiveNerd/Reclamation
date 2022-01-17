@@ -1,6 +1,6 @@
 Creature<Architype>(
 	Defense
-	EntityTypeContainer: Creature
+	EntityTypeContainer: Type=Creature
 	RegisterWithTimeSystem
 	AIController
 	AIFOVHandler

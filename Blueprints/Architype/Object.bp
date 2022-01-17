@@ -1,5 +1,5 @@
 Object<Architype>(
 	Position
 	InteractOnTileOvertake
-	EntityTypeContainer: Object
+	EntityTypeContainer: Type=Object
 )

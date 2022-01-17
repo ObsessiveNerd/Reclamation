@@ -74,7 +74,7 @@ public class Body : Component
         GameEvent ge = new GameEvent(GameEventId.GetEquipment, new KeyValuePair<string, object>(EventParameters.Equipment, null));
         //GameEvent result = FireEvent(e, );
         e.HandleEvent(ge);
-        return ge.Paramters[EventParameters.Equipment] != null;
+        return !string.IsNullOrEmpty((string)ge.Paramters[EventParameters.Equipment]);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
