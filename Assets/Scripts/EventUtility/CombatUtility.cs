@@ -112,7 +112,7 @@ public static class CombatUtility
                 Attack(source, target, spell, false);
                 EventBuilder affectArea = EventBuilderPool.Get(GameEventId.AffectArea)
                                             .With(EventParameters.Effect, new Action<IEntity>((t) => 
-                                                CombatUtility.Attack(source, t, spell, false, false)));
+                                                Attack(source, t, spell, false, false)));
                 spell.FireEvent(affectArea.CreateEvent());
                 GameEvent depleteMana = new GameEvent(GameEventId.DepleteMana, new KeyValuePair<string, object>(EventParameters.Mana, cost));
                 source.FireEvent(depleteMana);
@@ -120,8 +120,8 @@ public static class CombatUtility
                                                     .With(EventParameters.Entity, WorldUtility.GetGameObject(source).transform.position)
                                                     .With(EventParameters.Target, WorldUtility.GetGameObject(target).transform.position);
                 spell.FireEvent(fireRangedWeapon.CreateEvent());
-                GameEvent useEnergy = new GameEvent(GameEventId.UseEnergy, new KeyValuePair<string, object>(EventParameters.Value, 1f));
-                source.FireEvent(useEnergy);
+                //GameEvent useEnergy = new GameEvent(GameEventId.UseEnergy, new KeyValuePair<string, object>(EventParameters.Value, 1f));
+                //source.FireEvent(useEnergy);
                 return true;
             }
         }
