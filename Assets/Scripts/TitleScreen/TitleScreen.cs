@@ -18,9 +18,11 @@ public class TitleScreen : MonoBehaviour
         GetNewSaveName.SetActive(true);
         GetNewSaveName.GetComponent<TMP_InputField>().onEndEdit.AddListener((val) =>
         {
-            SceneManager.LoadSceneAsync("Dungeon").completed += (scene) =>
+            //FindObjectOfType<World>().StartWorld(val);
+
+            SceneManager.LoadSceneAsync("CharacterCreation").completed += (scene) =>
             {
-                FindObjectOfType<World>().StartWorld(true, val);
+                FindObjectOfType<World>().StartWorld(val);
             };
         });
     }
@@ -36,7 +38,8 @@ public class TitleScreen : MonoBehaviour
             {
                 SceneManager.LoadSceneAsync("Dungeon").completed += (scene) =>
                 {
-                    FindObjectOfType<World>().StartWorld(false, directory);
+                    FindObjectOfType<World>().StartWorld(directory);
+                    FindObjectOfType<World>().GenerateDungeon(false, directory);
                 };
             });
         }

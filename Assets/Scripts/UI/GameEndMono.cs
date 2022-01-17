@@ -20,7 +20,8 @@ public class GameEndMono : MonoBehaviour
         SaveSystem.Instance.CleanCurrentSave();
         SceneManager.LoadSceneAsync("Dungeon").completed += (scene) =>
                 {
-                    FindObjectOfType<World>().StartWorld(true, cachedSaveName);
+                    FindObjectOfType<World>().StartWorld(cachedSaveName);
+                    FindObjectOfType<World>().GenerateDungeon(true, cachedSaveName);
                 };
     }
 

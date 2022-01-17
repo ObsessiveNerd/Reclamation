@@ -287,35 +287,80 @@ public class DungeonManager : WorldComponent
 
     void SpawnPlayers()
     {
-        var lines = File.ReadAllLines($"{Application.streamingAssetsPath}/random_names.txt");
-
-        for (int i = 0; i < 4; i++)
+        string charactersPath = SaveSystem.kSaveDataPath + "/" + SaveSystem.Instance.CurrentSaveName + "/Blueprints/Characters";
+        if(!Directory.Exists(charactersPath))
         {
-            IEntity player = EntityFactory.CreateEntity("DwarfWarrior");
+            IEntity player = EntityFactory.CreateEntity(Path.GetFileNameWithoutExtension("DwarfWarrior"));
             FireEvent(Self, new GameEvent(GameEventId.ConvertToPlayableCharacter, new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.Entity, player.ID)));
             Spawner.Spawn(player, m_DungeonGenerator.Rooms[0].GetValidPoint(null));
 
-            if (i == 0)
-                player.CleanupComponents();
+            player.CleanupComponents();
 
             FireEvent(player, new GameEvent(GameEventId.InitFOV));
+        }
 
-            
-            var randomLineNumber = RecRandom.Instance.GetRandomValue(0, lines.Length - 1);
-            var line = lines[randomLineNumber];
+        else
+        {
+            foreach (var bp in Directory.EnumerateFiles(charactersPath, "*.bp"))
+            {
+                IEntity player = EntityFactory.CreateEntity(Path.GetFileNameWithoutExtension(bp));
+                FireEvent(Self, new GameEvent(GameEventId.ConvertToPlayableCharacter, new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.Entity, player.ID)));
+                Spawner.Spawn(player, m_DungeonGenerator.Rooms[0].GetValidPoint(null));
 
-            EventBuilder setName = EventBuilderPool.Get(GameEventId.SetName)
-                                    .With(EventParameters.Name, line);
-            FireEvent(player, setName.CreateEvent());
+                //if (i == 0)
+                player.CleanupComponents();
 
-            GameObject namePlate = GameObject.Instantiate(Resources.Load<GameObject>("UI/Nameplate"));
-            namePlate.GetComponent<NameplateMono>().Setup(player);
-            namePlate.transform.SetParent(GameObject.FindObjectOfType<Canvas>().transform);
-            namePlate.transform.SetAsFirstSibling();
+                FireEvent(player, new GameEvent(GameEventId.InitFOV));
+
+
+                //var randomLineNumber = RecRandom.Instance.GetRandomValue(0, lines.Length - 1);
+                //var line = lines[randomLineNumber];
+
+                //EventBuilder setName = EventBuilderPool.Get(GameEventId.SetName)
+                //                        .With(EventParameters.Name, line);
+                //FireEvent(player, setName.CreateEvent());
+
+                //GameObject namePlate = GameObject.Instantiate(Resources.Load<GameObject>("UI/Nameplate"));
+                //namePlate.GetComponent<NameplateMono>().Setup(player);
+                //namePlate.transform.SetParent(GameObject.FindObjectOfType<Canvas>().transform);
+                //namePlate.transform.SetAsFirstSibling();
+            }
         }
 
         FireEvent(Self, new GameEvent(GameEventId.ProgressTime));
     }
+
+    //void SpawnPlayers()
+    //{
+    //    var lines = File.ReadAllLines($"{Application.streamingAssetsPath}/random_names.txt");
+
+    //    for (int i = 0; i < 4; i++)
+    //    {
+    //        IEntity player = EntityFactory.CreateEntity("DwarfWarrior");
+    //        FireEvent(Self, new GameEvent(GameEventId.ConvertToPlayableCharacter, new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.Entity, player.ID)));
+    //        Spawner.Spawn(player, m_DungeonGenerator.Rooms[0].GetValidPoint(null));
+
+    //        if (i == 0)
+    //            player.CleanupComponents();
+
+    //        FireEvent(player, new GameEvent(GameEventId.InitFOV));
+
+            
+    //        var randomLineNumber = RecRandom.Instance.GetRandomValue(0, lines.Length - 1);
+    //        var line = lines[randomLineNumber];
+
+    //        EventBuilder setName = EventBuilderPool.Get(GameEventId.SetName)
+    //                                .With(EventParameters.Name, line);
+    //        FireEvent(player, setName.CreateEvent());
+
+    //        GameObject namePlate = GameObject.Instantiate(Resources.Load<GameObject>("UI/Nameplate"));
+    //        namePlate.GetComponent<NameplateMono>().Setup(player);
+    //        namePlate.transform.SetParent(GameObject.FindObjectOfType<Canvas>().transform);
+    //        namePlate.transform.SetAsFirstSibling();
+    //    }
+
+    //    FireEvent(Self, new GameEvent(GameEventId.ProgressTime));
+    //}
 
     void MovePlayersToCurrentFloor(bool movingDown)
     {

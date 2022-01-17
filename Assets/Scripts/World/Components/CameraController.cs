@@ -10,13 +10,16 @@ public class CameraController : WorldComponent
     {
         base.Init(self);
         RegisteredEvents.Add(GameEventId.SetCameraPosition);
-        m_CameraControllerMono = GameObject.FindObjectOfType<CameraControllerMono>();
+        //m_CameraControllerMono = GameObject.FindObjectOfType<CameraControllerMono>();
     }
 
     public override void HandleEvent(GameEvent gameEvent)
     {
         if (gameEvent.ID == GameEventId.SetCameraPosition)
         {
+            if (m_CameraControllerMono == null)
+                m_CameraControllerMono = GameObject.FindObjectOfType<CameraControllerMono>();
+
             Point p = gameEvent.GetValue<Point>(EventParameters.Point);
             if (!m_GameObjectMap.ContainsKey(p))
                 return;

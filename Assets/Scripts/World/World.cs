@@ -9,29 +9,55 @@ public class World : MonoBehaviour
 {
     private static World m_Instance;
     public static World Instance => m_Instance;
+
     public IEntity Self => m_World;
     [HideInInspector]
     public int Seed;
     public GameObject TilePrefab;
     IEntity m_World;
 #if UNITY_EDITOR
-    public bool BlueprintCreation;
+    public bool DebugMode;
+    public bool GenerateDungeonOnStart;
 #endif
 
     public int MapColumns, MapRows;
 
     private void Start()
     {
-        if(m_Instance == null)
-            StartWorld(true, $"{SaveSystem.kSaveDataPath}/{Guid.NewGuid().ToString()}");
+
+        //if (m_Instance != null && m_Instance != this)
+        //{
+        //    Destroy(gameObject);
+        //    return;
+        //}
+        //else
+        //    m_Instance = this;
+
+        //DontDestroyOnLoad(gameObject);
+
+        if(DebugMode)
+        {
+            string loadpath = $"{SaveSystem.kSaveDataPath}/{Guid.NewGuid().ToString()}";
+            if (m_Instance == null)
+                StartWorld(loadpath);
+            if(GenerateDungeonOnStart)
+                GenerateDungeon(true, loadpath);
+        }
+
     }
 
-    public void StartWorld(bool startNew, string loadPath)
+    public void StartWorld(string loadPath = "")
     {
-        if (m_Instance == null || startNew)
+        if (m_Instance == null)
+        { 
             m_Instance = this;
-        else
+            DontDestroyOnLoad(gameObject);
+        }
+        else if(m_Instance != this)
+        {
+            Destroy(gameObject);
             return;
+        }
 
         var saveSystem = GameObject.FindObjectOfType<SaveSystem>();
         if(saveSystem != null)
@@ -59,12 +85,10 @@ public class World : MonoBehaviour
         m_World.AddComponent(new PartyController());
 
         m_World.CleanupComponents();
+    }
 
-#if UNITY_EDITOR
-        if (BlueprintCreation)
-            return;
-#endif
-
+    public void GenerateDungeon(bool startNew, string loadPath)
+    {
         if (startNew)
         {
             Seed = RecRandom.InitRecRandom(UnityEngine.Random.Range(0, int.MaxValue));

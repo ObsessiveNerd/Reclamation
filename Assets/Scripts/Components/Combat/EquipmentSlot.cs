@@ -18,12 +18,22 @@ public class EquipmentSlot : Component
     public EquipmentSlot(string eID, BodyPart bp)
     {
         BodyPartType = bp;
+
+        if (string.IsNullOrEmpty(eID))
+            return;
+
         EquipmentId = eID;
         var entity = EntityQuery.GetEntity(EquipmentId);
         if (entity == null)
+        { 
             entity = EntityFactory.CreateEntity(EquipmentId);
+            EventBuilder register = EventBuilderPool.Get(GameEventId.RegisterEntity)
+                                    .With(EventParameters.Entity, entity);
+            World.Instance.Self.FireEvent(register.CreateEvent());
+        }
         if (entity != null)
             EquipmentId = entity.ID;
+
         //EquipmentInstanceId = entity.ID;
 
         //if (!string.IsNullOrEmpty(EquipmentId) && !int.TryParse(EquipmentId, out int res))

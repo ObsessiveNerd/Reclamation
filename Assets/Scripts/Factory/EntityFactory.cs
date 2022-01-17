@@ -124,9 +124,14 @@ public static class EntityFactory
         return EnvironmentEntities[RecRandom.Instance.GetRandomValue(0, s_EnvironmentEntities.Count)];
     }
 
-    public static string GetRandomCharacterBPName()
+    public static string GetRandomCharacterName()
     {
-        return string.Empty;
+        var lines = File.ReadAllLines($"{Application.streamingAssetsPath}/random_names.txt");
+
+        var randomLineNumber = RecRandom.Instance.GetRandomValue(0, lines.Length - 1);
+        var line = lines[randomLineNumber];
+
+        return line;
     }
 
     public static string GetRandomMonsterBPName()
@@ -213,6 +218,12 @@ public static class EntityFactory
             }
         }
         a.CleanupComponents();
+
+
+        //EventBuilder register = EventBuilderPool.Get(GameEventId.RegisterEntity)
+        //                            .With(EventParameters.Entity, a);
+        //World.Instance.Self.FireEvent(register.CreateEvent());
+
         //foreach (var comp in a.GetComponents())
         //    comp.Start();
         return a;
@@ -387,8 +398,9 @@ public static class EntityFactory
 
     public static void CreateTemporaryBlueprint(string blueprintName, string data)
     {
-        if (!int.TryParse(blueprintName, out int result))
-            Debug.Log("bad");
+        //if (!int.TryParse(blueprintName, out int result))
+        //    Debug.Log("bad");
+
         string path = $"Blueprints/{blueprintName}.bp";
         SaveSystem.Instance.WriteData(path, data);
     }
