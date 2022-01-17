@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class EquipmentViewMono : MonoBehaviour, IUpdatableUI
+public class EquipmentViewMono : MonoBehaviour//, IUpdatableUI
 {
     public Sprite DefaultImage;
 
@@ -20,7 +20,7 @@ public class EquipmentViewMono : MonoBehaviour, IUpdatableUI
         if(source != null)
             m_Source = source;
 
-        WorldUtility.RegisterUI(this);
+        //WorldUtility.RegisterUI(this);
         EventBuilder getEquipment = EventBuilderPool.Get(GameEventId.GetCurrentEquipment)
                                     .With(EventParameters.Head, null)
                                     .With(EventParameters.Torso, null)
@@ -86,7 +86,7 @@ public class EquipmentViewMono : MonoBehaviour, IUpdatableUI
     public void Close()
     {
         Cleanup();
-        WorldUtility.UnRegisterUI(this);
+        //WorldUtility.UnRegisterUI(this);
     }
 
     public void UpdateUI(IEntity newSource)

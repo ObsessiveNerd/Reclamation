@@ -4,14 +4,14 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SpellSelectorMono : MonoBehaviour, IUpdatableUI
+public class SpellSelectorMono : MonoBehaviour//, IUpdatableUI
 {
     public GameObject SpellObject;
     public GameObject SpellView;
 
     void Start()
     {
-        WorldUtility.RegisterUI(this);
+        //WorldUtility.RegisterUI(this);
 
         EventBuilder updateUI = EventBuilderPool.Get(GameEventId.UpdateUI)
                                     .With(EventParameters.Entity, WorldUtility.GetActivePlayerId());

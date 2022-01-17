@@ -4,7 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CharacterStatsMono : MonoBehaviour, IUpdatableUI
+public class CharacterStatsMono : MonoBehaviour//, IUpdatableUI
 {
     public TextMeshProUGUI Name;
     public TextMeshProUGUI AttributePoints;
@@ -49,7 +49,7 @@ public class CharacterStatsMono : MonoBehaviour, IUpdatableUI
         }
 
 
-        WorldUtility.RegisterUI(this);
+        //WorldUtility.RegisterUI(this);
     }
 
     public void Cleanup()
@@ -66,6 +66,6 @@ public class CharacterStatsMono : MonoBehaviour, IUpdatableUI
     public void Close()
     {
         Cleanup();
-        WorldUtility.UnRegisterUI(this);
+        //WorldUtility.UnRegisterUI(this);
     }
 }

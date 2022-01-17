@@ -32,8 +32,14 @@ public class WorldUIController : WorldComponent
         if(gameEvent.ID == GameEventId.OpenInventoryUI)
         {
             IEntity source = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Entity]);
-            //List<IEntity> inventory = (List<IEntity>)gameEvent.Paramters[EventParameters.Value];
+            List<IEntity> inventory = (List<IEntity>)gameEvent.Paramters[EventParameters.Value];
+
             GameObject.FindObjectOfType<CharacterManagerMono>().Setup(source);
+
+            foreach (var entity in m_Players)
+                GameObject.FindObjectOfType<CharacterManagerMono>().AddCharacter(entity);
+
+            //GameObject go = GameObject.Instantiate(Resources.Load<GameObject>("Prefabs/CharacterManager"));
         }
 
         else if(gameEvent.ID == GameEventId.OpenSpellUI)
@@ -53,6 +59,8 @@ public class WorldUIController : WorldComponent
             string newId = gameEvent.GetValue<string>(EventParameters.Entity);
             foreach (var ui in UpdatableUI)
                 ui?.UpdateUI(EntityQuery.GetEntity(newId));
+
+            GameObject.FindObjectOfType<SpellSelectorMono>().Setup(m_ActivePlayer.Value);
 
             //if (gameEvent.Paramters.ContainsKey(EventParameters.Entity))
             //{
@@ -110,6 +118,8 @@ public class WorldUIController : WorldComponent
                 EventBuilder addToInventory = EventBuilderPool.Get(GameEventId.AddToInventory)
                                                 .With(EventParameters.Entity, item.ID);
                 EntityQuery.GetEntity(target).FireEvent(addToInventory.CreateEvent());
+
+                GameObject.FindObjectOfType<CharacterManagerMono>().UpdateUI(source);
 
             }, m_Players.Select(player => player.ID).ToList());
         }

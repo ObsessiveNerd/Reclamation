@@ -4,7 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class StatsUIMono : MonoBehaviour, IUpdatableUI
+public class StatsUIMono : MonoBehaviour//, IUpdatableUI
 {
     public Stat ControlledStat;
     TextMeshProUGUI Text;

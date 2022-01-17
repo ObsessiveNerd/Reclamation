@@ -1,29 +1,30 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
-using UnityEngine.UI;
 
-public class CharacterManagerMono : EscapeableMono
+public class CharacterManagerMono : EscapeableMono, IUpdatableUI
 {
+    private bool m_OpenedThisFrame = false;
     public GameObject CharacterManagerObject;
 
-    public GameObject InventoryView;
-    public GameObject EquipmentView;
-    public GameObject CharacterStats;
-
-    private bool m_OpenedThisFrame = false;
-
+    private Dictionary<IEntity, CharacterMono> characters = new Dictionary<IEntity, CharacterMono>();
+    private GameObject m_ViewPrefab;
     public void Setup(IEntity source)
     {
         UIManager.Push(this);
+        WorldUtility.RegisterUI(this);
         CharacterManagerObject.SetActive(true);
-
-        InventoryView.GetComponent<InventoryManagerMono>().Setup(source);
-        EquipmentView.GetComponent<EquipmentViewMono>().Setup(source);
-        CharacterStats.GetComponent<CharacterStatsMono>().Setup(source);
-
         m_OpenedThisFrame = true;
+        m_ViewPrefab = Resources.Load<GameObject>("Prefabs/CharacterManager");
+    }
+
+    public void AddCharacter(IEntity source)
+    {
+        GameObject go = Instantiate(m_ViewPrefab, CharacterManagerObject.transform);
+        //go.transform.SetParent(CharacterManagerObject.transform);
+        CharacterMono cm = go.GetComponent<CharacterMono>();
+        cm.Setup(source);
+        characters.Add(source, cm);
     }
 
     public override bool? AlternativeEscapeKeyPressed
@@ -47,8 +48,17 @@ public class CharacterManagerMono : EscapeableMono
 
     void Cleanup()
     {
-        InventoryView.GetComponent<InventoryManagerMono>().Close();
-        EquipmentView.GetComponent<EquipmentViewMono>().Close();
-        CharacterStats.GetComponent<CharacterStatsMono>().Close();
+        foreach(var cm in characters.Keys)
+        {
+            characters[cm].Cleanup();
+            Destroy(characters[cm].gameObject);
+        }
+        characters.Clear();
+        WorldUtility.UnRegisterUI(this);
+    }
+
+    public void UpdateUI(IEntity newSource)
+    {
+        characters[newSource].Setup(newSource);
     }
 }

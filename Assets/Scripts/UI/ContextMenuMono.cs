@@ -18,7 +18,7 @@ public class ContextMenuMono : EscapeableMono
         return contextMenu;
     }
 
-    public void AddButton(ContextMenuButton cmb, Action afterClickCallback = null)
+    public void AddButton(ContextMenuButton cmb, IEntity source, Action afterClickCallback = null)
     {
         GameObject instance = cmb.CreateButton(Resources.Load<GameObject>("UI/ContextMenuButton"));
         Button button = instance.GetComponent<Button>();
@@ -27,7 +27,7 @@ public class ContextMenuMono : EscapeableMono
         button.onClick.AddListener(() => UIManager.ForcePop(this));
         button.onClick.AddListener(() =>
         {
-            World.Instance.Self.FireEvent(new GameEvent(GameEventId.UpdateUI, new KeyValuePair<string, object>(EventParameters.Entity, WorldUtility.GetActivePlayerId())));
+            World.Instance.Self.FireEvent(new GameEvent(GameEventId.UpdateUI, new KeyValuePair<string, object>(EventParameters.Entity, source.ID)));
         });
         if (afterClickCallback != null)
             button.onClick.AddListener(() => afterClickCallback());
@@ -45,7 +45,7 @@ public class ContextMenuMono : EscapeableMono
                 actionForSelectedPlayer(id);
             });
             
-            AddButton(button, () => UIManager.ForcePop());
+            AddButton(button, EntityQuery.GetEntity(id), () => UIManager.ForcePop());
         }
     }
 

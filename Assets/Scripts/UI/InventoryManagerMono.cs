@@ -4,7 +4,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 
-public class InventoryManagerMono : MonoBehaviour, IUpdatableUI
+public class InventoryManagerMono : MonoBehaviour//, IUpdatableUI
 {
     public Transform InventoryView;
     IEntity m_Source;
@@ -17,7 +17,7 @@ public class InventoryManagerMono : MonoBehaviour, IUpdatableUI
 
         Cleanup();
 
-        WorldUtility.RegisterUI(this);
+        //WorldUtility.RegisterUI(this);
         EventBuilder getCurrentInventory = EventBuilderPool.Get(GameEventId.GetCurrentInventory)
                                             .With(EventParameters.Value, new List<IEntity>());
 
@@ -59,6 +59,6 @@ public class InventoryManagerMono : MonoBehaviour, IUpdatableUI
     public void Close()
     {
         Cleanup();
-        WorldUtility.UnRegisterUI(this);
+        //WorldUtility.UnRegisterUI(this);
     }
 }

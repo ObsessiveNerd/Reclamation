@@ -33,7 +33,7 @@ public class InventoryItemMono : ItemMono, IPointerClickHandler
             var cmm = contextMenu.GetComponent<ContextMenuMono>();
 
             foreach (var action in result)
-                cmm.AddButton(action);
+                cmm.AddButton(action, m_Source);
         }
     }
 
