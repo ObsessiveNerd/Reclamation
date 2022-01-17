@@ -1,12 +1,12 @@
 <DragonHead> (
-	GraphicContainer: Textures/Armor/td_items_leather_helm
-	Portrait: Portraits/Items/addons/71_t
-	Position:PositionPoint=0,0
+	GraphicContainer:SpritePath= Textures/Armor/td_items_leather_helm
+	Portrait:SpritePath= Portraits/Items/addons/71_t
+	Position:PositionPoint=0
 	InteractOnTileOvertake
 	EntityTypeContainer:Type=Item
 	Item:Rarity=Mythic
-	Equipment:PreferredBodyPartWhenEquipped=Arm
+	Equipment:PreferredBodyPartWhenEquipped=Head
 	DealDamage:DamageType=Fire,Dice=1d10
-	SpellContainer:MaxSpell=5,RandomSpells=False,SpecificSpell=Firebolt
+	SpellContainer:MaxSpell=5,RandomSpells=False,SpecificSpell=RingOfFire
 	WeaponType:TypeWeapon=Wand
 )

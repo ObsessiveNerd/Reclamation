@@ -16,23 +16,35 @@ public class TileSelection : WorldComponent
     {
         if (gameEvent.ID == GameEventId.SelectTile)
         {
-            EventBuilder getEntity = EventBuilderPool.Get(GameEventId.GetEntity)
+            if(gameEvent.Paramters[EventParameters.TilePosition] == null)
+            {
+                EventBuilder getEntity = EventBuilderPool.Get(GameEventId.GetEntity)
                                         .With(EventParameters.Entity, null)
                                         .With(EventParameters.Value, gameEvent.Paramters[EventParameters.Entity]);
-            
-            IEntity entity = FireEvent(Self, getEntity.CreateEvent()).GetValue<IEntity>(EventParameters.Entity);
 
-            EventBuilder getTarget = EventBuilderPool.Get(GameEventId.GetEntity)
+                IEntity entity = FireEvent(Self, getEntity.CreateEvent()).GetValue<IEntity>(EventParameters.Entity);
+
+                EventBuilder getTarget = EventBuilderPool.Get(GameEventId.GetEntity)
                                         .With(EventParameters.Entity, null)
                                         .With(EventParameters.Value, gameEvent.Paramters[EventParameters.Target]);
-            IEntity target = gameEvent.Paramters[EventParameters.Target] == null ? null : FireEvent(Self, getTarget.CreateEvent()).GetValue<IEntity>(EventParameters.Entity);
+                IEntity target = gameEvent.Paramters[EventParameters.Target] == null ? null : FireEvent(Self, getTarget.CreateEvent()).GetValue<IEntity>(EventParameters.Entity);
 
-            Point p = m_EntityToPointMap[target == null ? entity : target];
+                Point p = m_EntityToPointMap[target == null ? entity : target];
 
-            m_Tiles[p].AddComponent(new SelectedTile());
-            m_Tiles[p].CleanupComponents();
+                m_Tiles[p].AddComponent(new SelectedTile());
+                m_Tiles[p].CleanupComponents();
 
-            gameEvent.Paramters[EventParameters.TilePosition] = p;
+                gameEvent.Paramters[EventParameters.TilePosition] = p;
+            }
+            else
+            {
+                Point p = gameEvent.GetValue<Point>(EventParameters.TilePosition);
+                if(m_Tiles.ContainsKey(p))
+                {
+                    m_Tiles[p].AddComponent(new SelectedTile());
+                    m_Tiles[p].CleanupComponents();
+                }
+            }
         }
 
         if (gameEvent.ID == GameEventId.SelectNewTileInDirection)
@@ -40,14 +52,18 @@ public class TileSelection : WorldComponent
             Point currentTilePos = (Point)gameEvent.Paramters[EventParameters.TilePosition];
             MoveDirection moveDirection = (MoveDirection)gameEvent.Paramters[EventParameters.InputDirection];
 
-            m_Tiles[currentTilePos].RemoveComponent(typeof(SelectedTile));
-            m_Tiles[currentTilePos].CleanupComponents();
+            if (m_Tiles.ContainsKey(currentTilePos))
+            {
+                m_Tiles[currentTilePos].RemoveComponent(typeof(SelectedTile));
+                m_Tiles[currentTilePos].CleanupComponents();
+            }
 
             Point newPoint = GetTilePointInDirection(currentTilePos, moveDirection);
-
-            m_Tiles[newPoint].AddComponent(new SelectedTile());
-            m_Tiles[newPoint].CleanupComponents();
-
+            if(m_Tiles.ContainsKey(newPoint))
+            {
+                m_Tiles[newPoint].AddComponent(new SelectedTile());
+                m_Tiles[newPoint].CleanupComponents();
+            }
             gameEvent.Paramters[EventParameters.TilePosition] = newPoint;
         }
 

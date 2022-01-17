@@ -246,6 +246,7 @@ public static class GameEventId
     public const string GetSpells = nameof(GetSpells);
     public const string SpellSelected = nameof(SpellSelected);
     public const string OpenSpellSelector = nameof(OpenSpellSelector);
+    public const string AffectArea = nameof(AffectArea);
 
     //Party
     public const string LookingForGroup = nameof(LookingForGroup);
@@ -337,6 +338,7 @@ public static class EventParameters
     public const string Key = nameof(Key);
     public const string Owner = nameof(Owner);
     public const string BodyParts = nameof(BodyParts);
+    public const string Effect = nameof(Effect);
 }
 
 //[Serializable]

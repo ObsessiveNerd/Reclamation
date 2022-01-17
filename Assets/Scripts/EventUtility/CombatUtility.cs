@@ -1,12 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 public static class CombatUtility
 {
     static int CombatRatingBuffer => 4;
 
-    public static void Attack(IEntity source, IEntity target, IEntity weapon, bool isMelee)
+    public static void Attack(IEntity source, IEntity target, IEntity weapon, bool isMelee, bool useEnergy = true)
     {
+        var targetPos = WorldUtility.GetEntityPosition(target);
+        if (targetPos == null || targetPos == Point.InvalidPoint || targetPos == new Point(0, 0))
+            return;
+
         TypeWeapon weaponType = GetWeaponTypes(weapon).FirstOrDefault((t) =>
         {
             if(isMelee)
@@ -76,7 +81,9 @@ public static class CombatUtility
                                                     .With(EventParameters.Target, WorldUtility.GetGameObject(target).transform.position);
             weapon.FireEvent(fireRangedWeapon.CreateEvent());
         }
-        source.FireEvent(source, new GameEvent(GameEventId.UseEnergy, new KeyValuePair<string, object>(EventParameters.Value, 1f))); //todo: temp energy value.  Energy value should come from the weapon probably
+
+        if(useEnergy)
+            source.FireEvent(source, new GameEvent(GameEventId.UseEnergy, new KeyValuePair<string, object>(EventParameters.Value, 1f))); //todo: temp energy value.  Energy value should come from the weapon probably
     }
 
     public static bool CastSpell(IEntity source, IEntity target, IEntity spellSource)
@@ -97,7 +104,16 @@ public static class CombatUtility
             int cost = spell.FireEvent(manaCost.CreateEvent()).GetValue<int>(EventParameters.Value);
             if (cost <= mana)
             {
+                EventBuilder getVisibleTiles = EventBuilderPool.Get(GameEventId.SelectTile)
+                                                .With(EventParameters.TilePosition, WorldUtility.GetEntityPosition(target))
+                                                .With(EventParameters.Value, false);
+                spell.FireEvent(getVisibleTiles.CreateEvent());
+
                 Attack(source, target, spell, false);
+                EventBuilder affectArea = EventBuilderPool.Get(GameEventId.AffectArea)
+                                            .With(EventParameters.Effect, new Action<IEntity>((t) => 
+                                                CombatUtility.Attack(source, t, spell, false, false)));
+                spell.FireEvent(affectArea.CreateEvent());
                 GameEvent depleteMana = new GameEvent(GameEventId.DepleteMana, new KeyValuePair<string, object>(EventParameters.Mana, cost));
                 source.FireEvent(depleteMana);
                 EventBuilder fireRangedWeapon = EventBuilderPool.Get(GameEventId.FireRangedAttack)

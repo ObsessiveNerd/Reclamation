@@ -358,5 +358,6 @@ public class DungeonManager : WorldComponent
         actor.AddComponent(new Renderer(tile.GetComponent<SpriteRenderer>()));
         actor.CleanupComponents();
         pointToTileMap.Add(new Point(x, y), actor);
+        m_EntityToPointMap.Add(actor, new Point(x, y));
     }
 }

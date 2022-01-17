@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -71,6 +72,7 @@ public class SpellcasterPlayerController : InputControllerBase
                                                                                 new KeyValuePair<string, object>(EventParameters.Target, startingTarget.ID),
                                                                                 new KeyValuePair<string, object>(EventParameters.TilePosition, null));
         FireEvent(World.Instance.Self, selectTile);
+        FireEvent(m_Attack, selectTile);
         m_TileSelection = (Point)selectTile.Paramters[EventParameters.TilePosition];
         FireEvent(World.Instance.Self, new GameEvent(GameEventId.UpdateWorldView));
         UIManager.Push(null);
@@ -93,6 +95,7 @@ public class SpellcasterPlayerController : InputControllerBase
                 GameEvent moveSelection = new GameEvent(GameEventId.SelectNewTileInDirection, new KeyValuePair<string, object>(EventParameters.InputDirection, desiredDirection),
                                                                                                     new KeyValuePair<string, object>(EventParameters.TilePosition, m_TileSelection));
                 FireEvent(World.Instance.Self, moveSelection);
+                FireEvent(m_Attack, moveSelection);
                 m_TileSelection = (Point)moveSelection.Paramters[EventParameters.TilePosition];
                 gameEvent.Paramters[EventParameters.UpdateWorldView] = true;
             }
@@ -104,12 +107,21 @@ public class SpellcasterPlayerController : InputControllerBase
 
                 CombatUtility.Attack(Self, target, m_Attack, false);
 
+                EventBuilder affectArea = EventBuilderPool.Get(GameEventId.AffectArea)
+                                            .With(EventParameters.Effect, new Action<IEntity>((t) => 
+                                                CombatUtility.Attack(Self, t, m_Attack, false, false)));
+                m_Attack.FireEvent(affectArea.CreateEvent());
+
                 //EventBuilder fireRangedWeapon = EventBuilderPool.Get(GameEventId.FireRangedAttack)
                 //                                .With(EventParameters.Entity, WorldUtility.GetGameObject(Self).transform.position)
                 //                                .With(EventParameters.Target, WorldUtility.GetGameObject(target).transform.position);
                 //FireEvent(m_Attack, fireRangedWeapon.CreateEvent());
 
                 EndSelection(gameEvent, m_TileSelection);
+
+                EventBuilder eb = EventBuilderPool.Get(GameEventId.EndSelection)
+                                    .With(EventParameters.TilePosition, m_TileSelection);
+                m_Attack.FireEvent(eb.CreateEvent());
 
                 GameEvent checkForEnergy = new GameEvent(GameEventId.HasEnoughEnergyToTakeATurn, new KeyValuePair<string, object>(EventParameters.TakeTurn, false));
                 FireEvent(Self, checkForEnergy);
@@ -120,7 +132,12 @@ public class SpellcasterPlayerController : InputControllerBase
             }
 
             if (Input.GetKeyDown(KeyCode.Escape))
+            { 
                 EndSelection(gameEvent, m_TileSelection);
+                EventBuilder eb = EventBuilderPool.Get(GameEventId.EndSelection)
+                                    .With(EventParameters.TilePosition, m_TileSelection);
+                m_Attack.FireEvent(eb.CreateEvent());
+            }
         }
     }
 }

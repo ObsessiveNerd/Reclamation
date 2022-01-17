@@ -429,18 +429,18 @@ public class BasicDungeonGenerator : IDungeonGenerator
 
         using (new DiagnosticsTimer("spawning"))
         {
-            SpawnEnemies();
+            //SpawnEnemies();
             SpawnItems();
             SpawnStairs();
         }
 
         //TODO
-        if (metaData.SpawnBoss)
-        {
+        //if (metaData.SpawnBoss)
+        //{
             Room randomRoom = Rooms[RecRandom.Instance.GetRandomValue(1, Rooms.Count)];
             IEntity goblin = EntityFactory.CreateEntity("RedDragon");
             Spawner.Spawn(goblin, randomRoom.GetValidPoint());
-        }
+        //}
 
         return m_Result;
     }
@@ -533,7 +533,7 @@ public class BasicDungeonGenerator : IDungeonGenerator
         for (int i = 0; i < RecRandom.Instance.GetRandomValue(3, 8); i++)
         {
             Room randomRoom = Rooms[RecRandom.Instance.GetRandomValue(1, Rooms.Count)];
-            IEntity enemy = EntityFactory.CreateEntity(/*EntityFactory.GetRandomMonsterBPName()*/ "GoblinMage" );
+            IEntity enemy = EntityFactory.CreateEntity(EntityFactory.GetRandomMonsterBPName());
             Spawner.Spawn(enemy, randomRoom.GetValidPoint());
         }
     }
