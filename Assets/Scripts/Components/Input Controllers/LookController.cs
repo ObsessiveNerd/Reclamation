@@ -11,7 +11,7 @@ public class LookController : InputControllerBase
         base.Init(self);
         GameEvent selectTile = new GameEvent(GameEventId.SelectTile, new KeyValuePair<string, object>(EventParameters.Entity, Self.ID),
                                                                                new KeyValuePair<string, object>(EventParameters.Target, null),
-                                                                               new KeyValuePair<string, object>(EventParameters.TilePosition, null));
+                                                                               new KeyValuePair<string, object>(EventParameters.TilePosition, WorldUtility.GetEntityPosition(Self)));
         FireEvent(World.Instance.Self, selectTile);
 
         m_TileSelection = (Point)selectTile.Paramters[EventParameters.TilePosition];
@@ -38,7 +38,12 @@ public class LookController : InputControllerBase
                 gameEvent.Paramters[EventParameters.UpdateWorldView] = true;
             }
 
-            if (Input.GetKeyDown(KeyCode.Escape))
+            else if(Input.GetKeyDown(KeyCode.Return))
+            {
+                Debug.Log(WorldUtility.GetEntityAtPosition(m_TileSelection, false).Serialize());
+            }
+
+            else if (Input.GetKeyDown(KeyCode.Escape))
             {
                 Self.RemoveComponent(this);
                 Self.AddComponent(new PlayerInputController());

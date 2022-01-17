@@ -8,6 +8,7 @@ public class Wander : Component
     public int Weight => 5;
     private Point m_Destination;
     private List<IMapNode> m_CurrentPath;
+    private Point m_PreviousPosition;
 
     public override void Init(IEntity self)
     {
@@ -39,6 +40,12 @@ public class Wander : Component
     {
         Point currentPos = PathfindingUtility.GetEntityLocation(Self);
 
+        //if (m_PreviousPosition == currentPos)
+        //{
+        //    m_CurrentPath.Clear();
+        //    m_Destination = PathfindingUtility.GetRandomValidPoint();
+        //}
+
         if (m_Destination == null || currentPos == m_Destination)
             m_Destination = PathfindingUtility.GetRandomValidPoint();
 
@@ -47,6 +54,8 @@ public class Wander : Component
 
         if (m_CurrentPath.Count == 0)
             return MoveDirection.None;
+
+        //m_PreviousPosition = currentPos;
 
         IMapNode nextNode = m_CurrentPath[0];
         m_CurrentPath.RemoveAt(0);

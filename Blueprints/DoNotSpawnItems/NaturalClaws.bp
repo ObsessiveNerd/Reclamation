@@ -1,0 +1,9 @@
+<NaturalClaws> (
+	Position:PositionPoint=
+	InteractOnTileOvertake
+	EntityTypeContainer:Type=Item
+	Item:Rarity=Common
+	WeaponType:TypeWeapon=Melee
+	DealDamage:DamageType=Slashing,Dice=1d8
+	DestroyOnDrop
+)

@@ -7,7 +7,7 @@ public class CombatRating : Component
     public override void Init(IEntity self)
     {
         base.Init(self);
-        RegisteredEvents.Add(GameEventId.GetCombatRating);
+        //RegisteredEvents.Add(GameEventId.GetCombatRating);
     }
 
     public override void HandleEvent(GameEvent gameEvent)

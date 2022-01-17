@@ -64,12 +64,14 @@ public class Fear : Component
 
     MoveDirection RunAway()
     {
-        Point randomPoint = PathfindingUtility.GetRandomValidPoint();
-        var path = PathfindingUtility.GetPath(m_CurrentLocation, randomPoint);
+        //Point randomPoint = PathfindingUtility.GetRandomValidPoint();
+        var test = PathfindingUtility.GetDirectionTo(m_CurrentLocation, m_TargetLocation);
         FireEvent(Self, new GameEvent(GameEventId.BreakRank));
-        if(path.Count >= 1)
-            return PathfindingUtility.GetDirectionTo(m_CurrentLocation, path[0]);
-        return PathfindingUtility.GetDirectionTo(m_CurrentLocation, m_CurrentLocation);
+        return PathfindingUtility.GetDirectionAwayFrom(m_CurrentLocation, m_TargetLocation);
+        //var path = PathfindingUtility.GetPath(m_CurrentLocation, randomPoint);
+        //if(path.Count >= 1)
+        //    return PathfindingUtility.GetDirectionTo(m_CurrentLocation, path[0]);
+        //return PathfindingUtility.GetDirectionTo(m_CurrentLocation, m_CurrentLocation);
     }
 }
 

@@ -40,8 +40,8 @@ public class AIController : InputControllerBase
 
                 if (desiredDirection == MoveDirection.None)
                     FireEvent(Self, new GameEvent(GameEventId.SkipTurn));
-
-                FireEvent(Self, new GameEvent(GameEventId.MoveKeyPressed, new KeyValuePair<string, object>(EventParameters.InputDirection, desiredDirection)));
+                else    
+                    FireEvent(Self, new GameEvent(GameEventId.MoveKeyPressed, new KeyValuePair<string, object>(EventParameters.InputDirection, desiredDirection)));
 
                 //if (desiredDirection == MoveDirection.None)
                 //    FireEvent(Self, new GameEvent(GameEventId.SkipTurn));

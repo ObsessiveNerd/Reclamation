@@ -6,6 +6,34 @@ using UnityEngine;
 
 public static class PathfindingUtility
 {
+    public static MoveDirection GetDirectionAwayFrom(IMapNode source, IMapNode target)
+    {
+        if (source == target)
+            return MoveDirection.None;
+
+        int rawX = target.x - source.x;
+        int rawY = target.y - source.y;
+
+        float xDir = rawX != 0 ? Mathf.Sign(target.x - source.x) : 0f;
+        float yDir = rawY != 0 ? Mathf.Sign(target.y - source.y) : 0f;
+
+        string direction = string.Empty;
+        if (yDir < 0)
+            direction += "N";
+        else if (yDir > 0)
+            direction += "S";
+
+        if (xDir < 0)
+            direction += "E";
+        else if (xDir > 0)
+            direction += "W";
+
+        if (Enum.TryParse(direction, out MoveDirection result))
+            return result;
+
+        return MoveDirection.None;
+    }
+
     public static MoveDirection GetDirectionTo(IMapNode source, IMapNode target)
     {
         if (source == target)

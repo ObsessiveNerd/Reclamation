@@ -68,7 +68,7 @@ public class RangedPlayerAttackController : InputControllerBase
                 TypeWeapon weaponType = CombatUtility.GetWeaponType(m_Attack);
                 IEntity target = WorldUtility.GetEntityAtPosition(m_TileSelection);
 
-                CombatUtility.Attack(Self, target, m_Attack);
+                CombatUtility.Attack(Self, target, m_Attack, false);
 
                 EndSelection(gameEvent, m_TileSelection);
 

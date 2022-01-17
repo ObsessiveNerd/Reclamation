@@ -25,7 +25,7 @@ public class TileSelection : WorldComponent
             EventBuilder getTarget = EventBuilderPool.Get(GameEventId.GetEntity)
                                         .With(EventParameters.Entity, null)
                                         .With(EventParameters.Value, gameEvent.Paramters[EventParameters.Target]);
-            IEntity target = FireEvent(Self, getTarget.CreateEvent()).GetValue<IEntity>(EventParameters.Entity);
+            IEntity target = gameEvent.Paramters[EventParameters.Target] == null ? null : FireEvent(Self, getTarget.CreateEvent()).GetValue<IEntity>(EventParameters.Entity);
 
             Point p = m_EntityToPointMap[target == null ? entity : target];
 

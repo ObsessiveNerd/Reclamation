@@ -41,7 +41,7 @@ public class EquipmentSlot : Component
         RegisteredEvents.Add(GameEventId.Equip);
         RegisteredEvents.Add(GameEventId.Unequip);
         //RegisteredEvents.Add(GameEventId.CheckEquipment);
-        RegisteredEvents.Add(GameEventId.GetCombatRating);
+        //RegisteredEvents.Add(GameEventId.GetCombatRating);
         RegisteredEvents.Add(GameEventId.PerformAttack);
         RegisteredEvents.Add(GameEventId.Drop);
         RegisteredEvents.Add(GameEventId.Died);
@@ -119,7 +119,7 @@ public class EquipmentSlot : Component
                 //    equipmentEntity = EntityFactory.CreateEntity("UnarmedStrike");
 
                 if (equipmentEntity != null && CombatUtility.GetWeaponType(equipmentEntity).HasFlag(desiredWeaponToAttack))
-                    CombatUtility.Attack(Self, EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Target]), equipmentEntity);
+                    CombatUtility.Attack(Self, EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Target]), equipmentEntity, desiredWeaponToAttack == TypeWeapon.Melee || desiredWeaponToAttack == TypeWeapon.Finesse);
             //}
         }
 

@@ -11,7 +11,7 @@ public class Armor : Component
     {
         ArmorAmount = armor;
         RegisteredEvents.Add(GameEventId.AddArmorValue);
-        RegisteredEvents.Add(GameEventId.GetCombatRating);
+        //RegisteredEvents.Add(GameEventId.GetCombatRating);
         RegisteredEvents.Add(GameEventId.GetInfo);
     }
 

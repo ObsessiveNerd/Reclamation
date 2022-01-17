@@ -19,14 +19,16 @@ public class DealDamage : Component
         Dice = dice;
 
         RegisteredEvents.Add(GameEventId.AmAttacking);
-        RegisteredEvents.Add(GameEventId.GetCombatRating);
+        //RegisteredEvents.Add(GameEventId.GetCombatRating);
         RegisteredEvents.Add(GameEventId.GetInfo);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
     {
         if (gameEvent.ID == GameEventId.AmAttacking)
+        { 
             ((List<Damage>)gameEvent.Paramters[EventParameters.DamageList]).Add(new Damage(Dice.Roll(), DamageType));
+        }
         else if (gameEvent.ID == GameEventId.GetCombatRating)
             gameEvent.Paramters[EventParameters.Value] = (int)gameEvent.Paramters[EventParameters.Value] + Dice.GetAverageRoll();
         else if (gameEvent.ID == GameEventId.GetInfo)

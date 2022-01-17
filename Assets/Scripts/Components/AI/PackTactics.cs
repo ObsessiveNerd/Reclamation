@@ -25,7 +25,7 @@ public class PackTactics : Component
     {
         base.Init(self);
         RegisteredEvents.Add(GameEventId.GetActionToTake);
-        RegisteredEvents.Add(GameEventId.GetCombatRating);
+        //RegisteredEvents.Add(GameEventId.GetCombatRating);
         RegisteredEvents.Add(GameEventId.BreakRank);
         RegisteredEvents.Add(GameEventId.SetLeader);
         RegisteredEvents.Add(GameEventId.Died);

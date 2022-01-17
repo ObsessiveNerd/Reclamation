@@ -185,6 +185,7 @@ public static class GameEventId
     public const string DepleteMana = nameof(DepleteMana);
     public const string ApplyEffectToTarget = nameof(ApplyEffectToTarget);
     public const string GetWeaponType = nameof(GetWeaponType);
+    public const string GetWeaponTypes = nameof(GetWeaponTypes);
     public const string GetEquipment = nameof(GetEquipment);
     public const string AddArmorValue = nameof(AddArmorValue);
     public const string Sharpness = nameof(Sharpness);
@@ -292,6 +293,7 @@ public static class EventParameters
     public const string DamageType = nameof(DamageType);
     public const string RollToHit = nameof(RollToHit);
     public const string WeaponType = nameof(WeaponType);
+    public const string WeaponTypeList = nameof(WeaponTypeList);
     public const string Weapon = nameof(Weapon);
     public const string GameEvent = nameof(GameEvent);
     public const string Enemy = nameof(Enemy);
@@ -372,11 +374,49 @@ public static class EventParameters
 //    }
 //}
 
+//public class TypedGameEvent : GameEvent
+//{
+//    public Dictionary<string, T> TypedParameters { get { return m_TypedParameters; } }
+//    Dictionary<string, T> m_TypedParameters = new Dictionary<string, T>();
+
+//    public TypedGameEvent(string id, params KeyValuePair<string, object>[] parameters) : base(id)
+//    {
+
+//    }
+//}
+
+//public class GetTypedEvent<T> : GameEvent
+//{
+    
+
+//    public GetTypedEvent(string id, params KeyValuePair<string, T>[] parameters) : base(id)
+//    {
+//        foreach (var kvp in parameters)
+//            m_TypedParameters.Add(kvp.Key, kvp.Value);
+//    }
+
+//    public override bool HasParameter(string parameterId)
+//    {
+//        return TypedParameters.ContainsKey(parameterId);
+//    }
+
+//    public T GetValue(string parameterId)
+//    {
+//        if (TypedParameters.TryGetValue(parameterId, out T value))
+//        {
+//            if (value == null)
+//                return default(T);
+//            return (T)value;
+//        }
+//        return default(T);
+//    }
+//}
+
 public class GameEvent
 {
     public bool ContinueProcessing;
     public string ID { get { return m_ID; } }
-    string m_ID { get; set; }
+    protected string m_ID { get; set; }
 
     public Dictionary<string, object> Paramters { get { return m_Parameters; } }
     Dictionary<string, object> m_Parameters;
@@ -423,12 +463,12 @@ public class GameEvent
         m_Parameters = parameters;
     }
 
-    public bool HasParameter(string parameterId)
+    public virtual bool HasParameter(string parameterId)
     {
         return Paramters.ContainsKey(parameterId);
     }
 
-    public T GetValue<T>(string parameterId)
+    public virtual T GetValue<T>(string parameterId)
     {
         if (Paramters.TryGetValue(parameterId, out object value))
         {

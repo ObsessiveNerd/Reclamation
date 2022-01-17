@@ -1,15 +1,32 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 public static class CombatUtility
 {
     static int CombatRatingBuffer => 4;
 
-    public static void Attack(IEntity source, IEntity target, IEntity weapon)
+    public static void Attack(IEntity source, IEntity target, IEntity weapon, bool isMelee)
     {
-        TypeWeapon weaponType = GetWeaponType(weapon);
+        TypeWeapon weaponType = GetWeaponTypes(weapon).FirstOrDefault((t) =>
+        {
+            if(isMelee)
+            {
+                if(t == TypeWeapon.Melee || t == TypeWeapon.Finesse)
+                    return true;
+                return false;
+            }
+            else
+            {
+                if(t != TypeWeapon.Melee && t != TypeWeapon.Finesse)
+                    return true;
+                return false;
+            }
+        });
         RecLog.Log($"{source.Name} is performing a {weaponType} attack with {weapon.Name}");
+        
         if (weaponType == TypeWeapon.None)
             return;
+        
         int rollToHit = (int)source.FireEvent(source, new GameEvent(GameEventId.RollToHit, new KeyValuePair<string, object>(EventParameters.RollToHit, 0),
                                                                           new KeyValuePair<string, object>(EventParameters.WeaponType, weaponType))).Paramters[EventParameters.RollToHit];
         RecLog.Log($"Roll to hit was {rollToHit}");
@@ -21,6 +38,33 @@ public static class CombatUtility
 
         GameEvent checkWeaponAttack = source.FireEvent(weapon, builder.CreateEvent());
         checkWeaponAttack.Paramters.Add(EventParameters.DamageSource, source.ID);
+
+        EventBuilder getStatModForDamage = EventBuilderPool.Get(GameEventId.GetStat)
+                                            .With(EventParameters.Value, 0);
+
+        var damageList = checkWeaponAttack.GetValue<List<Damage>>(EventParameters.DamageList);
+        int statBasedDamage = 0;
+        bool addStatBasedDamage = false;
+        switch (weaponType)
+        {
+            case TypeWeapon.Melee:
+            case TypeWeapon.StrSpell:
+                getStatModForDamage = getStatModForDamage.With(EventParameters.StatType, Stat.Str);
+                addStatBasedDamage = true;
+                break;
+            case TypeWeapon.Finesse:
+            case TypeWeapon.Ranged:
+            case TypeWeapon.AgiSpell:
+                getStatModForDamage = getStatModForDamage.With(EventParameters.StatType, Stat.Agi);
+                addStatBasedDamage = true;
+                break;
+        }
+
+        if(addStatBasedDamage)
+        {
+            statBasedDamage = source.FireEvent(getStatModForDamage.CreateEvent()).GetValue<int>(EventParameters.Value);
+            damageList.First(d => d.DamageType == DamageType.Blunt || d.DamageType == DamageType.Slashing || d.DamageType == DamageType.Piercing).DamageAmount += statBasedDamage;
+        }
 
         GameEvent attack = new GameEvent(GameEventId.TakeDamage, checkWeaponAttack.Paramters);
         source.FireEvent(target, attack);
@@ -53,7 +97,7 @@ public static class CombatUtility
             int cost = spell.FireEvent(manaCost.CreateEvent()).GetValue<int>(EventParameters.Value);
             if (cost <= mana)
             {
-                Attack(source, target, spell);
+                Attack(source, target, spell, false);
                 GameEvent depleteMana = new GameEvent(GameEventId.DepleteMana, new KeyValuePair<string, object>(EventParameters.Mana, cost));
                 source.FireEvent(depleteMana);
                 EventBuilder fireRangedWeapon = EventBuilderPool.Get(GameEventId.FireRangedAttack)
@@ -70,14 +114,25 @@ public static class CombatUtility
 
     public static TypeWeapon GetWeaponType(IEntity weapon)
     {
-        TypeWeapon weaponType = (TypeWeapon)weapon.FireEvent(weapon, new GameEvent(GameEventId.GetWeaponType,
-            new KeyValuePair<string, object>(EventParameters.WeaponType, TypeWeapon.None))).Paramters[EventParameters.WeaponType];
-        return weaponType;
+        var typedEvent = new GameEvent(GameEventId.GetWeaponType,
+            new KeyValuePair<string, object>(EventParameters.WeaponType, TypeWeapon.None));
+
+        weapon.FireEvent(weapon, typedEvent);
+        return typedEvent.GetValue<TypeWeapon>(EventParameters.WeaponType);
+    }
+
+    public static List<TypeWeapon> GetWeaponTypes(IEntity weapon)
+    {
+        var typedEvent = new GameEvent(GameEventId.GetWeaponTypes,
+            new KeyValuePair<string, object>(EventParameters.WeaponTypeList, new List<TypeWeapon>()));
+
+        weapon.FireEvent(weapon, typedEvent);
+        return typedEvent.GetValue<List<TypeWeapon>>(EventParameters.WeaponTypeList);
     }
 
     public static bool ICanTakeThem(int sourceValue, int targetValue)
     {
-        if(targetValue < (sourceValue + CombatRatingBuffer))
+        if(targetValue <= (sourceValue + CombatRatingBuffer))
             return true;
         return false;
     }

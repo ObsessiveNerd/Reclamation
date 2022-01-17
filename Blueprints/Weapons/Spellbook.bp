@@ -1,7 +1,7 @@
 <Spellbook> (
-	GraphicContainer: Textures/Items/td_items_book_brown
-	Portrait: Portraits/Items/book_11_t
-	Position:PositionPoint=0,0
+	GraphicContainer:SpritePath= Textures/Items/td_items_book_brown
+	Portrait:SpritePath= Portraits/Items/book_11_t
+	Position:PositionPoint=0
 	InteractOnTileOvertake
 	EntityTypeContainer:Type=Item
 	Item:Rarity=Epic
@@ -10,4 +10,6 @@
 	TwoHanded
 	WeaponType:TypeWeapon=Wand
 	Value:Amount=100
+	WeaponType:TypeWeapon=Melee
+	DealDamage:DamageType=Blunt,Dice=1d4
 )

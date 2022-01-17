@@ -1,8 +1,8 @@
 <Demon> (
-	GraphicContainer: Textures/Monsters/td_monsters_demon_d2
+	GraphicContainer:SpritePath= Textures/Monsters/td_monsters_demon_d2
 	Defense
 	PrimaryStatType:PrimaryStat=Str
-	Position:PositionPoint=0,0
+	Position:PositionPoint=0
 	Move
 	InteractOnTileOvertake
 	EntityTypeContainer:Type=Creature
@@ -19,7 +19,9 @@
 	CombatRating
 	BlocksNonHostileMovement
 	Energy:EnergyRegineration=1,CurrentEnergy=0,HasHadTurnStarted=False
-	Body:Head=1[], Torso=1[], Arm=2[], Leg=2[]
+	Body
 	Level:CurrentLevel=2,CurrentExp=0
 	Health:MaxHealth=15,CurrentHealth=15
+	EquipmentSlot:EquipmentId=NaturalClaws,BodyPartType=Arm
+	EquipmentSlot:EquipmentId=NaturalClaws,BodyPartType=Arm
 )

@@ -9,7 +9,7 @@ public class Health : Component
 
     public override int Priority { get { return 10; } }
 
-    private int PercentHealth {get{ return (CurrentHealth / MaxHealth) * 100; } }
+    private float PercentHealth {get{ return ((float)CurrentHealth / (float)MaxHealth) * 100f; } }
 
     public Health(int maxHealth, int currentHealth = -1)
     {

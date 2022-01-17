@@ -43,8 +43,8 @@ public class Aggression : Component
                                                         .With(EventParameters.Value, -1);
 
                 int targetCombatRating = FireEvent(target, getCombatRatingOfTile.CreateEvent()).GetValue<int>(EventParameters.Value);
-                //Debug.Log($"{Self.Name} combat rating is {myCombatLevel}.  Target {target.Name} CR is {targetCombatRating}");
-                if(targetCombatRating > -1 && CombatUtility.ICanTakeThem(myCombatLevel, targetCombatRating))
+                Debug.Log($"{Self.Name} combat rating is {myCombatLevel}.  Target {target.Name} CR is {targetCombatRating}");
+                if (/*targetCombatRating > -1 && */CombatUtility.ICanTakeThem(myCombatLevel, targetCombatRating))
                 {
                     m_TargetLocation = point;
                     AIAction attackAction = new AIAction()
@@ -68,18 +68,30 @@ public class Aggression : Component
         foreach(var id in list)
         {
             var weapon = EntityQuery.GetEntity(id);
-            TypeWeapon weaponType = CombatUtility.GetWeaponType(weapon);
-            if(weaponType == TypeWeapon.Ranged)
+            List<TypeWeapon> weaponTypes = CombatUtility.GetWeaponTypes(weapon);
+            if(weaponTypes.Contains(TypeWeapon.Ranged))
             {
                 var target = WorldUtility.GetEntityAtPosition(m_TargetLocation);
-                CombatUtility.Attack(Self, target, EntityQuery.GetEntity(id));
-                return MoveDirection.None;
+                CombatUtility.Attack(Self, target, EntityQuery.GetEntity(id), false);
+                int howToMove = RecRandom.Instance.GetRandomValue(0, 100);
+                if (howToMove < 20)
+                    return PathfindingUtility.GetDirectionTo(m_CurrentLocation, m_TargetLocation);
+                else if (howToMove < 70)
+                    return MoveDirection.None;
+                else
+                    return PathfindingUtility.GetDirectionAwayFrom(m_CurrentLocation, m_TargetLocation);
             }
-            else if(weaponType == TypeWeapon.Wand || weaponType == TypeWeapon.MagicStaff)
+            else if(weaponTypes.Contains(TypeWeapon.Wand) || weaponTypes.Contains(TypeWeapon.MagicStaff))
             {
                 var target = WorldUtility.GetEntityAtPosition(m_TargetLocation);
                 CombatUtility.CastSpell(Self, target, EntityQuery.GetEntity(id));
-                return MoveDirection.None;
+                int howToMove = RecRandom.Instance.GetRandomValue(0, 100);
+                if (howToMove < 20)
+                    return PathfindingUtility.GetDirectionTo(m_CurrentLocation, m_TargetLocation);
+                else if (howToMove < 70)
+                    return MoveDirection.None;
+                else
+                    return PathfindingUtility.GetDirectionAwayFrom(m_CurrentLocation, m_TargetLocation);
             }
         }
         var path = PathfindingUtility.GetPath(m_CurrentLocation, m_TargetLocation);
@@ -87,6 +99,16 @@ public class Aggression : Component
             return MoveDirection.None;
 
         return PathfindingUtility.GetDirectionTo(m_CurrentLocation, path[0]);
+    }
+
+    MoveDirection RunAway()
+    {
+        Point randomPoint = PathfindingUtility.GetRandomValidPoint();
+        var path = PathfindingUtility.GetPath(m_CurrentLocation, randomPoint);
+        FireEvent(Self, new GameEvent(GameEventId.BreakRank));
+        if(path.Count >= 1)
+            return PathfindingUtility.GetDirectionTo(m_CurrentLocation, path[0]);
+        return PathfindingUtility.GetDirectionTo(m_CurrentLocation, m_CurrentLocation);
     }
 }
 

@@ -160,7 +160,7 @@ public class Body : Component
             var equipmentEntity = EntityFactory.CreateEntity("UnarmedStrike");
 
             if (equipmentEntity != null && CombatUtility.GetWeaponType(equipmentEntity).HasFlag(desiredWeaponToAttack))
-                CombatUtility.Attack(Self, EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Target]), equipmentEntity);
+                CombatUtility.Attack(Self, EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Target]), equipmentEntity, true);
         }
         else if(gameEvent.ID == GameEventId.GetCurrentEquipment)
         {

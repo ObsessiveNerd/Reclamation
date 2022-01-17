@@ -1,11 +1,11 @@
 <GoblinWarrior> (
-	GraphicContainer: Textures/Monsters/td_monsters_goblin_captain_l1
+	GraphicContainer:SpritePath= Textures/Monsters/td_monsters_goblin_captain_l1
 	Defense
 	Level:CurrentLevel=2,CurrentExp=0
 	Move
 	PackTactics:PartyLeaderId=10
 	AIFOVHandler
-	Body:Head=1[], Torso=1[], Arm=2[<Short Sword>], Leg=2[]
+	Body
 	Faction:ID=Goblins
 	Aggression
 	Inventory:InventoryItems=
@@ -19,10 +19,16 @@
 	AIController
 	Wander
 	Fear
-	Position:PositionPoint=0,0
+	Position:PositionPoint=0
 	InteractOnTileOvertake
 	InteractsWithWorld
 	PrimaryStatType:PrimaryStat=Str
 	Info:InfoMessage="It's a nasty little goblin.  Its slimy green skin reeks with the pungent odor of dirt and mold."
 	Health:MaxHealth=10,CurrentHealth=10
+	EquipmentSlot:EquipmentId=ShortSword,BodyPartType=Arm
+	EquipmentSlot:EquipmentId=,BodyPartType=Arm
+	EquipmentSlot:EquipmentId=,BodyPartType=Head
+	EquipmentSlot:EquipmentId=,BodyPartType=Torso
+	EquipmentSlot:EquipmentId=,BodyPartType=Leg
+	EquipmentSlot:EquipmentId=,BodyPartType=Leg
 )
