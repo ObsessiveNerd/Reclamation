@@ -43,8 +43,8 @@ public class ClassArchitype : ScriptableObject
     public string GetReadout()
     {
         StringBuilder sb = new StringBuilder();
-        sb.AppendLine(Name);
-        sb.AppendLine("----------------");
+        //sb.AppendLine(Name);
+        ////sb.AppendLine("----------------");
 
         sb.AppendLine($"Strength: {Str}");
         sb.AppendLine($"Agility: {Agi}");
@@ -55,10 +55,10 @@ public class ClassArchitype : ScriptableObject
         sb.AppendLine("----------------");
 
         sb.AppendLine("Starting Equipment");
-        foreach(var equipment in m_Equipment)
+        foreach (var equipment in m_Equipment)
         {
             if (!string.IsNullOrEmpty(equipment))
-                sb.Append(equipment + ", ");
+                sb.Append(equipment + ",");
         }
 
         return sb.ToString().TrimEnd(',');

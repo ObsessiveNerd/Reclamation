@@ -25,7 +25,7 @@ public class CharacterCreationMono : MonoBehaviour
         if (m_CharacterArchitypes == null)
             m_CharacterArchitypes = Resources.LoadAll<ClassArchitype>("Architypes").ToList();
         CharacterImage.sprite = m_CharacterImages[currentIndex];
-        CharacterClass.text = m_CharacterArchitypes[currentClassIndex].GetReadout();
+        CharacterClass.text = m_CharacterArchitypes[currentClassIndex].Name;
     }
 
     public void MoveRight()
@@ -49,7 +49,7 @@ public class CharacterCreationMono : MonoBehaviour
         currentClassIndex--;
         if (currentClassIndex < 0)
             currentClassIndex = m_CharacterArchitypes.Count - 1;
-        CharacterClass.text = m_CharacterArchitypes[currentClassIndex].GetReadout();
+        CharacterClass.text = m_CharacterArchitypes[currentClassIndex].Name;
     }
 
     public void MoveClassRight()
@@ -57,7 +57,7 @@ public class CharacterCreationMono : MonoBehaviour
         currentClassIndex++;
         if (currentClassIndex >= m_CharacterArchitypes.Count)
             currentClassIndex = 0;
-        CharacterClass.text = m_CharacterArchitypes[currentClassIndex].GetReadout();
+        CharacterClass.text = m_CharacterArchitypes[currentClassIndex].Name;
     }
 
     public string CreateEntityData()
@@ -90,5 +90,21 @@ public class CharacterCreationMono : MonoBehaviour
         character.CleanupComponents();
         character.Start();
         return character.Serialize();
+    }
+
+    public void Randomize()
+    {
+        InputField.text = EntityFactory.GetRandomCharacterName();
+
+        currentIndex = RecRandom.Instance.GetRandomValue(0, m_CharacterImages.Count);
+        currentClassIndex = RecRandom.Instance.GetRandomValue(0, m_CharacterArchitypes.Count);
+
+        CharacterImage.sprite = m_CharacterImages[currentIndex];
+        CharacterClass.text = m_CharacterArchitypes[currentClassIndex].Name;
+    }
+
+    public string GetClassReadout()
+    {
+        return m_CharacterArchitypes[currentClassIndex].GetReadout();
     }
 }

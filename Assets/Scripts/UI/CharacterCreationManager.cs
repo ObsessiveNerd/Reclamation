@@ -24,4 +24,10 @@ public class CharacterCreationManager : MonoBehaviour
             world.GenerateDungeon(true, SaveSystem.Instance.CurrentSaveName);
         };
     }
+
+    public void RandomizeAll()
+    {
+        foreach (var character in Characters)
+            character.Randomize();
+    }
 }
