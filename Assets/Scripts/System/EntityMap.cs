@@ -5,6 +5,13 @@ using UnityEngine;
 public class EntityMap : WorldComponent
 {
     public static Dictionary<string, string> IDToNameMap = new Dictionary<string, string>();
+
+    public static void AddEntity(IEntity e)
+    {
+        m_EntityIdToEntityMap[e.ID] = e;
+        AddEntityToNameMap(e);
+    }
+
     public static void AddEntityToNameMap(IEntity e)
     {
         IDToNameMap[e.ID] = e.Name;
@@ -13,7 +20,7 @@ public class EntityMap : WorldComponent
     public override void Init(IEntity self)
     {
         base.Init(self);
-        RegisteredEvents.Add(GameEventId.RegisterEntity);
+        //RegisteredEvents.Add(GameEventId.RegisterEntity);
         RegisteredEvents.Add(GameEventId.DestroyEntity);
         RegisteredEvents.Add(GameEventId.GetEntity);
     }

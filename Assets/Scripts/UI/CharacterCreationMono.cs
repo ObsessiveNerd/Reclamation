@@ -88,6 +88,7 @@ public class CharacterCreationMono : MonoBehaviour
         character.AddComponent(new PrimaryStatType(ca.PrimaryStatType));
 
         character.CleanupComponents();
+        character.Start();
         return character.Serialize();
     }
 }

@@ -72,10 +72,14 @@ public static class EntityFactory
         foreach (var bpPath in Directory.EnumerateFiles(m_BluePrintPath, "*", SearchOption.AllDirectories))
         {
             string bpName = Path.GetFileNameWithoutExtension(bpPath);
+            if (m_Blueprints.ContainsKey(bpName))
+                continue;
+
             string directoryOnly = Path.GetDirectoryName(bpPath);
             if (!BlueprintTypeMap.ContainsKey(directoryOnly))
                 BlueprintTypeMap.Add(directoryOnly, new List<string>());
             BlueprintTypeMap[directoryOnly].Add(bpName);
+            
             m_Blueprints.Add(bpName, bpPath);
 
             if (bpPath.StartsWith(kArmorPath) || bpPath.StartsWith(kWeaponPath) || bpPath.StartsWith(kItemsPath))
@@ -113,6 +117,12 @@ public static class EntityFactory
                     string bpName = Path.GetFileNameWithoutExtension(bpPath);
                     if(!m_Blueprints.ContainsKey(bpName))
                         m_Blueprints.Add(bpName, bpPath);
+
+                    //CreateEntity(bpName);
+                    if(int.TryParse(bpName, out int res))
+                        IDManager.SetId(res);
+                    else if(int.TryParse(ParseEntityIdFromName(bpName), out int res2))
+                        IDManager.SetId(res2);
                 }
                 m_LoadedTempBlueprints = true;
             }
@@ -332,13 +342,16 @@ public static class EntityFactory
             }
         }
         a.CleanupComponents();
-        foreach (var comp in a.GetComponents())
-            comp.Start();
+        //foreach (var comp in a.GetComponents())
+        //    comp.Start();
         return a;
     }
 
     public static List<IEntity> GetEntitiesFromArray(string data)
     {
+        InitBlueprints();
+        InitTempBlueprints();
+
         if (string.IsNullOrEmpty(data))
             return new List<IEntity>();
 
@@ -394,6 +407,11 @@ public static class EntityFactory
         if(length > start)
             return bpFormatting.Substring(start, length);
         return bpFormatting;
+    }
+
+    public static string ParseEntityIdFromName(string name)
+    {
+        return GetEntityNameFromBlueprintFormatting(name).Split(',')[0];
     }
 
     public static void CreateTemporaryBlueprint(string blueprintName, string data)

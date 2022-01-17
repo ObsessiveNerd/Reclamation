@@ -6,6 +6,7 @@ using UnityEngine;
 [Serializable]
 public class DungeonGenerationResult
 {
+    public List<string> Walls = new List<string>();
     public List<string> Entities = new List<string>();
     public List<Room> RoomData = new List<Room>();
     public List<Point> TilePoints = new List<Point>();
@@ -14,6 +15,7 @@ public class DungeonGenerationResult
 
     public void ClearData()
     {
+        Walls.Clear();
         Entities.Clear();
         RoomData.Clear();
         TilePoints.Clear();

@@ -46,7 +46,8 @@ public class Actor : IEntity
         if (World.Instance != null)
             FireEvent(World.Instance.Self, new GameEvent(GameEventId.RegisterEntity, new KeyValuePair<string, object>(EventParameters.Entity, this)));
 
-        EntityMap.IDToNameMap[ID] = Name;
+        EntityMap.AddEntity(this);
+        //EntityMap.IDToNameMap[ID] = Name;
     }
 
     public Actor(string name, string id)
@@ -60,13 +61,20 @@ public class Actor : IEntity
         if (World.Instance != null)
             FireEvent(World.Instance.Self, new GameEvent(GameEventId.RegisterEntity, new KeyValuePair<string, object>(EventParameters.Entity, this)));
 
-        EntityMap.IDToNameMap[ID] = Name;
+        EntityMap.AddEntity(this);
+        //EntityMap.IDToNameMap[ID] = Name;
     }
 
     //public virtual void OnDestroy(IEntity entity)
     //{
 
     //}
+
+    public void Start()
+    {
+        foreach (var c in m_Components.ToList())
+            c.Start();
+    }
 
     public GameEvent FireEvent(IEntity target, GameEvent gameEvent, bool logEvent = false)
     {

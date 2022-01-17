@@ -309,7 +309,12 @@ public class Tile : Component
             DungeonGenerationResult levelData = gameEvent.GetValue<DungeonGenerationResult>(EventParameters.Value);
             foreach (var target in AllEntities)
                 if(target != null)
-                    levelData.Entities.Add(target.Serialize());
+                {
+                    if (target.HasComponent(typeof(Wall)) || target.HasComponent(typeof(BlocksVisibility)))
+                        levelData.Walls.Add(target.Serialize());
+                    else
+                        levelData.Entities.Add(target.Serialize());
+                }
 
             EventBuilder getVisibilityData = EventBuilderPool.Get(GameEventId.GetVisibilityData)
                                                 .With(EventParameters.HasBeenVisited, m_IsVisible);

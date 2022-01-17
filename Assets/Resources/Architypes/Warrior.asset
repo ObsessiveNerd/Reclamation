@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Warrior
   m_EditorClassIdentifier: 
   Name: Warrior
-  PrimaryStatType: Str
+  PrimaryStatType: 0
   Str: 16
   Agi: 8
   Con: 14
@@ -21,8 +21,8 @@ MonoBehaviour:
   Int: 9
   Cha: 8
   HeadEquip: BronzeHelmet
-  ArmEquip1: Shortsword
-  ArmEquip2: Shield
+  ArmEquip1: Warhammer
+  ArmEquip2: 
   TorosEquip: 
   LegEquip1: 
   LegEquip2: 

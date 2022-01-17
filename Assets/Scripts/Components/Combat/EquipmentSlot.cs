@@ -18,26 +18,37 @@ public class EquipmentSlot : Component
     public EquipmentSlot(string eID, BodyPart bp)
     {
         BodyPartType = bp;
-
-        if (string.IsNullOrEmpty(eID))
-            return;
-
         EquipmentId = eID;
-        var entity = EntityQuery.GetEntity(EquipmentId);
-        if (entity == null)
-        { 
-            entity = EntityFactory.CreateEntity(EquipmentId);
-            EventBuilder register = EventBuilderPool.Get(GameEventId.RegisterEntity)
-                                    .With(EventParameters.Entity, entity);
-            World.Instance.Self.FireEvent(register.CreateEvent());
-        }
-        if (entity != null)
-            EquipmentId = entity.ID;
-
+        
         //EquipmentInstanceId = entity.ID;
 
         //if (!string.IsNullOrEmpty(EquipmentId) && !int.TryParse(EquipmentId, out int res))
         //    EquipmentId = EntityFactory.CreateEntity(EquipmentId).ID;
+    }
+
+    public override void Start()
+    {
+         if (string.IsNullOrEmpty(EquipmentId))
+            return;
+
+        var entity = EntityQuery.GetEntity(EquipmentId);
+        if (entity == null)
+        {
+            EntityMap.AddEntity(entity);
+            //entity = EntityFactory.CreateEntity(EquipmentId);
+            //EventBuilder register = EventBuilderPool.Get(GameEventId.RegisterEntity)
+            //                        .With(EventParameters.Entity, entity);
+            //World.Instance.Self.FireEvent(register.CreateEvent());
+        }
+
+        if (entity != null)
+        {
+            EquipmentId = entity.ID;
+            EventBuilder equip = EventBuilderPool.Get(GameEventId.Equip)
+                                .With(EventParameters.Equipment, EquipmentId)
+                                .With(EventParameters.EntityType, BodyPartType);
+            FireEvent(Self, equip.CreateEvent());
+        }
     }
 
     public override void Init(IEntity self)
@@ -48,7 +59,7 @@ public class EquipmentSlot : Component
         RegisteredEvents.Add(GameEventId.GetEquipment);
         RegisteredEvents.Add(GameEventId.GetSpells);
         RegisteredEvents.Add(GameEventId.ItemEquipped);
-        RegisteredEvents.Add(GameEventId.Equip);
+        //RegisteredEvents.Add(GameEventId.Equip);
         RegisteredEvents.Add(GameEventId.Unequip);
         //RegisteredEvents.Add(GameEventId.CheckEquipment);
         //RegisteredEvents.Add(GameEventId.GetCombatRating);

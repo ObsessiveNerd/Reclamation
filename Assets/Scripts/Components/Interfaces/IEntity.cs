@@ -20,5 +20,7 @@ public interface IEntity
     string ID { get; }
     bool NeedsCleanup { get; }
     string Serialize();
+
+    void Start();
     //Action<IEntity> Destroyed { get; set; }
 }

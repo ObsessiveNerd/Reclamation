@@ -7,6 +7,8 @@ public class WorldUIController : WorldComponent
 {
     public List<IUpdatableUI> UpdatableUI = new List<IUpdatableUI>();
 
+    public override int Priority => 10;
+
     public override void Init(IEntity self)
     {
         base.Init(self);

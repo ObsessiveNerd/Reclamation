@@ -17,31 +17,53 @@ public class World : MonoBehaviour
     IEntity m_World;
 #if UNITY_EDITOR
     public bool DebugMode;
-    public bool GenerateDungeonOnStart;
+    //public bool GenerateDungeonOnStart;
 #endif
+
+    public enum DungeonInitMode
+    {
+        None = 0,
+        CreateNew,
+        LoadCurrentIfExists
+    }
+
+    public DungeonInitMode InitMode;
 
     public int MapColumns, MapRows;
 
     private void Start()
     {
-
-        //if (m_Instance != null && m_Instance != this)
-        //{
-        //    Destroy(gameObject);
-        //    return;
-        //}
-        //else
-        //    m_Instance = this;
-
-        //DontDestroyOnLoad(gameObject);
+        if (m_Instance == null)
+        {
+            //m_Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else if (m_Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        else
+            return;
 
         if(DebugMode)
         {
             string loadpath = $"{SaveSystem.kSaveDataPath}/{Guid.NewGuid().ToString()}";
             if (m_Instance == null)
+            {
                 StartWorld(loadpath);
-            if(GenerateDungeonOnStart)
-                GenerateDungeon(true, loadpath);
+                switch (InitMode)
+                {
+                    case DungeonInitMode.CreateNew:
+                        GenerateDungeon(true, loadpath);
+                        break;
+
+                    case DungeonInitMode.LoadCurrentIfExists:
+                        bool value = Directory.Exists(loadpath);
+                        GenerateDungeon(!value, loadpath);
+                        break;
+                }
+            }
         }
 
     }
@@ -49,15 +71,17 @@ public class World : MonoBehaviour
     public void StartWorld(string loadPath = "")
     {
         if (m_Instance == null)
-        { 
+        {
             m_Instance = this;
             DontDestroyOnLoad(gameObject);
         }
-        else if(m_Instance != this)
+        else if (m_Instance != this)
         {
             Destroy(gameObject);
             return;
         }
+        else
+            return;
 
         var saveSystem = GameObject.FindObjectOfType<SaveSystem>();
         if(saveSystem != null)
