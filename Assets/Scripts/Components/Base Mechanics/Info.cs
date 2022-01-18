@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 
 public class Info : Component
@@ -15,6 +16,7 @@ public class Info : Component
 
     public override void HandleEvent(GameEvent gameEvent)
     {
+        gameEvent.GetValue<StringBuilder>(EventParameters.Info).AppendLine(InfoMessage);
         RecLog.Log(InfoMessage);
     }
 }

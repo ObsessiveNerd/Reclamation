@@ -11,6 +11,21 @@ public class InfoMono : MonoBehaviour
     RectTransform m_Rect;
     int m_Buffer = 20;
 
+    private Vector2 m_Source;
+    public Vector2 SourcePos
+    {
+        get
+        {
+            if (m_Source == null)
+                return Input.mousePosition;
+            return m_Source;
+        }
+        set
+        {
+            m_Source = value;
+        }
+    }
+
     public void SetData(string title, string info)
     {
         Title.text = title;
@@ -24,7 +39,7 @@ public class InfoMono : MonoBehaviour
 
     private void Update()
     {
-        Vector2 pos = Input.mousePosition;
+        Vector2 pos = SourcePos; //Input.mousePosition;
         pos.x += (m_Rect.rect.width / 2) + m_Buffer;
 
         if (pos.x + (m_Rect.rect.width / 2) > Screen.width)

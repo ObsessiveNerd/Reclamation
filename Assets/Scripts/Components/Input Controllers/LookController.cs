@@ -4,10 +4,15 @@ using UnityEngine;
 
 public class LookController : InputControllerBase
 {
+    GameObject m_Popup;
+    GameObject m_PopupInstance;
+
     Point m_TileSelection;
 
     public override void Init(IEntity self)
     {
+        m_Popup = Resources.Load<GameObject>("UI/ItemPopup");
+        
         base.Init(self);
         GameEvent selectTile = new GameEvent(GameEventId.SelectTile, new KeyValuePair<string, object>(EventParameters.Entity, Self.ID),
                                                                                new KeyValuePair<string, object>(EventParameters.Target, null),
@@ -15,9 +20,15 @@ public class LookController : InputControllerBase
         FireEvent(World.Instance.Self, selectTile);
 
         m_TileSelection = (Point)selectTile.Paramters[EventParameters.TilePosition];
-
-        GameEvent showTileInfo = new GameEvent(GameEventId.ShowTileInfo, new KeyValuePair<string, object>(EventParameters.TilePosition, m_TileSelection));
+        m_PopupInstance = GameObject.Instantiate(m_Popup);
+        m_PopupInstance.transform.SetParent(GameObject.Find("Canvas").transform);
+       m_PopupInstance.GetComponent<InfoMono>().SourcePos = Camera.main.WorldToScreenPoint(WorldUtility.GetGameObject(WorldUtility.GetEntityAtPosition(m_TileSelection)).transform.position);
+        GameEvent showTileInfo = new GameEvent(GameEventId.ShowTileInfo, new KeyValuePair<string, object>(EventParameters.TilePosition, m_TileSelection),
+                                                                            new KeyValuePair<string, object>(EventParameters.Info, ""));
         FireEvent(World.Instance.Self, showTileInfo);
+
+        m_PopupInstance.GetComponent<InfoMono>().SetData(WorldUtility.GetEntityAtPosition(m_TileSelection).Name, showTileInfo.GetValue<string>(EventParameters.Info));
+
     }
 
     public override void HandleEvent(GameEvent gameEvent)
@@ -33,8 +44,11 @@ public class LookController : InputControllerBase
                 FireEvent(World.Instance.Self, moveSelection);
                 m_TileSelection = (Point)moveSelection.Paramters[EventParameters.TilePosition];
 
-                GameEvent showTileInfo = new GameEvent(GameEventId.ShowTileInfo, new KeyValuePair<string, object>(EventParameters.TilePosition, m_TileSelection));
+                GameEvent showTileInfo = new GameEvent(GameEventId.ShowTileInfo, new KeyValuePair<string, object>(EventParameters.TilePosition, m_TileSelection),
+                                                                                    new KeyValuePair<string, object>(EventParameters.Info, ""));
                 FireEvent(World.Instance.Self, showTileInfo);
+                m_PopupInstance.GetComponent<InfoMono>().SourcePos = Camera.main.WorldToScreenPoint(WorldUtility.GetGameObject(WorldUtility.GetEntityAtPosition(m_TileSelection)).transform.position);
+                m_PopupInstance.GetComponent<InfoMono>().SetData(WorldUtility.GetEntityAtPosition(m_TileSelection).Name, showTileInfo.GetValue<string>(EventParameters.Info));
                 gameEvent.Paramters[EventParameters.UpdateWorldView] = true;
             }
 
@@ -49,6 +63,7 @@ public class LookController : InputControllerBase
                 Self.AddComponent(new PlayerInputController());
                 FireEvent(World.Instance.Self, new GameEvent(GameEventId.EndSelection, new KeyValuePair<string, object>(EventParameters.TilePosition, m_TileSelection)));
                 gameEvent.Paramters[EventParameters.UpdateWorldView] = true;
+                GameObject.Destroy(m_PopupInstance);
                 //gameEvent.Paramters[EventParameters.CleanupComponents] = true;
             }
         }

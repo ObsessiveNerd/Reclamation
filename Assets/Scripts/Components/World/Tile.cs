@@ -256,9 +256,10 @@ public class Tile : Component
 
         if (gameEvent.ID == GameEventId.ShowTileInfo)
         {
-            GameEvent showInfo = new GameEvent(GameEventId.ShowInfo);
+            GameEvent showInfo = new GameEvent(GameEventId.ShowInfo, new KeyValuePair<string, object>(EventParameters.Info, new StringBuilder()));
             foreach(var e in GetTarget())
                 FireEvent(e, showInfo);
+            gameEvent.Paramters[EventParameters.Info] = showInfo.GetValue<StringBuilder>(EventParameters.Info).ToString();
         }
 
         if (gameEvent.ID == GameEventId.AddComponentToTile)

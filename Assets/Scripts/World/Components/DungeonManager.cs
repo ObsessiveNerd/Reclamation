@@ -422,6 +422,7 @@ public class DungeonManager : WorldComponent
         actor.AddComponent(new TileVisible(false));
         actor.AddComponent(new GraphicContainer("Textures/Environment/td_world_floor_cobble_b-120"));
         actor.AddComponent(new Renderer(tile.GetComponent<SpriteRenderer>()));
+        actor.AddComponent(new Position(new Point(x, y)));
         actor.CleanupComponents();
 
         pointToTileMap.Add(new Point(x, y), actor);
