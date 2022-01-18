@@ -292,6 +292,10 @@ public class Room
                     }
 
                     break;
+
+                case SpawnRestrictionTags.CenterRoom:
+                    return GetMiddleOfTheRoom();
+                    break;
             }
         }
         return new Point(x, y);
@@ -575,10 +579,14 @@ public class BasicDungeonGenerator : IDungeonGenerator
                 }
             }
 
-            int environmentObjectsToSpawn = RecRandom.Instance.GetRandomValue((int)(room.SurfaceArea * .1f), (int)(room.SurfaceArea * .4f));
-            for(int i = 0; i < environmentObjectsToSpawn; i++)
+            List<RoomTemplate> templates = Resources.LoadAll<RoomTemplate>("RoomTypes").ToList();
+            int environmentObjectsToSpawn = RecRandom.Instance.GetRandomValue((int)(room.SurfaceArea * .3f), (int)(room.SurfaceArea * .5f));
+            RoomTemplate template = templates[RecRandom.Instance.GetRandomValue(0, templates.Count)];
+
+            foreach(var bpName in template.GetBlueprintsToSpawn(environmentObjectsToSpawn))
+            //for(int i = 0; i < environmentObjectsToSpawn; i++)
             {
-                string bpName = EntityFactory.GetRandomEnvironmentBPName();
+                //string bpName = EntityFactory.GetRandomEnvironmentBPName();
                 var e = EntityFactory.CreateEntity(bpName);
                 if(bpName == "Bookshelf")
                 {

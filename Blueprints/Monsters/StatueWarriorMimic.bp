@@ -1,0 +1,23 @@
+<StatueWarriorMimic> (
+	Defense
+	EntityTypeContainer:Type=Creature
+	RegisterWithTimeSystem
+	AIController
+	AIFOVHandler
+	InteractsWithWorld
+	InteractOnTileOvertake
+	Position:PositionPoint=
+	Aggression
+	CombatRating
+	BlocksNonHostileMovement
+	Health:MaxHealth=20,CurrentHealth=20
+	Body
+	FOV:FOVRange=3
+	Energy:EnergyRegineration=2,CurrentEnergy=0,HasHadTurnStarted=False
+	Move
+	Stats:Str=8,Agi=14,Con=10,Wis=12,Int=10,Cha=9,AttributePoints=0
+	Faction:ID=Corrupted
+	GraphicContainer:SpritePath=Textures/Monsters/td_monsters_skeleton_warrior_d1
+	EquipmentSlot:EquipmentId=LongSword,BodyPartType=Arm
+	EquipmentSlot:EquipmentId=Shield,BodyPartType=Arm
+)

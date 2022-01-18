@@ -1,0 +1,6 @@
+<BrokenCrate> (
+	GraphicContainer:SpritePath=Textures/Environment/td_world_crate_broken
+	Position:PositionPoint=0
+	InteractOnTileOvertake
+	EntityTypeContainer:Type=Object
+)

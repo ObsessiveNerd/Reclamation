@@ -1,0 +1,8 @@
+<WarriorStatue> (
+	Position:PositionPoint=
+	InteractOnTileOvertake
+	EntityTypeContainer:Type=Object
+	EnvironmentalObject
+	GraphicContainer:SpritePath=Textures/Environment/td_world_statue_warrior
+	BlocksNonHostileMovement
+)
