@@ -12,7 +12,7 @@ public class LookController : InputControllerBase
     public override void Init(IEntity self)
     {
         m_Popup = Resources.Load<GameObject>("UI/ItemPopup");
-        
+
         base.Init(self);
         GameEvent selectTile = new GameEvent(GameEventId.SelectTile, new KeyValuePair<string, object>(EventParameters.Entity, Self.ID),
                                                                                new KeyValuePair<string, object>(EventParameters.Target, null),
@@ -22,13 +22,14 @@ public class LookController : InputControllerBase
         m_TileSelection = (Point)selectTile.Paramters[EventParameters.TilePosition];
         m_PopupInstance = GameObject.Instantiate(m_Popup);
         m_PopupInstance.transform.SetParent(GameObject.Find("Canvas").transform);
-       m_PopupInstance.GetComponent<InfoMono>().SourcePos = Camera.main.WorldToScreenPoint(WorldUtility.GetGameObject(WorldUtility.GetEntityAtPosition(m_TileSelection)).transform.position);
+        m_PopupInstance.GetComponent<InfoMono>().SourcePos = Camera.main.WorldToScreenPoint(WorldUtility.GetGameObject(WorldUtility.GetEntityAtPosition(m_TileSelection)).transform.position);
         GameEvent showTileInfo = new GameEvent(GameEventId.ShowTileInfo, new KeyValuePair<string, object>(EventParameters.TilePosition, m_TileSelection),
                                                                             new KeyValuePair<string, object>(EventParameters.Info, ""));
         FireEvent(World.Instance.Self, showTileInfo);
 
         m_PopupInstance.GetComponent<InfoMono>().SetData(WorldUtility.GetEntityAtPosition(m_TileSelection).Name, showTileInfo.GetValue<string>(EventParameters.Info));
 
+        UIManager.Push(null);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
@@ -52,18 +53,19 @@ public class LookController : InputControllerBase
                 gameEvent.Paramters[EventParameters.UpdateWorldView] = true;
             }
 
-            else if(Input.GetKeyDown(KeyCode.Return))
+            else if (Input.GetKeyDown(KeyCode.Return))
             {
                 Debug.Log(WorldUtility.GetEntityAtPosition(m_TileSelection, false).Serialize());
             }
 
-            else if (Input.GetKeyDown(KeyCode.Escape))
+            else if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(InputBinder.GetKeyCodeForAction(RequestedAction.Look)))
             {
                 Self.RemoveComponent(this);
                 Self.AddComponent(new PlayerInputController());
                 FireEvent(World.Instance.Self, new GameEvent(GameEventId.EndSelection, new KeyValuePair<string, object>(EventParameters.TilePosition, m_TileSelection)));
                 gameEvent.Paramters[EventParameters.UpdateWorldView] = true;
                 GameObject.Destroy(m_PopupInstance);
+                UIManager.ForcePop();
                 //gameEvent.Paramters[EventParameters.CleanupComponents] = true;
             }
         }

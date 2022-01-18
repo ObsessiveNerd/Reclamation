@@ -7,13 +7,20 @@ using UnityEngine.UI;
 
 public class SpellExaminationUI : EscapeableMono//, IUpdatableUI
 {
-    public GameObject Source;
-    public Transform Content;
-    public TextMeshProUGUI Title;
-    public TextMeshProUGUI Body;
+    private GameObject Source;
+    private Transform Content;
+    private TextMeshProUGUI Title;
+    private TextMeshProUGUI Body;
 
     public void Setup(List<string> spellList)
     {
+        Source = Instantiate(Resources.Load<GameObject>("Prefabs/SpellExamination"));
+        Source.transform.SetParent(FindObjectOfType<Canvas>().transform, false);
+
+        Content = Source.transform.Find("Page1");
+        Title = Source.transform.Find("Page2Title").GetComponent<TextMeshProUGUI>();
+        Body = Source.transform.Find("Page2Body").GetComponent<TextMeshProUGUI>();
+
         int index = 1;
         foreach (string spellId in spellList)
         {
@@ -44,8 +51,7 @@ public class SpellExaminationUI : EscapeableMono//, IUpdatableUI
 
 
         //WorldUtility.RegisterUI(null);
-        Source.SetActive(true);
-        Source.transform.SetAsLastSibling();
+        //Source.SetActive(true);
         UpdateUI(EntityQuery.GetEntity(spellList[0]));
         UIManager.Push(this);
     }
@@ -71,6 +77,7 @@ public class SpellExaminationUI : EscapeableMono//, IUpdatableUI
         foreach (Transform go in Content.GetComponentsInChildren<Transform>())
             if (Content != go)
                 Destroy(go.gameObject);
-        Source.SetActive(false);
+        //Source.SetActive(false);
+        Destroy(Source);
     }
 }

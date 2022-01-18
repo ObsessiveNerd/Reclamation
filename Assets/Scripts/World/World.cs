@@ -45,7 +45,7 @@ public class World : MonoBehaviour
         }
         else
             return;
-
+#if UNITY_EDITOR
         if(DebugMode)
         {
             string loadpath = $"{SaveSystem.kSaveDataPath}/{Guid.NewGuid().ToString()}";
@@ -65,6 +65,7 @@ public class World : MonoBehaviour
                 }
             }
         }
+#endif
 
     }
 

@@ -11,18 +11,20 @@ public class InfoMono : MonoBehaviour
     RectTransform m_Rect;
     int m_Buffer = 20;
 
+    bool m_hasSourceSet = false;
     private Vector2 m_Source;
     public Vector2 SourcePos
     {
         get
         {
-            if (m_Source == null)
+            if (!m_hasSourceSet)
                 return Input.mousePosition;
             return m_Source;
         }
         set
         {
             m_Source = value;
+            m_hasSourceSet = true;
         }
     }
 
