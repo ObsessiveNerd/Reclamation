@@ -11,7 +11,10 @@ public enum BodyPart
     Head,
     Torso,
     Arm,
-    Leg
+    Leg,
+    Finger,
+    Back,
+    Neck
 }
 
 public class Body : Component

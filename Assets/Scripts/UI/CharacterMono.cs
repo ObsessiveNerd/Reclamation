@@ -16,16 +16,14 @@ public class CharacterMono : MonoBehaviour
     {
         InventoryView.GetComponent<InventoryManagerMono>().Setup(source);
         EquipmentView.GetComponent<EquipmentViewMono>().Setup(source);
-        CharacterStats.GetComponent<CharacterStatsMono>().Setup(source);
+        CharacterStats.GetComponentInChildren<CharacterStatsMono>().Setup(source);
 
-        if(WorldUtility.IsActivePlayer(source.ID))
-            FindObjectOfType<SpellSelectorMono>().Setup(source);
     }
 
     public void Cleanup()
     {
         InventoryView.GetComponent<InventoryManagerMono>().Close();
         EquipmentView.GetComponent<EquipmentViewMono>().Close();
-        CharacterStats.GetComponent<CharacterStatsMono>().Close();
+        CharacterStats.GetComponentInChildren<CharacterStatsMono>().Close();
     }
 }

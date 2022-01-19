@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,11 +9,12 @@ public class CharacterStatsMono : MonoBehaviour//, IUpdatableUI
 {
     public TextMeshProUGUI Name;
     public TextMeshProUGUI AttributePoints;
-    public List<StatsUIMono> StatMonos;
+    List<StatsUIMono> StatMonos;
 
     public void Setup(IEntity source)
     {
         Name.text = source.Name;
+        StatMonos = GetComponentsInChildren<StatsUIMono>().ToList();
         EventBuilder getAttributePoints = EventBuilderPool.Get(GameEventId.GetAttributePoints)
                                             .With(EventParameters.AttributePoints, 0);
         int attrPoints = source.FireEvent(getAttributePoints.CreateEvent()).GetValue<int>(EventParameters.AttributePoints);

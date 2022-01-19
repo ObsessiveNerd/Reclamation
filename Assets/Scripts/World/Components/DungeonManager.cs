@@ -90,7 +90,6 @@ public class DungeonManager : WorldComponent
             sw.Start();
             CreateTiles(m_Tiles);
             sw.Stop();
-            Debug.LogWarning($"Creating tiles: {sw.Elapsed.Seconds}");
 
             m_CurrentLevel = gameEvent.GetValue<int>(EventParameters.Level);
             m_DungeonGenerator = new BasicDungeonGenerator(World.Instance.MapRows, World.Instance.MapColumns);
@@ -303,18 +302,23 @@ public class DungeonManager : WorldComponent
     void SpawnPlayers()
     {
         string charactersPath = SaveSystem.kSaveDataPath + "/" + SaveSystem.Instance.CurrentSaveName + "/Blueprints/Characters";
-        //if(!Directory.Exists(charactersPath))
-        //{
-        //    IEntity player = EntityFactory.CreateEntity(Path.GetFileNameWithoutExtension("DwarfWarrior"));
-        //    FireEvent(Self, new GameEvent(GameEventId.ConvertToPlayableCharacter, new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.Entity, player.ID)));
-        //    Spawner.Spawn(player, m_DungeonGenerator.Rooms[0].GetValidPoint(null));
+#if UNITY_EDITOR
+        if (!Directory.Exists(charactersPath))
+        {
+            for (int i = 0; i < 4; i++)
+            {
+                IEntity player = EntityFactory.CreateEntity("DwarfWarrior");
+                FireEvent(Self, new GameEvent(GameEventId.ConvertToPlayableCharacter, new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.Entity, player.ID)));
+                Spawner.Spawn(player, m_DungeonGenerator.Rooms[0].GetValidPoint(null));
 
-        //    player.CleanupComponents();
+                player.CleanupComponents();
 
-        //    FireEvent(player, new GameEvent(GameEventId.InitFOV));
-        //}
+                FireEvent(player, new GameEvent(GameEventId.InitFOV));
+            }
+        }
 
-        //else
+        else
+#endif
         {
             foreach (var bp in Directory.EnumerateFiles(charactersPath, "*.bp"))
             {
