@@ -5,11 +5,11 @@ using UnityEngine.UI;
 
 public class Renderer : Component
 {
-    SpriteRenderer m_Image;
+    public SpriteRenderer Image;
 
     public Renderer(SpriteRenderer image)
     {
-        m_Image = image;
+        Image = image;
         RegisteredEvents.Add(GameEventId.UpdateRenderer);
     }
 
@@ -17,10 +17,10 @@ public class Renderer : Component
     {
         if (gameEvent.ID == GameEventId.UpdateRenderer)
         {
-            m_Image.color = Color.white;
-            GameEvent checkForAlteredSprite = FireEvent(Self, new GameEvent(GameEventId.AlterSprite, new KeyValuePair<string, object>(EventParameters.Renderer, m_Image),
+            Image.color = Color.white;
+            GameEvent checkForAlteredSprite = FireEvent(Self, new GameEvent(GameEventId.AlterSprite, new KeyValuePair<string, object>(EventParameters.Renderer, Image),
                                                                     new KeyValuePair<string, object>(EventParameters.RenderSprite, gameEvent.Paramters[EventParameters.RenderSprite])));
-            m_Image.sprite = (Sprite)checkForAlteredSprite.Paramters[EventParameters.RenderSprite];
+            Image.sprite = (Sprite)checkForAlteredSprite.Paramters[EventParameters.RenderSprite];
         }
     }
 }

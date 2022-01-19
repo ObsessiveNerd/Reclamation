@@ -54,7 +54,10 @@ public class WorldFov : WorldComponent
         {
             Point p = (Point)gameEvent.Paramters[EventParameters.TilePosition];
             if(m_Tiles.ContainsKey(p))
-                FireEvent(m_Tiles[p], gameEvent);
+            {
+                m_Tiles[p].GetComponent<Tile>().IsTileBlocking(gameEvent);
+                //FireEvent(m_Tiles[p], gameEvent);
+            }
         }
     }
 

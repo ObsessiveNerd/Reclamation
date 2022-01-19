@@ -24,7 +24,9 @@ public class WorldSpawner : WorldComponent
             if (!m_Tiles.ContainsKey(spawnPoint)) return;
 
             FireEvent(entity, new GameEvent(GameEventId.SetPoint, new KeyValuePair<string, object>(EventParameters.TilePosition, spawnPoint)));
-            FireEvent(m_Tiles[spawnPoint], gameEvent);
+            m_Tiles[spawnPoint].GetComponent<Tile>().Spawn(gameEvent);
+
+            //FireEvent(m_Tiles[spawnPoint], gameEvent);
             FireEvent(Self, new GameEvent(GameEventId.UpdateWorldView));
             m_EntityToPointMap[entity] = spawnPoint;
 
@@ -42,7 +44,9 @@ public class WorldSpawner : WorldComponent
             Point currentPoint = m_EntityToPointMap[entity];
             GameEvent despawn = new GameEvent(GameEventId.Despawn, new KeyValuePair<string, object>(EventParameters.Entity, entity.ID),
                                                                    new KeyValuePair<string, object>(EventParameters.EntityType, entityType));
-            FireEvent(m_Tiles[currentPoint], despawn);
+
+            m_Tiles[currentPoint].GetComponent<Tile>().Despawn(gameEvent);
+            //FireEvent(m_Tiles[currentPoint], despawn);
             m_EntityToPointMap.Remove(entity);
             m_TimeProgression.RemoveEntity(entity);
             //foreach(var timeProgression in m_PlayerToTimeProgressionMap.Values)

@@ -144,152 +144,91 @@ public class Tile : Component
         RegisteredEvents.Add(GameEventId.SerializeTile);
     }
 
+    public void UpdateTile()
+    {
+        IEntity target = m_IsVisible ? GetTarget()[0] : ObjectSlot == null ? Self : ObjectSlot;
+        GameEvent getSprite = new GameEvent(GameEventId.GetSprite, new KeyValuePair<string, object>(EventParameters.RenderSprite, null));
+        GameEvent getSpriteEvent = FireEvent(target, getSprite);
+        //Self.GetComponent<Renderer>().Image.sprite = getSprite.GetValue<Sprite>(EventParameters.RenderSprite);
+
+        FireEvent(Self, new GameEvent(GameEventId.UpdateRenderer, getSpriteEvent.Paramters));
+    }
+
+    public void GetPathFindingData(GameEvent gameEvent)
+    {
+        foreach(var target in GetTarget(false))
+                FireEvent(target, gameEvent);
+    }
+
+
     public override void HandleEvent(GameEvent gameEvent)
     {
         if (gameEvent.ID == GameEventId.UpdateTile)
         {
-            IEntity target = m_IsVisible ? GetTarget()[0] : ObjectSlot == null ? Self : ObjectSlot;
-            GameEvent getSprite = new GameEvent(GameEventId.GetSprite, new KeyValuePair<string, object>(EventParameters.RenderSprite, null));
-            GameEvent getSpriteEvent = FireEvent(target, getSprite);
-            FireEvent(Self, new GameEvent(GameEventId.UpdateRenderer, getSpriteEvent.Paramters));
+            UpdateTile();
         }
 
-        if(gameEvent.ID == GameEventId.PathfindingData)
+        else if(gameEvent.ID == GameEventId.PathfindingData)
         {
-            foreach(var target in GetTarget(false))
-                FireEvent(target, gameEvent);
+            GetPathFindingData(gameEvent);
         }
 
-        if(gameEvent.ID == GameEventId.DestroyObject)
+        else if(gameEvent.ID == GameEventId.DestroyObject)
         {
-            Spawner.Despawn(ObjectSlot);
+            DestroyObject();
         }
 
-        if (gameEvent.ID == GameEventId.CleanTile)
+        else if (gameEvent.ID == GameEventId.CleanTile)
         {
-            CreatureSlot = null;
-            ObjectSlot = null;
-            Items.Clear();
-            FireEvent(Self, new GameEvent(GameEventId.SetVisibility, new KeyValuePair<string, object>(EventParameters.TileInSight, false)));
-            FireEvent(Self, new GameEvent(GameEventId.SetHasBeenVisited, new KeyValuePair<string, object>(EventParameters.HasBeenVisited, false)));
-            //Spawner.Despawn(CreatureSlot);
-            //Spawner.Despawn(ObjectSlot);
-            //List<IEntity> items = new List<IEntity>(Items);
-            //foreach (var item in items)
-            //    Spawner.Despawn(item);
+            CleanTile();
         }
 
-        if (gameEvent.ID == GameEventId.VisibilityUpdated)
+        else if (gameEvent.ID == GameEventId.VisibilityUpdated)
         {
-            m_IsVisible = (bool)gameEvent.Paramters[EventParameters.Value];
+            VisibilityUpdated(gameEvent);
         }
 
-        if (gameEvent.ID == GameEventId.BeforeMoving)
+        else if (gameEvent.ID == GameEventId.BeforeMoving)
         {
-            if (m_HasEntity)
-            {
-                foreach (IEntity target in GetTarget())
-                {
-                    GameEvent entityOvertaking = new GameEvent(GameEventId.EntityOvertaking, new KeyValuePair<string, object>(EventParameters.Entity, gameEvent.Paramters[EventParameters.Entity]));
-                    FireEvent(target, entityOvertaking);
-                    FireEvent(target, gameEvent);
-                }
-            }
+            BeforeMoving(gameEvent);
         }
 
-        if (gameEvent.ID == GameEventId.Spawn)
+        else if (gameEvent.ID == GameEventId.Spawn)
         {
-            IEntity entity = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Entity]);
-            EntityType entityType = (EntityType)gameEvent.Paramters[EventParameters.EntityType];
-            switch(entityType)
-            {
-                case EntityType.Creature:
-                    CreatureSlot = entity;
-                    break;
-                case EntityType.Object:
-                    ObjectSlot = entity;
-                    break;
-                case EntityType.Item:
-                    Items.Add(entity);
-                    break;
-            }
+            Spawn(gameEvent);
         }
 
-        if(gameEvent.ID == GameEventId.Pickup)
+        else if (gameEvent.ID == GameEventId.Pickup)
         {
-            IEntity entity = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Entity]);
-            if (Items.Count > 0)
-            {
-                List<IEntity> itemsPickedup = new List<IEntity>();
-                foreach (var item in Items)
-                {
-                    FireEvent(entity, new GameEvent(GameEventId.AddToInventory, new KeyValuePair<string, object>(EventParameters.Entity, item.ID)));
-                    itemsPickedup.Add(item);
-                }
-
-                foreach (var item in itemsPickedup)
-                    Spawner.Despawn(item);
-            }
-            if(ObjectSlot != null)
-            {
-                FireEvent(ObjectSlot, gameEvent);
-            }
+            Pickup(gameEvent);
         }
 
-        if(gameEvent.ID == GameEventId.Despawn)
+        else if (gameEvent.ID == GameEventId.Despawn)
         {
-            IEntity entity = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Entity]);
-            EntityType entityType = (EntityType)gameEvent.Paramters[EventParameters.EntityType];
-            switch (entityType)
-            {
-                case EntityType.Creature:
-                    CreatureSlot = null;
-                    break;
-                case EntityType.Object:
-                    ObjectSlot = null;
-                    break;
-                case EntityType.Item:
-                    Items.Remove(entity);
-                    break;
-            }
+            Despawn(gameEvent);
         }
 
-        if (gameEvent.ID == GameEventId.ShowTileInfo)
+        else if (gameEvent.ID == GameEventId.ShowTileInfo)
         {
-            GameEvent showInfo = new GameEvent(GameEventId.ShowInfo, new KeyValuePair<string, object>(EventParameters.Info, new StringBuilder()));
-            foreach(var e in GetTarget())
-                FireEvent(e, showInfo);
-            gameEvent.Paramters[EventParameters.Info] = showInfo.GetValue<StringBuilder>(EventParameters.Info).ToString();
+            ShowTileInfo(gameEvent);
         }
 
-        if (gameEvent.ID == GameEventId.AddComponentToTile)
+        else if (gameEvent.ID == GameEventId.AddComponentToTile)
         {
             //Todo
         }
 
-        if (gameEvent.ID == GameEventId.GetEntityOnTile)
+        else if (gameEvent.ID == GameEventId.GetEntityOnTile)
         {
-            bool includeSelf = true;
-            if(gameEvent.Paramters.ContainsKey(EventParameters.IncludeSelf))
-                includeSelf = gameEvent.GetValue<bool>(EventParameters.IncludeSelf);
-
-            var targets = GetTarget(includeSelf);
-            if(targets.Count == 0)
-                gameEvent.Paramters[EventParameters.Entity] = null;
-            else
-                gameEvent.Paramters[EventParameters.Entity] = GetTarget(includeSelf)[0].ID;
+            GetEntityOnTile(gameEvent);
         }
 
-        if(gameEvent.ID == GameEventId.IsTileBlocking)
+        else if (gameEvent.ID == GameEventId.IsTileBlocking)
         {
-            if (GetTarget()[0] != Self)
-            {
-                foreach (IEntity e in GetTarget())
-                    FireEvent(e, gameEvent);
-            }
+            IsTileBlocking(gameEvent);
         }
 
-        if(gameEvent.ID == GameEventId.GetValueOnTile)
+        else if (gameEvent.ID == GameEventId.GetValueOnTile)
         {
             if (Items.Count == 0)
                 return;
@@ -305,25 +244,160 @@ public class Tile : Component
             gameEvent.Paramters[EventParameters.Value] = totalValue;
         }
 
-        if(gameEvent.ID == GameEventId.SerializeTile)
+        else if(gameEvent.ID == GameEventId.SerializeTile)
         {
-            DungeonGenerationResult levelData = gameEvent.GetValue<DungeonGenerationResult>(EventParameters.Value);
-            foreach (var target in AllEntities)
-                if(target != null)
-                {
-                    if (target.HasComponent(typeof(Wall)) || target.HasComponent(typeof(BlocksVisibility)))
-                        levelData.Walls.Add(target.Serialize());
-                    else
-                        levelData.Entities.Add(target.Serialize());
-                }
-
-            EventBuilder getVisibilityData = EventBuilderPool.Get(GameEventId.GetVisibilityData)
-                                                .With(EventParameters.HasBeenVisited, m_IsVisible);
-
-            var getVis = FireEvent(Self, getVisibilityData.CreateEvent());
-            levelData.TilePoints.Add(m_GridPoint);
-            levelData.TileHasBeenVisited.Add(getVis.GetValue<bool>(EventParameters.HasBeenVisited));
+            SerializeTile(gameEvent);
         }
+    }
+
+    public void CleanTile()
+    {
+        CreatureSlot = null;
+        ObjectSlot = null;
+        Items.Clear();
+        FireEvent(Self, new GameEvent(GameEventId.SetVisibility, new KeyValuePair<string, object>(EventParameters.TileInSight, false)));
+        FireEvent(Self, new GameEvent(GameEventId.SetHasBeenVisited, new KeyValuePair<string, object>(EventParameters.HasBeenVisited, false)));
+        //Spawner.Despawn(CreatureSlot);
+        //Spawner.Despawn(ObjectSlot);
+        //List<IEntity> items = new List<IEntity>(Items);
+        //foreach (var item in items)
+        //    Spawner.Despawn(item);
+        WorldComponent.m_ChangedTiles.Add(this);
+    }
+
+    public void VisibilityUpdated(GameEvent gameEvent)
+    {
+        m_IsVisible = (bool)gameEvent.Paramters[EventParameters.Value];
+        WorldComponent.m_ChangedTiles.Add(this);
+    }
+
+    public void BeforeMoving(GameEvent gameEvent)
+    {
+        if (m_HasEntity)
+        {
+            foreach (IEntity target in GetTarget())
+            {
+                GameEvent entityOvertaking = new GameEvent(GameEventId.EntityOvertaking, new KeyValuePair<string, object>(EventParameters.Entity, gameEvent.Paramters[EventParameters.Entity]));
+                FireEvent(target, entityOvertaking);
+                FireEvent(target, gameEvent);
+            }
+        }
+    }
+
+    public void Spawn(GameEvent gameEvent)
+    {
+        IEntity entity = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Entity]);
+        EntityType entityType = (EntityType)gameEvent.Paramters[EventParameters.EntityType];
+        switch (entityType)
+        {
+            case EntityType.Creature:
+                CreatureSlot = entity;
+                break;
+            case EntityType.Object:
+                ObjectSlot = entity;
+                break;
+            case EntityType.Item:
+                Items.Add(entity);
+                break;
+        }
+        WorldComponent.m_ChangedTiles.Add(this);
+    }
+
+    public void Pickup(GameEvent gameEvent)
+    {
+        IEntity entity = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Entity]);
+        if (Items.Count > 0)
+        {
+            List<IEntity> itemsPickedup = new List<IEntity>();
+            foreach (var item in Items)
+            {
+                FireEvent(entity, new GameEvent(GameEventId.AddToInventory, new KeyValuePair<string, object>(EventParameters.Entity, item.ID)));
+                itemsPickedup.Add(item);
+            }
+
+            foreach (var item in itemsPickedup)
+                Spawner.Despawn(item);
+        }
+        if (ObjectSlot != null)
+        {
+            FireEvent(ObjectSlot, gameEvent);
+        }
+        WorldComponent.m_ChangedTiles.Add(this);
+    }
+
+    public void Despawn(GameEvent gameEvent)
+    {
+        IEntity entity = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Entity]);
+        EntityType entityType = (EntityType)gameEvent.Paramters[EventParameters.EntityType];
+        switch (entityType)
+        {
+            case EntityType.Creature:
+                CreatureSlot = null;
+                break;
+            case EntityType.Object:
+                ObjectSlot = null;
+                break;
+            case EntityType.Item:
+                Items.Remove(entity);
+                break;
+        }
+        WorldComponent.m_ChangedTiles.Add(this);
+    }
+
+    public void ShowTileInfo(GameEvent gameEvent)
+    {
+        GameEvent showInfo = new GameEvent(GameEventId.ShowInfo, new KeyValuePair<string, object>(EventParameters.Info, new StringBuilder()));
+        foreach (var e in GetTarget())
+            FireEvent(e, showInfo);
+        gameEvent.Paramters[EventParameters.Info] = showInfo.GetValue<StringBuilder>(EventParameters.Info).ToString();
+    }
+
+    public void GetEntityOnTile(GameEvent gameEvent)
+    {
+        bool includeSelf = true;
+        if (gameEvent.Paramters.ContainsKey(EventParameters.IncludeSelf))
+            includeSelf = gameEvent.GetValue<bool>(EventParameters.IncludeSelf);
+
+        var targets = GetTarget(includeSelf);
+        if (targets.Count == 0)
+            gameEvent.Paramters[EventParameters.Entity] = null;
+        else
+            gameEvent.Paramters[EventParameters.Entity] = GetTarget(includeSelf)[0].ID;
+    }
+
+    public void IsTileBlocking(GameEvent gameEvent)
+    {
+        if (GetTarget()[0] != Self)
+        {
+            foreach (IEntity e in GetTarget())
+                FireEvent(e, gameEvent);
+        }
+    }
+
+    public void SerializeTile(GameEvent gameEvent)
+    {
+        DungeonGenerationResult levelData = gameEvent.GetValue<DungeonGenerationResult>(EventParameters.Value);
+        foreach (var target in AllEntities)
+            if (target != null)
+            {
+                if (target.HasComponent(typeof(Wall)) || target.HasComponent(typeof(BlocksVisibility)))
+                    levelData.Walls.Add(target.Serialize());
+                else
+                    levelData.Entities.Add(target.Serialize());
+            }
+
+        EventBuilder getVisibilityData = EventBuilderPool.Get(GameEventId.GetVisibilityData)
+                                            .With(EventParameters.HasBeenVisited, m_IsVisible);
+
+        var getVis = FireEvent(Self, getVisibilityData.CreateEvent());
+        levelData.TilePoints.Add(m_GridPoint);
+        levelData.TileHasBeenVisited.Add(getVis.GetValue<bool>(EventParameters.HasBeenVisited));
+    }
+
+    public void DestroyObject()
+    {
+        Spawner.Despawn(ObjectSlot);
+        WorldComponent.m_ChangedTiles.Add(this);
     }
 
     List<IEntity> GetTarget(bool includeSelf = true)

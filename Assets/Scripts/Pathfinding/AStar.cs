@@ -70,7 +70,10 @@ public class AStar : IPathfindingAlgorithm
                                     .With(EventParameters.BlocksMovement, false)
                                     .With(EventParameters.Weight, 1);
 
-        int weight = World.Instance.Self.FireEvent(World.Instance.Self, getPathData.CreateEvent()).GetValue<int>(EventParameters.Weight);
+        Tile t = World.Instance.Self.GetComponent<TileInteractions>().GetTile(new Point(start.x, start.y));
+        GameEvent e = getPathData.CreateEvent();
+        t.GetPathFindingData(e);
+        int weight = e.GetValue<int>(EventParameters.Weight);
         return distanceH + weight;
     }
 
@@ -128,10 +131,10 @@ public class AStar : IPathfindingAlgorithm
 
     public bool IsValidNeighbor(IMapNode pt)
     {
-        EventBuilder getPathData = EventBuilderPool.Get(GameEventId.PathfindingData)
-                                    .With(EventParameters.TilePosition, pt)
-                                    .With(EventParameters.BlocksMovement, false)
-                                    .With(EventParameters.Weight, 1);
+        //EventBuilder getPathData = EventBuilderPool.Get(GameEventId.PathfindingData)
+        //                            .With(EventParameters.TilePosition, pt)
+        //                            .With(EventParameters.BlocksMovement, false)
+        //                            .With(EventParameters.Weight, 1);
 
         Tile t = World.Instance.Self.GetComponent<TileInteractions>().GetTile(new Point(pt.x, pt.y));
         return t == null ? false : !t.BlocksMovement;

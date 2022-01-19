@@ -21,8 +21,12 @@ public class WorldUpdate : WorldComponent
     {
         if (gameEvent.ID == GameEventId.UpdateWorldView)
         {
-            foreach (var tile in m_Tiles)
-                tile.Value.FireEvent(tile.Value, new GameEvent(GameEventId.UpdateTile));
+            //foreach (var tile in m_Tiles)
+            //    tile.Value.FireEvent(tile.Value, new GameEvent(GameEventId.UpdateTile));
+
+            foreach (var tile in m_ChangedTiles)
+                tile.UpdateTile(); //.HandleEvent(new GameEvent(GameEventId.UpdateTile));
+            m_ChangedTiles.Clear();
         }
 
         if(gameEvent.ID == GameEventId.ProgressTimeUntilIdHasTakenTurn)

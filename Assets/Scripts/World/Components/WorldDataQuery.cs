@@ -29,7 +29,10 @@ public class WorldDataQuery : WorldComponent
         {
             Point currentTilePos = (Point)gameEvent.Paramters[EventParameters.TilePosition];
             if(m_Tiles.ContainsKey(currentTilePos))
-                FireEvent(m_Tiles[currentTilePos], gameEvent);
+            {
+                m_Tiles[currentTilePos].GetComponent<Tile>().GetEntityOnTile(gameEvent);
+                //FireEvent(m_Tiles[currentTilePos], gameEvent);
+            }
         }
 
         if (gameEvent.ID == GameEventId.GetActivePlayerId)

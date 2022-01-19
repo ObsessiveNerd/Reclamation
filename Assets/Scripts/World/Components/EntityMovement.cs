@@ -24,7 +24,8 @@ public class EntityMovement : WorldComponent
             Point newPoint = GetTilePointInDirection(currentPoint, moveDirection);
             if (m_Tiles.TryGetValue(newPoint, out Actor tile))
             {
-                FireEvent(tile, gameEvent);
+                tile.GetComponent<Tile>().BeforeMoving(gameEvent);
+                //FireEvent(tile, gameEvent);
             }
             else
             {

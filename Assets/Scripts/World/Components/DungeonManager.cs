@@ -203,7 +203,8 @@ public class DungeonManager : WorldComponent
         {
             EventBuilder serializeTile = EventBuilderPool.Get(GameEventId.SerializeTile)
                                          .With(EventParameters.Value, level);
-            FireEvent(tile, serializeTile.CreateEvent());
+            //FireEvent(tile, serializeTile.CreateEvent());
+            tile.GetComponent<Tile>().SerializeTile(serializeTile.CreateEvent());
         }
 
         foreach (Room room in m_DungeonGenerator.Rooms)
@@ -282,7 +283,8 @@ public class DungeonManager : WorldComponent
     void CleanTiles()
     {
         foreach (var tile in m_Tiles.Values)
-            FireEvent(tile, new GameEvent(GameEventId.CleanTile));
+            tile.GetComponent<Tile>().CleanTile();
+            //FireEvent(tile, new GameEvent(GameEventId.CleanTile));
 
         List<IEntity> entities = new List<IEntity>(m_EntityToPointMap.Keys);
         foreach (var entity in entities)
@@ -428,6 +430,7 @@ public class DungeonManager : WorldComponent
         actor.AddComponent(new Renderer(tile.GetComponent<SpriteRenderer>()));
         actor.AddComponent(new Position(new Point(x, y)));
         actor.CleanupComponents();
+        actor.Start();
 
         pointToTileMap.Add(new Point(x, y), actor);
         m_EntityToPointMap.Add(actor, new Point(x, y));
