@@ -58,7 +58,7 @@ public class Energy : Component
                 break;
             case GameEventId.CharacterRotated:
                 if(!HasHadTurnStarted)
-                    FireEvent(Self, GameEventPool.Get(GameEventId.StartTurn));
+                    FireEvent(Self, GameEventPool.Get(GameEventId.StartTurn)).Release();
                 break;
         };
 

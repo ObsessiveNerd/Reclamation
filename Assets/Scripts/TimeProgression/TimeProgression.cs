@@ -55,6 +55,7 @@ public class TimeProgression
             {
                 GameEvent characterRotated = GameEventPool.Get(GameEventId.CharacterRotated);
                 m_Current.Value.HandleEvent(characterRotated);
+                characterRotated.Release();
             }
         };
     }

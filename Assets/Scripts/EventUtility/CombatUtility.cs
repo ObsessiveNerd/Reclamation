@@ -141,7 +141,10 @@ public static class CombatUtility
                 //source.FireEvent(useEnergy);
                 return true;
             }
+            manaCost.Release();
         }
+        getSpells.Release();
+        getMana.Release();
         return false;
     }
 

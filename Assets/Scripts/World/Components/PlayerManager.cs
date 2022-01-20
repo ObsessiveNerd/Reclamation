@@ -73,7 +73,7 @@ public class PlayerManager : WorldComponent
             if (m_Players.Count == 0)
             {
                 m_TimeProgression.Stop();
-                FireEvent(Self, GameEventPool.Get(GameEventId.GameFailure));
+                FireEvent(Self, GameEventPool.Get(GameEventId.GameFailure)).Release();
             }
         }
 
