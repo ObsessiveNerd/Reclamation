@@ -27,8 +27,9 @@ public class Inventory : Component
     {
         if (gameEvent.ID == GameEventId.OpenInventory)
         {
-            FireEvent(World.Instance.Self, new GameEvent(GameEventId.OpenInventoryUI, new KeyValuePair<string, object>(EventParameters.Value, InventoryItems),
-                                                                                        new KeyValuePair<string, object>(EventParameters.Entity, Self.ID)));
+            FireEvent(World.Instance.Self, GameEventPool.Get(GameEventId.OpenInventoryUI)
+                    .With(EventParameters.Value, InventoryItems)
+                    .With(EventParameters.Entity, Self.ID)).Release();
         }
 
         if (gameEvent.ID == GameEventId.AddToInventory)
@@ -38,7 +39,8 @@ public class Inventory : Component
             {
                 InventoryItems.Add(item);
                 if(WorldUtility.IsActivePlayer(Self.ID))
-                    FireEvent(World.Instance.Self, new GameEvent(GameEventId.UpdateUI, new KeyValuePair<string, object>(EventParameters.Entity, Self.ID)));
+                    FireEvent(World.Instance.Self, GameEventPool.Get(GameEventId.UpdateUI)
+                        .With(EventParameters.Entity, Self.ID)).Release();
             }
         }
 
@@ -52,9 +54,10 @@ public class Inventory : Component
         if (gameEvent.ID == GameEventId.Died)
         {
             foreach (IEntity item in InventoryItems)
-                FireEvent(World.Instance.Self, new GameEvent(GameEventId.Drop, new KeyValuePair<string, object>(EventParameters.Entity, item.ID),
-                                                                                new KeyValuePair<string, object>(EventParameters.Creature, Self.ID),
-                                                                                new KeyValuePair<string, object>(EventParameters.EntityType, EntityType.Item)));
+                FireEvent(World.Instance.Self, GameEventPool.Get(GameEventId.Drop)
+                        .With(EventParameters.Entity, item.ID)
+                        .With(EventParameters.Creature, Self.ID)
+                        .With(EventParameters.EntityType, EntityType.Item)).Release();
             InventoryItems.Clear();
         }
 

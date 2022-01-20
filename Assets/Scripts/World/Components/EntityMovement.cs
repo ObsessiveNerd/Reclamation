@@ -41,16 +41,16 @@ public class EntityMovement : WorldComponent
             Point newPoint = gameEvent.GetValue<Point>(EventParameters.TilePosition);
             EntityType entityType = (EntityType)gameEvent.Paramters[EventParameters.EntityType];
 
-            EventBuilder removeEntityFromTile = EventBuilderPool.Get(GameEventId.Despawn)
+            GameEvent removeEntityFromTile = GameEventPool.Get(GameEventId.Despawn)
                                                 .With(EventParameters.Entity, entity.ID)
                                                 .With(EventParameters.EntityType, entityType);
-            FireEvent(m_Tiles[currentPoint], removeEntityFromTile.CreateEvent());
+            FireEvent(m_Tiles[currentPoint], removeEntityFromTile).Release();
             m_EntityToPointMap[entity] = newPoint;
-            EventBuilder addEntityToTile = EventBuilderPool.Get(GameEventId.Spawn)
+            GameEvent addEntityToTile = GameEventPool.Get(GameEventId.Spawn)
                                             .With(EventParameters.Entity, entity.ID)
                                             .With(EventParameters.EntityType, entityType);
-            FireEvent(m_Tiles[newPoint], addEntityToTile.CreateEvent());
-            FireEvent(Self, new GameEvent(GameEventId.UpdateWorldView));
+            FireEvent(m_Tiles[newPoint], addEntityToTile).Release();
+            FireEvent(Self, GameEventPool.Get(GameEventId.UpdateWorldView)).Release();
         }
 
         if (gameEvent.ID == GameEventId.MoveEntity)
@@ -64,22 +64,22 @@ public class EntityMovement : WorldComponent
 
             if (m_Tiles.ContainsKey(newPoint))
             {
-                FireEvent(entity, new GameEvent(GameEventId.SetPoint, new KeyValuePair<string, object>(EventParameters.TilePosition, newPoint)));
+                FireEvent(entity, GameEventPool.Get(GameEventId.SetPoint).With(EventParameters.TilePosition, newPoint)).Release();
                 Spawner.Move(entity, newPoint);
 
 
                 //Just as a note, doing it this way isn't terribly efficient since despawn is going to remove things from the time progression
                 //This also means turn order is going to get fucked, so really we should do this proper and just event to the correct tiles here.
                 //I mean I guess things are despawning and spawning in order so maybe turn order won't get fucked.
-                //GameEvent spawn = new GameEvent(GameEventId.Spawn, new KeyValuePair<string, object>(EventParameters.Entity, entity.ID),
-                //                                                       new KeyValuePair<string, object>(EventParameters.EntityType, entityType));
+                //GameEvent spawn = GameEventPool.Get(GameEventId.Spawn, new .With(EventParameters.Entity, entity.ID),
+                //                                                       new .With(EventParameters.EntityType, entityType));
 
                 //FireEvent(m_Tiles[newPoint], spawn);
 
-                //GameEvent despawn = new GameEvent(GameEventId.Despawn, new KeyValuePair<string, object>(EventParameters.Entity, entity.ID),
-                //                                                   new KeyValuePair<string, object>(EventParameters.EntityType, entityType));
+                //GameEvent despawn = GameEventPool.Get(GameEventId.Despawn, new .With(EventParameters.Entity, entity.ID),
+                //                                                   new .With(EventParameters.EntityType, entityType));
                 //FireEvent(m_Tiles[currentPoint], despawn);
-                //FireEvent(Self, new GameEvent(GameEventId.UpdateWorldView));
+                //FireEvent(Self, GameEventPool.Get(GameEventId.UpdateWorldView));
                 //m_EntityToPointMap[entity] = newPoint;
             }
             else

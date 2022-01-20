@@ -21,10 +21,10 @@ public class PlayableCharacterSelector : MonoBehaviour
 
         newTab.AddComponent<Button>().onClick.AddListener(() =>
         {
-            EventBuilder newPlayer = EventBuilderPool.Get(GameEventId.SetActiveCharacter)
+            GameEvent newPlayer = GameEventPool.Get(GameEventId.SetActiveCharacter)
                                         .With(EventParameters.Entity, id);
 
-            World.Instance.Self.FireEvent(newPlayer.CreateEvent());
+            World.Instance.Self.FireEvent(newPlayer).Release();
         });
 
         m_CharacterIdToTabGameObject.Add(id, newTab);

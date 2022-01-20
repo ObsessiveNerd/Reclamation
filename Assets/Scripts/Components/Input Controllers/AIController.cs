@@ -31,24 +31,29 @@ public class AIController : InputControllerBase
             {
                 MoveDirection desiredDirection = MoveDirection.None; //InputUtility.GetRandomMoveDirection(); //obviously temp
 
-                EventBuilder getActionEventBuilder = EventBuilderPool.Get(GameEventId.GetActionToTake)
+                GameEvent getActionEventBuilder = GameEventPool.Get(GameEventId.GetActionToTake)
                                                         .With(EventParameters.AIActionList, new PriorityQueue<AIAction>(new AIActionPriorityComparer()));
 
-                PriorityQueue<AIAction> actions = FireEvent(Self, getActionEventBuilder.CreateEvent()).GetValue<PriorityQueue<AIAction>>(EventParameters.AIActionList);
+                PriorityQueue<AIAction> actions = FireEvent(Self, getActionEventBuilder).GetValue<PriorityQueue<AIAction>>(EventParameters.AIActionList);
                 if (actions.Count > 0)
                     desiredDirection = actions[0].ActionToTake();
 
+                getActionEventBuilder.Release();
+
                 if (desiredDirection == MoveDirection.None)
-                    FireEvent(Self, new GameEvent(GameEventId.SkipTurn));
+                    FireEvent(Self, GameEventPool.Get(GameEventId.SkipTurn)).Release();
                 else    
-                    FireEvent(Self, new GameEvent(GameEventId.MoveKeyPressed, new KeyValuePair<string, object>(EventParameters.InputDirection, desiredDirection)));
+                    FireEvent(Self, GameEventPool.Get(GameEventId.MoveKeyPressed)
+                        .With(EventParameters.InputDirection, desiredDirection)).Release();
 
                 //if (desiredDirection == MoveDirection.None)
-                //    FireEvent(Self, new GameEvent(GameEventId.SkipTurn));
+                //    FireEvent(Self, GameEventPool.Get(GameEventId.SkipTurn));
 
-                GameEvent checkForEnergy = new GameEvent(GameEventId.HasEnoughEnergyToTakeATurn, new KeyValuePair<string, object>(EventParameters.TakeTurn, false));
+                GameEvent checkForEnergy = GameEventPool.Get(GameEventId.HasEnoughEnergyToTakeATurn)
+                    .With(EventParameters.TakeTurn, false);
                 FireEvent(Self, checkForEnergy);
                 gameEvent.Paramters[EventParameters.TakeTurn] = (bool)checkForEnergy.Paramters[EventParameters.TakeTurn];
+                checkForEnergy.Release();
             }
         }
     }

@@ -230,7 +230,7 @@ public static class EntityFactory
         a.CleanupComponents();
 
 
-        //EventBuilder register = EventBuilderPool.Get(GameEventId.RegisterEntity)
+        //GameEvent register = GameEventPool.Get(GameEventId.RegisterEntity)
         //                            .With(EventParameters.Entity, a);
         //World.Instance.Self.FireEvent(register.CreateEvent());
 

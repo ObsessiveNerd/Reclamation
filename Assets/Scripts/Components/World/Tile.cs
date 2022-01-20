@@ -93,15 +93,19 @@ public class Tile : Component
                 return false;
             else
             {
-                EventBuilder b = EventBuilderPool.Get(GameEventId.PathfindingData)
+                GameEvent b = GameEventPool.Get(GameEventId.PathfindingData)
                                 .With(EventParameters.BlocksMovement, false)
                                 .With(EventParameters.Weight, 1);
                 foreach (var t in GetTarget(false))
                 {
-                    var e = FireEvent(t, b.CreateEvent());
+                    var e = FireEvent(t, b);
                     if (e.GetValue<bool>(EventParameters.BlocksMovement))
+                    {
+                        b.Release();
                         return true;
+                    }
                 }
+                b.Release();
                 return false;
             }
         }
@@ -147,11 +151,12 @@ public class Tile : Component
     public void UpdateTile()
     {
         IEntity target = m_IsVisible ? GetTarget()[0] : ObjectSlot == null ? Self : ObjectSlot;
-        GameEvent getSprite = new GameEvent(GameEventId.GetSprite, new KeyValuePair<string, object>(EventParameters.RenderSprite, null));
+        GameEvent getSprite = GameEventPool.Get(GameEventId.GetSprite).With(EventParameters.RenderSprite, null);
         GameEvent getSpriteEvent = FireEvent(target, getSprite);
         //Self.GetComponent<Renderer>().Image.sprite = getSprite.GetValue<Sprite>(EventParameters.RenderSprite);
 
-        FireEvent(Self, new GameEvent(GameEventId.UpdateRenderer, getSpriteEvent.Paramters));
+        FireEvent(Self, GameEventPool.Get(GameEventId.UpdateRenderer).With(getSpriteEvent.Paramters)).Release();
+        getSpriteEvent.Release();
     }
 
     public void GetPathFindingData(GameEvent gameEvent)
@@ -236,9 +241,10 @@ public class Tile : Component
             int totalValue = 0;
             foreach(var item in Items)
             {
-                EventBuilder getValue = EventBuilderPool.Get(GameEventId.GetValue)
+                GameEvent getValue = GameEventPool.Get(GameEventId.GetValue)
                                         .With(EventParameters.Value, 0);
-                int itemValue = FireEvent(item, getValue.CreateEvent()).GetValue<int>(EventParameters.Value);
+                int itemValue = FireEvent(item, getValue).GetValue<int>(EventParameters.Value);
+                getValue.Release();
                 totalValue += itemValue;
             }
             gameEvent.Paramters[EventParameters.Value] = totalValue;
@@ -255,8 +261,10 @@ public class Tile : Component
         CreatureSlot = null;
         ObjectSlot = null;
         Items.Clear();
-        FireEvent(Self, new GameEvent(GameEventId.SetVisibility, new KeyValuePair<string, object>(EventParameters.TileInSight, false)));
-        FireEvent(Self, new GameEvent(GameEventId.SetHasBeenVisited, new KeyValuePair<string, object>(EventParameters.HasBeenVisited, false)));
+        FireEvent(Self, GameEventPool.Get(GameEventId.SetVisibility)
+            .With(EventParameters.TileInSight, false)).Release();
+        FireEvent(Self, GameEventPool.Get(GameEventId.SetHasBeenVisited)
+            .With(EventParameters.HasBeenVisited, false)).Release();
         //Spawner.Despawn(CreatureSlot);
         //Spawner.Despawn(ObjectSlot);
         //List<IEntity> items = new List<IEntity>(Items);
@@ -277,9 +285,12 @@ public class Tile : Component
         {
             foreach (IEntity target in GetTarget())
             {
-                GameEvent entityOvertaking = new GameEvent(GameEventId.EntityOvertaking, new KeyValuePair<string, object>(EventParameters.Entity, gameEvent.Paramters[EventParameters.Entity]));
+                GameEvent entityOvertaking = GameEventPool.Get(GameEventId.EntityOvertaking)
+                    .With(EventParameters.Entity, gameEvent.Paramters[EventParameters.Entity]);
                 FireEvent(target, entityOvertaking);
                 FireEvent(target, gameEvent);
+
+                entityOvertaking.Release();
             }
         }
     }
@@ -311,7 +322,8 @@ public class Tile : Component
             List<IEntity> itemsPickedup = new List<IEntity>();
             foreach (var item in Items)
             {
-                FireEvent(entity, new GameEvent(GameEventId.AddToInventory, new KeyValuePair<string, object>(EventParameters.Entity, item.ID)));
+                FireEvent(entity, GameEventPool.Get(GameEventId.AddToInventory)
+                    .With(EventParameters.Entity, item.ID)).Release();
                 itemsPickedup.Add(item);
             }
 
@@ -346,10 +358,12 @@ public class Tile : Component
 
     public void ShowTileInfo(GameEvent gameEvent)
     {
-        GameEvent showInfo = new GameEvent(GameEventId.ShowInfo, new KeyValuePair<string, object>(EventParameters.Info, new StringBuilder()));
+        GameEvent showInfo = GameEventPool.Get(GameEventId.ShowInfo)
+            .With(EventParameters.Info, new StringBuilder());
         foreach (var e in GetTarget())
             FireEvent(e, showInfo);
         gameEvent.Paramters[EventParameters.Info] = showInfo.GetValue<StringBuilder>(EventParameters.Info).ToString();
+        showInfo.Release();
     }
 
     public void GetEntityOnTile(GameEvent gameEvent)
@@ -386,12 +400,13 @@ public class Tile : Component
                     levelData.Entities.Add(target.Serialize());
             }
 
-        EventBuilder getVisibilityData = EventBuilderPool.Get(GameEventId.GetVisibilityData)
+        GameEvent getVisibilityData = GameEventPool.Get(GameEventId.GetVisibilityData)
                                             .With(EventParameters.HasBeenVisited, m_IsVisible);
 
-        var getVis = FireEvent(Self, getVisibilityData.CreateEvent());
+        var getVis = FireEvent(Self, getVisibilityData);
         levelData.TilePoints.Add(m_GridPoint);
         levelData.TileHasBeenVisited.Add(getVis.GetValue<bool>(EventParameters.HasBeenVisited));
+        getVis.Release();
     }
 
     public void DestroyObject()

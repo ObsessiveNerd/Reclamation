@@ -15,9 +15,10 @@ public class CharacterStatsMono : MonoBehaviour//, IUpdatableUI
     {
         Name.text = source.Name;
         StatMonos = GetComponentsInChildren<StatsUIMono>().ToList();
-        EventBuilder getAttributePoints = EventBuilderPool.Get(GameEventId.GetAttributePoints)
+        GameEvent getAttributePoints = GameEventPool.Get(GameEventId.GetAttributePoints)
                                             .With(EventParameters.AttributePoints, 0);
-        int attrPoints = source.FireEvent(getAttributePoints.CreateEvent()).GetValue<int>(EventParameters.AttributePoints);
+        int attrPoints = source.FireEvent(getAttributePoints).GetValue<int>(EventParameters.AttributePoints);
+        getAttributePoints.Release();
 
         if (attrPoints == 0)
         {
@@ -40,10 +41,11 @@ public class CharacterStatsMono : MonoBehaviour//, IUpdatableUI
                 statMono.Button.gameObject.SetActive(true);
                 statMono.Button.onClick.AddListener(() =>
                 {
-                    EventBuilder boostStat = EventBuilderPool.Get(GameEventId.BoostStat)
+                    GameEvent boostStat = GameEventPool.Get(GameEventId.BoostStat)
                                                 .With(EventParameters.StatType, statMono.ControlledStat)
                                                 .With(EventParameters.StatBoostAmount, 1);
-                    source.FireEvent(boostStat.CreateEvent());
+                    source.FireEvent(boostStat);
+                    boostStat.Release();
                 });
                 statMono.Button.onClick.AddListener(() => UpdateUI(source));
                 statMono.UpdateUI(source);

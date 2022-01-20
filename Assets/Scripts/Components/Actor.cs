@@ -13,9 +13,11 @@ public class Actor : IEntity
     public string Name {
         get
         {
-            EventBuilder getName = EventBuilderPool.Get(GameEventId.GetName)
+            GameEvent getName = GameEventPool.Get(GameEventId.GetName)
                                     .With(EventParameters.Name, InternalName);
-            return FireEvent(getName.CreateEvent()).GetValue<string>(EventParameters.Name);
+            var ret = FireEvent(getName).GetValue<string>(EventParameters.Name);
+            getName.Release();
+            return ret;
         }
         internal set
         {
@@ -44,7 +46,8 @@ public class Actor : IEntity
         m_Components = new PriorityQueue<IComponent>(new ComponentComparer());
 
         if (World.Instance != null)
-            FireEvent(World.Instance.Self, new GameEvent(GameEventId.RegisterEntity, new KeyValuePair<string, object>(EventParameters.Entity, this)));
+            FireEvent(World.Instance.Self, GameEventPool.Get(GameEventId.RegisterEntity)
+                .With(EventParameters.Entity, this)).Release();
 
         EntityMap.AddEntity(this);
         //EntityMap.IDToNameMap[ID] = Name;
@@ -59,7 +62,8 @@ public class Actor : IEntity
 
         m_Components = new PriorityQueue<IComponent>(new ComponentComparer());
         if (World.Instance != null)
-            FireEvent(World.Instance.Self, new GameEvent(GameEventId.RegisterEntity, new KeyValuePair<string, object>(EventParameters.Entity, this)));
+            FireEvent(World.Instance.Self, GameEventPool.Get(GameEventId.RegisterEntity)
+                .With(EventParameters.Entity, this)).Release();
 
         EntityMap.AddEntity(this);
         //EntityMap.IDToNameMap[ID] = Name;

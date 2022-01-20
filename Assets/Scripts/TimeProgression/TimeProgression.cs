@@ -53,7 +53,7 @@ public class TimeProgression
 
             if (m_Current != null)
             {
-                GameEvent characterRotated = new GameEvent(GameEventId.CharacterRotated);
+                GameEvent characterRotated = GameEventPool.Get(GameEventId.CharacterRotated);
                 m_Current.Value.HandleEvent(characterRotated);
             }
         };
@@ -81,8 +81,6 @@ public class TimeProgression
         Update();
     }
 
-    GameEvent m_Update = new GameEvent(GameEventId.UpdateEntity,  new KeyValuePair<string, object>(EventParameters.TakeTurn, false),
-                                                                    new KeyValuePair<string, object>(EventParameters.UpdateWorldView, false));
     public void Update()
     {
         if (m_EntityList.Count == 0 || m_IsStopped)
@@ -90,30 +88,29 @@ public class TimeProgression
         if (m_Current == null)
         {
             m_Current = m_EntityList.First;
-            GameEvent startTurn = new GameEvent(GameEventId.StartTurn);
+            GameEvent startTurn = GameEventPool.Get(GameEventId.StartTurn);
             m_Current.Value.HandleEvent(startTurn);
+            startTurn.Release();
         }
+
+        GameEvent update = GameEventPool.Get(GameEventId.UpdateEntity).With(EventParameters.TakeTurn, false)
+            .With(EventParameters.UpdateWorldView, false);
 
         using (new DiagnosticsTimer("Update entity"))
-        {
-            m_Update.Setup(GameEventId.UpdateEntity, new KeyValuePair<string, object>(EventParameters.TakeTurn, false),
-                                                                        new KeyValuePair<string, object>(EventParameters.UpdateWorldView, false));
-
-            m_Current.Value.HandleEvent(m_Update);
-        }
+            m_Current.Value.HandleEvent(update);
 
         if (m_Current.Value.NeedsCleanup)
             m_Current.Value.CleanupComponents();
 
         using (new DiagnosticsTimer("Update world view"))
         {
-            if ((bool)m_Update.Paramters[EventParameters.UpdateWorldView])
-                World.Instance.Self.FireEvent(World.Instance.Self, new GameEvent(GameEventId.UpdateWorldView));
+            if ((bool)update.Paramters[EventParameters.UpdateWorldView])
+                World.Instance.Self.FireEvent(World.Instance.Self, GameEventPool.Get(GameEventId.UpdateWorldView)).Release();
         }
 
-        if ((bool)m_Update.Paramters[EventParameters.TakeTurn])
+        if ((bool)update.Paramters[EventParameters.TakeTurn])
         {
-            GameEvent endTurn = new GameEvent(GameEventId.EndTurn);
+            GameEvent endTurn = GameEventPool.Get(GameEventId.EndTurn);
             m_Current.Value.HandleEvent(endTurn);
             m_Current.Value.CleanupComponents();
 
@@ -121,11 +118,12 @@ public class TimeProgression
 
             if (m_Current != null)
             {
-                ObjectPool.ReturnAll();
-                GameEvent startTurn = new GameEvent(GameEventId.StartTurn);
+                GameEvent startTurn = GameEventPool.Get(GameEventId.StartTurn);
                 m_Current.Value.HandleEvent(startTurn);
+                startTurn.Release();
             }
-            World.Instance.Self.FireEvent(World.Instance.Self, new GameEvent(GameEventId.UpdateWorldView));
+            endTurn.Release();
+            World.Instance.Self.FireEvent(World.Instance.Self, GameEventPool.Get(GameEventId.UpdateWorldView)).Release();
         }
 
         //ObjectPool.Return(update);
@@ -134,5 +132,8 @@ public class TimeProgression
             m_PostFrameCallback.Invoke();
             m_PostFrameCallback = null;
         }
+
+        update.Release();
+
     }
 }

@@ -32,16 +32,21 @@ public class ChestMono : EscapeableMono, IUpdatableUI
     {
         Cleanup();
         GameObject go = Resources.Load<GameObject>("UI/InventoryItem");
-        EventBuilder getItems = EventBuilderPool.Get(GameEventId.GetItems)
+        GameEvent getItems = GameEventPool.Get(GameEventId.GetItems)
                                 .With(EventParameters.Items, new List<string>());
 
-        List<string> itemIds = m_Chest.FireEvent(getItems.CreateEvent()).GetValue<List<string>>(EventParameters.Items);
+        List<string> itemIds = m_Chest.FireEvent(getItems).GetValue<List<string>>(EventParameters.Items);
+        getItems.Release();
+
         foreach(var itemId in itemIds)
         {
             var item = EntityQuery.GetEntity(itemId);
 
-            Sprite sprite = item.FireEvent(item, new GameEvent(GameEventId.GetPortrait, 
-                new KeyValuePair<string, object>(EventParameters.RenderSprite, null))).GetValue<Sprite>(EventParameters.RenderSprite);
+            var getSprite = GameEventPool.Get(GameEventId.GetPortrait)
+                .With(EventParameters.RenderSprite, null);
+            Sprite sprite = item.FireEvent(item, getSprite).GetValue<Sprite>(EventParameters.RenderSprite);
+            getSprite.Release();
+            
             if(sprite != null)
             {
                 GameObject spriteGo = Instantiate(go);

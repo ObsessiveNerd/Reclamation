@@ -41,8 +41,8 @@ public class AreaOfEffect : Component
             foreach(var visibleTile in m_VisibleTiles)
                 effect.Invoke(WorldUtility.GetEntityAtPosition(visibleTile));
 
-            GameEvent endSelection = new GameEvent(GameEventId.EndSelection,
-                new KeyValuePair<string, object>(EventParameters.TilePosition, null));
+            GameEvent endSelection = GameEventPool.Get(GameEventId.EndSelection)
+                .With(EventParameters.TilePosition, null);
 
             foreach (var tile in m_VisibleTiles)
             {
@@ -50,6 +50,7 @@ public class AreaOfEffect : Component
                 FireEvent(World.Instance.Self, endSelection);
             }
             m_VisibleTiles.Clear();
+            endSelection.Release();
         }
 
         else if(gameEvent.ID == GameEventId.SelectTile)
@@ -65,19 +66,20 @@ public class AreaOfEffect : Component
             Point p = gameEvent.GetValue<Point>(EventParameters.TilePosition);
             foreach(var tile in m_VisibleTiles)
             {
-                EventBuilder eb = EventBuilderPool.Get(GameEventId.EndSelection)
+                GameEvent eb = GameEventPool.Get(GameEventId.EndSelection)
                                     .With(EventParameters.TilePosition, tile);
-                FireEvent(World.Instance.Self, eb.CreateEvent());
+                FireEvent(World.Instance.Self, eb).Release();
             }
-            EventBuilder builder = EventBuilderPool.Get(GameEventId.SelectTile)
+            GameEvent builder = GameEventPool.Get(GameEventId.SelectTile)
                                     .With(EventParameters.TilePosition, p);
-            SelectAroundPosition(builder.CreateEvent(), true);
+            SelectAroundPosition(builder, true);
+            builder.Release();
         }
 
         else if(gameEvent.ID == GameEventId.EndSelection)
         {
-            GameEvent endSelection = new GameEvent(GameEventId.EndSelection,
-                new KeyValuePair<string, object>(EventParameters.TilePosition, null));
+            GameEvent endSelection = GameEventPool.Get(GameEventId.EndSelection)
+                .With(EventParameters.TilePosition, null);
 
             foreach (var tile in m_VisibleTiles)
             {
@@ -85,6 +87,7 @@ public class AreaOfEffect : Component
                 FireEvent(World.Instance.Self, endSelection);
             }
             m_VisibleTiles.Clear();
+            endSelection.Release();
         }
     }
 

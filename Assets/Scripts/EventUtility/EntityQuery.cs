@@ -9,10 +9,11 @@ public class EntityQuery
         if (string.IsNullOrEmpty(id))
             return null;
 
-        EventBuilder builder = EventBuilderPool.Get(GameEventId.GetEntity)
+        GameEvent builder = GameEventPool.Get(GameEventId.GetEntity)
                                 .With(EventParameters.Value, id)
                                 .With(EventParameters.Entity, null);
-        var entity =  World.Instance?.Self.FireEvent(World.Instance.Self, builder.CreateEvent()).GetValue<IEntity>(EventParameters.Entity);
+        var entity =  World.Instance?.Self.FireEvent(World.Instance.Self, builder).GetValue<IEntity>(EventParameters.Entity);
+        builder.Release();
         if (entity != null)
             return entity;
         return EntityFactory.CreateEntity(id);

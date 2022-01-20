@@ -23,15 +23,15 @@ public class ChestItemMono : ItemMono, IPointerClickHandler
             if (m_Chest == null || m_Character == null || m_Item == null) 
                 return;
 
-            EventBuilder remove = EventBuilderPool.Get(GameEventId.RemoveItem)
+            GameEvent remove = GameEventPool.Get(GameEventId.RemoveItem)
                                     .With(EventParameters.Item, m_Item.ID);
-            m_Chest.FireEvent(remove.CreateEvent());
+            m_Chest.FireEvent(remove).Release();
 
-            EventBuilder add = EventBuilderPool.Get(GameEventId.AddToInventory)
+            GameEvent add = GameEventPool.Get(GameEventId.AddToInventory)
                                 .With(EventParameters.Entity, m_Item.ID);
-            m_Character.FireEvent(add.CreateEvent());
+            m_Character.FireEvent(add).Release();
             DestroyPopup();
-            //EventBuilder getContextMenuActions = EventBuilderPool.Get(GameEventId.GetContextMenuActions)
+            //GameEvent getContextMenuActions = GameEventPool.Get(GameEventId.GetContextMenuActions)
             //                        .With(EventParameters.Entity, m_Source.ID)
             //                        .With(EventParameters.ChestContextActions , new List<ContextMenuButton>());
 

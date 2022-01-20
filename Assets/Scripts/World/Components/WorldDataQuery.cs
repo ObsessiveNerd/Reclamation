@@ -40,12 +40,13 @@ public class WorldDataQuery : WorldComponent
 
         if(gameEvent.ID == GameEventId.GetEntityLocation)
         {
-            EventBuilder eBuilder = EventBuilderPool.Get(GameEventId.GetEntity)
+            GameEvent eBuilder = GameEventPool.Get(GameEventId.GetEntity)
                                     .With(EventParameters.Entity, null)
                                     .With(EventParameters.Value, gameEvent.Paramters[EventParameters.Entity]);
 
-            if (m_EntityToPointMap.TryGetValue(FireEvent(Self, eBuilder.CreateEvent()).GetValue<IEntity>(EventParameters.Entity), out Point result))
+            if (m_EntityToPointMap.TryGetValue(FireEvent(Self, eBuilder).GetValue<IEntity>(EventParameters.Entity), out Point result))
                 gameEvent.Paramters[EventParameters.TilePosition] = result;
+            eBuilder.Release();
         }
 
         else if(gameEvent.ID == GameEventId.IsValidDungeonTile)

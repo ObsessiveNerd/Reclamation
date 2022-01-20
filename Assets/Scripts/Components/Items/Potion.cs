@@ -17,9 +17,9 @@ public class Potion : Component
         {
             IEntity target = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameters.Entity));
 
-            EventBuilder builder = EventBuilderPool.Get(GameEventId.ApplyEffectToTarget)
+            GameEvent builder = GameEventPool.Get(GameEventId.ApplyEffectToTarget)
                                     .With(EventParameters.Entity, target.ID);
-            FireEvent(Self, builder.CreateEvent());
+            FireEvent(Self, builder).Release();
         }
 
         else if(gameEvent.ID == GameEventId.GetContextMenuActions)
@@ -28,13 +28,13 @@ public class Potion : Component
             {
                 IEntity source = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameters.Entity));
 
-                EventBuilder quaff = EventBuilderPool.Get(GameEventId.Quaff)
+                GameEvent quaff = GameEventPool.Get(GameEventId.Quaff)
                                         .With(EventParameters.Entity, source.ID);
-                Self.FireEvent(quaff.CreateEvent());
+                Self.FireEvent(quaff).Release();
 
-                EventBuilder remove = EventBuilderPool.Get(GameEventId.RemoveFromInventory)
+                GameEvent remove = GameEventPool.Get(GameEventId.RemoveFromInventory)
                                         .With(EventParameters.Entity, Self.ID);
-                source.FireEvent(remove.CreateEvent());
+                source.FireEvent(remove).Release();
             });
 
             gameEvent.GetValue<List<ContextMenuButton>>(EventParameters.InventoryContextActions).Add(button);

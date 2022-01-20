@@ -102,11 +102,11 @@ public class DungeonManager : WorldComponent
             else
             {
                 foreach (var player in m_Players)
-                    FireEvent(player, new GameEvent(GameEventId.InitFOV));
-                FireEvent(Self, new GameEvent(GameEventId.UpdateCamera));
+                    FireEvent(player, GameEventPool.Get(GameEventId.InitFOV));
+                FireEvent(Self, GameEventPool.Get(GameEventId.UpdateCamera));
             }
 
-            FireEvent(Self, new GameEvent(GameEventId.SaveLevel));
+            FireEvent(Self, GameEventPool.Get(GameEventId.SaveLevel));
             m_TimeProgression.Resume();
             sw.Stop();
             Debug.LogWarning($"Other shit: {sw.Elapsed.Seconds}");
@@ -126,7 +126,7 @@ public class DungeonManager : WorldComponent
                 m_CurrentLevel--;
                 LoadOrCreateDungeon();
                 MovePlayersToCurrentFloor(false);
-                FireEvent(Self, new GameEvent(GameEventId.UpdateCamera));
+                FireEvent(Self, GameEventPool.Get(GameEventId.UpdateCamera));
 
             });
         }
@@ -140,7 +140,7 @@ public class DungeonManager : WorldComponent
                 m_CurrentLevel++;
                 LoadOrCreateDungeon();
                 MovePlayersToCurrentFloor(true);
-                FireEvent(Self, new GameEvent(GameEventId.UpdateCamera));
+                FireEvent(Self, GameEventPool.Get(GameEventId.UpdateCamera));
             });
         }
         else if (gameEvent.ID == GameEventId.GetRandomValidPoint)
@@ -201,10 +201,11 @@ public class DungeonManager : WorldComponent
 
         foreach (var tile in m_Tiles.Values)
         {
-            EventBuilder serializeTile = EventBuilderPool.Get(GameEventId.SerializeTile)
+            GameEvent serializeTile = GameEventPool.Get(GameEventId.SerializeTile)
                                          .With(EventParameters.Value, level);
             //FireEvent(tile, serializeTile.CreateEvent());
-            tile.GetComponent<Tile>().SerializeTile(serializeTile.CreateEvent());
+            tile.GetComponent<Tile>().SerializeTile(serializeTile);
+            serializeTile.Release();
         }
 
         foreach (Room room in m_DungeonGenerator.Rooms)
@@ -235,11 +236,12 @@ public class DungeonManager : WorldComponent
                 if (entity != null)
                 {
                     entity.Start();
-                    EventBuilder getPoint = EventBuilderPool.Get(GameEventId.GetPoint)
+                    GameEvent getPoint = GameEventPool.Get(GameEventId.GetPoint)
                                             .With(EventParameters.Value, Point.InvalidPoint);
-                    Point p = FireEvent(entity, getPoint.CreateEvent()).GetValue<Point>(EventParameters.Value);
+                    Point p = FireEvent(entity, getPoint).GetValue<Point>(EventParameters.Value);
                     if (p != Point.InvalidPoint)
                         Spawner.Spawn(entity, p);
+                    getPoint.Release();
                 }
             }
 
@@ -249,18 +251,20 @@ public class DungeonManager : WorldComponent
                 if (entity != null)
                 {
                     entity.Start();
-                    EventBuilder getPoint = EventBuilderPool.Get(GameEventId.GetPoint)
+                    GameEvent getPoint = GameEventPool.Get(GameEventId.GetPoint)
                                             .With(EventParameters.Value, Point.InvalidPoint);
-                    Point p = FireEvent(entity, getPoint.CreateEvent()).GetValue<Point>(EventParameters.Value);
+                    Point p = FireEvent(entity, getPoint).GetValue<Point>(EventParameters.Value);
                     if (p != Point.InvalidPoint)
                         Spawner.Spawn(entity, p);
+                    getPoint.Release();
                 }
             }
 
             for (int i = 0; i < dungeonLevel.TilePoints.Count; i++)
             {
-                FireEvent(m_Tiles[dungeonLevel.TilePoints[i]], new GameEvent(GameEventId.SetHasBeenVisited,
-                    new KeyValuePair<string, object>(EventParameters.HasBeenVisited, dungeonLevel.TileHasBeenVisited[i])));
+                FireEvent(m_Tiles[dungeonLevel.TilePoints[i]], 
+                    GameEventPool.Get(GameEventId.SetHasBeenVisited)
+                        .With(EventParameters.HasBeenVisited, dungeonLevel.TileHasBeenVisited[i])).Release();
             }
         }
         else
@@ -271,8 +275,8 @@ public class DungeonManager : WorldComponent
             {
                 foreach (var point in m_Tiles.Keys)
                 {
-                    FireEvent(m_Tiles[point], new GameEvent(GameEventId.SetHasBeenVisited,
-                        new KeyValuePair<string, object>(EventParameters.HasBeenVisited, false)));
+                    FireEvent(m_Tiles[point], GameEventPool.Get(GameEventId.SetHasBeenVisited)
+                        .With(EventParameters.HasBeenVisited, false)).Release();
                 }
             }
             m_DungeonLevelMap.Add(m_CurrentLevel, dr);
@@ -284,7 +288,7 @@ public class DungeonManager : WorldComponent
     {
         foreach (var tile in m_Tiles.Values)
             tile.GetComponent<Tile>().CleanTile();
-            //FireEvent(tile, new GameEvent(GameEventId.CleanTile));
+            //FireEvent(tile, GameEventPool.Get(GameEventId.CleanTile));
 
         List<IEntity> entities = new List<IEntity>(m_EntityToPointMap.Keys);
         foreach (var entity in entities)
@@ -298,7 +302,7 @@ public class DungeonManager : WorldComponent
             m_TimeProgression.RemoveEntity(entity);
         }
         m_DungeonGenerator.Clean();
-        FireEvent(Self, new GameEvent(GameEventId.CleanFoVData));
+        FireEvent(Self, GameEventPool.Get(GameEventId.CleanFoVData));
     }
 
     void SpawnPlayers()
@@ -310,12 +314,12 @@ public class DungeonManager : WorldComponent
             for (int i = 0; i < 4; i++)
             {
                 IEntity player = EntityFactory.CreateEntity("DwarfWarrior");
-                FireEvent(Self, new GameEvent(GameEventId.ConvertToPlayableCharacter, new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.Entity, player.ID)));
+                FireEvent(Self, GameEventPool.Get(GameEventId.ConvertToPlayableCharacter).With(EventParameters.Entity, player.ID)).Release(); 
                 Spawner.Spawn(player, m_DungeonGenerator.Rooms[0].GetValidPoint(null));
 
                 player.CleanupComponents();
 
-                FireEvent(player, new GameEvent(GameEventId.InitFOV));
+                FireEvent(player, GameEventPool.Get(GameEventId.InitFOV));
             }
         }
 
@@ -325,19 +329,20 @@ public class DungeonManager : WorldComponent
             foreach (var bp in Directory.EnumerateFiles(charactersPath, "*.bp"))
             {
                 IEntity player = EntityFactory.CreateEntity(Path.GetFileNameWithoutExtension(bp));
-                FireEvent(Self, new GameEvent(GameEventId.ConvertToPlayableCharacter, new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.Entity, player.ID)));
+                FireEvent(Self, GameEventPool.Get(GameEventId.ConvertToPlayableCharacter)
+                    .With(EventParameters.Entity, player.ID)).Release();
                 Spawner.Spawn(player, m_DungeonGenerator.Rooms[0].GetValidPoint(null));
 
                 //if (i == 0)
                 player.CleanupComponents();
 
-                FireEvent(player, new GameEvent(GameEventId.InitFOV));
+                FireEvent(player, GameEventPool.Get(GameEventId.InitFOV));
 
 
                 //var randomLineNumber = RecRandom.Instance.GetRandomValue(0, lines.Length - 1);
                 //var line = lines[randomLineNumber];
 
-                //EventBuilder setName = EventBuilderPool.Get(GameEventId.SetName)
+                //GameEvent setName = GameEventPool.Get(GameEventId.SetName)
                 //                        .With(EventParameters.Name, line);
                 //FireEvent(player, setName.CreateEvent());
 
@@ -349,7 +354,7 @@ public class DungeonManager : WorldComponent
             Directory.Delete(charactersPath, true);
         }
 
-        FireEvent(Self, new GameEvent(GameEventId.ProgressTime));
+        FireEvent(Self, GameEventPool.Get(GameEventId.ProgressTime));
     }
 
     //void SpawnPlayers()
@@ -359,19 +364,19 @@ public class DungeonManager : WorldComponent
     //    for (int i = 0; i < 4; i++)
     //    {
     //        IEntity player = EntityFactory.CreateEntity("DwarfWarrior");
-    //        FireEvent(Self, new GameEvent(GameEventId.ConvertToPlayableCharacter, new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.Entity, player.ID)));
+    //        FireEvent(Self, GameEventPool.Get(GameEventId.ConvertToPlayableCharacter, .With(EventParameters.Entity, player.ID)));
     //        Spawner.Spawn(player, m_DungeonGenerator.Rooms[0].GetValidPoint(null));
 
     //        if (i == 0)
     //            player.CleanupComponents();
 
-    //        FireEvent(player, new GameEvent(GameEventId.InitFOV));
+    //        FireEvent(player, GameEventPool.Get(GameEventId.InitFOV));
 
             
     //        var randomLineNumber = RecRandom.Instance.GetRandomValue(0, lines.Length - 1);
     //        var line = lines[randomLineNumber];
 
-    //        EventBuilder setName = EventBuilderPool.Get(GameEventId.SetName)
+    //        GameEvent setName = GameEventPool.Get(GameEventId.SetName)
     //                                .With(EventParameters.Name, line);
     //        FireEvent(player, setName.CreateEvent());
 
@@ -381,7 +386,7 @@ public class DungeonManager : WorldComponent
     //        namePlate.transform.SetAsFirstSibling();
     //    }
 
-    //    FireEvent(Self, new GameEvent(GameEventId.ProgressTime));
+    //    FireEvent(Self, GameEventPool.Get(GameEventId.ProgressTime));
     //}
 
     void MovePlayersToCurrentFloor(bool movingDown)
@@ -395,10 +400,10 @@ public class DungeonManager : WorldComponent
             else
                 Spawner.Spawn(entity, m_DungeonGenerator.Rooms[m_DungeonLevelMap[m_CurrentLevel].StairsDownRoomIndex].GetValidPoint(null));
 
-            FireEvent(entity, new GameEvent(GameEventId.RegisterPlayableCharacter));
-            FireEvent(entity, new GameEvent(GameEventId.InitFOV));
+            FireEvent(entity, GameEventPool.Get(GameEventId.RegisterPlayableCharacter));
+            FireEvent(entity, GameEventPool.Get(GameEventId.InitFOV));
         }
-        FireEvent(Self, new GameEvent(GameEventId.UpdateWorldView));
+        FireEvent(Self, GameEventPool.Get(GameEventId.UpdateWorldView));
         m_PlayerBlueprintCache.Clear();
     }
 

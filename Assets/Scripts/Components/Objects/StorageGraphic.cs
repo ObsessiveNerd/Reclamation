@@ -39,15 +39,17 @@ public class StorageGraphic : Component
     {
         if(gameEvent.ID == GameEventId.GetSprite)
         {
-            EventBuilder builder = EventBuilderPool.Get(GameEventId.GetItems)
+            GameEvent builder = GameEventPool.Get(GameEventId.GetItems)
                                     .With(EventParameters.Items, new List<string>());
 
-            var result = FireEvent(Self, builder.CreateEvent());
+            var result = FireEvent(Self, builder);
 
             if(result.GetValue<List<string>>(EventParameters.Items).Count == 0)
                 gameEvent.Paramters[EventParameters.RenderSprite] = EmptySprite;
             else
                 gameEvent.Paramters[EventParameters.RenderSprite] = HasItemsSprite;
+
+            result.Release();
         }
     }
 }

@@ -23,7 +23,8 @@ public class PlayerManager : WorldComponent
         {
             RotateCharacter();
             UIManager.RemovePopUntilAllOfTypeRemoved<ContextMenuMono>();
-            FireEvent(Self, new GameEvent(GameEventId.UpdateUI, new KeyValuePair<string, object>(EventParameters.Entity, m_ActivePlayer.Value.ID)));
+            FireEvent(Self, GameEventPool.Get(GameEventId.UpdateUI)
+                .With(EventParameters.Entity, m_ActivePlayer.Value.ID)).Release();
         }
 
         if (gameEvent.ID == GameEventId.SetActiveCharacter)
@@ -38,7 +39,8 @@ public class PlayerManager : WorldComponent
                     break;
             }
 
-            FireEvent(Self, new GameEvent(GameEventId.UpdateUI, new KeyValuePair<string, object>(EventParameters.Entity, m_ActivePlayer.Value.ID)));
+            FireEvent(Self, GameEventPool.Get(GameEventId.UpdateUI)
+                .With(EventParameters.Entity, m_ActivePlayer.Value.ID)).Release();
         }
 
         if(gameEvent.ID == GameEventId.IsPlayableCharacter)
@@ -68,7 +70,7 @@ public class PlayerManager : WorldComponent
             if (m_Players.Count == 0)
             {
                 m_TimeProgression.Stop();
-                FireEvent(Self, new GameEvent(GameEventId.GameFailure));
+                FireEvent(Self, GameEventPool.Get(GameEventId.GameFailure));
             }
         }
 
@@ -76,9 +78,9 @@ public class PlayerManager : WorldComponent
         {
             if (m_ActivePlayer != null)
             {
-                EventBuilder setCamera = EventBuilderPool.Get(GameEventId.SetCameraPosition)
+                GameEvent setCamera = GameEventPool.Get(GameEventId.SetCameraPosition)
                                     .With(EventParameters.Point, PathfindingUtility.GetEntityLocation(m_ActivePlayer.Value));
-                FireEvent(Self, setCamera.CreateEvent());
+                FireEvent(Self, setCamera).Release();
             }
         }
     }
@@ -105,13 +107,13 @@ public class PlayerManager : WorldComponent
 
         if (m_ActivePlayer != null)
         {
-            EventBuilder setCamera = EventBuilderPool.Get(GameEventId.SetCameraPosition)
+            GameEvent setCamera = GameEventPool.Get(GameEventId.SetCameraPosition)
                                         .With(EventParameters.Point, PathfindingUtility.GetEntityLocation(m_ActivePlayer.Value));
-            FireEvent(Self, setCamera.CreateEvent());
+            FireEvent(Self, setCamera).Release();
 
-            EventBuilder makeActivePlayer = EventBuilderPool.Get(GameEventId.MakePartyLeader)
+            GameEvent makeActivePlayer = GameEventPool.Get(GameEventId.MakePartyLeader)
                                             .With(EventParameters.Entity, m_ActivePlayer.Value.ID);
-            FireEvent(Self, makeActivePlayer.CreateEvent());
+            FireEvent(Self, makeActivePlayer).Release();
         }
 
         //m_PlayerToTimeProgressionMap[entity] = new TimeProgression();
@@ -139,8 +141,9 @@ public class PlayerManager : WorldComponent
             RotateCharacter();
         m_TimeProgression.RemoveEntity(entity);
         //m_PlayerToTimeProgressionMap.Remove(entity);
-        FireEvent(Self, new GameEvent(GameEventId.Despawn, new KeyValuePair<string, object>(EventParameters.Entity, entity.ID),
-                                                            new KeyValuePair<string, object>(EventParameters.EntityType, EntityType.Creature)));
+        FireEvent(Self, GameEventPool.Get(GameEventId.Despawn)
+            .With(EventParameters.Entity, entity.ID)
+            .With(EventParameters.EntityType, EntityType.Creature)).Release();
     }
 
     void RotateCharacter()
@@ -167,16 +170,16 @@ public class PlayerManager : WorldComponent
         else
             m_ActivePlayer.Value.AddComponent(new PlayerInputController());
 
-        EventBuilder makePartyLeader = EventBuilderPool.Get(GameEventId.MakePartyLeader)
+        GameEvent makePartyLeader = GameEventPool.Get(GameEventId.MakePartyLeader)
                                             .With(EventParameters.Entity, m_ActivePlayer.Value.ID);
-            FireEvent(Self, makePartyLeader.CreateEvent());
+        FireEvent(Self, makePartyLeader).Release();
 
         m_ActivePlayer.Value.CleanupComponents();
 
         m_TimeProgression.SetActiveEntity(m_ActivePlayer.Value);
 
-        EventBuilder setCamera = EventBuilderPool.Get(GameEventId.SetCameraPosition)
+        GameEvent setCamera = GameEventPool.Get(GameEventId.SetCameraPosition)
                                 .With(EventParameters.Point, PathfindingUtility.GetEntityLocation(m_ActivePlayer.Value));
-        FireEvent(Self, setCamera.CreateEvent());
+        FireEvent(Self, setCamera).Release();
     }
 }

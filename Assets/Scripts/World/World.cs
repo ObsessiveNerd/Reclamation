@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using UnityEngine;
+using Debug = System.Diagnostics.Debug;
 
 public class World : MonoBehaviour
 {
@@ -91,6 +92,8 @@ public class World : MonoBehaviour
             Application.quitting += () => saveSystem.Save();
         }
 
+        GameEventPool.Initialize();
+
         m_World = new Actor("World");
 
         m_World.AddComponent(new WorldSpawner());
@@ -119,13 +122,13 @@ public class World : MonoBehaviour
             Seed = RecRandom.InitRecRandom(UnityEngine.Random.Range(0, int.MaxValue));
             using (new DiagnosticsTimer("Start World"))
             {
-                m_World.FireEvent(m_World, new GameEvent(GameEventId.StartWorld, new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.Seed, Seed.ToString()),
-                                                                                new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.GameObject, TilePrefab),
-                                                                                new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.NewGame, true),
-                                                                                new KeyValuePair<string, object>(EventParameters.Level, 1)));
+                m_World.FireEvent(m_World, GameEventPool.Get(GameEventId.StartWorld).With(EventParameters.Seed, Seed.ToString())
+                                                                                .With(EventParameters.GameObject, TilePrefab)
+                                                                                .With(EventParameters.NewGame, true)
+                                                                                .With(EventParameters.Level, 1)).Release();
             }
             using (new DiagnosticsTimer("Update world view"))
-                m_World.FireEvent(m_World, new GameEvent(GameEventId.UpdateWorldView));
+                m_World.FireEvent(m_World, GameEventPool.Get(GameEventId.UpdateWorldView)).Release();
         }
         else
         {
@@ -138,10 +141,10 @@ public class World : MonoBehaviour
         Stopwatch sw = new Stopwatch();
         sw.Start();
         Seed = RecRandom.InitRecRandom(seed);
-        m_World.FireEvent(m_World, new GameEvent(GameEventId.StartWorld, new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.Seed, Seed.ToString()),
-                                                                            new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.GameObject, TilePrefab),
-                                                                            new System.Collections.Generic.KeyValuePair<string, object>(EventParameters.NewGame, false),
-                                                                            new KeyValuePair<string, object>(EventParameters.Level, currentLevel)));
+        m_World.FireEvent(m_World, GameEventPool.Get(GameEventId.StartWorld).With(EventParameters.Seed, Seed.ToString())
+                                                                            .With(EventParameters.GameObject, TilePrefab)
+                                                                            .With(EventParameters.NewGame, false)
+                                                                            .With(EventParameters.Level, currentLevel)).Release();
         sw.Stop();
         UnityEngine.Debug.LogWarning($"Start World: {sw.Elapsed.Seconds}");
     }
@@ -149,6 +152,11 @@ public class World : MonoBehaviour
     GameEvent m_ProgressTime = new GameEvent(GameEventId.ProgressTime);
     private void Update()
     {
+        if (GameEventPool.m_InUse.Count > 0)
+        {
+            UnityEngine.Debug.Log("Game events weren't released");
+        }
+
         using(new DiagnosticsTimer("Progress time"))
             m_World?.FireEvent(m_World, m_ProgressTime);
     }

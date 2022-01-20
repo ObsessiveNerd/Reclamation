@@ -27,9 +27,9 @@ public class HealthRegen : Component
             currentTurns++;
             if(currentTurns >= RegenSpeed)
             {
-                EventBuilder regenHealth = EventBuilderPool.Get(GameEventId.RegenHealth)
+                GameEvent regenHealth = GameEventPool.Get(GameEventId.RegenHealth)
                                             .With(EventParameters.Healing, RegenAmount);
-                FireEvent(Self, regenHealth.CreateEvent());
+                FireEvent(Self, regenHealth).Release();
                 currentTurns = 0;
             }
         }

@@ -14,10 +14,10 @@ public class ActiveWhileEquiped : Component
     public override void HandleEvent(GameEvent gameEvent)
     {
         if(gameEvent.ID == GameEventId.ItemEquipped)
-            FireEvent(Self, new GameEvent(GameEventId.ActivateObject));
+            FireEvent(Self, GameEventPool.Get(GameEventId.ActivateObject)).Release();
 
         if (gameEvent.ID == GameEventId.ItemUnequipped)
-            FireEvent(Self, new GameEvent(GameEventId.DeactivateObject));
+            FireEvent(Self, GameEventPool.Get(GameEventId.DeactivateObject)).Release();
     }
 }
 

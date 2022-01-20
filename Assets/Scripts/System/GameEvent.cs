@@ -341,136 +341,50 @@ public static class EventParameters
     public const string Effect = nameof(Effect);
 }
 
-//[Serializable]
-//public class GameEventSerializable
-//{
-//    [SerializeField]
-//    public string TargetEntityId;
-//    [SerializeField]
-//    public string Id;
-//    [SerializeField]
-//    public List<string> ParameterKeys;
-//    [SerializeField]
-//    public List<string> ParameterValues;
-
-//    public GameEventSerializable(string targetId, GameEvent ge)
-//    {
-//        TargetEntityId = targetId;
-//        Id = ge.ID;
-//        ParameterKeys = new List<string>();
-//        ParameterValues = new List<string>();
-//        foreach(var key in ge.Paramters.Keys)
-//        {
-//            ParameterKeys.Add(key);
-//            ParameterValues.Add(ge.Paramters[key].ToString());
-//        }
-//    }
-
-//    public GameEvent CreateGameEvent()
-//    {
-//        Dictionary<string, object> parameters = new Dictionary<string, object>();
-//        for(int i = 0; i < ParameterKeys.Count; i++)
-//            parameters.Add(ParameterKeys[i], ParameterValues[i]);
-//        GameEvent ge = new GameEvent(Id, parameters);
-//        return ge;
-//    }
-//}
-
-//public class TypedGameEvent : GameEvent
-//{
-//    public Dictionary<string, T> TypedParameters { get { return m_TypedParameters; } }
-//    Dictionary<string, T> m_TypedParameters = new Dictionary<string, T>();
-
-//    public TypedGameEvent(string id, params KeyValuePair<string, object>[] parameters) : base(id)
-//    {
-
-//    }
-//}
-
-//public class GetTypedEvent<T> : GameEvent
-//{
-    
-
-//    public GetTypedEvent(string id, params KeyValuePair<string, T>[] parameters) : base(id)
-//    {
-//        foreach (var kvp in parameters)
-//            m_TypedParameters.Add(kvp.Key, kvp.Value);
-//    }
-
-//    public override bool HasParameter(string parameterId)
-//    {
-//        return TypedParameters.ContainsKey(parameterId);
-//    }
-
-//    public T GetValue(string parameterId)
-//    {
-//        if (TypedParameters.TryGetValue(parameterId, out T value))
-//        {
-//            if (value == null)
-//                return default(T);
-//            return (T)value;
-//        }
-//        return default(T);
-//    }
-//}
-
 public class GameEvent
 {
     public bool ContinueProcessing;
     public string ID { get { return m_ID; } }
-    protected string m_ID { get; set; }
+    string m_ID { get; set; }
 
     public Dictionary<string, object> Paramters { get { return m_Parameters; } }
-    Dictionary<string, object> m_Parameters;
+    Dictionary<string, object> m_Parameters; //= new Dictionary<string, object>();
 
-    public GameEvent(string id, params KeyValuePair<string, object>[] parameters)
+    public GameEvent(string id)
     {
-        ContinueProcessing = true;
-        m_ID = id;
         m_Parameters = new Dictionary<string, object>();
-        foreach (var param in parameters)
-        {
-            if (string.IsNullOrEmpty(param.Key))
-                break;
-            m_Parameters[param.Key] = param.Value;
-        }
-    }
-
-    public GameEvent(string id, Dictionary<string, object> parameters)
-    {
-        ContinueProcessing = true;
         m_ID = id;
-        m_Parameters = parameters;
-    }
-
-    public void Setup(string id, params KeyValuePair<string, object>[] parameters)
-    {
         ContinueProcessing = true;
-        m_ID = id;
-        if(m_Parameters == null) m_Parameters = new Dictionary<string, object>();
-
-        m_Parameters.Clear(); //= new Dictionary<string, object>();
-        foreach (var param in parameters)
-        {
-            if (string.IsNullOrEmpty(param.Key))
-                break;
-            m_Parameters[param.Key] = param.Value;
-        }
+        string i = string.IsNullOrEmpty(m_ID) ? "NO ID" : m_ID;
+        Debug.Log($"New gameevent was created with id {i}");
+        //GameEventPool.m_InUse.Add(this);
     }
 
-    public void Setup(string id, Dictionary<string, object> parameters)
+    public GameEvent SetId(string id)
     {
-        ContinueProcessing = true;
         m_ID = id;
-        m_Parameters = parameters;
+        return this;
     }
 
-    public virtual bool HasParameter(string parameterId)
+    public GameEvent With(string id, object value)
+    {
+        m_Parameters.Add(id, value);
+        return this;
+    }
+
+    public GameEvent With(Dictionary<string, object> values)
+    {
+        foreach(var key in values.Keys)
+            m_Parameters.Add(key, values[key]);
+        return this;
+    }
+
+    public bool HasParameter(string parameterId)
     {
         return Paramters.ContainsKey(parameterId);
     }
 
-    public virtual T GetValue<T>(string parameterId)
+    public T GetValue<T>(string parameterId)
     {
         if (Paramters.TryGetValue(parameterId, out object value))
         {
@@ -479,6 +393,11 @@ public class GameEvent
             return (T)value;
         }
         return default(T);
+    }
+
+    public void Release()
+    {
+        GameEventPool.Release(this);
     }
 
     public void Clean()

@@ -17,10 +17,10 @@ public class Party
     public int SizeLimit = 4;
     public void AssignLeader(string entity)
     {
-        EventBuilder setLeader = EventBuilderPool.Get(GameEventId.SetLeader)
+        GameEvent setLeader = GameEventPool.Get(GameEventId.SetLeader)
                                     .With(EventParameters.Entity, m_Leader);
 
-        EntityQuery.GetEntity(entity).FireEvent(setLeader.CreateEvent());
+        EntityQuery.GetEntity(entity).FireEvent(setLeader).Release();
     }
 
     public void ReplaceLeader(string newLeader)
@@ -59,10 +59,10 @@ public class Party
         else
             m_Members.Remove(entity);
 
-        EventBuilder setLeader = EventBuilderPool.Get(GameEventId.SetLeader)
+        GameEvent setLeader = GameEventPool.Get(GameEventId.SetLeader)
                                     .With(EventParameters.Entity, null);
 
-        EntityQuery.GetEntity(entity).FireEvent(setLeader.CreateEvent());
+        EntityQuery.GetEntity(entity).FireEvent(setLeader).Release();
     }
 
     public bool HasMember(string entity)
@@ -92,8 +92,9 @@ public class PartyController : WorldComponent
             if (entity == null)
                 return;
 
-            GameEvent getFaction = new GameEvent(GameEventId.GetFaction, new KeyValuePair<string, object>(EventParameters.Value, null));
+            GameEvent getFaction = GameEventPool.Get(GameEventId.GetFaction).With(EventParameters.Value, null);
             FactionId factionId = FireEvent(entity, getFaction).GetValue<Faction>(EventParameters.Value).ID;
+            getFaction.Release();
 
             if (!m_FactionParties.ContainsKey(factionId))
                 m_FactionParties.Add(factionId, new List<Party>(){ new Party() });
@@ -120,8 +121,9 @@ public class PartyController : WorldComponent
             string newLeader = gameEvent.GetValue<string>(EventParameters.Entity);
             IEntity entity = EntityQuery.GetEntity(newLeader);
 
-            GameEvent getFaction = new GameEvent(GameEventId.GetFaction, new KeyValuePair<string, object>(EventParameters.Value, null));
+            GameEvent getFaction = GameEventPool.Get(GameEventId.GetFaction).With(EventParameters.Value, null);
             FactionId factionId = FireEvent(entity, getFaction).GetValue<Faction>(EventParameters.Value).ID;
+            getFaction.Release();
 
             if (!m_FactionParties.ContainsKey(factionId)) return;
 
@@ -137,8 +139,9 @@ public class PartyController : WorldComponent
             string idToRemove = gameEvent.GetValue<string>(EventParameters.Entity);
             IEntity entity = EntityQuery.GetEntity(idToRemove);
 
-            GameEvent getFaction = new GameEvent(GameEventId.GetFaction, new KeyValuePair<string, object>(EventParameters.Value, null));
+            GameEvent getFaction = GameEventPool.Get(GameEventId.GetFaction).With(EventParameters.Value, null);
             FactionId factionId = FireEvent(entity, getFaction).GetValue<Faction>(EventParameters.Value).ID;
+            getFaction.Release();
 
             if (!m_FactionParties.ContainsKey(factionId)) return;
 

@@ -11,7 +11,7 @@ using UnityEngine;
 
 //    public override void HandleEvent(GameEvent gameEvent)
 //    {
-//        GameEvent sharpness = new GameEvent(GameEventId.Sharpness, gameEvent.Paramters);
+//        GameEvent sharpness = GameEventPool.Get(GameEventId.Sharpness, gameEvent.Paramters);
 //        ((List<GameEvent>)gameEvent.Paramters[EventParameters.AdditionalGameEvents]).Add(sharpness);
 //    }
 //}

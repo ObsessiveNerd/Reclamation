@@ -64,24 +64,29 @@ public static class PathfindingUtility
 
     public static Point GetRandomValidPoint()
     {
-        EventBuilder builder = EventBuilderPool.Get(GameEventId.GetRandomValidPoint)
+        GameEvent builder = GameEventPool.Get(GameEventId.GetRandomValidPoint)
                                 .With(EventParameters.Value, null);
 
         if (World.Instance == null)
             return Point.InvalidPoint;
 
-        return World.Instance.Self.FireEvent(builder.CreateEvent()).GetValue<Point>(EventParameters.Value);
+        var res = World.Instance.Self.FireEvent(builder).GetValue<Point>(EventParameters.Value);
+        builder.Release();
+        return res;
     }
 
     public static Point GetEntityLocation(IEntity entity)
     {
-        EventBuilder getEntityPointBuilder = EventBuilderPool.Get(GameEventId.GetEntityLocation)
-                                            .With(EventParameters.Entity, entity.ID)
-                                            .With(EventParameters.TilePosition, null);
         if (World.Instance == null)
             return Point.InvalidPoint;
 
-        return World.Instance.Self.FireEvent(getEntityPointBuilder.CreateEvent()).GetValue<Point>(EventParameters.TilePosition);
+        GameEvent getEntityPointBuilder = GameEventPool.Get(GameEventId.GetEntityLocation)
+                                            .With(EventParameters.Entity, entity.ID)
+                                            .With(EventParameters.TilePosition, null);
+
+        var res = World.Instance.Self.FireEvent(getEntityPointBuilder).GetValue<Point>(EventParameters.TilePosition);
+        getEntityPointBuilder.Release();
+        return res;
     }
 
     public static Point GetValidPointWithinRange(IEntity target, int range)
@@ -116,7 +121,7 @@ public static class PathfindingUtility
 
     //public static bool IsValidDungeonTile(Point p)
     //{
-    //    EventBuilder isValidPoint = EventBuilderPool.Get(GameEventId.IsValidDungeonTile)
+    //    GameEvent isValidPoint = GameEventPool.Get(GameEventId.IsValidDungeonTile)
     //                                .With(EventParameters.TilePosition, p)
     //                                .With(EventParameters.Value, false);
     //    return World.Instance.Self.FireEvent(isValidPoint.CreateEvent()).GetValue<bool>(EventParameters.Value);
@@ -124,7 +129,7 @@ public static class PathfindingUtility
 
     //public static bool CanNavigateTo(Point startPos, Point destination)
     //{
-    //    EventBuilder calculatePathEventBuilder = EventBuilderPool.Get(GameEventId.CalculatePath)
+    //    GameEvent calculatePathEventBuilder = GameEventPool.Get(GameEventId.CalculatePath)
     //                        .With(EventParameters.StartPos, startPos)
     //                        .With(EventParameters.EndPos, destination)
     //                        .With(EventParameters.Path, null);
@@ -137,11 +142,13 @@ public static class PathfindingUtility
 
     public static List<IMapNode> GetPath(Point start, Point destination)
     {
-        EventBuilder e = EventBuilderPool.Get(GameEventId.CalculatePath)
+        GameEvent e = GameEventPool.Get(GameEventId.CalculatePath)
                             .With(EventParameters.StartPos, start)
                             .With(EventParameters.EndPos, destination)
                             .With(EventParameters.Path, null);
 
-        return World.Instance.Self.FireEvent(e.CreateEvent()).GetValue<List<IMapNode>>(EventParameters.Path);
+        var res = World.Instance.Self.FireEvent(e).GetValue<List<IMapNode>>(EventParameters.Path);
+        e.Release();
+        return res;
     }
 }

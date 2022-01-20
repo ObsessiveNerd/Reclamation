@@ -21,20 +21,21 @@ public class EquipmentViewMono : MonoBehaviour//, IUpdatableUI
             m_Source = source;
 
         //WorldUtility.RegisterUI(this);
-        EventBuilder getEquipment = EventBuilderPool.Get(GameEventId.GetCurrentEquipment)
+        GameEvent getEquipment = GameEventPool.Get(GameEventId.GetCurrentEquipment)
                                     .With(EventParameters.Head, null)
                                     .With(EventParameters.Torso, null)
                                     .With(EventParameters.Arms, null)
                                     //.With(EventParameters.RightArm, null)
                                     .With(EventParameters.Legs, null);
 
-        var firedEvent = m_Source.FireEvent(getEquipment.CreateEvent());
+        var firedEvent = m_Source.FireEvent(getEquipment);
 
         SetEquipment(firedEvent.GetValue<List<Component>>(EventParameters.Head), new List<GameObject>() { Head });
         SetEquipment(firedEvent.GetValue<List<Component>>(EventParameters.Torso), new List<GameObject>() { Torso });
         SetEquipment(firedEvent.GetValue<List<Component>>(EventParameters.Arms), new List<GameObject>() { LeftArm, RightArm });
         //SetEquipment(firedEvent.GetValue<string>(EventParameters.RightArm), RightArm);
         SetEquipment(firedEvent.GetValue<List<Component>>(EventParameters.Legs), new List<GameObject>() { Legs });
+        firedEvent.Release();
     }
 
     void SetEquipment(List<Component> components, List<GameObject> slots)
@@ -53,22 +54,23 @@ public class EquipmentViewMono : MonoBehaviour//, IUpdatableUI
             if (i >= slots.Count)
                 break;
 
-            EventBuilder builder = EventBuilderPool.Get(GameEventId.GetEquipment)
+            GameEvent builder = GameEventPool.Get(GameEventId.GetEquipment)
                                     .With(EventParameters.Equipment, "");
-            var ge = builder.CreateEvent();
-            components[i].HandleEvent(ge);
+            components[i].HandleEvent(builder);
 
-            string equipmentId = ge.GetValue<string>(EventParameters.Equipment);
+            string equipmentId = builder.GetValue<string>(EventParameters.Equipment);
+            builder.Release();
             if (!string.IsNullOrEmpty(equipmentId))
             {
                 IEntity equipment = EntityQuery.GetEntity(equipmentId);
-                EventBuilder getImage = EventBuilderPool.Get(GameEventId.GetPortrait)
+                GameEvent getImage = GameEventPool.Get(GameEventId.GetPortrait)
                                         .With(EventParameters.RenderSprite, null);
-                var equipmentInfo = equipment.FireEvent(getImage.CreateEvent());
+                var equipmentInfo = equipment.FireEvent(getImage);
                 slots[i].GetComponent<Image>().sprite = equipmentInfo.GetValue<Sprite>(EventParameters.RenderSprite);
                 var equipmentSlotMono = slots[i].GetComponentInParent<InventoryItemMono>();
                 if (equipmentSlotMono != null)
                     equipmentSlotMono.Init(m_Source, equipment);
+                equipmentInfo.Release();
             }
             else
             {

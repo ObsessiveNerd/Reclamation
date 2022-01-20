@@ -23,55 +23,63 @@ public class CharacterTab : MonoBehaviour
         m_EId = m_Entity.ID;
         m_PrettyName = GetComponentInChildren<TextMeshProUGUI>();
 
-        EventBuilder characterInfo = EventBuilderPool.Get(GameEventId.GetPortrait)
+        GameEvent characterInfo = GameEventPool.Get(GameEventId.GetPortrait)
                             .With(EventParameters.RenderSprite, null);
 
-        var firedEvent = entity.FireEvent(characterInfo.CreateEvent());
+        var firedEvent = entity.FireEvent(characterInfo);
 
         m_Portrait.sprite = firedEvent.GetValue<Sprite>(EventParameters.RenderSprite);
+        firedEvent.Release();
     }
 
-    public void Update()
+    public void Update2()
     {
         if (m_Entity == null)
             m_Entity = EntityQuery.GetEntity(m_EId);
 
-        EventBuilder getHealth = EventBuilderPool.Get(GameEventId.GetHealth)
+        GameEvent getHealth = GameEventPool.Get(GameEventId.GetHealth)
                                     .With(EventParameters.Value, 0)
                                     .With(EventParameters.MaxValue, 0);
 
-        var getHealthResult = m_Entity.FireEvent(getHealth.CreateEvent());
+        var getHealthResult = m_Entity.FireEvent(getHealth);
 
         m_HealthBar.maxValue = getHealthResult.GetValue<int>(EventParameters.MaxValue);
         m_HealthBar.value = getHealthResult.GetValue<int>(EventParameters.Value);
 
-        EventBuilder getMana = EventBuilderPool.Get(GameEventId.GetMana)
+        getHealthResult.Release();
+
+        GameEvent getMana = GameEventPool.Get(GameEventId.GetMana)
                                     .With(EventParameters.Value, 0)
                                     .With(EventParameters.MaxValue, 0);
 
-        var getManaResult = m_Entity.FireEvent(getMana.CreateEvent());
+        var getManaResult = m_Entity.FireEvent(getMana);
 
         m_ManaBar.maxValue = getManaResult.GetValue<int>(EventParameters.MaxValue);
         m_ManaBar.value = getManaResult.GetValue<int>(EventParameters.Value);
+        getManaResult.Release();
 
-        EventBuilder getInfo = EventBuilderPool.Get(GameEventId.GetName)
+        GameEvent getInfo = GameEventPool.Get(GameEventId.GetName)
                                 .With(EventParameters.Name, "");
-        m_PrettyName.text = m_Entity.FireEvent(getInfo.CreateEvent()).GetValue<string>(EventParameters.Name);
+        m_PrettyName.text = m_Entity.FireEvent(getInfo).GetValue<string>(EventParameters.Name);
+        getInfo.Release();
 
-         EventBuilder getExp = EventBuilderPool.Get(GameEventId.GetExperience)
+         GameEvent getExp = GameEventPool.Get(GameEventId.GetExperience)
                                     .With(EventParameters.Value, 0)
                                     .With(EventParameters.MaxValue, 0);
 
-        var getExpResult = m_Entity.FireEvent(getExp.CreateEvent());
+        var getExpResult = m_Entity.FireEvent(getExp);
 
         m_ExpBar.maxValue = getExpResult.GetValue<int>(EventParameters.MaxValue);
         m_ExpBar.value = getExpResult.GetValue<int>(EventParameters.Value);
 
-        EventBuilder getLevel = EventBuilderPool.Get(GameEventId.GetLevel)
+        getExpResult.Release();
+
+        GameEvent getLevel = GameEventPool.Get(GameEventId.GetLevel)
                                     .With(EventParameters.Level, 0);
 
-        var getLevelResult = m_Entity.FireEvent(getLevel.CreateEvent());
+        var getLevelResult = m_Entity.FireEvent(getLevel);
         m_Level.text = getLevelResult.GetValue<int>(EventParameters.Level).ToString();
+        getLevelResult.Release();
 
         if (WorldUtility.IsActivePlayer(m_Entity.ID))
             m_ActivePlayerIcon.SetActive(true);

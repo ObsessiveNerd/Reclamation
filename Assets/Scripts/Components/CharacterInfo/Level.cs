@@ -37,18 +37,18 @@ public class Level : Component
             {
                 CurrentExp = CurrentExp - m_ExpToNextLevel;
                 CurrentLevel++;
-                EventBuilder e = EventBuilderPool.Get(GameEventId.LevelUp)
+                GameEvent e = GameEventPool.Get(GameEventId.LevelUp)
                                     .With(EventParameters.Level, CurrentLevel);
-                FireEvent(Self, e.CreateEvent());
+                FireEvent(Self, e).Release();
             }
         }
 
         if(gameEvent.ID == GameEventId.Died)
         {
-            EventBuilder giveExp = EventBuilderPool.Get(GameEventId.GainExperience)
+            GameEvent giveExp = GameEventPool.Get(GameEventId.GainExperience)
                                     .With(EventParameters.Exp, CurrentLevel * 3);
 
-            EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameters.DamageSource)).FireEvent(giveExp.CreateEvent());
+            EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameters.DamageSource)).FireEvent(giveExp).Release();
         }
 
         if(gameEvent.ID == GameEventId.GetLevel)

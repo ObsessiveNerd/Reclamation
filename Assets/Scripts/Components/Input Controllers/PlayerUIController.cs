@@ -10,11 +10,12 @@ public class PlayerUIController : InputControllerBase
         {
             MoveDirection desiredDirection = InputUtility.GetMoveDirection();
             if (desiredDirection != MoveDirection.None)
-                FireEvent(World.Instance.Self, new GameEvent(GameEventId.UIInput, new KeyValuePair<string, object>(EventParameters.Value, desiredDirection)));
+                FireEvent(World.Instance.Self, GameEventPool.Get(GameEventId.UIInput)
+                    .With(EventParameters.Value, desiredDirection)).Release();
 
             if (UIManager.UIClear)
             {
-                //FireEvent(World.Instance.Self, new GameEvent(GameEventId.CloseUI));
+                //FireEvent(World.Instance.Self, GameEventPool.Get(GameEventId.CloseUI));
                 Self.RemoveComponent(this);
                 Self.AddComponent(new PlayerInputController());
             }
@@ -27,7 +28,7 @@ public class PlayerUIController : InputControllerBase
 
     void RotateActiveCharacter(GameEvent gameEvent)
     {
-        FireEvent(World.Instance.Self, new GameEvent(GameEventId.RotateActiveCharacter));
+        FireEvent(World.Instance.Self, GameEventPool.Get(GameEventId.RotateActiveCharacter));
         gameEvent.Paramters[EventParameters.UpdateWorldView] = true;
         gameEvent.ContinueProcessing = false;
     }

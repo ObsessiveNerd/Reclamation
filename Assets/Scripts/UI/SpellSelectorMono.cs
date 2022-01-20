@@ -21,24 +21,27 @@ public class SpellSelectorMono : MonoBehaviour//, IUpdatableUI
         if (source == null || !WorldUtility.IsActivePlayer(source.ID))
             return;
 
-        EventBuilder updateUI = EventBuilderPool.Get(GameEventId.UpdateUI)
+        GameEvent updateUI = GameEventPool.Get(GameEventId.UpdateUI)
                                     .With(EventParameters.Entity, WorldUtility.GetActivePlayerId());
-        World.Instance.Self.FireEvent(updateUI.CreateEvent());
+        World.Instance.Self.FireEvent(updateUI).Release();
 
         Close();
-        EventBuilder getSpells = EventBuilderPool.Get(GameEventId.GetSpells)
+        GameEvent getSpells = GameEventPool.Get(GameEventId.GetSpells)
                                     .With(EventParameters.SpellList, new HashSet<string>());
 
-        var spellList = source.FireEvent(getSpells.CreateEvent()).GetValue<HashSet<string>>(EventParameters.SpellList);
-
+        var spellList = source.FireEvent(getSpells).GetValue<HashSet<string>>(EventParameters.SpellList);
+        getSpells.Release();
+        
         int index = 1;
         foreach (string spellId in spellList)
         {
             IEntity spell = EntityQuery.GetEntity(spellId);
 
             GameObject spriteGoResource = Resources.Load<GameObject>("UI/SpellUI");
-            Sprite sprite = spell.FireEvent(spell, new GameEvent(GameEventId.GetSprite, 
-                new KeyValuePair<string, object>(EventParameters.RenderSprite, null))).GetValue<Sprite>(EventParameters.RenderSprite);
+            GameEvent getSpriteEvent = GameEventPool.Get(GameEventId.GetSprite)
+                .With(EventParameters.RenderSprite, null);
+            Sprite sprite = spell.FireEvent(spell, getSpriteEvent).GetValue<Sprite>(EventParameters.RenderSprite);
+            getSpriteEvent.Release();
             if (sprite != null)
             {
                 GameObject spriteGo = Instantiate(spriteGoResource);
@@ -51,7 +54,7 @@ public class SpellSelectorMono : MonoBehaviour//, IUpdatableUI
                 //Button button = spriteGo.AddComponent<Button>();
                 //button.onClick.AddListener(() =>
                 //{
-                //    source.FireEvent(new GameEvent(GameEventId.SpellSelected, new KeyValuePair<string, object>(EventParameters.Spell, spellId)));
+                //    source.FireEvent(GameEventPool.Get(GameEventId.SpellSelected, new .With(EventParameters.Spell, spellId)));
                 //    //Close();
                 //});
                 index++;

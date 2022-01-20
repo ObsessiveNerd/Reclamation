@@ -21,8 +21,9 @@ public class WorldFov : WorldComponent
         if(gameEvent.ID == GameEventId.RevealAllTiles)
         {
             foreach (var tile in m_Tiles.Values)
-                FireEvent(tile, new GameEvent(GameEventId.SetVisibility, new KeyValuePair<string, object>(EventParameters.TileInSight, true)));
-            FireEvent(Self, new GameEvent(GameEventId.UpdateWorldView));
+                FireEvent(tile, GameEventPool.Get(GameEventId.SetVisibility)
+                    .With(EventParameters.TileInSight, true)).Release();
+            FireEvent(Self, GameEventPool.Get(GameEventId.UpdateWorldView)).Release();
         }
 
         if (gameEvent.ID == GameEventId.UnRegisterPlayer)
@@ -68,10 +69,12 @@ public class WorldFov : WorldComponent
             allVisibleTiles.AddRange(m_PlayerToVisibleTiles[key]);
 
         foreach(Point tile in allVisibleTiles)
-                FireEvent(m_Tiles[tile], new GameEvent(GameEventId.SetVisibility, new KeyValuePair<string, object>(EventParameters.TileInSight, true)));
+                FireEvent(m_Tiles[tile], GameEventPool.Get(GameEventId.SetVisibility)
+                    .With(EventParameters.TileInSight, true)).Release();
 
         foreach (Point tile in oldTiles)
             if(!allVisibleTiles.Contains(tile))
-                FireEvent(m_Tiles[tile], new GameEvent(GameEventId.SetVisibility, new KeyValuePair<string, object>(EventParameters.TileInSight, false)));
+                FireEvent(m_Tiles[tile], GameEventPool.Get(GameEventId.SetVisibility)
+                    .With(EventParameters.TileInSight, false)).Release();
     }
 }

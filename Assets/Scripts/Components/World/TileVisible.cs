@@ -27,8 +27,10 @@ public class TileVisible : Component
     public override void Start()
     {
         m_Tile = Self.GetComponent<Tile>();
-        //FireEvent(Self, new GameEvent(GameEventId.VisibilityUpdated, new KeyValuePair<string, object>(EventParameters.Value, HasBeenVisited)));
-        m_Tile.VisibilityUpdated(new GameEvent(GameEventId.VisibilityUpdated, new KeyValuePair<string, object>(EventParameters.Value, HasBeenVisited)));
+        //FireEvent(Self, GameEventPool.Get(GameEventId.VisibilityUpdated, new .With(EventParameters.Value, HasBeenVisited)));
+        GameEvent ge = GameEventPool.Get(GameEventId.VisibilityUpdated).With(EventParameters.Value, HasBeenVisited);
+        m_Tile.VisibilityUpdated(ge);
+        ge.Release();
     }
 
     public override void HandleEvent(GameEvent gameEvent)
@@ -39,8 +41,10 @@ public class TileVisible : Component
             IsVisible = tileInsight;
             if (!HasBeenVisited && IsVisible)
                 HasBeenVisited = true;
-            //FireEvent(Self, new GameEvent(GameEventId.VisibilityUpdated, new KeyValuePair<string, object>(EventParameters.Value, IsVisible)));
-            m_Tile.VisibilityUpdated(new GameEvent(GameEventId.VisibilityUpdated, new KeyValuePair<string, object>(EventParameters.Value, IsVisible)));
+            //FireEvent(Self, GameEventPool.Get(GameEventId.VisibilityUpdated, new .With(EventParameters.Value, IsVisible)));
+            GameEvent ge = GameEventPool.Get(GameEventId.VisibilityUpdated).With(EventParameters.Value, IsVisible);
+            m_Tile.VisibilityUpdated(ge);
+            ge.Release();
         }
 
         if (gameEvent.ID == GameEventId.SetHasBeenVisited)

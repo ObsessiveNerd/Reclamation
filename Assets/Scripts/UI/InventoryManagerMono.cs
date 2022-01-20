@@ -18,10 +18,11 @@ public class InventoryManagerMono : MonoBehaviour//, IUpdatableUI
         Cleanup();
 
         //WorldUtility.RegisterUI(this);
-        EventBuilder getCurrentInventory = EventBuilderPool.Get(GameEventId.GetCurrentInventory)
+        GameEvent getCurrentInventory = GameEventPool.Get(GameEventId.GetCurrentInventory)
                                             .With(EventParameters.Value, new List<IEntity>());
 
-        List<IEntity> inventory = m_Source.FireEvent(getCurrentInventory.CreateEvent()).GetValue<List<IEntity>>(EventParameters.Value);
+        List<IEntity> inventory = m_Source.FireEvent(getCurrentInventory).GetValue<List<IEntity>>(EventParameters.Value);
+        getCurrentInventory.Release();
 
         GameObject spriteGoResource = Resources.Load<GameObject>("UI/InventoryItem");
         foreach(var item in inventory)
@@ -29,8 +30,12 @@ public class InventoryManagerMono : MonoBehaviour//, IUpdatableUI
             if (item == null)
                 continue;
 
-            Sprite sprite = item.FireEvent(item, new GameEvent(GameEventId.GetPortrait, 
-                new KeyValuePair<string, object>(EventParameters.RenderSprite, null))).GetValue<Sprite>(EventParameters.RenderSprite);
+            GameEvent getSprite = GameEventPool.Get(GameEventId.GetPortrait)
+                .With(EventParameters.RenderSprite, null);
+            
+            Sprite sprite = item.FireEvent(item, getSprite).GetValue<Sprite>(EventParameters.RenderSprite);
+            getSprite.Release();
+
             if(sprite != null)
             {
                 GameObject spriteGo = Instantiate(spriteGoResource);

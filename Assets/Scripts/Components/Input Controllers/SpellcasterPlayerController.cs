@@ -20,22 +20,22 @@ public class SpellcasterPlayerController : InputControllerBase
     {
         base.Init(self);
 
-        EventBuilder getSpells = EventBuilderPool.Get(GameEventId.GetSpells)
+        GameEvent getSpells = GameEventPool.Get(GameEventId.GetSpells)
                                     .With(EventParameters.SpellList, new HashSet<string>());
 
-        var eventResult = Self.FireEvent(getSpells.CreateEvent());
+        var eventResult = Self.FireEvent(getSpells);
         var spellList = eventResult.GetValue<HashSet<string>>(EventParameters.SpellList);
         if(spellList.ToList().Count() > m_SpellIndex)
         {
             m_Attack = EntityQuery.GetEntity(spellList.ToList()[m_SpellIndex]);
 
-            EventBuilder getCurrentMana = EventBuilderPool.Get(GameEventId.GetMana)
+            GameEvent getCurrentMana = GameEventPool.Get(GameEventId.GetMana)
                                             .With(EventParameters.Value, 0);
-            int currentMana = Self.FireEvent(getCurrentMana.CreateEvent()).GetValue<int>(EventParameters.Value);
+            int currentMana = Self.FireEvent(getCurrentMana).GetValue<int>(EventParameters.Value);
 
-            EventBuilder getManaCost = EventBuilderPool.Get(GameEventId.ManaCost)
+            GameEvent getManaCost = GameEventPool.Get(GameEventId.ManaCost)
                                         .With(EventParameters.Value, 1);
-            m_ManaCost = m_Attack.FireEvent(getManaCost.CreateEvent()).GetValue<int>(EventParameters.Value);
+            m_ManaCost = m_Attack.FireEvent(getManaCost).GetValue<int>(EventParameters.Value);
 
             if (m_ManaCost <= currentMana)
                 Debug.Log("Had enough mana");
@@ -44,38 +44,44 @@ public class SpellcasterPlayerController : InputControllerBase
                 Debug.Log("not enough mana");
                 m_Attack = null;
             }
+
+            getManaCost.Release();
+            getCurrentMana.Release();
+            getSpells.Release();
         } 
 
         IEntity startingTarget = WorldUtility.GetClosestEnemyTo(Self);
 
         if (startingTarget != null)
         {
-            EventBuilder isVisible = EventBuilderPool.Get(GameEventId.EntityVisibilityState)
+            GameEvent isVisible = GameEventPool.Get(GameEventId.EntityVisibilityState)
                                         .With(EventParameters.Entity, startingTarget.ID)
                                         .With(EventParameters.Value, false);
 
             //Here we can check isVisible to see if the target is invisible or something
             //FireEvent(startingTarget, isVisible.CreateEvent());
 
-            EventBuilder isInFOV = EventBuilderPool.Get(GameEventId.IsInFOV)
+            GameEvent isInFOV = GameEventPool.Get(GameEventId.IsInFOV)
                                     .With(EventParameters.Entity, startingTarget.ID)
                                     .With(EventParameters.Value, false);
 
-            bool isInFoVResult = FireEvent(Self, isInFOV.CreateEvent()).GetValue<bool>(EventParameters.Value);
+            bool isInFoVResult = FireEvent(Self, isInFOV).GetValue<bool>(EventParameters.Value);
             if (!isInFoVResult)
                 startingTarget = Self;
+            isInFOV.Release();
         }
         else
             startingTarget = Self;
 
-        GameEvent selectTile = new GameEvent(GameEventId.SelectTile, new KeyValuePair<string, object>(EventParameters.Entity, Self.ID),
-                                                                                new KeyValuePair<string, object>(EventParameters.Target, startingTarget.ID),
-                                                                                new KeyValuePair<string, object>(EventParameters.TilePosition, null));
+        GameEvent selectTile = GameEventPool.Get(GameEventId.SelectTile).With(EventParameters.Entity, Self.ID)
+                                                                                .With(EventParameters.Target, startingTarget.ID)
+                                                                                .With(EventParameters.TilePosition, null);
         FireEvent(World.Instance.Self, selectTile);
         FireEvent(m_Attack, selectTile);
         m_TileSelection = (Point)selectTile.Paramters[EventParameters.TilePosition];
-        FireEvent(World.Instance.Self, new GameEvent(GameEventId.UpdateWorldView));
+        FireEvent(World.Instance.Self, GameEventPool.Get(GameEventId.UpdateWorldView));
         UIManager.Push(null);
+        selectTile.Release();
     }
 
     public override void HandleEvent(GameEvent gameEvent)
@@ -92,12 +98,13 @@ public class SpellcasterPlayerController : InputControllerBase
 
             if (desiredDirection != MoveDirection.None)
             {
-                GameEvent moveSelection = new GameEvent(GameEventId.SelectNewTileInDirection, new KeyValuePair<string, object>(EventParameters.InputDirection, desiredDirection),
-                                                                                                    new KeyValuePair<string, object>(EventParameters.TilePosition, m_TileSelection));
+                GameEvent moveSelection = GameEventPool.Get(GameEventId.SelectNewTileInDirection).With(EventParameters.InputDirection, desiredDirection)
+                                                                                                    .With(EventParameters.TilePosition, m_TileSelection);
                 FireEvent(World.Instance.Self, moveSelection);
                 FireEvent(m_Attack, moveSelection);
                 m_TileSelection = (Point)moveSelection.Paramters[EventParameters.TilePosition];
                 gameEvent.Paramters[EventParameters.UpdateWorldView] = true;
+                moveSelection.Release();
             }
 
             if(Input.GetKeyDown(KeyCode.Return) || SpellSelected(out int spell) && spell == m_SpellIndex)
@@ -107,36 +114,37 @@ public class SpellcasterPlayerController : InputControllerBase
 
                 CombatUtility.Attack(Self, target, m_Attack, false);
 
-                EventBuilder affectArea = EventBuilderPool.Get(GameEventId.AffectArea)
+                GameEvent affectArea = GameEventPool.Get(GameEventId.AffectArea)
                                             .With(EventParameters.Effect, new Action<IEntity>((t) => 
                                                 CombatUtility.Attack(Self, t, m_Attack, false, false)));
-                m_Attack.FireEvent(affectArea.CreateEvent());
+                m_Attack.FireEvent(affectArea).Release();
 
-                //EventBuilder fireRangedWeapon = EventBuilderPool.Get(GameEventId.FireRangedAttack)
+                //GameEvent fireRangedWeapon = GameEventPool.Get(GameEventId.FireRangedAttack)
                 //                                .With(EventParameters.Entity, WorldUtility.GetGameObject(Self).transform.position)
                 //                                .With(EventParameters.Target, WorldUtility.GetGameObject(target).transform.position);
                 //FireEvent(m_Attack, fireRangedWeapon.CreateEvent());
 
                 EndSelection(gameEvent, m_TileSelection);
 
-                EventBuilder eb = EventBuilderPool.Get(GameEventId.EndSelection)
+                GameEvent eb = GameEventPool.Get(GameEventId.EndSelection)
                                     .With(EventParameters.TilePosition, m_TileSelection);
-                m_Attack.FireEvent(eb.CreateEvent());
+                m_Attack.FireEvent(eb).Release();
 
-                GameEvent checkForEnergy = new GameEvent(GameEventId.HasEnoughEnergyToTakeATurn, new KeyValuePair<string, object>(EventParameters.TakeTurn, false));
+                GameEvent checkForEnergy = GameEventPool.Get(GameEventId.HasEnoughEnergyToTakeATurn).With(EventParameters.TakeTurn, false);
                 FireEvent(Self, checkForEnergy);
                 gameEvent.Paramters[EventParameters.TakeTurn] = (bool)checkForEnergy.Paramters[EventParameters.TakeTurn];
+                checkForEnergy.Release();
 
-                GameEvent depleteMana = new GameEvent(GameEventId.DepleteMana, new KeyValuePair<string, object>(EventParameters.Mana, m_ManaCost));
-                FireEvent(Self, depleteMana);
+                GameEvent depleteMana = GameEventPool.Get(GameEventId.DepleteMana).With(EventParameters.Mana, m_ManaCost);
+                FireEvent(Self, depleteMana).Release();
             }
 
             if (Input.GetKeyDown(KeyCode.Escape))
             { 
                 EndSelection(gameEvent, m_TileSelection);
-                EventBuilder eb = EventBuilderPool.Get(GameEventId.EndSelection)
+                GameEvent eb = GameEventPool.Get(GameEventId.EndSelection)
                                     .With(EventParameters.TilePosition, m_TileSelection);
-                m_Attack.FireEvent(eb.CreateEvent());
+                m_Attack.FireEvent(eb).Release();
             }
         }
     }

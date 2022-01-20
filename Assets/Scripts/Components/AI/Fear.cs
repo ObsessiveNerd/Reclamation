@@ -20,32 +20,37 @@ public class Fear : Component
         if(gameEvent.ID == GameEventId.GetActionToTake)
         {
             m_CurrentLocation = PathfindingUtility.GetEntityLocation(Self);
-            EventBuilder getMyAggressionLevel = EventBuilderPool.Get(GameEventId.GetCombatRating)
+            GameEvent getMyAggressionLevel = GameEventPool.Get(GameEventId.GetCombatRating)
                                                         .With(EventParameters.Value, -1);
 
-            int myCombatLevel = FireEvent(Self, getMyAggressionLevel.CreateEvent()).GetValue<int>(EventParameters.Value);
+            int myCombatLevel = FireEvent(Self, getMyAggressionLevel).GetValue<int>(EventParameters.Value);
+            getMyAggressionLevel.Release();
 
-            EventBuilder getVisiblePoints = EventBuilderPool.Get(GameEventId.GetVisibleTiles)
+            GameEvent getVisiblePoints = GameEventPool.Get(GameEventId.GetVisibleTiles)
                                             .With(EventParameters.VisibleTiles, new List<Point>());
-            List<Point> visiblePoints = FireEvent(Self, getVisiblePoints.CreateEvent()).GetValue<List<Point>>(EventParameters.VisibleTiles);
+            List<Point> visiblePoints = FireEvent(Self, getVisiblePoints).GetValue<List<Point>>(EventParameters.VisibleTiles);
+            getVisiblePoints.Release();
+            
             foreach(var point in visiblePoints)
             {
                 if (point == m_CurrentLocation) continue;
 
-                EventBuilder getEntity = EventBuilderPool.Get(GameEventId.GetEntityOnTile)
+                GameEvent getEntity = GameEventPool.Get(GameEventId.GetEntityOnTile)
                                                         .With(EventParameters.TilePosition, point)
                                                         .With(EventParameters.Entity, "");
 
-                IEntity target = EntityQuery.GetEntity(FireEvent(World.Instance.Self, getEntity.CreateEvent()).GetValue<string>(EventParameters.Entity));
+                IEntity target = EntityQuery.GetEntity(FireEvent(World.Instance.Self, getEntity).GetValue<string>(EventParameters.Entity));
+                getEntity.Release();
                 if (target == null) continue;
 
                 if (Factions.GetDemeanorForTarget(Self, target) != Demeanor.Hostile) continue;
 
-                EventBuilder getCombatRatingOfTile = EventBuilderPool.Get(GameEventId.GetCombatRating)
+                GameEvent getCombatRatingOfTile = GameEventPool.Get(GameEventId.GetCombatRating)
                                                         .With(EventParameters.TilePosition, point)
                                                         .With(EventParameters.Value, -1);
 
-                int targetCombatRating = FireEvent(target, getCombatRatingOfTile.CreateEvent()).GetValue<int>(EventParameters.Value);
+                int targetCombatRating = FireEvent(target, getCombatRatingOfTile).GetValue<int>(EventParameters.Value);
+                getCombatRatingOfTile.Release();
 
                 if(CombatUtility.AmIAfraid(myCombatLevel, targetCombatRating))
                 {
@@ -66,7 +71,7 @@ public class Fear : Component
     {
         //Point randomPoint = PathfindingUtility.GetRandomValidPoint();
         var test = PathfindingUtility.GetDirectionTo(m_CurrentLocation, m_TargetLocation);
-        FireEvent(Self, new GameEvent(GameEventId.BreakRank));
+        FireEvent(Self, GameEventPool.Get(GameEventId.BreakRank));
         return PathfindingUtility.GetDirectionAwayFrom(m_CurrentLocation, m_TargetLocation);
         //var path = PathfindingUtility.GetPath(m_CurrentLocation, randomPoint);
         //if(path.Count >= 1)

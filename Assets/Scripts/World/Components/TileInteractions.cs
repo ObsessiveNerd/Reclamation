@@ -29,7 +29,7 @@ public class TileInteractions : WorldComponent
         //{
         //    IEntity entity = (IEntity)gameEvent.Paramters[EventParameters.Entity];
         //    Point currentPoint = m_EntityToPointMap[entity];
-        //    FireEvent(m_Tiles[currentPoint], new GameEvent(GameEventId.Interact, new KeyValuePair<string, object>(EventParameters.Entity, entity)));
+        //    FireEvent(m_Tiles[currentPoint], GameEventPool.Get(GameEventId.Interact, new .With(EventParameters.Entity, entity)));
         //}
 
         if (gameEvent.ID == GameEventId.Pickup)
@@ -48,9 +48,10 @@ public class TileInteractions : WorldComponent
             if(!m_EntityToPointMap.ContainsKey(droppingEntity)) return;
 
             Point p = m_EntityToPointMap[droppingEntity];
-            FireEvent(Self, new GameEvent(GameEventId.Spawn, new KeyValuePair<string, object>(EventParameters.Entity, entity.ID),
-                                                                    new KeyValuePair<string, object>(EventParameters.EntityType, EntityType.Item),
-                                                                    new KeyValuePair<string, object>(EventParameters.Point, p)));
+            FireEvent(Self, GameEventPool.Get(GameEventId.Spawn)
+                    .With(EventParameters.Entity, entity.ID)
+                    .With(EventParameters.EntityType, EntityType.Item)
+                    .With(EventParameters.Point, p)).Release();
         }
 
         if (gameEvent.ID == GameEventId.ShowTileInfo)

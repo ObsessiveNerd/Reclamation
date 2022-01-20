@@ -73,10 +73,10 @@ public class ItemContainer : Component
                 sb.AppendLine(item.Name);
             Debug.Log(sb.ToString());
 
-            EventBuilder openUI = EventBuilderPool.Get(GameEventId.OpenChestUI)
+            GameEvent openUI = GameEventPool.Get(GameEventId.OpenChestUI)
                                     .With(EventParameters.Entity, Self.ID)
                                     .With(EventParameters.Character, characterId);
-            World.Instance.Self.FireEvent(openUI.CreateEvent());
+            World.Instance.Self.FireEvent(openUI).Release();
         }
     }
 

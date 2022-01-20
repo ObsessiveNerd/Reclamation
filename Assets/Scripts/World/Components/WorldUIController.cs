@@ -106,18 +106,18 @@ public class WorldUIController : WorldComponent
 
             ContextMenuMono.CreateNewContextMenu().GetComponent<ContextMenuMono>().SelectPlayer((target) =>
             {
-                EventBuilder unEquip = EventBuilderPool.Get(GameEventId.Unequip)
+                GameEvent unEquip = GameEventPool.Get(GameEventId.Unequip)
                                             .With(EventParameters.Entity, source.ID)
                                             .With(EventParameters.Item, item.ID);
-                source.FireEvent(unEquip.CreateEvent());
+                source.FireEvent(unEquip).Release();
 
-                EventBuilder removeFromInventory = EventBuilderPool.Get(GameEventId.RemoveFromInventory)
+                GameEvent removeFromInventory = GameEventPool.Get(GameEventId.RemoveFromInventory)
                                                     .With(EventParameters.Entity, item.ID);
-                source.FireEvent(removeFromInventory.CreateEvent());
+                source.FireEvent(removeFromInventory).Release();
 
-                EventBuilder addToInventory = EventBuilderPool.Get(GameEventId.AddToInventory)
+                GameEvent addToInventory = GameEventPool.Get(GameEventId.AddToInventory)
                                                 .With(EventParameters.Entity, item.ID);
-                EntityQuery.GetEntity(target).FireEvent(addToInventory.CreateEvent());
+                EntityQuery.GetEntity(target).FireEvent(addToInventory).Release();
 
                 GameObject.FindObjectOfType<CharacterManagerMono>().UpdateUI(source);
 

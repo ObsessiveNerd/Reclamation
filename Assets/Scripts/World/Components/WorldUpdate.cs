@@ -22,10 +22,10 @@ public class WorldUpdate : WorldComponent
         if (gameEvent.ID == GameEventId.UpdateWorldView)
         {
             //foreach (var tile in m_Tiles)
-            //    tile.Value.FireEvent(tile.Value, new GameEvent(GameEventId.UpdateTile));
+            //    tile.Value.FireEvent(tile.Value, GameEventPool.Get(GameEventId.UpdateTile));
 
             foreach (var tile in m_ChangedTiles)
-                tile.UpdateTile(); //.HandleEvent(new GameEvent(GameEventId.UpdateTile));
+                tile.UpdateTile(); //.HandleEvent(GameEventPool.Get(GameEventId.UpdateTile));
             m_ChangedTiles.Clear();
         }
 

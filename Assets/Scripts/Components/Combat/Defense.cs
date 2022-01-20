@@ -19,9 +19,10 @@ public class Defense : Component
         if (gameEvent.ID == GameEventId.TakeDamage)
         {
             int rollToHit = (int)gameEvent.Paramters[EventParameters.RollToHit];
-            GameEvent getArmor = new GameEvent(GameEventId.AddArmorValue, new KeyValuePair<string, object>(EventParameters.Value, 0));
+            GameEvent getArmor = GameEventPool.Get(GameEventId.AddArmorValue)
+                .With(EventParameters.Value, 0);
             int armorBonus = (int)FireEvent(Self, getArmor).Paramters[EventParameters.Value];
-
+            getArmor.Release();
             if (rollToHit >= kBaseAC + armorBonus)
                 RecLog.Log($"{Self.Name} was hit!");
             else
@@ -34,13 +35,15 @@ public class Defense : Component
         if (gameEvent.ID == GameEventId.Sharpness)
         {
             int rollToHit = (int)gameEvent.Paramters[EventParameters.RollToHit];
-            GameEvent getArmor = new GameEvent(GameEventId.AddArmorValue, new KeyValuePair<string, object>(EventParameters.Value, 0));
+            GameEvent getArmor = GameEventPool.Get(GameEventId.AddArmorValue)
+                .With(EventParameters.Value, 0);
             int armorBonus = (int)FireEvent(Self, getArmor).Paramters[EventParameters.Value];
+            getArmor.Release();
 
             if (rollToHit < kBaseAC + armorBonus)
                 RecLog.Log("Nothing was severed.");
             else
-                FireEvent(Self, new GameEvent(GameEventId.SeverBodyPart));
+                FireEvent(Self, GameEventPool.Get(GameEventId.SeverBodyPart));
         }
     }
 }

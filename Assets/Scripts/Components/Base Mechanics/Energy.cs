@@ -24,20 +24,20 @@ public class Energy : Component
 
     public override void HandleEvent(GameEvent gameEvent)
     {
-        GameEvent data;
+        GameEvent data = default(GameEvent);
         switch (gameEvent.ID)
         {
             case GameEventId.StartTurn:
                 if (!HasHadTurnStarted)
                 {
-                    data = new GameEvent(GameEventId.AlterEnergy, new KeyValuePair<string, object>(EventParameters.EnergyRegen, EnergyRegineration));
+                    data = GameEventPool.Get(GameEventId.AlterEnergy).With(EventParameters.EnergyRegen, EnergyRegineration);
                     Self.HandleEvent(data);
                     CurrentEnergy += (float)data.Paramters[EventParameters.EnergyRegen];
                     HasHadTurnStarted = true;
                 }
                 break;
             case GameEventId.HasEnoughEnergyToTakeATurn:
-                data = new GameEvent(GameEventId.GetMinimumEnergyForAction, new KeyValuePair<string, object>(EventParameters.Value, 0f));
+                data = GameEventPool.Get(GameEventId.GetMinimumEnergyForAction).With(EventParameters.Value, 0f);
                 FireEvent(Self, data);
                 float minEnergy = (float)data.Paramters[EventParameters.Value];
                 bool takeTurn = (minEnergy == 0 || CurrentEnergy < minEnergy);
@@ -58,9 +58,11 @@ public class Energy : Component
                 break;
             case GameEventId.CharacterRotated:
                 if(!HasHadTurnStarted)
-                    FireEvent(Self, new GameEvent(GameEventId.StartTurn));
+                    FireEvent(Self, GameEventPool.Get(GameEventId.StartTurn));
                 break;
         };
+
+        data?.Release();
     }
 }
 

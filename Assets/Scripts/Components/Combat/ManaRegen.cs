@@ -27,9 +27,9 @@ public class ManaRegen : Component
             currentTurns++;
             if(currentTurns >= RegenSpeed)
             {
-                EventBuilder regenMana = EventBuilderPool.Get(GameEventId.RestoreMana)
+                GameEvent regenMana = GameEventPool.Get(GameEventId.RestoreMana)
                                             .With(EventParameters.Mana, RegenAmount);
-                FireEvent(Self, regenMana.CreateEvent());
+                FireEvent(Self, regenMana).Release();
                 currentTurns = 0;
             }
         }

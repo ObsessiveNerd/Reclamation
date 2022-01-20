@@ -39,18 +39,20 @@ public class Desire : Component
                 return;
             }
 
-            EventBuilder getVisiblePoints = EventBuilderPool.Get(GameEventId.GetVisibleTiles)
+            GameEvent getVisiblePoints = GameEventPool.Get(GameEventId.GetVisibleTiles)
                                            .With(EventParameters.VisibleTiles, new List<Point>());
 
-            List<Point> visiblePoints = FireEvent(Self, getVisiblePoints.CreateEvent()).GetValue<List<Point>>(EventParameters.VisibleTiles);
+            List<Point> visiblePoints = FireEvent(Self, getVisiblePoints).GetValue<List<Point>>(EventParameters.VisibleTiles);
+            getVisiblePoints.Release();
             m_CurrentDestination = Point.InvalidPoint;
             m_DesiredValue = 0;
             foreach (var point in visiblePoints)
             {
-                EventBuilder getTileValue = EventBuilderPool.Get(GameEventId.GetValueOnTile)
+                GameEvent getTileValue = GameEventPool.Get(GameEventId.GetValueOnTile)
                                             .With(EventParameters.TilePosition, point)
                                             .With(EventParameters.Value, 0);
-                int valueOnTile = FireEvent(World.Instance.Self, getTileValue.CreateEvent()).GetValue<int>(EventParameters.Value);
+                int valueOnTile = FireEvent(World.Instance.Self, getTileValue).GetValue<int>(EventParameters.Value);
+                getTileValue.Release();
                 if(valueOnTile > m_DesiredValue)
                 {
                     m_CurrentDestination = point;
@@ -74,13 +76,13 @@ public class Desire : Component
     {
         if (m_CurrentPosition == m_CurrentDestination)
         {
-            EventBuilder pickupItem = EventBuilderPool.Get(GameEventId.Pickup)
+            GameEvent pickupItem = GameEventPool.Get(GameEventId.Pickup)
                                         .With(EventParameters.Entity, Self.ID);
-            FireEvent(World.Instance.Self, pickupItem.CreateEvent());
+            FireEvent(World.Instance.Self, pickupItem).Release();
 
-            EventBuilder tryEquip = EventBuilderPool.Get(GameEventId.TryEquip)
+            GameEvent tryEquip = GameEventPool.Get(GameEventId.TryEquip)
                                         .With(EventParameters.Entity, Self.ID);
-            Self.FireEvent(tryEquip.CreateEvent());
+            Self.FireEvent(tryEquip).Release();
 
             return MoveDirection.None;
         }

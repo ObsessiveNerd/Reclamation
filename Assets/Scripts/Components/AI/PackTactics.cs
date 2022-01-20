@@ -16,9 +16,9 @@ public class PackTactics : Component
 
     public override void Start()
     {
-        EventBuilder registerWithPartyManager = EventBuilderPool.Get(GameEventId.LookingForGroup)
+        GameEvent registerWithPartyManager = GameEventPool.Get(GameEventId.LookingForGroup)
                                                 .With(EventParameters.Entity, Self.ID);
-        FireEvent(World.Instance?.Self, registerWithPartyManager.CreateEvent());
+        FireEvent(World.Instance?.Self, registerWithPartyManager).Release();
     }
 
     public override void Init(IEntity self)
@@ -39,9 +39,9 @@ public class PackTactics : Component
         }
         else if(gameEvent.ID == GameEventId.Died)
         {
-            EventBuilder registerWithPartyManager = EventBuilderPool.Get(GameEventId.RemoveFromParty)
+            GameEvent registerWithPartyManager = GameEventPool.Get(GameEventId.RemoveFromParty)
                                                 .With(EventParameters.Entity, Self.ID);
-            FireEvent(World.Instance.Self, registerWithPartyManager.CreateEvent());
+            FireEvent(World.Instance.Self, registerWithPartyManager).Release();
         }
         else if(gameEvent.ID == GameEventId.SetLeader)
         {
@@ -88,7 +88,7 @@ public class PackTactics : Component
     //    if (Self.Name.Contains("Dwarf"))
     //        Debug.LogWarning("Finding a new party leader");
 
-    //    EventBuilder getVisiblePoints = EventBuilderPool.Get(GameEventId.GetVisibleTiles)
+    //    GameEvent getVisiblePoints = GameEventPool.Get(GameEventId.GetVisibleTiles)
     //                                        .With(EventParameters.VisibleTiles, new List<Point>());
     //    m_VisiblePoints = FireEvent(Self, getVisiblePoints.CreateEvent()).GetValue<List<Point>>(EventParameters.VisibleTiles);
     //    //bool partyLeaderInSight = false;
@@ -99,7 +99,7 @@ public class PackTactics : Component
     //        if (entityAtTile == null || entityAtTile == Self)
     //            continue;
 
-    //        EventBuilder getPackInformation = EventBuilderPool.Get(GameEventId.GetPackInformation)
+    //        GameEvent getPackInformation = GameEventPool.Get(GameEventId.GetPackInformation)
     //                                            .With(EventParameters.Entity, null)
     //                                            .With(EventParameters.IsPartyLeader, false)
     //                                            .With(EventParameters.TilePosition, point);

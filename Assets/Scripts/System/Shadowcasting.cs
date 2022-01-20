@@ -19,14 +19,17 @@ public class Shadowcasting : IFovAlgorithm
 
         m_Range = range;
         m_Source = source;
-        var getSourcePoint = source.FireEvent(World.Instance.Self, new GameEvent(GameEventId.GetEntityLocation, new KeyValuePair<string, object>(EventParameters.Entity, source.ID),
-                                                                                                            new KeyValuePair<string, object>(EventParameters.TilePosition, null)));
+        var getSourcePoint = source.FireEvent(World.Instance.Self, GameEventPool.Get(GameEventId.GetEntityLocation)
+                .With(EventParameters.Entity, source.ID)
+                .With(EventParameters.TilePosition, null));
+
         m_SourcePoint = getSourcePoint.GetValue<Point>(EventParameters.TilePosition);
         m_VisiblePoints = new List<Point>();
         m_VisiblePoints.Add(m_SourcePoint);
         foreach (int octant in m_VisibleOctants)
             ScanOctant(1, octant, 1.0, 0.0);
         m_VisiblePoints = m_VisiblePoints.Distinct(new PointComparer()).ToList();
+        getSourcePoint.Release();
         return m_VisiblePoints;
     }
 
@@ -342,8 +345,11 @@ public class Shadowcasting : IFovAlgorithm
 
     bool TileIsBlocking(int x, int y)
     {
-        bool tileIsBlocking = (bool)m_Source.FireEvent(World.Instance.Self, new GameEvent(GameEventId.IsTileBlocking, new KeyValuePair<string, object>(EventParameters.TilePosition, new Point(x, y)),
-                                                                                                                        new KeyValuePair<string, object>(EventParameters.Value, false))).Paramters[EventParameters.Value];
+        GameEvent ge = GameEventPool.Get(GameEventId.IsTileBlocking)
+            .With(EventParameters.TilePosition, new Point(x, y))
+            .With(EventParameters.Value, false);
+        bool tileIsBlocking = (bool)m_Source.FireEvent(World.Instance.Self, ge).Paramters[EventParameters.Value];
+        ge.Release();
         return tileIsBlocking;
     }
 }

@@ -66,14 +66,17 @@ public class DTO_Position : IDataTransferComponent
 
     public string CreateSerializableData(IComponent component)
     {
-        var getLocation = component.FireEvent(World.Instance.Self, new GameEvent(GameEventId.GetEntityLocation, new KeyValuePair<string, object>(EventParameters.Entity, component.Self.ID),
-                                                                                                new KeyValuePair<string, object>(EventParameters.TilePosition, null)));
+        var getLocation = component.FireEvent(World.Instance.Self, GameEventPool.Get(GameEventId.GetEntityLocation)
+                .With(EventParameters.Entity, component.Self.ID)
+                .With(EventParameters.TilePosition, null));
 
         if (getLocation.Paramters[EventParameters.TilePosition] != null)
         {
             Point p = (Point)getLocation.Paramters[EventParameters.TilePosition];
+            getLocation.Release();
             return $"{nameof(Position)}:{p.x},{p.y}";
         }
+        getLocation.Release();
         return $"{nameof(Position)}:{0},{0}";
     }
 }

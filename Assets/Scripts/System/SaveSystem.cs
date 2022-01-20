@@ -55,10 +55,11 @@ public class SaveSystem : MonoBehaviour
     {
         m_Data = new SaveData(World.Instance.Seed);
 
-        EventBuilder getCurrentLevel = EventBuilderPool.Get(GameEventId.GetCurrentLevel)
+        GameEvent getCurrentLevel = GameEventPool.Get(GameEventId.GetCurrentLevel)
                                         .With(EventParameters.Level, -1);
-        m_Data.CurrentDungeonLevel = World.Instance.Self.FireEvent(getCurrentLevel.CreateEvent()).GetValue<int>(EventParameters.Level);
+        m_Data.CurrentDungeonLevel = World.Instance.Self.FireEvent(getCurrentLevel).GetValue<int>(EventParameters.Level);
         m_Data.SaveName = CurrentSaveName = saveName;
+        getCurrentLevel.Release();
 
         //string path = $"{kSaveDataPath}/{World.Instance.Seed}/tmp_event_log.txt";
         //Directory.CreateDirectory(Path.GetDirectoryName(path));
@@ -73,7 +74,7 @@ public class SaveSystem : MonoBehaviour
         //        m_Data.Events.Add(line);
         //    }
         //}
-        World.Instance.Self.FireEvent(new GameEvent(GameEventId.SaveLevel));
+        World.Instance.Self.FireEvent(GameEventPool.Get(GameEventId.SaveLevel));
         Directory.CreateDirectory($"{kSaveDataPath}/{saveName}");
         File.WriteAllText($"{kSaveDataPath}/{saveName}/data.save", JsonUtility.ToJson(m_Data));
     }
@@ -117,7 +118,7 @@ public class SaveSystem : MonoBehaviour
 
         SaveData data = JsonUtility.FromJson<SaveData>(File.ReadAllText(path));
         CurrentSaveName = data.SaveName;
-        //World.Instance.Self.FireEvent(new GameEvent(GameEventId.LoadLevel, new KeyValuePair<string, object>(EventParameters.Level, data.CurrentDungeonLevel)));
+        //World.Instance.Self.FireEvent(GameEventPool.Get(GameEventId.LoadLevel, new .With(EventParameters.Level, data.CurrentDungeonLevel)));
         World.Instance.InitWorld(data.Seed, data.CurrentDungeonLevel);
 
         //foreach (string eventString in data.Events)
@@ -128,7 +129,7 @@ public class SaveSystem : MonoBehaviour
         //    IEntity target = EntityQuery.GetEntity(targetID);
 
         //    target.FireEvent(target, ge);
-        //    EventBuilder builder = EventBuilderPool.Get(GameEventId.ProgressTimeUntilIdHasTakenTurn)
+        //    GameEvent builder = GameEventPool.Get(GameEventId.ProgressTimeUntilIdHasTakenTurn)
         //                            .With(EventParameters.Entity, targetID);
         //    World.Instance.Self.FireEvent(World.Instance.Self, builder.CreateEvent());
         //}
@@ -147,7 +148,7 @@ public class SaveSystem : MonoBehaviour
     //        IEntity target = EntityQuery.GetEntity(targetID);
 
     //        target.FireEvent(target, ge);
-    //        EventBuilder builder = EventBuilderPool.Get(GameEventId.ProgressTimeUntilIdHasTakenTurn)
+    //        GameEvent builder = GameEventPool.Get(GameEventId.ProgressTimeUntilIdHasTakenTurn)
     //                                .With(EventParameters.Entity, targetID);
     //        World.Instance.Self.FireEvent(World.Instance.Self, builder.CreateEvent());
 
