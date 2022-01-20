@@ -24,12 +24,14 @@ public class Shadowcasting : IFovAlgorithm
                 .With(EventParameters.TilePosition, null));
 
         m_SourcePoint = getSourcePoint.GetValue<Point>(EventParameters.TilePosition);
+        getSourcePoint.Release();
+
         m_VisiblePoints = new List<Point>();
         m_VisiblePoints.Add(m_SourcePoint);
         foreach (int octant in m_VisibleOctants)
             ScanOctant(1, octant, 1.0, 0.0);
         m_VisiblePoints = m_VisiblePoints.Distinct(new PointComparer()).ToList();
-        getSourcePoint.Release();
+        
         return m_VisiblePoints;
     }
 

@@ -83,8 +83,16 @@ public class TimeProgression
 
     public void Update()
     {
+         GameEvent update = GameEventPool.Get(GameEventId.UpdateEntity)
+            .With(EventParameters.TakeTurn, false)
+            .With(EventParameters.UpdateWorldView, false);
+
         if (m_EntityList.Count == 0 || m_IsStopped)
+        {
+            update.Release();
             return;
+        }
+
         if (m_Current == null)
         {
             m_Current = m_EntityList.First;
@@ -92,9 +100,6 @@ public class TimeProgression
             m_Current.Value.HandleEvent(startTurn);
             startTurn.Release();
         }
-
-        GameEvent update = GameEventPool.Get(GameEventId.UpdateEntity).With(EventParameters.TakeTurn, false)
-            .With(EventParameters.UpdateWorldView, false);
 
         using (new DiagnosticsTimer("Update entity"))
             m_Current.Value.HandleEvent(update);

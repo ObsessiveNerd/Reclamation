@@ -6,17 +6,23 @@ public class EntityQuery
 {
     public static IEntity GetEntity(string id)
     {
-        if (string.IsNullOrEmpty(id))
-            return null;
+        return EntityMap.GetEntity(id);
 
-        GameEvent builder = GameEventPool.Get(GameEventId.GetEntity)
-                                .With(EventParameters.Value, id)
-                                .With(EventParameters.Entity, null);
-        var entity =  World.Instance?.Self.FireEvent(World.Instance.Self, builder).GetValue<IEntity>(EventParameters.Entity);
-        builder.Release();
-        if (entity != null)
-            return entity;
-        return EntityFactory.CreateEntity(id);
+        //if (string.IsNullOrEmpty(id))
+        //    return null;
+
+        //GameEvent builder = GameEventPool.Get(GameEventId.GetEntity)
+        //                        .With(EventParameters.Value, id)
+        //                        .With(EventParameters.Entity, null);
+        //var entity =  World.Instance?.Self.FireEvent(World.Instance.Self, builder).GetValue<IEntity>(EventParameters.Entity);
+
+        //IEntity returnValue = null;
+        //if (entity != null)
+        //    returnValue = entity;
+        //else
+        //    returnValue = EntityFactory.CreateEntity(id);
+        ////builder.Release();
+        //return returnValue;
     }
 
     public static string GetEntityName(string id)

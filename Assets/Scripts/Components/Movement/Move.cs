@@ -47,7 +47,6 @@ public class Move : Component
             GameEvent currentEnergyEvent = FireEvent(Self, GameEventPool.Get(GameEventId.GetEnergy)
                 .With(EventParameters.Value, 0.0f));
             float currentEnergy = currentEnergyEvent.GetValue<float>(EventParameters.Value);
-            currentEnergyEvent.Release();
             
             if (energyRequired > 0f && currentEnergy >= energyRequired && !m_StopMovement)
             {
@@ -55,6 +54,10 @@ public class Move : Component
                                                                                 .With(EventParameters.EntityType, EntityType.Creature)
                                                                                 .With(EventParameters.InputDirection, beforeMovingCheckWorld.Paramters[EventParameters.InputDirection])
                                                                                 .With(EventParameters.RequiredEnergy, energyRequired);
+
+                if (moveWorld.Paramters.Count < 4)
+                    throw new Exception();
+
                 FireEvent(World.Instance.Self, moveWorld);
 
                 //See if there's anything on the player that needs to happen when moving
@@ -64,7 +67,7 @@ public class Move : Component
 
                 //Check if there are any effects that need to occur after moving
                 GameEvent afterMoving = GameEventPool.Get(GameEventId.AfterMoving).With(moving.Paramters);
-                FireEvent(Self, afterMoving).Release();
+                FireEvent(Self, afterMoving);
 
                 //energyRequired = (float)afterMoving.Paramters[EventParameters.RequiredEnergy];
                 GameEvent useEnergy = GameEventPool.Get(GameEventId.UseEnergy).With(EventParameters.Value, energyRequired);
@@ -72,12 +75,16 @@ public class Move : Component
 
                 moving.Release();
                 moveWorld.Release();
-                beforeMovingCheckWorld.Release();
-                beforeMoving.Release();
+                
+                afterMoving.Release();
 
             }
             else if (m_StopMovement)
                 FireEvent(Self, GameEventPool.Get(GameEventId.SkipTurn)).Release();
+
+            currentEnergyEvent.Release();
+            beforeMovingCheckWorld.Release();
+            beforeMoving.Release();
         }
         if (gameEvent.ID == GameEventId.GetMinimumEnergyForAction)
             gameEvent.Paramters[EventParameters.Value] = Mathf.Min((float)gameEvent.Paramters[EventParameters.Value] > 0f ? (float)gameEvent.Paramters[EventParameters.Value] : m_EnergyRequired, m_EnergyRequired);

@@ -19,6 +19,6 @@ public class DiagnosticsTimer : IDisposable
     public void Dispose()
     {
         m_StopWatch.Stop();
-        UnityEngine.Debug.LogWarning($"{m_ID} took {m_StopWatch.Elapsed.Seconds} seconds");
+        //UnityEngine.Debug.LogWarning($"{m_ID} took {m_StopWatch.Elapsed.Seconds} seconds");
     }
 }

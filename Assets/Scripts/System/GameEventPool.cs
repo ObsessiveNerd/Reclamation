@@ -15,25 +15,40 @@ public static class GameEventPool
 
     public static GameEvent Get(string id)
     {
-        if (m_Pool.Count > 0)
+        lock (m_Pool)
         {
-            var ge = m_Pool.Pop();
+
+            if (m_Pool.Count > 0)
+            {
+                var ge = m_Pool.Pop();
                 ge.SetId(id);
+                if (!ge.IsValid)
+                    throw new System.Exception("NOT VALID GAME EVENT");
+                //if (ge.Paramters.Count > 0)
+                //    throw new System.Exception();
                 m_InUse.Add(ge);
                 return ge;
+            }
+
+            var ge2 = new GameEvent(id);
+            m_InUse.Add(ge2);
+            return ge2;
         }
 
-        var ge2 = new GameEvent(id);
-        return ge2;
     }
 
     public static void Release(GameEvent obj)
     {
+        if (!obj.IsValid)
+            throw new System.Exception("NOt valid game event");
+
         m_InUse.Remove(obj);
         obj.Clean();
         //if(m_Pool.Contains(obj))
         //    Debug.LogError("GameEvent is already in the Pool, cannot release a GameEvent twice.");
         //else
+        if (obj.Paramters.Count > 0)
+                throw new System.Exception();
             m_Pool.Push(obj);
     }
 }

@@ -21,9 +21,11 @@ public class SpellSelectorMono : MonoBehaviour//, IUpdatableUI
         if (source == null || !WorldUtility.IsActivePlayer(source.ID))
             return;
 
-        GameEvent updateUI = GameEventPool.Get(GameEventId.UpdateUI)
-                                    .With(EventParameters.Entity, WorldUtility.GetActivePlayerId());
-        World.Instance.Self.FireEvent(updateUI).Release();
+        //GameEvent updateUI = GameEventPool.Get(GameEventId.UpdateUI)
+        //                            .With(EventParameters.Entity, WorldUtility.GetActivePlayerId());
+        //World.Instance.Self.FireEvent(updateUI).Release();
+
+        //WorldUIController.UpdateUI(WorldUtility.GetActivePlayerId());
 
         Close();
         GameEvent getSpells = GameEventPool.Get(GameEventId.GetSpells)

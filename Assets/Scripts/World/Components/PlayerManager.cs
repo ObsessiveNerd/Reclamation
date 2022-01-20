@@ -23,8 +23,10 @@ public class PlayerManager : WorldComponent
         {
             RotateCharacter();
             UIManager.RemovePopUntilAllOfTypeRemoved<ContextMenuMono>();
-            FireEvent(Self, GameEventPool.Get(GameEventId.UpdateUI)
-                .With(EventParameters.Entity, m_ActivePlayer.Value.ID)).Release();
+            WorldUIController.UpdateUI(m_ActivePlayer.Value.ID);
+
+            //FireEvent(Self, GameEventPool.Get(GameEventId.UpdateUI)
+            //    .With(EventParameters.Entity, m_ActivePlayer.Value.ID)).Release();
         }
 
         if (gameEvent.ID == GameEventId.SetActiveCharacter)
@@ -39,8 +41,9 @@ public class PlayerManager : WorldComponent
                     break;
             }
 
-            FireEvent(Self, GameEventPool.Get(GameEventId.UpdateUI)
-                .With(EventParameters.Entity, m_ActivePlayer.Value.ID)).Release();
+            WorldUIController.UpdateUI(m_ActivePlayer.Value.ID);
+            //FireEvent(Self, GameEventPool.Get(GameEventId.UpdateUI)
+            //    .With(EventParameters.Entity, m_ActivePlayer.Value.ID)).Release();
         }
 
         if(gameEvent.ID == GameEventId.IsPlayableCharacter)

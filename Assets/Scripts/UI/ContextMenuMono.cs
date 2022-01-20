@@ -27,7 +27,8 @@ public class ContextMenuMono : EscapeableMono
         button.onClick.AddListener(() => UIManager.ForcePop(this));
         button.onClick.AddListener(() =>
         {
-            World.Instance.Self.FireEvent(GameEventPool.Get(GameEventId.UpdateUI).With(EventParameters.Entity, source.ID)).Release();
+            WorldUIController.UpdateUI(source.ID);
+            //World.Instance.Self.FireEvent(GameEventPool.Get(GameEventId.UpdateUI).With(EventParameters.Entity, source.ID)).Release();
         });
         if (afterClickCallback != null)
             button.onClick.AddListener(() => afterClickCallback());

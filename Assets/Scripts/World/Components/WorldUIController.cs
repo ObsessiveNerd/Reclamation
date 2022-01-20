@@ -5,9 +5,11 @@ using UnityEngine;
 
 public class WorldUIController : WorldComponent
 {
-    public List<IUpdatableUI> UpdatableUI = new List<IUpdatableUI>();
+    static List<IUpdatableUI> UpdatableUI = new List<IUpdatableUI>();
 
     public override int Priority => 10;
+
+    //private GameEvent updateUI = new GameEvent(GameEventId.UpdateUI);
 
     public override void Init(IEntity self)
     {
@@ -16,7 +18,7 @@ public class WorldUIController : WorldComponent
         RegisteredEvents.Add(GameEventId.CloseUI);
         RegisteredEvents.Add(GameEventId.OpenInventoryUI);
         RegisteredEvents.Add(GameEventId.OpenSpellUI);
-        RegisteredEvents.Add(GameEventId.UpdateUI);
+        //RegisteredEvents.Add(GameEventId.UpdateUI);
         RegisteredEvents.Add(GameEventId.RegisterPlayableCharacter);
         RegisteredEvents.Add(GameEventId.OpenChestUI);
         RegisteredEvents.Add(GameEventId.RegisterUI);
@@ -25,6 +27,15 @@ public class WorldUIController : WorldComponent
         RegisteredEvents.Add(GameEventId.EntityTookDamage);
         RegisteredEvents.Add(GameEventId.EntityHealedDamage);
         RegisteredEvents.Add(GameEventId.OpenSpellExaminationUI);
+    }
+
+    public static void UpdateUI(string id)
+    {
+        //string newId = gameEvent.GetValue<string>(EventParameters.Entity);
+            foreach (var ui in UpdatableUI)
+                ui?.UpdateUI(EntityQuery.GetEntity(id));
+
+            GameObject.FindObjectOfType<SpellSelectorMono>().Setup(m_ActivePlayer.Value);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
@@ -54,24 +65,24 @@ public class WorldUIController : WorldComponent
             GameObject.FindObjectOfType<PlayableCharacterSelector>().AddCharacterTab(id);
         }
 
-        else if(gameEvent.ID == GameEventId.UpdateUI)
-        {
-            string newId = gameEvent.GetValue<string>(EventParameters.Entity);
-            foreach (var ui in UpdatableUI)
-                ui?.UpdateUI(EntityQuery.GetEntity(newId));
+        //else if(gameEvent.ID == GameEventId.UpdateUI)
+        //{
+        //    string newId = gameEvent.GetValue<string>(EventParameters.Entity);
+        //    foreach (var ui in UpdatableUI)
+        //        ui?.UpdateUI(EntityQuery.GetEntity(newId));
 
-            GameObject.FindObjectOfType<SpellSelectorMono>().Setup(m_ActivePlayer.Value);
+        //    GameObject.FindObjectOfType<SpellSelectorMono>().Setup(m_ActivePlayer.Value);
 
-            //if (gameEvent.Paramters.ContainsKey(EventParameters.Entity))
-            //{
-            //    string id = gameEvent.GetValue<string>(EventParameters.Entity);
-            //    GameObject.FindObjectOfType<CharacterManagerMono>().UpdateUI(id);
-            //}
-            //else
-            //    GameObject.FindObjectOfType<CharacterManagerMono>().UpdateUI(m_ActivePlayer.Value.ID);
+        //    //if (gameEvent.Paramters.ContainsKey(EventParameters.Entity))
+        //    //{
+        //    //    string id = gameEvent.GetValue<string>(EventParameters.Entity);
+        //    //    GameObject.FindObjectOfType<CharacterManagerMono>().UpdateUI(id);
+        //    //}
+        //    //else
+        //    //    GameObject.FindObjectOfType<CharacterManagerMono>().UpdateUI(m_ActivePlayer.Value.ID);
 
-            //GameObject.FindObjectOfType<ChestMono>().UpdateUI();
-        }
+        //    //GameObject.FindObjectOfType<ChestMono>().UpdateUI();
+        //}
 
         else if(gameEvent.ID == GameEventId.OpenSpellExaminationUI)
         {

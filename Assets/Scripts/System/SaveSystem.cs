@@ -74,7 +74,7 @@ public class SaveSystem : MonoBehaviour
         //        m_Data.Events.Add(line);
         //    }
         //}
-        World.Instance.Self.FireEvent(GameEventPool.Get(GameEventId.SaveLevel));
+        World.Instance.Self.FireEvent(GameEventPool.Get(GameEventId.SaveLevel)).Release();
         Directory.CreateDirectory($"{kSaveDataPath}/{saveName}");
         File.WriteAllText($"{kSaveDataPath}/{saveName}/data.save", JsonUtility.ToJson(m_Data));
     }

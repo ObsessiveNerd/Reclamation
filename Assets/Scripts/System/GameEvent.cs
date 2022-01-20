@@ -83,7 +83,7 @@ public static class GameEventId
     public const string UnPauseTime = nameof(UnPauseTime);
     public const string RegisterEntity = nameof(RegisterEntity);
     public const string DestroyEntity = nameof(DestroyEntity);
-    public const string GetEntity = nameof(GetEntity);
+    //public const string GetEntity = nameof(GetEntity);
     public const string CalculatePath = nameof(CalculatePath);
     public const string IsValidDungeonTile = nameof(IsValidDungeonTile);
     public const string GetClosestEnemy = nameof(GetClosestEnemy);
@@ -234,7 +234,7 @@ public static class GameEventId
     public const string SetName = nameof(SetName);
     public const string GetInfo = nameof(GetInfo);
     public const string GetPortrait = nameof(GetPortrait);
-    public const string UpdateUI = nameof(UpdateUI);
+    //public const string UpdateUI = nameof(UpdateUI);
     public const string GetContextMenuActions = nameof(GetContextMenuActions);
     public const string EntityTookDamage = nameof(EntityTookDamage);
     public const string EntityHealedDamage = nameof(EntityHealedDamage);
@@ -343,50 +343,55 @@ public static class EventParameters
 
 public class GameEvent
 {
+    public bool IsValid = true;
     public bool ContinueProcessing;
     public string ID { get { return m_ID; } }
     string m_ID { get; set; }
 
     public Dictionary<string, object> Paramters { get { return m_Parameters; } }
-    Dictionary<string, object> m_Parameters; //= new Dictionary<string, object>();
+    Dictionary<string, object> m_Parameters = new Dictionary<string, object>();
 
     public GameEvent(string id)
     {
-        m_Parameters = new Dictionary<string, object>();
         m_ID = id;
         ContinueProcessing = true;
-        string i = string.IsNullOrEmpty(m_ID) ? "NO ID" : m_ID;
-        Debug.Log($"New gameevent was created with id {i}");
+        //string i = string.IsNullOrEmpty(m_ID) ? "NO ID" : m_ID;
+        //Debug.Log($"New gameevent was created with id {i}");
         //GameEventPool.m_InUse.Add(this);
     }
 
     public GameEvent SetId(string id)
     {
+        if(!string.IsNullOrEmpty(m_ID))
+            Debug.LogWarning($"GameEvent still has id: {m_ID} but you're attempting to change it into {id}");
         m_ID = id;
         return this;
     }
 
     public GameEvent With(string id, object value)
     {
-        m_Parameters.Add(id, value);
+        if (m_Parameters.ContainsKey(id))
+            m_Parameters[id] = value;
+        else
+            m_Parameters.Add(id, value);
         return this;
     }
 
     public GameEvent With(Dictionary<string, object> values)
     {
         foreach(var key in values.Keys)
-            m_Parameters.Add(key, values[key]);
+            m_Parameters[key] = values[key];
         return this;
     }
 
     public bool HasParameter(string parameterId)
     {
-        return Paramters.ContainsKey(parameterId);
+        return m_Parameters.ContainsKey(parameterId);
     }
 
     public T GetValue<T>(string parameterId)
     {
-        if (Paramters.TryGetValue(parameterId, out object value))
+        if (m_Parameters.TryGetValue(parameterId, out object value))
         {
             if (value == null)
                 return default(T);
@@ -397,11 +402,18 @@ public class GameEvent
 
     public void Release()
     {
+        //Debug.Log($"Game event {m_ID} released");
         GameEventPool.Release(this);
     }
 
     public void Clean()
     {
+        if(!IsValid)
+        {
+            throw new Exception("not valid GameEvent");
+        }
+
+        IsValid = true;
         ContinueProcessing = true;
         m_ID = "";
         m_Parameters.Clear();

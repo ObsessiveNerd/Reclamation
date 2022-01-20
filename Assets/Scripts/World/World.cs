@@ -152,10 +152,10 @@ public class World : MonoBehaviour
     GameEvent m_ProgressTime = new GameEvent(GameEventId.ProgressTime);
     private void Update()
     {
-        if (GameEventPool.m_InUse.Count > 0)
-        {
-            UnityEngine.Debug.Log("Game events weren't released");
-        }
+        //if (GameEventPool.m_InUse.Count > 0)
+        //{
+        //    UnityEngine.Debug.Log("Game events weren't released");
+        //}
 
         using(new DiagnosticsTimer("Progress time"))
             m_World?.FireEvent(m_World, m_ProgressTime);

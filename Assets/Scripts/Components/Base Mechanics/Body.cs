@@ -101,10 +101,16 @@ public class Body : Component
 
             Dictionary<BodyPart, List<Component>> target = FireEvent(Self, builder).GetValue<Dictionary<BodyPart, List<Component>>>(EventParameters.BodyParts);
             if (!target.ContainsKey(bp))
+            {
+                builder.Release();
                 return;
+            }
 
             if (target[bp].Count < numberOfBodyPartsRequired)
+            {
+                builder.Release();
                 return;
+            }
 
             int bodyPartsTaken = 0;
             bool unequipThroughIteration = false;
@@ -157,16 +163,25 @@ public class Body : Component
 
             var result = FireEvent(Self, builder);
             if (!result.HasParameter(EventParameters.BodyParts))
+            {
+                builder.Release();
                 return;
+            }
             if (!result.GetValue<Dictionary<BodyPart, List<Component>>>(EventParameters.BodyParts).ContainsKey(BodyPart.Arm))
+            {
+                builder.Release();
                 return;
+            }
 
             var arms = result.GetValue<Dictionary<BodyPart, List<Component>>>(EventParameters.BodyParts)[BodyPart.Arm];
 
             foreach(var arm in arms.Where(a => a.GetType() == typeof(EquipmentSlot)))
             {
                 if (!string.IsNullOrEmpty(((EquipmentSlot)arm).EquipmentId))
+                {
+                    builder.Release();
                     return;
+                }
             }
 
             var equipmentEntity = EntityFactory.CreateEntity("UnarmedStrike");

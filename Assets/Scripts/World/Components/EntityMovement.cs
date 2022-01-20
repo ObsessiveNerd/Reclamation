@@ -64,9 +64,9 @@ public class EntityMovement : WorldComponent
 
             if (m_Tiles.ContainsKey(newPoint))
             {
-                FireEvent(entity, GameEventPool.Get(GameEventId.SetPoint).With(EventParameters.TilePosition, newPoint)).Release();
+                var pointEvent = FireEvent(entity, GameEventPool.Get(GameEventId.SetPoint).With(EventParameters.TilePosition, newPoint));
                 Spawner.Move(entity, newPoint);
-
+                pointEvent.Release();
 
                 //Just as a note, doing it this way isn't terribly efficient since despawn is going to remove things from the time progression
                 //This also means turn order is going to get fucked, so really we should do this proper and just event to the correct tiles here.

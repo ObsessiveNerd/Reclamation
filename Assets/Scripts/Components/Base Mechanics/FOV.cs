@@ -28,16 +28,16 @@ public class FOV : Component
             int baseRange = FOVRange;
             GameEvent beforeFOVCalculated = GameEventPool.Get(GameEventId.BeforeFOVRecalculated)
                 .With(EventParameters.FOVRange, FOVRange);
-            GameEvent checkEquipment = (GameEvent)FireEvent(Self, GameEventPool.Get(GameEventId.CheckEquipment)
-                .With(EventParameters.GameEvent, beforeFOVCalculated)).Paramters[EventParameters.GameEvent];
-            FOVRange = (int)checkEquipment.Paramters[EventParameters.FOVRange];
+            //GameEvent checkEquipment = (GameEvent)FireEvent(Self, GameEventPool.Get(GameEventId.CheckEquipment)
+            //    .With(EventParameters.GameEvent, beforeFOVCalculated)).Paramters[EventParameters.GameEvent];
+            //FOVRange = (int)checkEquipment.Paramters[EventParameters.FOVRange];
             FireEvent(Self, GameEventPool.Get(GameEventId.FOVRecalculated)
                 .With(EventParameters.Entity, Self.ID)
                 .With(EventParameters.VisibleTiles, m_Fov.GetVisibleTiles(Self, FOVRange))).Release();
             FOVRange = baseRange;
 
             beforeFOVCalculated.Release();
-            checkEquipment.Release();
+            //checkEquipment.Release();
         }
     }
 }

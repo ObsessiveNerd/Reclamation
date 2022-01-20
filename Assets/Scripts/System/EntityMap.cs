@@ -22,7 +22,7 @@ public class EntityMap : WorldComponent
         base.Init(self);
         //RegisteredEvents.Add(GameEventId.RegisterEntity);
         RegisteredEvents.Add(GameEventId.DestroyEntity);
-        RegisteredEvents.Add(GameEventId.GetEntity);
+        //RegisteredEvents.Add(GameEventId.GetEntity);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
@@ -40,15 +40,15 @@ public class EntityMap : WorldComponent
                 m_EntityIdToEntityMap[id] = null;
         }
 
-        else if (gameEvent.ID == GameEventId.GetEntity)
-        {
-            EntityFactory.InitTempBlueprints();
-            string id = (string)gameEvent.Paramters[EventParameters.Value];
-            gameEvent.Paramters[EventParameters.Entity] = GetEntity(id);
-        }
+        //else if (gameEvent.ID == GameEventId.GetEntity)
+        //{
+        //    EntityFactory.InitTempBlueprints();
+        //    string id = (string)gameEvent.Paramters[EventParameters.Value];
+        //    gameEvent.Paramters[EventParameters.Entity] = GetEntity(id);
+        //}
     }
 
-    public IEntity GetEntity(string id)
+    public static IEntity GetEntity(string id)
     {
         if (!m_EntityIdToEntityMap.ContainsKey(id))
             return EntityFactory.CreateEntity(id);

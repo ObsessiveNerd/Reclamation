@@ -53,7 +53,11 @@ public class WorldUpdate : WorldComponent
     public void ProgressTime()
     {
         if (!StopTime && !worldEnded)
+        {
             m_TimeProgression.Update();
+            if (GameEventPool.m_InUse.Count > 0)
+                Debug.LogError("GameEvents were unreleased");
+        }
             //m_PlayerToTimeProgressionMap[m_ActivePlayer.Value].Update();
     }
 }

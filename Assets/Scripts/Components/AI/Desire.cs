@@ -78,7 +78,8 @@ public class Desire : Component
         {
             GameEvent pickupItem = GameEventPool.Get(GameEventId.Pickup)
                                         .With(EventParameters.Entity, Self.ID);
-            FireEvent(World.Instance.Self, pickupItem).Release();
+            FireEvent(World.Instance.Self, pickupItem);
+            pickupItem.Release();
 
             GameEvent tryEquip = GameEventPool.Get(GameEventId.TryEquip)
                                         .With(EventParameters.Entity, Self.ID);

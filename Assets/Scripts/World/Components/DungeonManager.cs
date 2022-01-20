@@ -102,14 +102,13 @@ public class DungeonManager : WorldComponent
             else
             {
                 foreach (var player in m_Players)
-                    FireEvent(player, GameEventPool.Get(GameEventId.InitFOV));
-                FireEvent(Self, GameEventPool.Get(GameEventId.UpdateCamera));
+                    FireEvent(player, GameEventPool.Get(GameEventId.InitFOV)).Release();
+                FireEvent(Self, GameEventPool.Get(GameEventId.UpdateCamera)).Release();
             }
 
-            FireEvent(Self, GameEventPool.Get(GameEventId.SaveLevel));
+            FireEvent(Self, GameEventPool.Get(GameEventId.SaveLevel)).Release();
             m_TimeProgression.Resume();
             sw.Stop();
-            Debug.LogWarning($"Other shit: {sw.Elapsed.Seconds}");
 
         }
         else if (gameEvent.ID == GameEventId.GetCurrentLevel)
@@ -319,7 +318,7 @@ public class DungeonManager : WorldComponent
 
                 player.CleanupComponents();
 
-                FireEvent(player, GameEventPool.Get(GameEventId.InitFOV));
+                FireEvent(player, GameEventPool.Get(GameEventId.InitFOV)).Release();
             }
         }
 
@@ -336,7 +335,7 @@ public class DungeonManager : WorldComponent
                 //if (i == 0)
                 player.CleanupComponents();
 
-                FireEvent(player, GameEventPool.Get(GameEventId.InitFOV));
+                FireEvent(player, GameEventPool.Get(GameEventId.InitFOV)).Release();
 
 
                 //var randomLineNumber = RecRandom.Instance.GetRandomValue(0, lines.Length - 1);
@@ -354,7 +353,7 @@ public class DungeonManager : WorldComponent
             Directory.Delete(charactersPath, true);
         }
 
-        FireEvent(Self, GameEventPool.Get(GameEventId.ProgressTime));
+        FireEvent(Self, GameEventPool.Get(GameEventId.ProgressTime)).Release();
     }
 
     //void SpawnPlayers()
@@ -400,10 +399,10 @@ public class DungeonManager : WorldComponent
             else
                 Spawner.Spawn(entity, m_DungeonGenerator.Rooms[m_DungeonLevelMap[m_CurrentLevel].StairsDownRoomIndex].GetValidPoint(null));
 
-            FireEvent(entity, GameEventPool.Get(GameEventId.RegisterPlayableCharacter));
-            FireEvent(entity, GameEventPool.Get(GameEventId.InitFOV));
+            FireEvent(entity, GameEventPool.Get(GameEventId.RegisterPlayableCharacter)).Release();
+            FireEvent(entity, GameEventPool.Get(GameEventId.InitFOV)).Release();
         }
-        FireEvent(Self, GameEventPool.Get(GameEventId.UpdateWorldView));
+        FireEvent(Self, GameEventPool.Get(GameEventId.UpdateWorldView)).Release();
         m_PlayerBlueprintCache.Clear();
     }
 

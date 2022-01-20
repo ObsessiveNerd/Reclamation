@@ -38,9 +38,10 @@ public class Inventory : Component
             if (!InventoryItems.Contains(item))
             {
                 InventoryItems.Add(item);
-                if(WorldUtility.IsActivePlayer(Self.ID))
-                    FireEvent(World.Instance.Self, GameEventPool.Get(GameEventId.UpdateUI)
-                        .With(EventParameters.Entity, Self.ID)).Release();
+                if (WorldUtility.IsActivePlayer(Self.ID))
+                    WorldUIController.UpdateUI(Self.ID);
+                    //FireEvent(World.Instance.Self, GameEventPool.Get(GameEventId.UpdateUI)
+                    //    .With(EventParameters.Entity, Self.ID)).Release();
             }
         }
 

@@ -31,7 +31,7 @@ public class PlayerInputController : InputControllerBase
 
             else if (InputBinder.PerformRequestedAction(RequestedAction.OpenInventory))
             {
-                FireEvent(Self, GameEventPool.Get(GameEventId.OpenInventory));
+                FireEvent(Self, GameEventPool.Get(GameEventId.OpenInventory)).Release();
                 Self.RemoveComponent(this);
                 Self.AddComponent(new PlayerUIController());
             }

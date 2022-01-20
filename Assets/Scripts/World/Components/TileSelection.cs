@@ -18,18 +18,17 @@ public class TileSelection : WorldComponent
         {
             if(gameEvent.Paramters[EventParameters.TilePosition] == null)
             {
-                GameEvent getEntity = GameEventPool.Get(GameEventId.GetEntity)
-                                        .With(EventParameters.Entity, null)
-                                        .With(EventParameters.Value, gameEvent.Paramters[EventParameters.Entity]);
+                //GameEvent getEntity = GameEventPool.Get(GameEventId.GetEntity)
+                //                        .With(EventParameters.Entity, null)
+                //                        .With(EventParameters.Value, gameEvent.Paramters[EventParameters.Entity]);
 
-                IEntity entity = FireEvent(Self, getEntity).GetValue<IEntity>(EventParameters.Entity);
-                getEntity.Release();
+                IEntity entity = EntityMap.GetEntity(gameEvent.GetValue<string>(EventParameters.Entity)); //FireEvent(Self, getEntity).GetValue<IEntity>(EventParameters.Entity);
 
-                GameEvent getTarget = GameEventPool.Get(GameEventId.GetEntity)
-                                        .With(EventParameters.Entity, null)
-                                        .With(EventParameters.Value, gameEvent.Paramters[EventParameters.Target]);
-                IEntity target = gameEvent.Paramters[EventParameters.Target] == null ? null : FireEvent(Self, getTarget).GetValue<IEntity>(EventParameters.Entity);
-                getTarget.Release();
+                //GameEvent getTarget = GameEventPool.Get(GameEventId.GetEntity)
+                //                        .With(EventParameters.Entity, null)
+                //                        .With(EventParameters.Value, gameEvent.Paramters[EventParameters.Target]);
+
+                IEntity target = EntityMap.GetEntity(gameEvent.GetValue<string>(EventParameters.Target)); //gameEvent.Paramters[EventParameters.Target] == null ? null : FireEvent(Self, getTarget).GetValue<IEntity>(EventParameters.Entity);
 
                 Point p = m_EntityToPointMap[target == null ? entity : target];
 
@@ -37,6 +36,10 @@ public class TileSelection : WorldComponent
                 m_Tiles[p].CleanupComponents();
 
                 gameEvent.Paramters[EventParameters.TilePosition] = p;
+
+
+                //getTarget.Release();
+                //getEntity.Release();
             }
             else
             {

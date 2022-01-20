@@ -286,7 +286,7 @@ public class Tile : Component
             foreach (IEntity target in GetTarget())
             {
                 GameEvent entityOvertaking = GameEventPool.Get(GameEventId.EntityOvertaking)
-                    .With(EventParameters.Entity, gameEvent.Paramters[EventParameters.Entity]);
+                    .With(EventParameters.Entity, gameEvent.GetValue<string>(EventParameters.Entity)); //.Paramters[EventParameters.Entity]);
                 FireEvent(target, entityOvertaking);
                 FireEvent(target, gameEvent);
 
@@ -297,6 +297,8 @@ public class Tile : Component
 
     public void Spawn(GameEvent gameEvent)
     {
+        try
+        {
         IEntity entity = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Entity]);
         EntityType entityType = (EntityType)gameEvent.Paramters[EventParameters.EntityType];
         switch (entityType)
@@ -312,6 +314,11 @@ public class Tile : Component
                 break;
         }
         WorldComponent.m_ChangedTiles.Add(this);
+        }
+        catch(InvalidCastException ex)
+        {
+            throw ex;
+        }
     }
 
     public void Pickup(GameEvent gameEvent)
@@ -322,9 +329,10 @@ public class Tile : Component
             List<IEntity> itemsPickedup = new List<IEntity>();
             foreach (var item in Items)
             {
-                FireEvent(entity, GameEventPool.Get(GameEventId.AddToInventory)
-                    .With(EventParameters.Entity, item.ID)).Release();
+                var pickupEvent = FireEvent(entity, GameEventPool.Get(GameEventId.AddToInventory)
+                    .With(EventParameters.Entity, item.ID));
                 itemsPickedup.Add(item);
+                pickupEvent.Release();
             }
 
             foreach (var item in itemsPickedup)
