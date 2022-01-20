@@ -2,26 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TileInteractions : WorldComponent
+public class TileInteractions : GameService
 {
-    public override void Init(IEntity self)
-    {
-        base.Init(self);
-        RegisteredEvents.Add(GameEventId.ShowTileInfo);
-        RegisteredEvents.Add(GameEventId.AddComponentToTile);
-        //RegisteredEvents.Add(GameEventId.Interact);
-        RegisteredEvents.Add(GameEventId.Pickup);
-        RegisteredEvents.Add(GameEventId.Drop);
-        RegisteredEvents.Add(GameEventId.DestroyObject);
-        RegisteredEvents.Add(GameEventId.GetInteractableObjects);
-    }
-
     public Tile GetTile(Point p)
     {
         if (!m_Tiles.ContainsKey(p))
             return null;
         return m_Tiles[p].GetComponent<Tile>();
     }
+
+    public void TileChanged(Tile t)
+    {
+        m_ChangedTiles.Add(t);
+    }
+
 
     public override void HandleEvent(GameEvent gameEvent)
     {

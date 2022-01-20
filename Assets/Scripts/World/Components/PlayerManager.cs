@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class PlayerManager : WorldComponent
+public class PlayerManager : GameService
 {
     public override void Init(IEntity self)
     {

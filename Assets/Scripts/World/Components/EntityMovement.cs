@@ -2,16 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EntityMovement : WorldComponent
+public class EntityMovement : GameService
 {
-    public override void Init(IEntity self)
-    {
-        base.Init(self);
-        RegisteredEvents.Add(GameEventId.BeforeMoving);
-        RegisteredEvents.Add(GameEventId.MoveEntity);
-        RegisteredEvents.Add(GameEventId.SetEntityPosition);
-    }
-
     public override void HandleEvent(GameEvent gameEvent)
     {
         if (gameEvent.ID == GameEventId.BeforeMoving)

@@ -20,7 +20,7 @@ public class SaveData
     }
 }
 
-public class SaveSystem : MonoBehaviour
+public class SaveSystem
 {
     public const string kSaveDataPath = "SaveData";
     [HideInInspector]
@@ -28,14 +28,6 @@ public class SaveSystem : MonoBehaviour
     SaveData m_Data;
 
     public static SaveSystem Instance { get; set; }
-
-    private void Awake()
-    {
-        if (Instance == null)
-            Instance = this;
-        else
-            Destroy(gameObject);
-    }
 
     public void Save()
     {
@@ -53,11 +45,11 @@ public class SaveSystem : MonoBehaviour
 
     public void Save(string saveName)
     {
-        m_Data = new SaveData(World.Instance.Seed);
+        m_Data = new SaveData(World.Services.Seed);
 
         GameEvent getCurrentLevel = GameEventPool.Get(GameEventId.GetCurrentLevel)
                                         .With(EventParameters.Level, -1);
-        m_Data.CurrentDungeonLevel = World.Instance.Self.FireEvent(getCurrentLevel).GetValue<int>(EventParameters.Level);
+        m_Data.CurrentDungeonLevel = World.Services.Self.FireEvent(getCurrentLevel).GetValue<int>(EventParameters.Level);
         m_Data.SaveName = CurrentSaveName = saveName;
         getCurrentLevel.Release();
 
@@ -74,7 +66,7 @@ public class SaveSystem : MonoBehaviour
         //        m_Data.Events.Add(line);
         //    }
         //}
-        World.Instance.Self.FireEvent(GameEventPool.Get(GameEventId.SaveLevel)).Release();
+        World.Services.Self.FireEvent(GameEventPool.Get(GameEventId.SaveLevel)).Release();
         Directory.CreateDirectory($"{kSaveDataPath}/{saveName}");
         File.WriteAllText($"{kSaveDataPath}/{saveName}/data.save", JsonUtility.ToJson(m_Data));
     }
@@ -119,7 +111,7 @@ public class SaveSystem : MonoBehaviour
         SaveData data = JsonUtility.FromJson<SaveData>(File.ReadAllText(path));
         CurrentSaveName = data.SaveName;
         //World.Instance.Self.FireEvent(GameEventPool.Get(GameEventId.LoadLevel, new .With(EventParameters.Level, data.CurrentDungeonLevel)));
-        World.Instance.InitWorld(data.Seed, data.CurrentDungeonLevel);
+        World.Services.InitWorld(data.Seed, data.CurrentDungeonLevel);
 
         //foreach (string eventString in data.Events)
         //{

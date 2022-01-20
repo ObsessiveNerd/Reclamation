@@ -9,16 +9,13 @@ using Debug = System.Diagnostics.Debug;
 public class World : MonoBehaviour
 {
     private static World m_Instance;
-    public static World Instance => m_Instance;
 
-    public IEntity Self => m_World;
     [HideInInspector]
     public int Seed;
     public GameObject TilePrefab;
-    IEntity m_World;
+
 #if UNITY_EDITOR
     public bool DebugMode;
-    //public bool GenerateDungeonOnStart;
 #endif
 
     public enum DungeonInitMode
@@ -85,34 +82,28 @@ public class World : MonoBehaviour
         else
             return;
 
-        var saveSystem = GameObject.FindObjectOfType<SaveSystem>();
-        if(saveSystem != null)
-        {
-            SaveSystem.Instance.CurrentSaveName = Path.GetFileName(loadPath);
-            Application.quitting += () => saveSystem.Save();
-        }
+        SaveSystem saveSystem = new SaveSystem();
+        saveSystem.CurrentSaveName = Path.GetFileName(loadPath);
+        Application.quitting += () => saveSystem.Save();
 
-        GameEventPool.Initialize();
+        DependencyInjection.Register(saveSystem);
+        DependencyInjection.Register(new WorldSpawner());
+        DependencyInjection.Register(new DungeonManager());
+        DependencyInjection.Register(new WorldUpdate());
+        DependencyInjection.Register(new TileSelection());
+        DependencyInjection.Register(new TileInteractions());
+        DependencyInjection.Register(new PlayerManager());
+        DependencyInjection.Register(new EntityMovement());
+        DependencyInjection.Register(new WorldUIController());
+        DependencyInjection.Register(new WorldDataQuery());
+        DependencyInjection.Register(new WorldFov());
+        DependencyInjection.Register(new EntityMap());
+        DependencyInjection.Register(new Pathfinder());
+        DependencyInjection.Register(new CameraController());
+        DependencyInjection.Register(new StateManager());
+        DependencyInjection.Register(new PartyController());
 
-        m_World = new Actor("World");
-
-        m_World.AddComponent(new WorldSpawner());
-        m_World.AddComponent(new DungeonManager());
-        m_World.AddComponent(new WorldUpdate());
-        m_World.AddComponent(new TileSelection());
-        m_World.AddComponent(new TileInteractions());
-        m_World.AddComponent(new PlayerManager());
-        m_World.AddComponent(new EntityMovement());
-        m_World.AddComponent(new WorldUIController());
-        m_World.AddComponent(new WorldDataQuery());
-        m_World.AddComponent(new WorldFov());
-        m_World.AddComponent(new EntityMap());
-        m_World.AddComponent(new Pathfinder());
-        m_World.AddComponent(new CameraController());
-        m_World.AddComponent(new StateManager());
-        m_World.AddComponent(new PartyController());
-
-        m_World.CleanupComponents();
+        Services.Complete();
     }
 
     public void GenerateDungeon(bool startNew, string loadPath)
@@ -132,7 +123,7 @@ public class World : MonoBehaviour
         }
         else
         {
-            FindObjectOfType<SaveSystem>().Load($"{loadPath}/data.save");
+            Services.SaveAndLoadService.Load($"{loadPath}/data.save");
         }
     }
 

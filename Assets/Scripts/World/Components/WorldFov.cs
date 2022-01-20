@@ -3,63 +3,44 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class WorldFov : WorldComponent
+public class WorldFov : GameService
 {
     Dictionary<IEntity, List<Point>> m_PlayerToVisibleTiles = new Dictionary<IEntity, List<Point>>();
 
-    public override void Init(IEntity self)
+    public void UnRegisterPlayer(IEntity player)
     {
-        base.Init(self);
-        RegisteredEvents.Add(GameEventId.FOVRecalculated);
-        RegisteredEvents.Add(GameEventId.IsTileBlocking);
-        RegisteredEvents.Add(GameEventId.RevealAllTiles);
-        RegisteredEvents.Add(GameEventId.CleanFoVData);
+        if (m_PlayerToVisibleTiles.ContainsKey(player))
+            m_PlayerToVisibleTiles.Remove(player);
     }
 
-    public override void HandleEvent(GameEvent gameEvent)
+    public void CleanFoVData()
     {
-        if(gameEvent.ID == GameEventId.RevealAllTiles)
-        {
-            foreach (var tile in m_Tiles.Values)
-                FireEvent(tile, GameEventPool.Get(GameEventId.SetVisibility)
-                    .With(EventParameters.TileInSight, true)).Release();
-            FireEvent(Self, GameEventPool.Get(GameEventId.UpdateWorldView)).Release();
-        }
+        m_PlayerToVisibleTiles.Clear();
+    }
 
-        if (gameEvent.ID == GameEventId.UnRegisterPlayer)
-        {
-            IEntity player = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Entity]);
-            if (m_PlayerToVisibleTiles.ContainsKey(player))
-                m_PlayerToVisibleTiles.Remove(player);
-        }
+    public void FoVRecalculated(IEntity source, List<Point> newVisibleTiles)
+    {
+        if (!m_PlayerToVisibleTiles.ContainsKey(source))
+            m_PlayerToVisibleTiles.Add(source, newVisibleTiles);
 
-        if (gameEvent.ID == GameEventId.CleanFoVData)
-        {
-            m_PlayerToVisibleTiles.Clear();
-        }
+        List<Point> oldVisibleTiles = m_PlayerToVisibleTiles[source];
+        m_PlayerToVisibleTiles[source] = newVisibleTiles;
+        UpdateTiles(oldVisibleTiles);
+    }
 
-        if(gameEvent.ID == GameEventId.FOVRecalculated)
-        {
-            IEntity source = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Entity]);
-            List<Point> newVisibleTiles = (List<Point>)gameEvent.Paramters[EventParameters.VisibleTiles];
+    public bool IsTileBlocking(Point p)
+    {
+        if (m_Tiles.ContainsKey(p))
+            return m_Tiles[p].GetComponent<Tile>().IsTileBlocking;
+        return false;
+    }
 
-            if (!m_PlayerToVisibleTiles.ContainsKey(source))
-                m_PlayerToVisibleTiles.Add(source, newVisibleTiles);
-
-            List<Point> oldVisibleTiles = m_PlayerToVisibleTiles[source];
-            m_PlayerToVisibleTiles[source] = newVisibleTiles;
-            UpdateTiles(oldVisibleTiles);
-        }
-
-        if(gameEvent.ID == GameEventId.IsTileBlocking)
-        {
-            Point p = (Point)gameEvent.Paramters[EventParameters.TilePosition];
-            if(m_Tiles.ContainsKey(p))
-            {
-                m_Tiles[p].GetComponent<Tile>().IsTileBlocking(gameEvent);
-                //FireEvent(m_Tiles[p], gameEvent);
-            }
-        }
+    public void RevealAllTiles()
+    {
+        foreach (var tile in m_Tiles.Values)
+            FireEvent(tile, GameEventPool.Get(GameEventId.SetVisibility)
+                .With(EventParameters.TileInSight, true)).Release();
+        Services.WorldUpdateService.UpdateWorldView();
     }
 
     void UpdateTiles(List<Point> oldTiles)

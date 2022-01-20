@@ -89,7 +89,7 @@ public class SpellContainer : Component
                                             .With(EventParameters.Entity, Self.ID)
                                             .With(EventParameters.SpellList, SpellNameToIdMap.Values.Select(s => s.ID).ToList());
 
-                FireEvent(World.Instance.Self, openSpellUI).Release();
+                FireEvent(World.Services.Self, openSpellUI).Release();
             }
         }
 
@@ -100,7 +100,7 @@ public class SpellContainer : Component
                 GameEvent openSpellExamination = GameEventPool.Get(GameEventId.OpenSpellExaminationUI)
                                                     .With(EventParameters.SpellList, SpellNameToIdMap.Keys.ToList());
 
-                World.Instance.Self.FireEvent(openSpellExamination).Release();
+                World.Services.Self.FireEvent(openSpellExamination).Release();
             });
 
             gameEvent.GetValue<List<ContextMenuButton>>(EventParameters.InventoryContextActions).Add(button);

@@ -71,7 +71,7 @@ public class Party
     }
 }
 
-public class PartyController : WorldComponent
+public class PartyController : GameService
 {
     Dictionary<FactionId, List<Party>> m_FactionParties = new Dictionary<FactionId, List<Party>>();
 

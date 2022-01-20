@@ -67,24 +67,24 @@ public static class PathfindingUtility
         GameEvent builder = GameEventPool.Get(GameEventId.GetRandomValidPoint)
                                 .With(EventParameters.Value, null);
 
-        if (World.Instance == null)
+        if (World.Services == null)
             return Point.InvalidPoint;
 
-        var res = World.Instance.Self.FireEvent(builder).GetValue<Point>(EventParameters.Value);
+        var res = World.Services.Self.FireEvent(builder).GetValue<Point>(EventParameters.Value);
         builder.Release();
         return res;
     }
 
     public static Point GetEntityLocation(IEntity entity)
     {
-        if (World.Instance == null)
+        if (World.Services == null)
             return Point.InvalidPoint;
 
         GameEvent getEntityPointBuilder = GameEventPool.Get(GameEventId.GetEntityLocation)
                                             .With(EventParameters.Entity, entity.ID)
                                             .With(EventParameters.TilePosition, null);
 
-        var res = World.Instance.Self.FireEvent(getEntityPointBuilder).GetValue<Point>(EventParameters.TilePosition);
+        var res = World.Services.Self.FireEvent(getEntityPointBuilder).GetValue<Point>(EventParameters.TilePosition);
         getEntityPointBuilder.Release();
         return res;
     }
@@ -147,7 +147,7 @@ public static class PathfindingUtility
                             .With(EventParameters.EndPos, destination)
                             .With(EventParameters.Path, null);
 
-        var res = World.Instance.Self.FireEvent(e).GetValue<List<IMapNode>>(EventParameters.Path);
+        var res = World.Services.Self.FireEvent(e).GetValue<List<IMapNode>>(EventParameters.Path);
         e.Release();
         return res;
     }

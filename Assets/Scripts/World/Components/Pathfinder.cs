@@ -2,37 +2,27 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Pathfinder : WorldComponent
+public class Pathfinder : GameService
 {
     public const int ImpassableWeight = 5000;
-
     IPathfindingAlgorithm m_Pathfinder;
-    public override void Init(IEntity self)
-    {
-        base.Init(self);
-        m_Pathfinder = new AStar();
 
-        RegisteredEvents.Add(GameEventId.PathfindingData);
-        RegisteredEvents.Add(GameEventId.CalculatePath);
+    public void GetPathfindingData(Point p,  out bool blocksMovement, out float weight)
+    {
+        GameEvent ge = GameEventPool.Get(GameEventId.PathfindingData)
+                        .With(EventParameters.BlocksMovement, false)
+                        .With(EventParameters.Weight, 0f);
+
+        if(m_Tiles.TryGetValue(p, out Actor tile))
+                FireEvent(tile, ge);
+        blocksMovement = ge.GetValue<bool>(EventParameters.BlocksMovement);
+        weight = ge.GetValue<float>(EventParameters.Weight);
+        ge.Release();
     }
 
-    public override void HandleEvent(GameEvent gameEvent)
+    public List<Point> CalculatePath(Point start, Point end)
     {
-        if(gameEvent.ID == GameEventId.PathfindingData)
-        {
-            Point p = gameEvent.GetValue<Point>(EventParameters.TilePosition);
-            if(m_Tiles.TryGetValue(p, out Actor tile))
-                FireEvent(tile, gameEvent);
-        }
-
-        else if(gameEvent.ID == GameEventId.CalculatePath)
-        {
-            m_Pathfinder.Clear();
-
-            Point startingPoint = gameEvent.GetValue<Point>(EventParameters.StartPos);
-            Point targetPoint = gameEvent.GetValue<Point>(EventParameters.EndPos);
-
-            gameEvent.Paramters[EventParameters.Path] = m_Pathfinder.CalculatePath(startingPoint, targetPoint);
-        }
+        m_Pathfinder.Clear();
+        return m_Pathfinder.CalculatePath(start, end);
     }
 }

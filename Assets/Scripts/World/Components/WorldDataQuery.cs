@@ -3,104 +3,79 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class WorldDataQuery : WorldComponent
+public class WorldDataQuery : GameService
 {
-
-    public override void Init(IEntity self)
+    public string GetActivePlayerId()
     {
-        base.Init(self);
-        RegisteredEvents.Add(GameEventId.GetEntities);
-        RegisteredEvents.Add(GameEventId.GetEntityOnTile);
-        RegisteredEvents.Add(GameEventId.GetEntityLocation);
-        RegisteredEvents.Add(GameEventId.IsValidDungeonTile);
-        RegisteredEvents.Add(GameEventId.GetValueOnTile);
-        RegisteredEvents.Add(GameEventId.GetClosestEnemy);
-        RegisteredEvents.Add(GameEventId.GetPlayableCharacters);
-        RegisteredEvents.Add(GameEventId.GetActivePlayerId);
-        RegisteredEvents.Add(GameEventId.GameObject);
+        return m_ActivePlayer?.Value.ID;
     }
 
-    public override void HandleEvent(GameEvent gameEvent)
+    public Point GetEntityLocation(IEntity entity)
     {
-        if(gameEvent.ID == GameEventId.GetEntities)
-            gameEvent.Paramters[EventParameters.Value] = GetEntities();
-
-        if (gameEvent.ID == GameEventId.GetEntityOnTile)
-        {
-            Point currentTilePos = (Point)gameEvent.Paramters[EventParameters.TilePosition];
-            if(m_Tiles.ContainsKey(currentTilePos))
-            {
-                m_Tiles[currentTilePos].GetComponent<Tile>().GetEntityOnTile(gameEvent);
-                //FireEvent(m_Tiles[currentTilePos], gameEvent);
-            }
-        }
-
-        if (gameEvent.ID == GameEventId.GetActivePlayerId)
-            gameEvent.Paramters[EventParameters.Value] = m_ActivePlayer?.Value.ID;
-
-        if(gameEvent.ID == GameEventId.GetEntityLocation)
-        {
-            //GameEvent eBuilder = GameEventPool.Get(GameEventId.GetEntity)
-            //                        .With(EventParameters.Entity, null)
-            //                        .With(EventParameters.Value, gameEvent.Paramters[EventParameters.Entity]);
-
-            //if (m_EntityToPointMap.TryGetValue(FireEvent(Self, eBuilder).GetValue<IEntity>(EventParameters.Entity), out Point result))
-            if (m_EntityToPointMap.TryGetValue(EntityMap.GetEntity(gameEvent.GetValue<string>(EventParameters.Entity)), out Point result))
-                gameEvent.Paramters[EventParameters.TilePosition] = result;
-            //eBuilder.Release();
-        }
-
-        else if(gameEvent.ID == GameEventId.IsValidDungeonTile)
-        {
-            Point p = gameEvent.GetValue<Point>(EventParameters.TilePosition);
-            if (m_ValidDungeonPoints.Contains(p))
-                gameEvent.Paramters[EventParameters.Value] = true;
-            else
-                gameEvent.Paramters[EventParameters.Value] = false;
-        }
-
-        else if(gameEvent.ID == GameEventId.GetValueOnTile)
-        {
-            Point p = gameEvent.GetValue<Point>(EventParameters.TilePosition);
-            if (m_ValidDungeonPoints.Contains(p))
-                FireEvent(m_Tiles[p], gameEvent);
-        }
-        else if(gameEvent.ID == GameEventId.GetClosestEnemy)
-        {
-            IEntity closestEnemy = null;
-            float distance = float.MaxValue;
-            IEntity source = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameters.Entity));
-            Point sourcePoint = m_EntityToPointMap[source];
-            foreach (var entity in m_EntityToPointMap.Keys)
-            {
-                if (entity == source) continue;
-
-                if (Point.Distance(sourcePoint, m_EntityToPointMap[entity]) < distance &&
-                    Factions.GetDemeanorForTarget(source, entity) == Demeanor.Hostile)
-                {
-                    closestEnemy = entity;
-                    distance = Point.Distance(sourcePoint, m_EntityToPointMap[entity]);
-                }
-            }
-
-            gameEvent.Paramters[EventParameters.Value] = closestEnemy?.ID;
-        }
-        else if(gameEvent.ID == GameEventId.GetPlayableCharacters)
-        {
-            gameEvent.GetValue<List<string>>(EventParameters.Value).AddRange(m_Players.Select(e => e.ID));
-        }
-
-        else if(gameEvent.ID == GameEventId.GameObject)
-        {
-            Point p = gameEvent.GetValue<Point>(EventParameters.Point);
-            if(m_GameObjectMap.ContainsKey(p))
-            {
-                gameEvent.Paramters[EventParameters.Value] = m_GameObjectMap[p];
-            }
-        }
+        if (m_EntityToPointMap.TryGetValue(entity, out Point result))
+            return result;
+        return Point.InvalidPoint;
     }
 
-    List<IEntity> GetEntities()
+    public bool IsValidDungeonTile(Point p)
+    {
+        return m_ValidDungeonPoints.Contains(p);
+    }
+
+    public int GetValueOnTile(Point p)
+    {
+        GameEvent getValue = GameEventPool.Get(GameEventId.GetValueOnTile)
+                                .With(EventParameters.Value, 0);
+
+        if (m_ValidDungeonPoints.Contains(p))
+            FireEvent(m_Tiles[p], getValue);
+
+        int retVal = getValue.GetValue<int>(EventParameters.Value);
+        getValue.Release();
+        return retVal;
+    }
+
+    public IEntity GetClosestEnemy(IEntity source)
+    {
+        IEntity closestEnemy = null;
+        float distance = float.MaxValue;
+        Point sourcePoint = m_EntityToPointMap[source];
+        foreach (var entity in m_EntityToPointMap.Keys)
+        {
+            if (entity == source)
+                continue;
+
+            if (Point.Distance(sourcePoint, m_EntityToPointMap[entity]) < distance &&
+                Factions.GetDemeanorForTarget(source, entity) == Demeanor.Hostile)
+            {
+                closestEnemy = entity;
+                distance = Point.Distance(sourcePoint, m_EntityToPointMap[entity]);
+            }
+        }
+
+        return closestEnemy;
+    }
+
+    public List<string> GetPlayableCharacters()
+    {
+        return m_Players.Select(e => e.ID).ToList();
+    }
+
+    public GameObject GetGameObject(Point p)
+    {
+        if (m_GameObjectMap.ContainsKey(p))
+            return m_GameObjectMap[p];
+        return null;
+    }
+
+    public IEntity GetEntityOnTile(Point currentTilePos)
+    {
+        if (m_Tiles.ContainsKey(currentTilePos))
+            return m_Tiles[currentTilePos].GetComponent<Tile>().GetEntityOnTile();
+        return null;
+    }
+
+    public List<IEntity> GetEntities()
     {
         return m_EntityToPointMap.Keys.ToList();
     }

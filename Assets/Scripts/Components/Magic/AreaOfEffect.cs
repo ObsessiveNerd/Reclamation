@@ -47,7 +47,7 @@ public class AreaOfEffect : Component
             foreach (var tile in m_VisibleTiles)
             {
                 endSelection.Paramters[EventParameters.TilePosition] = tile;
-                FireEvent(World.Instance.Self, endSelection);
+                FireEvent(World.Services.Self, endSelection);
             }
             m_VisibleTiles.Clear();
             endSelection.Release();
@@ -68,7 +68,7 @@ public class AreaOfEffect : Component
             {
                 GameEvent eb = GameEventPool.Get(GameEventId.EndSelection)
                                     .With(EventParameters.TilePosition, tile);
-                FireEvent(World.Instance.Self, eb).Release();
+                FireEvent(World.Services.Self, eb).Release();
             }
             GameEvent builder = GameEventPool.Get(GameEventId.SelectTile)
                                     .With(EventParameters.TilePosition, p);
@@ -84,7 +84,7 @@ public class AreaOfEffect : Component
             foreach (var tile in m_VisibleTiles)
             {
                 endSelection.Paramters[EventParameters.TilePosition] = tile;
-                FireEvent(World.Instance.Self, endSelection);
+                FireEvent(World.Services.Self, endSelection);
             }
             m_VisibleTiles.Clear();
             endSelection.Release();
@@ -104,7 +104,7 @@ public class AreaOfEffect : Component
             foreach (var point in visibleTiles)
             {
                 gameEvent.Paramters[EventParameters.TilePosition] = point;
-                FireEvent(World.Instance.Self, gameEvent);
+                FireEvent(World.Services.Self, gameEvent);
             }
         }
     }

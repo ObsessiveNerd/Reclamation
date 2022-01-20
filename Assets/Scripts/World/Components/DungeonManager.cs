@@ -55,7 +55,7 @@ public class DungeonMetaData
     }
 }
 
-public class DungeonManager : WorldComponent
+public class DungeonManager : GameService
 {
     GameObject m_TilePrefab;
     IDungeonGenerator m_DungeonGenerator;
@@ -92,7 +92,7 @@ public class DungeonManager : WorldComponent
             sw.Stop();
 
             m_CurrentLevel = gameEvent.GetValue<int>(EventParameters.Level);
-            m_DungeonGenerator = new BasicDungeonGenerator(World.Instance.MapRows, World.Instance.MapColumns);
+            m_DungeonGenerator = new BasicDungeonGenerator(World.Services.MapRows, World.Services.MapColumns);
 
             LoadOrCreateDungeon();
             sw.Reset();
@@ -409,9 +409,9 @@ public class DungeonManager : WorldComponent
     void CreateTiles(Dictionary<Point, Actor> pointToTileMap)
     {
         EntityFactory.InitTempBlueprints();
-        for (int i = 0; i < World.Instance.MapColumns; i++)
+        for (int i = 0; i < World.Services.MapColumns; i++)
         {
-            for (int j = 0; j < World.Instance.MapRows; j++)
+            for (int j = 0; j < World.Services.MapRows; j++)
             {
                 CreateTile(i, j, m_Horizontal, m_Vertical, pointToTileMap);
             }

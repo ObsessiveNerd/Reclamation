@@ -2,13 +2,13 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class WorldComponent : Component
+public abstract class GameService //: Component
 {
     //protected static Dictionary<IEntity, TimeProgression> m_PlayerToTimeProgressionMap = new Dictionary<IEntity, TimeProgression>();
     protected static TimeProgression m_TimeProgression = new TimeProgression();
     protected static Dictionary<Point, Actor> m_Tiles = new Dictionary<Point, Actor>();
 
-    public static List<Tile> m_ChangedTiles = new List<Tile>();
+    protected static List<Tile> m_ChangedTiles = new List<Tile>();
 
     protected static Dictionary<IEntity, Point> m_EntityToPointMap = new Dictionary<IEntity, Point>();
     protected static LinkedList<IEntity> m_Players = new LinkedList<IEntity>();
@@ -66,5 +66,10 @@ public abstract class WorldComponent : Component
         if (name.Contains("W"))
             x--;
         return new Point(x, y);
+    }
+
+    protected GameEvent FireEvent(IEntity target, GameEvent gameEvent)
+    {
+        return target.FireEvent(gameEvent);
     }
 }

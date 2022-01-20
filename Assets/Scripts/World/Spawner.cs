@@ -21,7 +21,7 @@ public static class Spawner
             .Paramters[EventParameters.EntityType];
 
 
-        World.Instance.Self.FireEvent(World.Instance.Self, GameEventPool.Get(GameEventId.Spawn)
+        World.Services.Self.FireEvent(World.Services.Self, GameEventPool.Get(GameEventId.Spawn)
                 .With(EventParameters.Entity, e.ID)
                 .With(EventParameters.EntityType, entityType)
                 .With(EventParameters.Point, new Point(x, y))).Release();
@@ -43,7 +43,7 @@ public static class Spawner
         EntityType entityType = (EntityType)e.FireEvent(e, getEntityTypeEvent).Paramters[EventParameters.EntityType];
 
 
-        World.Instance.Self.FireEvent(World.Instance.Self, GameEventPool.Get(GameEventId.Despawn)
+        World.Services.Self.FireEvent(World.Services.Self, GameEventPool.Get(GameEventId.Despawn)
                 .With(EventParameters.Entity, e.ID)
                 .With(EventParameters.EntityType, entityType)).Release();
         getEntityTypeEvent.Release();
@@ -74,7 +74,7 @@ public static class Spawner
         EntityType entityType = (EntityType)e.FireEvent(e, getEntityTypeEvent).Paramters[EventParameters.EntityType];
 
 
-        World.Instance.Self.FireEvent(World.Instance.Self, GameEventPool.Get(GameEventId.SetEntityPosition)
+        World.Services.Self.FireEvent(World.Services.Self, GameEventPool.Get(GameEventId.SetEntityPosition)
                 .With(EventParameters.Entity, e.ID)
                 .With(EventParameters.EntityType, entityType)
                 .With(EventParameters.TilePosition, newPoint)).Release();

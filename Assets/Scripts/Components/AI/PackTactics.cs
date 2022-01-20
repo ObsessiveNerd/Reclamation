@@ -18,7 +18,7 @@ public class PackTactics : Component
     {
         GameEvent registerWithPartyManager = GameEventPool.Get(GameEventId.LookingForGroup)
                                                 .With(EventParameters.Entity, Self.ID);
-        FireEvent(World.Instance?.Self, registerWithPartyManager).Release();
+        FireEvent(World.Services?.Self, registerWithPartyManager).Release();
     }
 
     public override void Init(IEntity self)
@@ -41,7 +41,7 @@ public class PackTactics : Component
         {
             GameEvent registerWithPartyManager = GameEventPool.Get(GameEventId.RemoveFromParty)
                                                 .With(EventParameters.Entity, Self.ID);
-            FireEvent(World.Instance.Self, registerWithPartyManager).Release();
+            FireEvent(World.Services.Self, registerWithPartyManager).Release();
         }
         else if(gameEvent.ID == GameEventId.SetLeader)
         {

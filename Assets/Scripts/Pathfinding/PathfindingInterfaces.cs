@@ -1,15 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public interface IMapNode
-{
-    int x { get; set; }
-    int y { get; set; }
-}
+﻿using System.Collections.Generic;
 
 public interface IPathfindingAlgorithm
 {
-    List<IMapNode> CalculatePath(IMapNode startingPoint, IMapNode targetPoint);
+    List<Point> CalculatePath(Point startingPoint, Point targetPoint);
     void Clear();
 }

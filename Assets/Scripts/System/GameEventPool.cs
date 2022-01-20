@@ -4,13 +4,15 @@ using UnityEngine;
 
 public static class GameEventPool
 {
-    public static Stack<GameEvent> m_Pool = new Stack<GameEvent>();
-    public static List<GameEvent> m_InUse = new List<GameEvent>();
+    static Stack<GameEvent> m_Pool = new Stack<GameEvent>();
+    static List<GameEvent> m_InUse = new List<GameEvent>();
 
-    public static void Initialize()
+    public static bool GameEventsInUse
     {
-        //for(int i = 0; i < 100; i++)
-        //    m_Pool.Push(new GameEvent(""));
+        get
+        {
+            return m_InUse.Count > 0;
+        }
     }
 
     public static GameEvent Get(string id)

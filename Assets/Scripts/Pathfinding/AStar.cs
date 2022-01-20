@@ -3,13 +3,13 @@ using System.Collections.Generic;
 
 public class AStar : IPathfindingAlgorithm
 {
-    Dictionary<IMapNode, bool> closedSet = new Dictionary<IMapNode, bool>(World.Instance.MapColumns * World.Instance.MapRows);
-    Dictionary<IMapNode, bool> openSet = new Dictionary<IMapNode, bool>(World.Instance.MapColumns * World.Instance.MapRows);
+    Dictionary<IMapNode, bool> closedSet = new Dictionary<IMapNode, bool>(World.Services.MapColumns * World.Services.MapRows);
+    Dictionary<IMapNode, bool> openSet = new Dictionary<IMapNode, bool>(World.Services.MapColumns * World.Services.MapRows);
 
     //cost of start to this key node
-    Dictionary<IMapNode, int> gScore = new Dictionary<IMapNode, int>(World.Instance.MapColumns * World.Instance.MapRows);
+    Dictionary<IMapNode, int> gScore = new Dictionary<IMapNode, int>(World.Services.MapColumns * World.Services.MapRows);
     //cost of start to goal, passing through key node
-    Dictionary<IMapNode, int> fScore = new Dictionary<IMapNode, int>(World.Instance.MapColumns * World.Instance.MapRows);
+    Dictionary<IMapNode, int> fScore = new Dictionary<IMapNode, int>(World.Services.MapColumns * World.Services.MapRows);
 
     Dictionary<IMapNode, IMapNode> nodeLinks = new Dictionary<IMapNode, IMapNode>();
 
@@ -70,7 +70,7 @@ public class AStar : IPathfindingAlgorithm
                                     .With(EventParameters.BlocksMovement, false)
                                     .With(EventParameters.Weight, 1);
 
-        Tile t = World.Instance.Self.GetComponent<TileInteractions>().GetTile(new Point(start.x, start.y));
+        Tile t = World.Services.Self.GetComponent<TileInteractions>().GetTile(new Point(start.x, start.y));
         t.GetPathFindingData(getPathData);
         int weight = getPathData.GetValue<int>(EventParameters.Weight);
         getPathData.Release();
@@ -136,7 +136,7 @@ public class AStar : IPathfindingAlgorithm
         //                            .With(EventParameters.BlocksMovement, false)
         //                            .With(EventParameters.Weight, 1);
 
-        Tile t = World.Instance.Self.GetComponent<TileInteractions>().GetTile(new Point(pt.x, pt.y));
+        Tile t = World.Services.Self.GetComponent<TileInteractions>().GetTile(new Point(pt.x, pt.y));
         return t == null ? false : !t.BlocksMovement;
     }
 

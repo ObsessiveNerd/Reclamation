@@ -45,8 +45,8 @@ public class Actor : IEntity
         ID = IDManager.GetNewID().ToString();
         m_Components = new PriorityQueue<IComponent>(new ComponentComparer());
 
-        if (World.Instance != null)
-            FireEvent(World.Instance.Self, GameEventPool.Get(GameEventId.RegisterEntity)
+        if (World.Services != null)
+            FireEvent(World.Services.Self, GameEventPool.Get(GameEventId.RegisterEntity)
                 .With(EventParameters.Entity, this)).Release();
 
         EntityMap.AddEntity(this);
@@ -61,8 +61,8 @@ public class Actor : IEntity
             IDManager.SetId(int.Parse(id));
 
         m_Components = new PriorityQueue<IComponent>(new ComponentComparer());
-        if (World.Instance != null)
-            FireEvent(World.Instance.Self, GameEventPool.Get(GameEventId.RegisterEntity)
+        if (World.Services != null)
+            FireEvent(World.Services.Self, GameEventPool.Get(GameEventId.RegisterEntity)
                 .With(EventParameters.Entity, this)).Release();
 
         EntityMap.AddEntity(this);

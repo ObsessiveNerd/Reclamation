@@ -24,7 +24,7 @@ public class PlayableCharacterSelector : MonoBehaviour
             GameEvent newPlayer = GameEventPool.Get(GameEventId.SetActiveCharacter)
                                         .With(EventParameters.Entity, id);
 
-            World.Instance.Self.FireEvent(newPlayer).Release();
+            World.Services.Self.FireEvent(newPlayer).Release();
         });
 
         m_CharacterIdToTabGameObject.Add(id, newTab);

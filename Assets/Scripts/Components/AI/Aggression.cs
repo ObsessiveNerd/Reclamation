@@ -36,7 +36,7 @@ public class Aggression : Component
                                                         .With(EventParameters.TilePosition, point)
                                                         .With(EventParameters.Entity, "");
 
-                IEntity target = EntityQuery.GetEntity(FireEvent(World.Instance.Self, getEntity).GetValue<string>(EventParameters.Entity));
+                IEntity target = EntityQuery.GetEntity(FireEvent(World.Services.Self, getEntity).GetValue<string>(EventParameters.Entity));
                 getEntity.Release();
                 if (target == null) continue;
 

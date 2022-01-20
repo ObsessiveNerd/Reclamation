@@ -51,7 +51,7 @@ public class Desire : Component
                 GameEvent getTileValue = GameEventPool.Get(GameEventId.GetValueOnTile)
                                             .With(EventParameters.TilePosition, point)
                                             .With(EventParameters.Value, 0);
-                int valueOnTile = FireEvent(World.Instance.Self, getTileValue).GetValue<int>(EventParameters.Value);
+                int valueOnTile = FireEvent(World.Services.Self, getTileValue).GetValue<int>(EventParameters.Value);
                 getTileValue.Release();
                 if(valueOnTile > m_DesiredValue)
                 {
@@ -78,7 +78,7 @@ public class Desire : Component
         {
             GameEvent pickupItem = GameEventPool.Get(GameEventId.Pickup)
                                         .With(EventParameters.Entity, Self.ID);
-            FireEvent(World.Instance.Self, pickupItem);
+            FireEvent(World.Services.Self, pickupItem);
             pickupItem.Release();
 
             GameEvent tryEquip = GameEventPool.Get(GameEventId.TryEquip)

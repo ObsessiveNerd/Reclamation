@@ -27,7 +27,7 @@ public class Inventory : Component
     {
         if (gameEvent.ID == GameEventId.OpenInventory)
         {
-            FireEvent(World.Instance.Self, GameEventPool.Get(GameEventId.OpenInventoryUI)
+            FireEvent(World.Services.Self, GameEventPool.Get(GameEventId.OpenInventoryUI)
                     .With(EventParameters.Value, InventoryItems)
                     .With(EventParameters.Entity, Self.ID)).Release();
         }
@@ -55,7 +55,7 @@ public class Inventory : Component
         if (gameEvent.ID == GameEventId.Died)
         {
             foreach (IEntity item in InventoryItems)
-                FireEvent(World.Instance.Self, GameEventPool.Get(GameEventId.Drop)
+                FireEvent(World.Services.Self, GameEventPool.Get(GameEventId.Drop)
                         .With(EventParameters.Entity, item.ID)
                         .With(EventParameters.Creature, Self.ID)
                         .With(EventParameters.EntityType, EntityType.Item)).Release();

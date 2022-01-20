@@ -37,10 +37,10 @@ public class RangedPlayerAttackController : InputControllerBase
         GameEvent selectTile = GameEventPool.Get(GameEventId.SelectTile).With(EventParameters.Entity, Self.ID)
                                                                                 .With(EventParameters.Target, startingTarget.ID)
                                                                                 .With(EventParameters.TilePosition, null);
-        FireEvent(World.Instance.Self, selectTile);
+        FireEvent(World.Services.Self, selectTile);
         m_TileSelection = (Point)selectTile.Paramters[EventParameters.TilePosition];
         selectTile.Release();
-        FireEvent(World.Instance.Self, GameEventPool.Get(GameEventId.UpdateWorldView)).Release();
+        FireEvent(World.Services.Self, GameEventPool.Get(GameEventId.UpdateWorldView)).Release();
         UIManager.Push(null);
     }
 
@@ -62,7 +62,7 @@ public class RangedPlayerAttackController : InputControllerBase
                     .With(EventParameters.InputDirection, desiredDirection)
                     .With(EventParameters.TilePosition, m_TileSelection);
 
-                FireEvent(World.Instance.Self, moveSelection);
+                FireEvent(World.Services.Self, moveSelection);
                 m_TileSelection = (Point)moveSelection.Paramters[EventParameters.TilePosition];
                 gameEvent.Paramters[EventParameters.UpdateWorldView] = true;
                 moveSelection.Release();

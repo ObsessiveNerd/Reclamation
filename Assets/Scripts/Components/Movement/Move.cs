@@ -39,7 +39,7 @@ public class Move : Component
                 .With(EventParameters.InputDirection, beforeMoving.Paramters[EventParameters.InputDirection])
                 .With(EventParameters.RequiredEnergy, m_EnergyRequired);
             
-            FireEvent(World.Instance.Self, beforeMovingCheckWorld);
+            FireEvent(World.Services.Self, beforeMovingCheckWorld);
 
             float energyRequired = (float)beforeMovingCheckWorld.Paramters[EventParameters.RequiredEnergy];
 
@@ -58,7 +58,7 @@ public class Move : Component
                 if (moveWorld.Paramters.Count < 4)
                     throw new Exception();
 
-                FireEvent(World.Instance.Self, moveWorld);
+                FireEvent(World.Services.Self, moveWorld);
 
                 //See if there's anything on the player that needs to happen when moving
                 GameEvent moving = GameEventPool.Get(GameEventId.ExecuteMove).With(moveWorld.Paramters);

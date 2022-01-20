@@ -198,11 +198,6 @@ public class Tile : Component
             BeforeMoving(gameEvent);
         }
 
-        else if (gameEvent.ID == GameEventId.Spawn)
-        {
-            Spawn(gameEvent);
-        }
-
         else if (gameEvent.ID == GameEventId.Pickup)
         {
             Pickup(gameEvent);
@@ -270,13 +265,13 @@ public class Tile : Component
         //List<IEntity> items = new List<IEntity>(Items);
         //foreach (var item in items)
         //    Spawner.Despawn(item);
-        WorldComponent.m_ChangedTiles.Add(this);
+        Services.TileInteractionService.TileChanged(this);
     }
 
     public void VisibilityUpdated(GameEvent gameEvent)
     {
         m_IsVisible = (bool)gameEvent.Paramters[EventParameters.Value];
-        WorldComponent.m_ChangedTiles.Add(this);
+        Services.TileInteractionService.TileChanged(this);
     }
 
     public void BeforeMoving(GameEvent gameEvent)
@@ -295,12 +290,14 @@ public class Tile : Component
         }
     }
 
-    public void Spawn(GameEvent gameEvent)
+    public void Spawn(IEntity entity)
     {
-        try
-        {
-        IEntity entity = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Entity]);
-        EntityType entityType = (EntityType)gameEvent.Paramters[EventParameters.EntityType];
+        GameEvent getType = GameEventPool.Get(GameEventId.GetEntityType)
+                            .With(EventParameters.EntityType, EntityType.None);
+
+        EntityType entityType = entity.FireEvent(getType).GetValue<EntityType>(EventParameters.EntityType);
+        getType.Release();
+
         switch (entityType)
         {
             case EntityType.Creature:
@@ -313,12 +310,7 @@ public class Tile : Component
                 Items.Add(entity);
                 break;
         }
-        WorldComponent.m_ChangedTiles.Add(this);
-        }
-        catch(InvalidCastException ex)
-        {
-            throw ex;
-        }
+        Services.TileInteractionService.TileChanged(this);
     }
 
     public void Pickup(GameEvent gameEvent)
@@ -342,7 +334,7 @@ public class Tile : Component
         {
             FireEvent(ObjectSlot, gameEvent);
         }
-        WorldComponent.m_ChangedTiles.Add(this);
+        Services.TileInteractionService.TileChanged(this);
     }
 
     public void Despawn(GameEvent gameEvent)
@@ -361,7 +353,7 @@ public class Tile : Component
                 Items.Remove(entity);
                 break;
         }
-        WorldComponent.m_ChangedTiles.Add(this);
+        Services.TileInteractionService.TileChanged(this);
     }
 
     public void ShowTileInfo(GameEvent gameEvent)
@@ -374,25 +366,29 @@ public class Tile : Component
         showInfo.Release();
     }
 
-    public void GetEntityOnTile(GameEvent gameEvent)
+    public IEntity GetEntityOnTile(bool includeSelf = true)
     {
-        bool includeSelf = true;
-        if (gameEvent.Paramters.ContainsKey(EventParameters.IncludeSelf))
-            includeSelf = gameEvent.GetValue<bool>(EventParameters.IncludeSelf);
-
         var targets = GetTarget(includeSelf);
         if (targets.Count == 0)
-            gameEvent.Paramters[EventParameters.Entity] = null;
+            return null;
         else
-            gameEvent.Paramters[EventParameters.Entity] = GetTarget(includeSelf)[0].ID;
+            return GetTarget(includeSelf)[0];
     }
 
-    public void IsTileBlocking(GameEvent gameEvent)
+    public bool IsTileBlocking
     {
-        if (GetTarget()[0] != Self)
+        get
         {
-            foreach (IEntity e in GetTarget())
-                FireEvent(e, gameEvent);
+            GameEvent isTileBlocking = GameEventPool.Get(GameEventId.IsTileBlocking)
+                                        .With(EventParameters.BlocksMovement, false);
+            if (GetTarget()[0] != Self)
+            {
+                foreach (IEntity e in GetTarget())
+                    FireEvent(e, isTileBlocking);
+            }
+            bool returnValue = isTileBlocking.GetValue<bool>(EventParameters.BlocksMovement);
+            isTileBlocking.Release();
+            return returnValue;
         }
     }
 
@@ -420,7 +416,7 @@ public class Tile : Component
     public void DestroyObject()
     {
         Spawner.Despawn(ObjectSlot);
-        WorldComponent.m_ChangedTiles.Add(this);
+        Services.TileInteractionService.TileChanged(this);
     }
 
     List<IEntity> GetTarget(bool includeSelf = true)

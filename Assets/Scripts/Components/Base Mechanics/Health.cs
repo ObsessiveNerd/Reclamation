@@ -35,7 +35,7 @@ public class Health : Component
                 GameEvent entityTookDamage = GameEventPool.Get(GameEventId.EntityTookDamage)
                                                     .With(EventParameters.Entity, Self.ID)
                                                     .With(EventParameters.Damage, damage.DamageAmount);
-                World.Instance.Self.FireEvent(entityTookDamage).Release();
+                World.Services.Self.FireEvent(entityTookDamage).Release();
 
                 if (CurrentHealth <= 0)
                 {
@@ -66,7 +66,7 @@ public class Health : Component
             GameEvent entityHealedDamage = GameEventPool.Get(GameEventId.EntityHealedDamage)
                                                     .With(EventParameters.Entity, Self.ID)
                                                     .With(EventParameters.Healing, healAmount);
-            World.Instance.Self.FireEvent(entityHealedDamage).Release();
+            World.Services.Self.FireEvent(entityHealedDamage).Release();
         }
 
         else if(gameEvent.ID == GameEventId.GetHealth)

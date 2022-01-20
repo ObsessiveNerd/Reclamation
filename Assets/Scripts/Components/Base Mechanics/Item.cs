@@ -38,7 +38,7 @@ public class Item : Component
         if (gameEvent.ID == GameEventId.Drop)
         {
             IEntity droppingEntity = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Entity]);
-            FireEvent(World.Instance.Self, GameEventPool.Get(GameEventId.Drop)
+            FireEvent(World.Services.Self, GameEventPool.Get(GameEventId.Drop)
                     .With(EventParameters.Entity, Self.ID)
                     .With(EventParameters.EntityType, EntityType.Item)
                     .With(EventParameters.Creature, droppingEntity.ID)).Release();
@@ -71,7 +71,7 @@ public class Item : Component
                 GameEvent giveItemTo = GameEventPool.Get(GameEventId.PromptToGiveItem)
                                              .With(EventParameters.Entity, gameEvent.GetValue<string>(EventParameters.Entity))
                                              .With(EventParameters.Item, Self.ID);
-                World.Instance.Self.FireEvent(giveItemTo).Release();
+                World.Services.Self.FireEvent(giveItemTo).Release();
             });
             gameEvent.GetValue<List<ContextMenuButton>>(EventParameters.InventoryContextActions).Add(giveTo);
         }

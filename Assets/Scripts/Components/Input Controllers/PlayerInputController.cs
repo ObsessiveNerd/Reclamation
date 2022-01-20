@@ -25,7 +25,7 @@ public class PlayerInputController : InputControllerBase
                     .With(EventParameters.InputDirection, desiredDirection), true).Release();
                 GameEvent setCamera = GameEventPool.Get(GameEventId.SetCameraPosition)
                                     .With(EventParameters.Point, PathfindingUtility.GetEntityLocation(Self));
-                FireEvent(World.Instance.Self, setCamera).Release();
+                FireEvent(World.Services.Self, setCamera).Release();
                 energyUsed = true;
             }
 
@@ -39,7 +39,7 @@ public class PlayerInputController : InputControllerBase
 #if UNITY_EDITOR
             else if (Input.GetKeyDown(KeyCode.M))
             {
-                FireEvent(World.Instance.Self, GameEventPool.Get(GameEventId.RevealAllTiles));
+                FireEvent(World.Services.Self, GameEventPool.Get(GameEventId.RevealAllTiles));
             }
 #endif
             else if (InputBinder.PerformRequestedAction(RequestedAction.FireRangedWeapon))
@@ -107,7 +107,7 @@ public class PlayerInputController : InputControllerBase
                 GameEvent pickupItems = GameEventPool.Get(GameEventId.Pickup)
                                             .With(EventParameters.Entity, Self.ID);
 
-                FireEvent(World.Instance.Self, pickupItems).Release();
+                FireEvent(World.Services.Self, pickupItems).Release();
                 energyUsed = true;
 
                 //var getInteractableObjectsPositions = FireEvent(World.Instance.Self, GameEventPool.Get(GameEventId.GetInteractableObjects, new .With(EventParameters.Value, new List<Point>())));
@@ -165,7 +165,7 @@ public class PlayerInputController : InputControllerBase
 
     void RotateActiveCharacter(GameEvent gameEvent)
     {
-        FireEvent(World.Instance.Self, GameEventPool.Get(GameEventId.RotateActiveCharacter));
+        FireEvent(World.Services.Self, GameEventPool.Get(GameEventId.RotateActiveCharacter));
         gameEvent.Paramters[EventParameters.UpdateWorldView] = true;
         gameEvent.ContinueProcessing = false;
     }

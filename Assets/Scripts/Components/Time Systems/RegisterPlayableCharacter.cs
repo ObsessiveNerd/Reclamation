@@ -14,11 +14,11 @@ public class RegisterPlayableCharacter : Component
     public override void HandleEvent(GameEvent gameEvent)
     {
         if(gameEvent.ID == GameEventId.RegisterPlayableCharacter)
-            FireEvent(World.Instance.Self, GameEventPool.Get(GameEventId.RegisterPlayableCharacter)
+            FireEvent(World.Services.Self, GameEventPool.Get(GameEventId.RegisterPlayableCharacter)
                 .With(EventParameters.Entity, Self.ID)).Release();
 
         if (gameEvent.ID == GameEventId.Died)
-            FireEvent(World.Instance.Self, GameEventPool.Get(GameEventId.UnRegisterPlayer)
+            FireEvent(World.Services.Self, GameEventPool.Get(GameEventId.UnRegisterPlayer)
                 .With(EventParameters.Entity, Self.ID)).Release();
     }
 }

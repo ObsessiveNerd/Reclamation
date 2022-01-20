@@ -105,7 +105,7 @@ public class Room
         GameEvent sendValidPoints = GameEventPool.Get(GameEventId.AddValidPoints)
                                         .With(EventParameters.Value, m_RoomTiles);
 
-        World.Instance.Self.FireEvent(sendValidPoints).Release();
+        World.Services.Self.FireEvent(sendValidPoints).Release();
     }
 
     public void CreateDoors()

@@ -22,7 +22,7 @@ public class TriggerOnDeath : Component
         {
             GameEvent eb = GameEventPool.Get(EventId)
                                 .With(EventParameters.Entity, Self.ID);
-            FireEvent(World.Instance.Self, eb).Release();
+            FireEvent(World.Services.Self, eb).Release();
         }
     }
 }

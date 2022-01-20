@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CameraController : WorldComponent
+public class CameraController : GameService
 {
     CameraControllerMono m_CameraControllerMono;
     

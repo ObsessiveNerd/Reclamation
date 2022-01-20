@@ -36,7 +36,7 @@ public class Stairs : Component
                 if (Direction == StairDirection.Down)
                     move = GameEventPool.Get(GameEventId.MoveDown);
 
-                FireEvent(World.Instance.Self, move).Release();
+                FireEvent(World.Services.Self, move).Release();
             }
         }
     }
