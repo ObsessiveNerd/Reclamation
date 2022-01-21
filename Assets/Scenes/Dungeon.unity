@@ -3304,7 +3304,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1505586011
 MonoBehaviour:
   m_ObjectHideFlags: 18
@@ -4339,7 +4339,7 @@ PrefabInstance:
     - target: {fileID: 6241948252624630896, guid: 111d7f65e2b1f5f468dafe018551f1fd,
         type: 3}
       propertyPath: MapRows
-      value: 100
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 6241948252624630896, guid: 111d7f65e2b1f5f468dafe018551f1fd,
         type: 3}
@@ -4354,7 +4354,7 @@ PrefabInstance:
     - target: {fileID: 6241948252624630896, guid: 111d7f65e2b1f5f468dafe018551f1fd,
         type: 3}
       propertyPath: MapColumns
-      value: 100
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 6241948252624630896, guid: 111d7f65e2b1f5f468dafe018551f1fd,
         type: 3}
