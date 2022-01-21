@@ -9,9 +9,6 @@ using Debug = System.Diagnostics.Debug;
 public class World : MonoBehaviour
 {
     private static World m_Instance;
-
-    [HideInInspector]
-    public int Seed;
     public GameObject TilePrefab;
 
 #if UNITY_EDITOR
@@ -88,7 +85,7 @@ public class World : MonoBehaviour
 
         DependencyInjection.Register(saveSystem);
         DependencyInjection.Register(new WorldSpawner());
-        DependencyInjection.Register(new DungeonManager());
+        DependencyInjection.Register(new DungeonManager(RecRandom.InitRecRandom(DateTime.Now.Second), TilePrefab));
         DependencyInjection.Register(new WorldUpdate());
         DependencyInjection.Register(new TileSelection());
         DependencyInjection.Register(new TileInteractions());
@@ -106,39 +103,40 @@ public class World : MonoBehaviour
         Services.Complete();
     }
 
-    public void GenerateDungeon(bool startNew, string loadPath)
-    {
-        if (startNew)
-        {
-            Seed = RecRandom.InitRecRandom(UnityEngine.Random.Range(0, int.MaxValue));
-            using (new DiagnosticsTimer("Start World"))
-            {
-                m_World.FireEvent(m_World, GameEventPool.Get(GameEventId.StartWorld).With(EventParameters.Seed, Seed.ToString())
-                                                                                .With(EventParameters.GameObject, TilePrefab)
-                                                                                .With(EventParameters.NewGame, true)
-                                                                                .With(EventParameters.Level, 1)).Release();
-            }
-            using (new DiagnosticsTimer("Update world view"))
-                m_World.FireEvent(m_World, GameEventPool.Get(GameEventId.UpdateWorldView)).Release();
-        }
-        else
-        {
-            Services.SaveAndLoadService.Load($"{loadPath}/data.save");
-        }
-    }
+    //public void GenerateDungeon(bool startNew, string loadPath)
+    //{
+    //    if (startNew)
+    //    {
+    //        Seed = RecRandom.InitRecRandom(UnityEngine.Random.Range(0, int.MaxValue));
+    //        using (new DiagnosticsTimer("Start World"))
+    //        {
+    //            m_World.FireEvent(m_World, GameEventPool.Get(GameEventId.StartWorld).With(EventParameters.Seed, Seed.ToString())
+    //                                                                            .With(EventParameters.GameObject, TilePrefab)
+    //                                                                            .With(EventParameters.NewGame, true)
+    //                                                                            .With(EventParameters.Level, 1)).Release();
+    //        }
+    //        using (new DiagnosticsTimer("Update world view"))
+    //            m_World.FireEvent(m_World, GameEventPool.Get(GameEventId.UpdateWorldView)).Release();
+    //    }
+    //    else
+    //    {
+    //        Services.SaveAndLoadService.Load($"{loadPath}/data.save");
+    //    }
+    //}
 
-    public void InitWorld(int seed, int currentLevel = 1)
-    {
-        Stopwatch sw = new Stopwatch();
-        sw.Start();
-        Seed = RecRandom.InitRecRandom(seed);
-        m_World.FireEvent(m_World, GameEventPool.Get(GameEventId.StartWorld).With(EventParameters.Seed, Seed.ToString())
-                                                                            .With(EventParameters.GameObject, TilePrefab)
-                                                                            .With(EventParameters.NewGame, false)
-                                                                            .With(EventParameters.Level, currentLevel)).Release();
-        sw.Stop();
-        UnityEngine.Debug.LogWarning($"Start World: {sw.Elapsed.Seconds}");
-    }
+    //public void InitWorld(int seed, int currentLevel = 1)
+    //{
+    //    Stopwatch sw = new Stopwatch();
+    //    sw.Start();
+    //    Seed = RecRandom.InitRecRandom(seed);
+
+    //    m_World.FireEvent(m_World, GameEventPool.Get(GameEventId.StartWorld).With(EventParameters.Seed, Seed.ToString())
+    //                                                                        .With(EventParameters.GameObject, TilePrefab)
+    //                                                                        .With(EventParameters.NewGame, false)
+    //                                                                        .With(EventParameters.Level, currentLevel)).Release();
+    //    sw.Stop();
+    //    UnityEngine.Debug.LogWarning($"Start World: {sw.Elapsed.Seconds}");
+    //}
 
     GameEvent m_ProgressTime = new GameEvent(GameEventId.ProgressTime);
     private void Update()
@@ -148,7 +146,6 @@ public class World : MonoBehaviour
         //    UnityEngine.Debug.Log("Game events weren't released");
         //}
 
-        using(new DiagnosticsTimer("Progress time"))
-            m_World?.FireEvent(m_World, m_ProgressTime);
+        Services.WorldUpdateService.ProgressTime();
     }
 }

@@ -20,7 +20,7 @@ public class SaveData
     }
 }
 
-public class SaveSystem
+public class SaveSystem : GameService
 {
     public const string kSaveDataPath = "SaveData";
     [HideInInspector]
@@ -45,11 +45,11 @@ public class SaveSystem
 
     public void Save(string saveName)
     {
-        m_Data = new SaveData(World.Services.Seed);
+        m_Data = new SaveData(m_Seed);
 
         GameEvent getCurrentLevel = GameEventPool.Get(GameEventId.GetCurrentLevel)
                                         .With(EventParameters.Level, -1);
-        m_Data.CurrentDungeonLevel = World.Services.Self.FireEvent(getCurrentLevel).GetValue<int>(EventParameters.Level);
+        m_Data.CurrentDungeonLevel = m_CurrentLevel; //World.Services.Self.FireEvent(getCurrentLevel).GetValue<int>(EventParameters.Level);
         m_Data.SaveName = CurrentSaveName = saveName;
         getCurrentLevel.Release();
 
@@ -66,7 +66,8 @@ public class SaveSystem
         //        m_Data.Events.Add(line);
         //    }
         //}
-        World.Services.Self.FireEvent(GameEventPool.Get(GameEventId.SaveLevel)).Release();
+        //World.Services.Self.FireEvent(GameEventPool.Get(GameEventId.SaveLevel)).Release();
+        SaveCurrentLevel();
         Directory.CreateDirectory($"{kSaveDataPath}/{saveName}");
         File.WriteAllText($"{kSaveDataPath}/{saveName}/data.save", JsonUtility.ToJson(m_Data));
     }
@@ -94,6 +95,38 @@ public class SaveSystem
         if (!Directory.Exists(path))
             return null;
         return JsonUtility.FromJson<DungeonGenerationResult>(File.ReadAllText($"{path}/data.dat"));
+    }
+
+    void SaveCurrentLevel()
+    {
+        DungeonGenerationResult level = null;
+        if (m_DungeonLevelMap.ContainsKey(m_CurrentLevel))
+        {
+            level = m_DungeonLevelMap[m_CurrentLevel];
+            level.ClearData();
+        }
+        else if (SaveSystem.Instance.LoadLevel(m_CurrentLevel) != null)
+        {
+            level = SaveSystem.Instance.LoadLevel(m_CurrentLevel);
+            level.ClearData();
+            m_DungeonLevelMap.Add(m_CurrentLevel, level);
+        }
+        else
+            return;
+
+        foreach (var tile in m_Tiles.Values)
+        {
+            GameEvent serializeTile = GameEventPool.Get(GameEventId.SerializeTile)
+                                         .With(EventParameters.Value, level);
+            //FireEvent(tile, serializeTile.CreateEvent());
+            tile.GetComponent<Tile>().SerializeTile(serializeTile);
+            serializeTile.Release();
+        }
+
+        foreach (Room room in m_DungeonGenerator.Rooms)
+            level.RoomData.Add(room);
+
+        SaveSystem.Instance.SaveLevel(level, m_CurrentLevel);
     }
 
     public static void LogEvent(string targetId, GameEvent gameEvent)

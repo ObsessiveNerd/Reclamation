@@ -9,7 +9,7 @@ public class Desire : Component
     private Point m_CurrentDestination = Point.InvalidPoint;
     private Point m_CurrentPosition = Point.InvalidPoint;
     private int m_DesiredValue = 0;
-    private List<IMapNode> m_CurrentPath = new List<IMapNode>();
+    private List<Point> m_CurrentPath = new List<Point>();
 
     public Desire(int greedModifier)
     {

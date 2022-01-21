@@ -7,7 +7,7 @@ public abstract class GameService //: Component
     //protected static Dictionary<IEntity, TimeProgression> m_PlayerToTimeProgressionMap = new Dictionary<IEntity, TimeProgression>();
     protected static TimeProgression m_TimeProgression = new TimeProgression();
     protected static Dictionary<Point, Actor> m_Tiles = new Dictionary<Point, Actor>();
-
+    protected static int m_Seed;
     protected static List<Tile> m_ChangedTiles = new List<Tile>();
 
     protected static Dictionary<IEntity, Point> m_EntityToPointMap = new Dictionary<IEntity, Point>();

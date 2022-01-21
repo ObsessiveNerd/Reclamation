@@ -19,7 +19,7 @@ public class PointComparer : IEqualityComparer<Point>
 }
 
 [Serializable]
-public struct Point : IMapNode
+public struct Point
 {
     public static readonly Point InvalidPoint = new Point(-1, -1);
 
@@ -218,15 +218,15 @@ public class Tile : Component
             //Todo
         }
 
-        else if (gameEvent.ID == GameEventId.GetEntityOnTile)
-        {
-            GetEntityOnTile(gameEvent);
-        }
+        //else if (gameEvent.ID == GameEventId.GetEntityOnTile)
+        //{
+        //    GetEntityOnTile(gameEvent);
+        //}
 
-        else if (gameEvent.ID == GameEventId.IsTileBlocking)
-        {
-            IsTileBlocking(gameEvent);
-        }
+        //else if (gameEvent.ID == GameEventId.IsTileBlocking)
+        //{
+        //    IsTileBlocking(gameEvent);
+        //}
 
         else if (gameEvent.ID == GameEventId.GetValueOnTile)
         {

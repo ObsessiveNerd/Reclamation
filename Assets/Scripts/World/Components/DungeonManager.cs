@@ -59,115 +59,91 @@ public class DungeonManager : GameService
 {
     GameObject m_TilePrefab;
     IDungeonGenerator m_DungeonGenerator;
-    public string Seed;
     int m_Vertical, m_Horizontal;
 
-    public override void Init(IEntity self)
+    public DungeonManager(int seed, GameObject tilePrefab)
     {
-        base.Init(self);
-        RegisteredEvents.Add(GameEventId.StartWorld);
-        RegisteredEvents.Add(GameEventId.GetRandomValidPoint);
-        RegisteredEvents.Add(GameEventId.AddValidPoints);
-        RegisteredEvents.Add(GameEventId.MoveDown);
-        RegisteredEvents.Add(GameEventId.MoveUp);
-        RegisteredEvents.Add(GameEventId.SaveLevel);
-        RegisteredEvents.Add(GameEventId.LoadLevel);
-        RegisteredEvents.Add(GameEventId.GetCurrentLevel);
-
-        m_Vertical = (int)Camera.main.orthographicSize;
-        m_Horizontal = (int)(m_Vertical * Camera.main.aspect);
+        m_Seed = seed;
+        m_TilePrefab = tilePrefab;
     }
 
-    public override void HandleEvent(GameEvent gameEvent)
+    public void GenerateDungeon(int level, int rows, int columns, bool newGame)
     {
-        if (gameEvent.ID == GameEventId.StartWorld)
+        Debug.Log("Start world called");
+        Clean();
+        CreateTiles(rows, columns);
+
+        m_CurrentLevel = level;
+        m_DungeonGenerator = new BasicDungeonGenerator(rows, columns);
+
+        LoadOrCreateDungeon();
+
+        if (newGame)
+            SpawnPlayers();
+        else
         {
-            Debug.Log("Start world called");
-            Seed = (string)gameEvent.Paramters[EventParameters.Seed];
-            m_TilePrefab = (GameObject)gameEvent.Paramters[EventParameters.GameObject];
-            Clean();
-            System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
-            sw.Start();
-            CreateTiles(m_Tiles);
-            sw.Stop();
-
-            m_CurrentLevel = gameEvent.GetValue<int>(EventParameters.Level);
-            m_DungeonGenerator = new BasicDungeonGenerator(World.Services.MapRows, World.Services.MapColumns);
-
-            LoadOrCreateDungeon();
-            sw.Reset();
-            sw.Start();
-            if (gameEvent.GetValue<bool>(EventParameters.NewGame))
-                SpawnPlayers();
-            else
-            {
-                foreach (var player in m_Players)
-                    FireEvent(player, GameEventPool.Get(GameEventId.InitFOV)).Release();
-                FireEvent(Self, GameEventPool.Get(GameEventId.UpdateCamera)).Release();
-            }
-
-            FireEvent(Self, GameEventPool.Get(GameEventId.SaveLevel)).Release();
-            m_TimeProgression.Resume();
-            sw.Stop();
-
+            foreach (var player in m_Players)
+                FireEvent(player, GameEventPool.Get(GameEventId.InitFOV)).Release();
+            Services.CameraService.UpdateCamera();
         }
-        else if (gameEvent.ID == GameEventId.GetCurrentLevel)
-        {
-            gameEvent.Paramters[EventParameters.Level] = m_CurrentLevel;
-        }
-        else if (gameEvent.ID == GameEventId.MoveUp)
-        {
-            m_TimeProgression.SetPostFrameCallback(() =>
+
+        Services.SaveAndLoadService.Save();
+        m_TimeProgression.Resume();
+    }
+
+    public void MoveUp()
+    {
+        m_TimeProgression.SetPostFrameCallback(() =>
             {
                 CachePlayers();
-                SaveCurrentLevel();
+                Services.SaveAndLoadService.Save();
                 CleanTiles();
                 m_CurrentLevel--;
                 LoadOrCreateDungeon();
                 MovePlayersToCurrentFloor(false);
-                FireEvent(Self, GameEventPool.Get(GameEventId.UpdateCamera));
-
+                Services.CameraService.UpdateCamera();
             });
-        }
-        else if (gameEvent.ID == GameEventId.MoveDown)
-        {
-            m_TimeProgression.SetPostFrameCallback(() =>
+    }
+
+    public void MoveDown()
+    {
+        m_TimeProgression.SetPostFrameCallback(() =>
             {
                 CachePlayers();
-                SaveCurrentLevel();
+                Services.SaveAndLoadService.Save();
                 CleanTiles();
                 m_CurrentLevel++;
                 LoadOrCreateDungeon();
                 MovePlayersToCurrentFloor(true);
-                FireEvent(Self, GameEventPool.Get(GameEventId.UpdateCamera));
+                Services.CameraService.UpdateCamera();
             });
-        }
-        else if (gameEvent.ID == GameEventId.GetRandomValidPoint)
-        {
-            if (m_DungeonGenerator == null)
-                gameEvent.Paramters[EventParameters.Value] = new Point(1, 1);
-            else
-            {
-                int roomIndex = RecRandom.Instance.GetRandomValue(0, m_DungeonGenerator.Rooms.Count - 1);
-                gameEvent.Paramters[EventParameters.Value] = m_DungeonGenerator.Rooms[roomIndex].GetValidPoint(null);
-            }
-        }
-        else if (gameEvent.ID == GameEventId.AddValidPoints)
-        {
-            HashSet<Point> validPoints = gameEvent.GetValue<HashSet<Point>>(EventParameters.Value);
-            foreach (Point p in validPoints)
-                m_ValidDungeonPoints.Add(p);
-        }
+    }
 
-        if (gameEvent.ID == GameEventId.SaveLevel)
-        {
-            SaveCurrentLevel();
-        }
+    public int GetCurrentLevel()
+    {
+        return m_CurrentLevel;
+    }
 
-        if (gameEvent.ID == GameEventId.LoadLevel)
+    public void SetCurrentLevel(int level)
+    {
+        m_CurrentLevel = level;
+    }
+
+    public Point GetRandomValidPoint()
+    {
+        if (m_DungeonGenerator == null)
+            return new Point(1, 1);
+        else
         {
-            m_CurrentLevel = gameEvent.GetValue<int>(EventParameters.Level);
+            int roomIndex = RecRandom.Instance.GetRandomValue(0, m_DungeonGenerator.Rooms.Count - 1);
+            return m_DungeonGenerator.Rooms[roomIndex].GetValidPoint(null);
         }
+    }
+
+    public void AddValidPoint(HashSet<Point> validPoints)
+    {
+        foreach (Point p in validPoints)
+            m_ValidDungeonPoints.Add(p);
     }
 
     List<string> m_PlayerBlueprintCache = new List<string>();
@@ -179,38 +155,6 @@ public class DungeonManager : GameService
             m_PlayerBlueprintCache.Add(player.ID);
             Spawner.Despawn(player);
         }
-    }
-
-    void SaveCurrentLevel()
-    {
-        DungeonGenerationResult level = null;
-        if (m_DungeonLevelMap.ContainsKey(m_CurrentLevel))
-        {
-            level = m_DungeonLevelMap[m_CurrentLevel];
-            level.ClearData();
-        }
-        else if (SaveSystem.Instance.LoadLevel(m_CurrentLevel) != null)
-        {
-            level = SaveSystem.Instance.LoadLevel(m_CurrentLevel);
-            level.ClearData();
-            m_DungeonLevelMap.Add(m_CurrentLevel, level);
-        }
-        else
-            return;
-
-        foreach (var tile in m_Tiles.Values)
-        {
-            GameEvent serializeTile = GameEventPool.Get(GameEventId.SerializeTile)
-                                         .With(EventParameters.Value, level);
-            //FireEvent(tile, serializeTile.CreateEvent());
-            tile.GetComponent<Tile>().SerializeTile(serializeTile);
-            serializeTile.Release();
-        }
-
-        foreach (Room room in m_DungeonGenerator.Rooms)
-            level.RoomData.Add(room);
-
-        SaveSystem.Instance.SaveLevel(level, m_CurrentLevel);
     }
 
     void LoadOrCreateDungeon()
@@ -301,7 +245,7 @@ public class DungeonManager : GameService
             m_TimeProgression.RemoveEntity(entity);
         }
         m_DungeonGenerator.Clean();
-        FireEvent(Self, GameEventPool.Get(GameEventId.CleanFoVData));
+        Services.FOVService.CleanFoVData();
     }
 
     void SpawnPlayers()
@@ -313,7 +257,7 @@ public class DungeonManager : GameService
             for (int i = 0; i < 4; i++)
             {
                 IEntity player = EntityFactory.CreateEntity("DwarfWarrior");
-                FireEvent(Self, GameEventPool.Get(GameEventId.ConvertToPlayableCharacter).With(EventParameters.Entity, player.ID)).Release(); 
+                Services.PlayerManagerService.ConvertToPlayableEntity(player);
                 Spawner.Spawn(player, m_DungeonGenerator.Rooms[0].GetValidPoint(null));
 
                 player.CleanupComponents();
@@ -328,65 +272,18 @@ public class DungeonManager : GameService
             foreach (var bp in Directory.EnumerateFiles(charactersPath, "*.bp"))
             {
                 IEntity player = EntityFactory.CreateEntity(Path.GetFileNameWithoutExtension(bp));
-                FireEvent(Self, GameEventPool.Get(GameEventId.ConvertToPlayableCharacter)
-                    .With(EventParameters.Entity, player.ID)).Release();
+                Services.PlayerManagerService.ConvertToPlayableEntity(player);
                 Spawner.Spawn(player, m_DungeonGenerator.Rooms[0].GetValidPoint(null));
 
-                //if (i == 0)
                 player.CleanupComponents();
 
                 FireEvent(player, GameEventPool.Get(GameEventId.InitFOV)).Release();
-
-
-                //var randomLineNumber = RecRandom.Instance.GetRandomValue(0, lines.Length - 1);
-                //var line = lines[randomLineNumber];
-
-                //GameEvent setName = GameEventPool.Get(GameEventId.SetName)
-                //                        .With(EventParameters.Name, line);
-                //FireEvent(player, setName.CreateEvent());
-
-                //GameObject namePlate = GameObject.Instantiate(Resources.Load<GameObject>("UI/Nameplate"));
-                //namePlate.GetComponent<NameplateMono>().Setup(player);
-                //namePlate.transform.SetParent(GameObject.FindObjectOfType<Canvas>().transform);
-                //namePlate.transform.SetAsFirstSibling();
             }
             Directory.Delete(charactersPath, true);
         }
 
-        FireEvent(Self, GameEventPool.Get(GameEventId.ProgressTime)).Release();
+        Services.WorldUpdateService.ProgressTime();
     }
-
-    //void SpawnPlayers()
-    //{
-    //    var lines = File.ReadAllLines($"{Application.streamingAssetsPath}/random_names.txt");
-
-    //    for (int i = 0; i < 4; i++)
-    //    {
-    //        IEntity player = EntityFactory.CreateEntity("DwarfWarrior");
-    //        FireEvent(Self, GameEventPool.Get(GameEventId.ConvertToPlayableCharacter, .With(EventParameters.Entity, player.ID)));
-    //        Spawner.Spawn(player, m_DungeonGenerator.Rooms[0].GetValidPoint(null));
-
-    //        if (i == 0)
-    //            player.CleanupComponents();
-
-    //        FireEvent(player, GameEventPool.Get(GameEventId.InitFOV));
-
-            
-    //        var randomLineNumber = RecRandom.Instance.GetRandomValue(0, lines.Length - 1);
-    //        var line = lines[randomLineNumber];
-
-    //        GameEvent setName = GameEventPool.Get(GameEventId.SetName)
-    //                                .With(EventParameters.Name, line);
-    //        FireEvent(player, setName.CreateEvent());
-
-    //        GameObject namePlate = GameObject.Instantiate(Resources.Load<GameObject>("UI/Nameplate"));
-    //        namePlate.GetComponent<NameplateMono>().Setup(player);
-    //        namePlate.transform.SetParent(GameObject.FindObjectOfType<Canvas>().transform);
-    //        namePlate.transform.SetAsFirstSibling();
-    //    }
-
-    //    FireEvent(Self, GameEventPool.Get(GameEventId.ProgressTime));
-    //}
 
     void MovePlayersToCurrentFloor(bool movingDown)
     {
@@ -402,23 +299,23 @@ public class DungeonManager : GameService
             FireEvent(entity, GameEventPool.Get(GameEventId.RegisterPlayableCharacter)).Release();
             FireEvent(entity, GameEventPool.Get(GameEventId.InitFOV)).Release();
         }
-        FireEvent(Self, GameEventPool.Get(GameEventId.UpdateWorldView)).Release();
+        Services.WorldUpdateService.UpdateWorldView();
         m_PlayerBlueprintCache.Clear();
     }
 
-    void CreateTiles(Dictionary<Point, Actor> pointToTileMap)
+    void CreateTiles(int rows, int columns)
     {
         EntityFactory.InitTempBlueprints();
-        for (int i = 0; i < World.Services.MapColumns; i++)
+        for (int i = 0; i < columns; i++)
         {
-            for (int j = 0; j < World.Services.MapRows; j++)
+            for (int j = 0; j < rows; j++)
             {
-                CreateTile(i, j, m_Horizontal, m_Vertical, pointToTileMap);
+                CreateTile(i, j, m_Horizontal, m_Vertical);
             }
         }
     }
 
-    protected void CreateTile(int x, int y, float screenHorizontal, float screenVertical, Dictionary<Point, Actor> pointToTileMap)
+    protected void CreateTile(int x, int y, float screenHorizontal, float screenVertical)
     {
         Point tilePoint = new Point(x, y);
         GameObject tile = UnityEngine.GameObject.Instantiate(m_TilePrefab);
@@ -436,7 +333,7 @@ public class DungeonManager : GameService
         actor.CleanupComponents();
         actor.Start();
 
-        pointToTileMap.Add(new Point(x, y), actor);
+        m_Tiles.Add(new Point(x, y), actor);
         m_EntityToPointMap.Add(actor, new Point(x, y));
     }
 }

@@ -6,7 +6,7 @@ using UnityEngine;
 
 public static class PathfindingUtility
 {
-    public static MoveDirection GetDirectionAwayFrom(IMapNode source, IMapNode target)
+    public static MoveDirection GetDirectionAwayFrom(Point source, Point target)
     {
         if (source == target)
             return MoveDirection.None;
@@ -34,7 +34,7 @@ public static class PathfindingUtility
         return MoveDirection.None;
     }
 
-    public static MoveDirection GetDirectionTo(IMapNode source, IMapNode target)
+    public static MoveDirection GetDirectionTo(Point source, Point target)
     {
         if (source == target)
             return MoveDirection.None;
@@ -64,6 +64,7 @@ public static class PathfindingUtility
 
     public static Point GetRandomValidPoint()
     {
+
         GameEvent builder = GameEventPool.Get(GameEventId.GetRandomValidPoint)
                                 .With(EventParameters.Value, null);
 
@@ -134,21 +135,14 @@ public static class PathfindingUtility
     //                        .With(EventParameters.EndPos, destination)
     //                        .With(EventParameters.Path, null);
 
-    //    var path = World.Instance.Self.FireEvent(calculatePathEventBuilder.CreateEvent()).GetValue<List<IMapNode>>(EventParameters.Path);
+    //    var path = World.Instance.Self.FireEvent(calculatePathEventBuilder.CreateEvent()).GetValue<List<Point>>(EventParameters.Path);
     //    if (path.Count > 0)
     //        return true;
     //    return false;
     //}
 
-    public static List<IMapNode> GetPath(Point start, Point destination)
+    public static List<Point> GetPath(Point start, Point destination)
     {
-        GameEvent e = GameEventPool.Get(GameEventId.CalculatePath)
-                            .With(EventParameters.StartPos, start)
-                            .With(EventParameters.EndPos, destination)
-                            .With(EventParameters.Path, null);
-
-        var res = World.Services.Self.FireEvent(e).GetValue<List<IMapNode>>(EventParameters.Path);
-        e.Release();
-        return res;
+        return Services.PathfinderService.CalculatePath(start, destination);
     }
 }

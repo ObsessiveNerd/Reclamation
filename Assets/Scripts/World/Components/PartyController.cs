@@ -75,81 +75,64 @@ public class PartyController : GameService
 {
     Dictionary<FactionId, List<Party>> m_FactionParties = new Dictionary<FactionId, List<Party>>();
 
-    public override void Init(IEntity self)
+    public void MakePartyLeader(IEntity entity)
     {
-        base.Init(self);
-        RegisteredEvents.Add(GameEventId.LookingForGroup);
-        RegisteredEvents.Add(GameEventId.MakePartyLeader);
-        RegisteredEvents.Add(GameEventId.RemoveFromParty);
+        GameEvent getFaction = GameEventPool.Get(GameEventId.GetFaction).With(EventParameters.Value, null);
+        FactionId factionId = FireEvent(entity, getFaction).GetValue<Faction>(EventParameters.Value).ID;
+        getFaction.Release();
+
+        if (!m_FactionParties.ContainsKey(factionId))
+            return;
+
+        foreach (var party in m_FactionParties[factionId])
+        {
+            if (party.HasMember(entity.ID))
+                party.ReplaceLeader(entity.ID);
+        }
     }
 
-    public override void HandleEvent(GameEvent gameEvent)
+    public void LookingForGroup(IEntity entity)
     {
-        if(gameEvent.ID == GameEventId.LookingForGroup)
+        if (entity == null)
+            return;
+
+        GameEvent getFaction = GameEventPool.Get(GameEventId.GetFaction).With(EventParameters.Value, null);
+        FactionId factionId = FireEvent(entity, getFaction).GetValue<Faction>(EventParameters.Value).ID;
+        getFaction.Release();
+
+        if (!m_FactionParties.ContainsKey(factionId))
+            m_FactionParties.Add(factionId, new List<Party>() { new Party() });
+
+        bool entityAddedToParty = false;
+        foreach (var party in m_FactionParties[factionId])
         {
-            string id = gameEvent.GetValue<string>(EventParameters.Entity);
-            IEntity entity = EntityQuery.GetEntity(id);
-            if (entity == null)
-                return;
-
-            GameEvent getFaction = GameEventPool.Get(GameEventId.GetFaction).With(EventParameters.Value, null);
-            FactionId factionId = FireEvent(entity, getFaction).GetValue<Faction>(EventParameters.Value).ID;
-            getFaction.Release();
-
-            if (!m_FactionParties.ContainsKey(factionId))
-                m_FactionParties.Add(factionId, new List<Party>(){ new Party() });
-
-            bool entityAddedToParty = false;
-            foreach(var party in m_FactionParties[factionId])
+            if (party.Size <= party.SizeLimit)
             {
-                if(party.Size <= party.SizeLimit)
-                {
-                    party.AddMember(id);
-                    entityAddedToParty = true;
-                }
-            }
-            if(!entityAddedToParty)
-            {
-                Party p = new Party();
-                p.AddMember(id);
-                m_FactionParties[factionId].Add(p);
+                party.AddMember(entity.ID);
+                entityAddedToParty = true;
             }
         }
-
-        else if(gameEvent.ID == GameEventId.MakePartyLeader)
+        if (!entityAddedToParty)
         {
-            string newLeader = gameEvent.GetValue<string>(EventParameters.Entity);
-            IEntity entity = EntityQuery.GetEntity(newLeader);
-
-            GameEvent getFaction = GameEventPool.Get(GameEventId.GetFaction).With(EventParameters.Value, null);
-            FactionId factionId = FireEvent(entity, getFaction).GetValue<Faction>(EventParameters.Value).ID;
-            getFaction.Release();
-
-            if (!m_FactionParties.ContainsKey(factionId)) return;
-
-            foreach(var party in m_FactionParties[factionId])
-            {
-                if (party.HasMember(newLeader))
-                    party.ReplaceLeader(newLeader);
-            }
+            Party p = new Party();
+            p.AddMember(entity.ID);
+            m_FactionParties[factionId].Add(p);
         }
+    }
 
-        else if(gameEvent.ID == GameEventId.RemoveFromParty)
+    public void RemoveFromParty(IEntity entity)
+    {
+        GameEvent getFaction = GameEventPool.Get(GameEventId.GetFaction).With(EventParameters.Value, null);
+        FactionId factionId = FireEvent(entity, getFaction).GetValue<Faction>(EventParameters.Value).ID;
+        getFaction.Release();
+
+        if (!m_FactionParties.ContainsKey(factionId))
+            return;
+
+        foreach (var party in m_FactionParties[factionId])
         {
-            string idToRemove = gameEvent.GetValue<string>(EventParameters.Entity);
-            IEntity entity = EntityQuery.GetEntity(idToRemove);
-
-            GameEvent getFaction = GameEventPool.Get(GameEventId.GetFaction).With(EventParameters.Value, null);
-            FactionId factionId = FireEvent(entity, getFaction).GetValue<Faction>(EventParameters.Value).ID;
-            getFaction.Release();
-
-            if (!m_FactionParties.ContainsKey(factionId)) return;
-
-            foreach(var party in m_FactionParties[factionId])
-            {
-                if (party.HasMember(idToRemove))
-                    party.RemoveMember(idToRemove);
-            }
+            if (party.HasMember(entity.ID))
+                party.RemoveMember(entity.ID);
         }
     }
 }

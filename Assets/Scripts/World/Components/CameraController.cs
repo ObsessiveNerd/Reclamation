@@ -6,24 +6,19 @@ public class CameraController : GameService
 {
     CameraControllerMono m_CameraControllerMono;
     
-    public override void Init(IEntity self)
+    public void SetCameraPosition(Point p)
     {
-        base.Init(self);
-        RegisteredEvents.Add(GameEventId.SetCameraPosition);
-        //m_CameraControllerMono = GameObject.FindObjectOfType<CameraControllerMono>();
+        if (m_CameraControllerMono == null)
+            m_CameraControllerMono = GameObject.FindObjectOfType<CameraControllerMono>();
+
+        if (!m_GameObjectMap.ContainsKey(p))
+            return;
+        m_CameraControllerMono.Target = m_GameObjectMap[p];
     }
 
-    public override void HandleEvent(GameEvent gameEvent)
+    public void UpdateCamera()
     {
-        if (gameEvent.ID == GameEventId.SetCameraPosition)
-        {
-            if (m_CameraControllerMono == null)
-                m_CameraControllerMono = GameObject.FindObjectOfType<CameraControllerMono>();
-
-            Point p = gameEvent.GetValue<Point>(EventParameters.Point);
-            if (!m_GameObjectMap.ContainsKey(p))
-                return;
-            m_CameraControllerMono.Target = m_GameObjectMap[p];
-        }
+        if (m_ActivePlayer != null)
+            SetCameraPosition(m_EntityToPointMap[m_ActivePlayer.Value]);
     }
 }
