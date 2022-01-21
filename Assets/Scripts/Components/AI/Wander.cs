@@ -49,6 +49,9 @@ public class Wander : Component
         if (m_Destination == null || currentPos == m_Destination)
             m_Destination = PathfindingUtility.GetRandomValidPoint();
 
+        if (Services.TileInteractionService.GetTile(m_Destination).BlocksMovement)
+            return MoveDirection.None;
+
         if (m_CurrentPath.Count == 0 || !IsNeighbor(currentPos, m_CurrentPath[0]))
             m_CurrentPath = PathfindingUtility.GetPath(currentPos, m_Destination);
 
