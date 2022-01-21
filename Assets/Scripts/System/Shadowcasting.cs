@@ -342,6 +342,6 @@ public class Shadowcasting : IFovAlgorithm
 
     bool TileIsBlocking(int x, int y)
     {
-        return Services.TileInteractionService.IsTileBlocking(new Point(x, y));
+        return Services.TileInteractionService.TileBlocksVision(new Point(x, y));
     }
 }

@@ -27,12 +27,20 @@ public class TileInteractions : GameService
         pickup.Release();
     }
 
-    public bool IsTileBlocking(Point p)
+    public bool TileBlocksMovement(Point p)
     {
         if (m_Tiles.ContainsKey(p))
-            return m_Tiles[p].IsTileBlocking;
+            return m_Tiles[p].BlocksMovement;
         return false;
     }
+
+    public bool TileBlocksVision(Point p)
+    {
+         if (m_Tiles.ContainsKey(p))
+            return m_Tiles[p].BlocksVision;
+        return false;
+    }
+
     public void Drop(IEntity droppingEntity, IEntity entity)
     {
         GameEvent getEntityType = GameEventPool.Get(GameEventId.GetEntityType)

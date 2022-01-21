@@ -139,7 +139,7 @@ public class Tile : Component
         RegisteredEvents.Add(GameEventId.BeforeMoving);
         RegisteredEvents.Add(GameEventId.Pickup);
         RegisteredEvents.Add(GameEventId.VisibilityUpdated);
-        RegisteredEvents.Add(GameEventId.IsTileBlocking);
+        RegisteredEvents.Add(GameEventId.BlocksMovement);
         RegisteredEvents.Add(GameEventId.DestroyObject);
         RegisteredEvents.Add(GameEventId.CleanTile);
         RegisteredEvents.Add(GameEventId.PathfindingData);
@@ -299,7 +299,7 @@ public class Tile : Component
     {
         get
         {
-            GameEvent isTileBlocking = GameEventPool.Get(GameEventId.IsTileBlocking)
+            GameEvent isTileBlocking = GameEventPool.Get(GameEventId.BlocksMovement)
                                         .With(EventParameters.BlocksMovement, false);
             if (GetTarget()[0] != Self)
             {
@@ -307,6 +307,23 @@ public class Tile : Component
                     FireEvent(e, isTileBlocking);
             }
             bool returnValue = isTileBlocking.GetValue<bool>(EventParameters.BlocksMovement);
+            isTileBlocking.Release();
+            return returnValue;
+        }
+    }
+
+    public bool BlocksVision
+    {
+        get
+        {
+            GameEvent isTileBlocking = GameEventPool.Get(GameEventId.BlocksVision)
+                                        .With(EventParameters.Value, false);
+            if (GetTarget()[0] != Self)
+            {
+                foreach (IEntity e in GetTarget())
+                    FireEvent(e, isTileBlocking);
+            }
+            bool returnValue = isTileBlocking.GetValue<bool>(EventParameters.Value);
             isTileBlocking.Release();
             return returnValue;
         }

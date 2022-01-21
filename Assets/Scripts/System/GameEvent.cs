@@ -18,7 +18,8 @@ public static class GameEventId
     public const string SetHasBeenVisited = nameof(SetHasBeenVisited);
     public const string VisibilityUpdated = nameof(VisibilityUpdated);
     public const string CheckVisibility = nameof(CheckVisibility);
-    public const string IsTileBlocking = nameof(IsTileBlocking);
+    public const string BlocksMovement = nameof(BlocksMovement);
+    public const string BlocksVision = nameof(BlocksVision);
     public const string InitFOV = nameof(InitFOV);
     public const string GetVisibleTiles = nameof(GetVisibleTiles);
     public const string EntityVisibilityState = nameof(EntityVisibilityState);
