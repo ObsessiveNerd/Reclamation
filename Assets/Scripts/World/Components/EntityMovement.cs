@@ -4,30 +4,30 @@ using UnityEngine;
 
 public class EntityMovement : GameService
 {
-    public MoveDirection BeforeMoving(IEntity entity, MoveDirection moveDirection, out float energyRequired)
-    {
-        if (!m_EntityToPointMap.ContainsKey(entity))
-        {
-            energyRequired = 0f;
-            return MoveDirection.None;
-        }
+    //public MoveDirection BeforeMoving(IEntity entity, MoveDirection moveDirection, out float energyRequired)
+    //{
+    //    if (!m_EntityToPointMap.ContainsKey(entity))
+    //    {
+    //        energyRequired = 0f;
+    //        return MoveDirection.None;
+    //    }
 
-        float energy = 1f;
-        GameEvent entityBeforeMoveCheck = GameEventPool.Get(GameEventId.BeforeMoving)
-                                            .With(EventParameters.Entity, entity.ID)
-                                            .With(EventParameters.InputDirection, moveDirection)
-                                            .With(EventParameters.RequiredEnergy, energy);
+    //    float energy = 1f;
+    //    GameEvent entityBeforeMoveCheck = GameEventPool.Get(GameEventId.BeforeMoving)
+    //                                        .With(EventParameters.Entity, entity.ID)
+    //                                        .With(EventParameters.InputDirection, moveDirection)
+    //                                        .With(EventParameters.RequiredEnergy, energy);
 
-        Point currentPoint = m_EntityToPointMap[entity];
-        Point newPoint = GetTilePointInDirection(currentPoint, moveDirection);
-        if (m_Tiles.TryGetValue(newPoint, out Actor tile))
-            tile.GetComponent<Tile>().BeforeMoving(entityBeforeMoveCheck);
+    //    Point currentPoint = m_EntityToPointMap[entity];
+    //    Point newPoint = GetTilePointInDirection(currentPoint, moveDirection);
+    //    if (m_Tiles.TryGetValue(newPoint, out Actor tile))
+    //        tile.BeforeMoving(entityBeforeMoveCheck);
 
-        var ret = entityBeforeMoveCheck.GetValue<MoveDirection>(EventParameters.InputDirection);
-        entityBeforeMoveCheck.Release();
-        energyRequired = energy;
-        return ret;
-    }
+    //    var ret = entityBeforeMoveCheck.GetValue<MoveDirection>(EventParameters.InputDirection);
+    //    entityBeforeMoveCheck.Release();
+    //    energyRequired = energy;
+    //    return ret;
+    //}
 
     public void SetEntityPosition(IEntity entity, Point newPoint)
     {
@@ -43,13 +43,15 @@ public class EntityMovement : GameService
         GameEvent removeEntityFromTile = GameEventPool.Get(GameEventId.Despawn)
                                             .With(EventParameters.Entity, entity.ID)
                                             .With(EventParameters.EntityType, entityType);
-        FireEvent(m_Tiles[currentPoint], removeEntityFromTile).Release();
+        m_Tiles[currentPoint].Despawn(removeEntityFromTile);
+        removeEntityFromTile.Release();
 
         m_EntityToPointMap[entity] = newPoint;
         GameEvent addEntityToTile = GameEventPool.Get(GameEventId.Spawn)
                                         .With(EventParameters.Entity, entity.ID)
                                         .With(EventParameters.EntityType, entityType);
-        FireEvent(m_Tiles[newPoint], addEntityToTile).Release();
+        m_Tiles[newPoint].Spawn(entity);
+        addEntityToTile.Release();
         Services.WorldUpdateService.UpdateWorldView();
     }
 

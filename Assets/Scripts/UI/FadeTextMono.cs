@@ -31,6 +31,8 @@ public class FadeTextMono : MonoBehaviour
     // Update is called once per frame
     void LateUpdate()
     {
+        return;
+
         if (m_Target == null)
         {
             Destroy(gameObject);

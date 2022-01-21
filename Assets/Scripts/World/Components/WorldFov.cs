@@ -30,7 +30,7 @@ public class WorldFov : GameService
 
     public void RevealAllTiles()
     {
-        foreach (var tile in m_Tiles.Values)
+        foreach (var tile in m_TileEntity.Values)
             FireEvent(tile, GameEventPool.Get(GameEventId.SetVisibility)
                 .With(EventParameters.TileInSight, true)).Release();
         Services.WorldUpdateService.UpdateWorldView();
@@ -43,12 +43,12 @@ public class WorldFov : GameService
             allVisibleTiles.AddRange(m_PlayerToVisibleTiles[key]);
 
         foreach(Point tile in allVisibleTiles)
-                FireEvent(m_Tiles[tile], GameEventPool.Get(GameEventId.SetVisibility)
+                FireEvent(m_TileEntity[tile], GameEventPool.Get(GameEventId.SetVisibility)
                     .With(EventParameters.TileInSight, true)).Release();
 
         foreach (Point tile in oldTiles)
             if(!allVisibleTiles.Contains(tile))
-                FireEvent(m_Tiles[tile], GameEventPool.Get(GameEventId.SetVisibility)
+                FireEvent(m_TileEntity[tile], GameEventPool.Get(GameEventId.SetVisibility)
                     .With(EventParameters.TileInSight, false)).Release();
     }
 }

@@ -33,15 +33,16 @@ public class WorldDataQuery : GameService
 
     public int GetValueOnTile(Point p)
     {
-        GameEvent getValue = GameEventPool.Get(GameEventId.GetValueOnTile)
-                                .With(EventParameters.Value, 0);
+        return 0;
+        //GameEvent getValue = GameEventPool.Get(GameEventId.GetValueOnTile)
+        //                        .With(EventParameters.Value, 0);
 
-        if (m_ValidDungeonPoints.Contains(p))
-            FireEvent(m_Tiles[p], getValue);
+        //if (m_ValidDungeonPoints.Contains(p))
+        //    FireEvent(m_Tiles[p], getValue);
 
-        int retVal = getValue.GetValue<int>(EventParameters.Value);
-        getValue.Release();
-        return retVal;
+        //int retVal = getValue.GetValue<int>(EventParameters.Value);
+        //getValue.Release();
+        //return retVal;
     }
 
     public IEntity GetClosestEnemy(IEntity source)
@@ -80,7 +81,7 @@ public class WorldDataQuery : GameService
     public IEntity GetEntityOnTile(Point currentTilePos)
     {
         if (m_Tiles.ContainsKey(currentTilePos))
-            return m_Tiles[currentTilePos].GetComponent<Tile>().GetEntityOnTile();
+            return m_Tiles[currentTilePos].GetEntityOnTile();
         return null;
     }
 

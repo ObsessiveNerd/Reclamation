@@ -26,15 +26,21 @@ public class Move : Component
             else
                 direction = (MoveDirection)gameEvent.Paramters[EventParameters.InputDirection];
 
+            Point startPosition = Services.EntityMapService.GetPointWhereEntityIs(Self);
+
             GameEvent beforeMoving = GameEventPool.Get(GameEventId.BeforeMoving)
+                .With(EventParameters.Entity, Self.ID)
                 .With(EventParameters.InputDirection, direction)
                 .With(EventParameters.RequiredEnergy, m_EnergyRequired);
 
             FireEvent(Self, beforeMoving);
 
+            Point desiredTile = Services.TileInteractionService.GetTilePointInDirection(startPosition, direction);
+            Tile t = Services.TileInteractionService.GetTile(desiredTile);
 
-            MoveDirection validMoveDirection = Services.EntityMovementService.BeforeMoving(Self,
-                beforeMoving.GetValue<MoveDirection>(EventParameters.InputDirection), out float energyRequired);
+            t.BeforeMoving(beforeMoving);
+
+            float energyRequired = (float)beforeMoving.Paramters[EventParameters.RequiredEnergy];
 
             //Make sure we have enough energy;
             GameEvent currentEnergyEvent = FireEvent(Self, GameEventPool.Get(GameEventId.GetEnergy)
@@ -43,15 +49,17 @@ public class Move : Component
             
             if (energyRequired > 0f && currentEnergy >= energyRequired && !m_StopMovement)
             {
-                Services.EntityMovementService.Move(Self, validMoveDirection);
+                Services.EntityMovementService.Move(Self, direction);
 
                 //Check if there are any effects that need to occur after moving
-                //GameEvent afterMoving = GameEventPool.Get(GameEventId.AfterMoving).With(moving.Paramters);
-                //FireEvent(Self, afterMoving);
+                GameEvent afterMoving = GameEventPool.Get(GameEventId.AfterMoving).With(beforeMoving.Paramters);
+                FireEvent(Self, afterMoving);
 
                 //energyRequired = (float)afterMoving.Paramters[EventParameters.RequiredEnergy];
                 GameEvent useEnergy = GameEventPool.Get(GameEventId.UseEnergy).With(EventParameters.Value, m_EnergyRequired);
                 FireEvent(Self, useEnergy).Release();
+
+                afterMoving.Release();
 
             }
             else if (m_StopMovement)

@@ -6,7 +6,8 @@ public abstract class GameService //: Component
 {
     //protected static Dictionary<IEntity, TimeProgression> m_PlayerToTimeProgressionMap = new Dictionary<IEntity, TimeProgression>();
     protected static TimeProgression m_TimeProgression = new TimeProgression();
-    protected static Dictionary<Point, Actor> m_Tiles = new Dictionary<Point, Actor>();
+    protected static Dictionary<Point, Tile> m_Tiles = new Dictionary<Point, Tile>();
+    protected static Dictionary<Point, Actor> m_TileEntity = new Dictionary<Point, Actor>();
     protected static int m_Seed;
     protected static List<Tile> m_ChangedTiles = new List<Tile>();
 
@@ -49,7 +50,7 @@ public abstract class GameService //: Component
         m_CurrentLevel = 1;
     }
 
-    protected Point GetTilePointInDirection(Point basePoint, MoveDirection direction)
+    public  Point GetTilePointInDirection(Point basePoint, MoveDirection direction)
     {
         if (direction == MoveDirection.None)
             return basePoint;

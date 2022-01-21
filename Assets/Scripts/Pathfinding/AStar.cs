@@ -143,7 +143,10 @@ public class AStar : IPathfindingAlgorithm
 
     public bool IsValidNeighbor(Point pt)
     {
-        Services.PathfinderService.GetPathfindingData(new Point(pt.x, pt.y), out bool blocksMovement, out float weight);
+        if (Services.TileInteractionService.GetTile(pt) == null)
+            return false;
+
+        Services.PathfinderService.GetPathfindingData(pt, out bool blocksMovement, out float weight);
         return blocksMovement;
     }
 

@@ -102,7 +102,7 @@ public class GameSaveSystem : GameService
         {
             GameEvent serializeTile = GameEventPool.Get(GameEventId.SerializeTile)
                                          .With(EventParameters.Value, level);
-            tile.GetComponent<Tile>().SerializeTile(serializeTile);
+            tile.SerializeTile(serializeTile);
             serializeTile.Release();
         }
 

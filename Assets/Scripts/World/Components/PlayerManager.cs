@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -53,8 +54,16 @@ public class PlayerManager : GameService
 
         if (m_ActivePlayer != null)
         {
-            Services.CameraService.SetCameraPosition(m_EntityToPointMap[m_ActivePlayer.Value]);
-            Services.PartyService.MakePartyLeader(m_ActivePlayer.Value);
+            try
+            {
+                Services.CameraService.SetCameraPosition(m_EntityToPointMap[m_ActivePlayer.Value]);
+                Services.PartyService.MakePartyLeader(m_ActivePlayer.Value);
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"{m_ActivePlayer.Value} was not found in entity -> point map.  This has to do with how we" +
+                    $"despawn and spawn etities to move them.  Bug presents itself primarily when walking over allies.");
+            }
         }
     }
 

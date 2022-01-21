@@ -222,7 +222,7 @@ public class DungeonManager : GameService
 
             for (int i = 0; i < dungeonLevel.TilePoints.Count; i++)
             {
-                FireEvent(m_Tiles[dungeonLevel.TilePoints[i]], 
+                FireEvent(m_TileEntity[dungeonLevel.TilePoints[i]], 
                     GameEventPool.Get(GameEventId.SetHasBeenVisited)
                         .With(EventParameters.HasBeenVisited, dungeonLevel.TileHasBeenVisited[i])).Release();
             }
@@ -235,7 +235,7 @@ public class DungeonManager : GameService
             {
                 foreach (var point in m_Tiles.Keys)
                 {
-                    FireEvent(m_Tiles[point], GameEventPool.Get(GameEventId.SetHasBeenVisited)
+                    FireEvent(m_TileEntity[point], GameEventPool.Get(GameEventId.SetHasBeenVisited)
                         .With(EventParameters.HasBeenVisited, false)).Release();
                 }
             }
@@ -247,7 +247,7 @@ public class DungeonManager : GameService
     void CleanTiles()
     {
         foreach (var tile in m_Tiles.Values)
-            tile.GetComponent<Tile>().CleanTile();
+            tile.CleanTile();
             //FireEvent(tile, GameEventPool.Get(GameEventId.CleanTile));
 
         List<IEntity> entities = new List<IEntity>(m_EntityToPointMap.Keys);
@@ -342,7 +342,8 @@ public class DungeonManager : GameService
         m_GameObjectMap.Add(new Point(x, y), tile);
 
         Actor actor = new Actor("Tile");
-        actor.AddComponent(new Tile(actor, new Point(x, y)));
+        Tile t = new Tile(actor, new Point(x, y));
+        actor.AddComponent(t);
         actor.AddComponent(new TileVisible(false));
         actor.AddComponent(new GraphicContainer("Textures/Environment/td_world_floor_cobble_b-120"));
         actor.AddComponent(new Renderer(tile.GetComponent<SpriteRenderer>()));
@@ -350,7 +351,8 @@ public class DungeonManager : GameService
         actor.CleanupComponents();
         actor.Start();
 
-        m_Tiles.Add(new Point(x, y), actor);
+        m_Tiles.Add(new Point(x, y), t);
+        m_TileEntity.Add(new Point(x, y), actor);
         m_EntityToPointMap.Add(actor, new Point(x, y));
     }
 }

@@ -10,10 +10,13 @@ public class WorldSpawner : GameService
     public void Spawn(IEntity entity, Point spawnPoint)
     {
         if (!m_Tiles.ContainsKey(spawnPoint))
+        {
+            Debug.LogWarning($"Spawn point {spawnPoint} does not exist for {entity.Name}");
             return;
+        }
 
         FireEvent(entity, GameEventPool.Get(GameEventId.SetPoint).With(EventParameters.TilePosition, spawnPoint)).Release();
-        m_Tiles[spawnPoint].GetComponent<Tile>().Spawn(entity);
+        m_Tiles[spawnPoint].Spawn(entity);
 
         Services.WorldUpdateService.UpdateWorldView();
         m_EntityToPointMap[entity] = spawnPoint;
@@ -39,7 +42,7 @@ public class WorldSpawner : GameService
         GameEvent despawn = GameEventPool.Get(GameEventId.Despawn).With(EventParameters.Entity, entity.ID)
                                                                .With(EventParameters.EntityType, entityType);
 
-        m_Tiles[currentPoint].GetComponent<Tile>().Despawn(despawn);
+        m_Tiles[currentPoint].Despawn(despawn);
         m_EntityToPointMap.Remove(entity);
         m_TimeProgression.RemoveEntity(entity);
         despawn.Release();

@@ -8,7 +8,7 @@ public class TileInteractions : GameService
     {
         if (!m_Tiles.ContainsKey(p))
             return null;
-        return m_Tiles[p].GetComponent<Tile>();
+        return m_Tiles[p];
     }
 
     public void TileChanged(Tile t)
@@ -22,7 +22,7 @@ public class TileInteractions : GameService
                             .With(EventParameters.Entity, pickupEntity.ID);
 
         Point p = m_EntityToPointMap[pickupEntity];
-        FireEvent(m_Tiles[p], pickup);
+        m_Tiles[p].Pickup(pickup);
 
         pickup.Release();
     }
@@ -30,7 +30,7 @@ public class TileInteractions : GameService
     public bool IsTileBlocking(Point p)
     {
         if (m_Tiles.ContainsKey(p))
-            return m_Tiles[p].GetComponent<Tile>().IsTileBlocking;
+            return m_Tiles[p].IsTileBlocking;
         return false;
     }
     public void Drop(IEntity droppingEntity, IEntity entity)
@@ -54,7 +54,8 @@ public class TileInteractions : GameService
         GameEvent showTileInfo = GameEventPool.Get(GameEventId.ShowTileInfo)
             .With(EventParameters.Info, "");
 
-        string value = FireEvent(m_Tiles[pos], showTileInfo).GetValue<string>(EventParameters.Info);
+        m_Tiles[pos].ShowTileInfo(showTileInfo);
+        string value = showTileInfo.GetValue<string>(EventParameters.Info);
         showTileInfo.Release();
         return value;
     }
@@ -64,6 +65,6 @@ public class TileInteractions : GameService
         if (!m_Tiles.ContainsKey(p))
             Debug.Log($"P isn't here. {p}");
         else
-            FireEvent(m_Tiles[p], GameEventPool.Get(GameEventId.DestroyObject)).Release();
+            m_Tiles[p].DestroyObject();
     }
 }

@@ -14,12 +14,19 @@ public class Pathfinder : GameService
 
     public void GetPathfindingData(Point p,  out bool blocksMovement, out float weight)
     {
+        if(p == Point.InvalidPoint)
+        {
+            throw new System.Exception("Cannot use invalid point for path finding data");
+        }
+
         GameEvent ge = GameEventPool.Get(GameEventId.PathfindingData)
                         .With(EventParameters.BlocksMovement, false)
                         .With(EventParameters.Weight, 0f);
 
-        if(m_Tiles.TryGetValue(p, out Actor tile))
-                FireEvent(tile, ge);
+        if (!m_Tiles.ContainsKey(p))
+            throw new System.Exception($"Tiles does not have {p}");
+
+        m_Tiles[p].GetPathFindingData(ge);
         blocksMovement = ge.GetValue<bool>(EventParameters.BlocksMovement);
         weight = ge.GetValue<float>(EventParameters.Weight);
         ge.Release();
