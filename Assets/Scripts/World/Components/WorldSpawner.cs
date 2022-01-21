@@ -44,6 +44,7 @@ public class WorldSpawner : GameService
 
         m_Tiles[currentPoint].Despawn(despawn);
         m_EntityToPointMap.Remove(entity);
+        m_EntityToPreviousPointMap[entity] = currentPoint;
         m_TimeProgression.RemoveEntity(entity);
         despawn.Release();
     }

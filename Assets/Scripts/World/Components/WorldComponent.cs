@@ -12,6 +12,7 @@ public abstract class GameService //: Component
     protected static List<Tile> m_ChangedTiles = new List<Tile>();
 
     protected static Dictionary<IEntity, Point> m_EntityToPointMap = new Dictionary<IEntity, Point>();
+    protected static Dictionary<IEntity, Point> m_EntityToPreviousPointMap = new Dictionary<IEntity, Point>();
     protected static LinkedList<IEntity> m_Players = new LinkedList<IEntity>();
     protected static LinkedListNode<IEntity> m_ActivePlayer;
     protected static HashSet<Point> m_ValidDungeonPoints = new HashSet<Point>();
@@ -32,6 +33,9 @@ public abstract class GameService //: Component
     {
         if (m_EntityToPointMap.ContainsKey(e))
             return m_EntityToPointMap[e];
+        if (m_EntityToPreviousPointMap.ContainsKey(e))
+            return m_EntityToPreviousPointMap[e];
+
         Debug.LogError($"Could not find posiiton for {e.InternalName}");
         return new Point(-1, -1);
     }

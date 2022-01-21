@@ -17,25 +17,21 @@ public static class GameEventPool
 
     public static GameEvent Get(string id)
     {
-        lock (m_Pool)
+        if (m_Pool.Count > 0)
         {
-
-            if (m_Pool.Count > 0)
-            {
-                var ge = m_Pool.Pop();
-                ge.SetId(id);
-                if (!ge.IsValid)
-                    throw new System.Exception("NOT VALID GAME EVENT");
-                //if (ge.Paramters.Count > 0)
-                //    throw new System.Exception();
-                m_InUse.Add(ge);
-                return ge;
-            }
-
-            var ge2 = new GameEvent(id);
-            m_InUse.Add(ge2);
-            return ge2;
+            var ge = m_Pool.Pop();
+            ge.SetId(id);
+            if (!ge.IsValid)
+                throw new System.Exception("NOT VALID GAME EVENT");
+            //if (ge.Paramters.Count > 0)
+            //    throw new System.Exception();
+            m_InUse.Add(ge);
+            return ge;
         }
+
+        var ge2 = new GameEvent(id);
+        m_InUse.Add(ge2);
+        return ge2;
 
     }
 

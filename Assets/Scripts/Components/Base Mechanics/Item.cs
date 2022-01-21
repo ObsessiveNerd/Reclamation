@@ -65,9 +65,7 @@ public class Item : Component
 
             ContextMenuButton giveTo = new ContextMenuButton("Give to...", () =>
             {
-                Services.WorldUIService.PromptToGiveItem(
-                    Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameters.Entity)),
-                    Self);
+                Services.WorldUIService.PromptToGiveItem(source,Self);
             });
             gameEvent.GetValue<List<ContextMenuButton>>(EventParameters.InventoryContextActions).Add(giveTo);
         }

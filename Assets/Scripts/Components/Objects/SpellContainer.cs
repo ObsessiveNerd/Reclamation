@@ -85,9 +85,9 @@ public class SpellContainer : Component
             string sourceId = gameEvent.GetValue<string>(EventParameters.Owner);
             if (WorldUtility.IsActivePlayer(sourceId))
             {
-                GameEvent openSpellUI = GameEventPool.Get(GameEventId.OpenSpellUI)
-                                            .With(EventParameters.Entity, Self.ID)
-                                            .With(EventParameters.SpellList, SpellNameToIdMap.Values.Select(s => s.ID).ToList());
+                //GameEvent openSpellUI = GameEventPool.Get(GameEventId.OpenSpellUI)
+                //                            .With(EventParameters.Entity, Self.ID)
+                //                            .With(EventParameters.SpellList, SpellNameToIdMap.Values.Select(s => s.ID).ToList());
 
                 Services.WorldUIService.OpenSpellUI(Self);
             }

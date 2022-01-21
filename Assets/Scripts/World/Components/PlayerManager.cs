@@ -56,7 +56,10 @@ public class PlayerManager : GameService
         {
             try
             {
-                Services.CameraService.SetCameraPosition(m_EntityToPointMap[m_ActivePlayer.Value]);
+                Point p = m_EntityToPointMap.ContainsKey(m_ActivePlayer.Value) ? m_EntityToPointMap[m_ActivePlayer.Value] 
+                    : m_EntityToPreviousPointMap[m_ActivePlayer.Value];
+
+                Services.CameraService.SetCameraPosition(p);
                 Services.PartyService.MakePartyLeader(m_ActivePlayer.Value);
             }
             catch (Exception e)
