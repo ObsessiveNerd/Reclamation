@@ -34,8 +34,9 @@ public class EquipmentSlot : Component
         var entity = EntityQuery.GetEntity(EquipmentId);
         if (entity == null)
         {
-            EntityMap.AddEntity(entity);
-            //entity = EntityFactory.CreateEntity(EquipmentId);
+            entity = EntityFactory.CreateEntity(EquipmentId);
+            Services.EntityMapService.AddEntity(entity);
+
             //GameEvent register = GameEventPool.Get(GameEventId.RegisterEntity)
             //                        .With(EventParameters.Entity, entity);
             //World.Instance.Self.FireEvent(register.CreateEvent());

@@ -95,7 +95,7 @@ public class Tile : Component
             {
                 GameEvent b = GameEventPool.Get(GameEventId.PathfindingData)
                                 .With(EventParameters.BlocksMovement, false)
-                                .With(EventParameters.Weight, 1);
+                                .With(EventParameters.Weight, 1f);
                 foreach (var t in GetTarget(false))
                 {
                     var e = FireEvent(t, b);

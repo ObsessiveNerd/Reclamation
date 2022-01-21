@@ -64,30 +64,12 @@ public static class PathfindingUtility
 
     public static Point GetRandomValidPoint()
     {
-
-        GameEvent builder = GameEventPool.Get(GameEventId.GetRandomValidPoint)
-                                .With(EventParameters.Value, null);
-
-        if (World.Services == null)
-            return Point.InvalidPoint;
-
-        var res = World.Services.Self.FireEvent(builder).GetValue<Point>(EventParameters.Value);
-        builder.Release();
-        return res;
+        return Services.DungeonService.GetRandomValidPoint();
     }
 
     public static Point GetEntityLocation(IEntity entity)
     {
-        if (World.Services == null)
-            return Point.InvalidPoint;
-
-        GameEvent getEntityPointBuilder = GameEventPool.Get(GameEventId.GetEntityLocation)
-                                            .With(EventParameters.Entity, entity.ID)
-                                            .With(EventParameters.TilePosition, null);
-
-        var res = World.Services.Self.FireEvent(getEntityPointBuilder).GetValue<Point>(EventParameters.TilePosition);
-        getEntityPointBuilder.Release();
-        return res;
+        return Services.WorldDataQuery.GetEntityLocation(entity);
     }
 
     public static Point GetValidPointWithinRange(IEntity target, int range)

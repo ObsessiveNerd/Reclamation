@@ -35,12 +35,7 @@ public class Fear : Component
             {
                 if (point == m_CurrentLocation) continue;
 
-                GameEvent getEntity = GameEventPool.Get(GameEventId.GetEntityOnTile)
-                                                        .With(EventParameters.TilePosition, point)
-                                                        .With(EventParameters.Entity, "");
-
-                IEntity target = EntityQuery.GetEntity(FireEvent(World.Services.Self, getEntity).GetValue<string>(EventParameters.Entity));
-                getEntity.Release();
+                IEntity target = Services.WorldDataQuery.GetEntityOnTile(point);
                 if (target == null) continue;
 
                 if (Factions.GetDemeanorForTarget(Self, target) != Demeanor.Hostile) continue;

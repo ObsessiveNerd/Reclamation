@@ -38,10 +38,7 @@ public class Item : Component
         if (gameEvent.ID == GameEventId.Drop)
         {
             IEntity droppingEntity = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Entity]);
-            FireEvent(World.Services.Self, GameEventPool.Get(GameEventId.Drop)
-                    .With(EventParameters.Entity, Self.ID)
-                    .With(EventParameters.EntityType, EntityType.Item)
-                    .With(EventParameters.Creature, droppingEntity.ID)).Release();
+            Services.TileInteractionService.Drop(droppingEntity, Self);
 
             GameEvent unequip = GameEventPool.Get(GameEventId.Unequip)
                                 .With(EventParameters.Entity, droppingEntity.ID)
@@ -68,10 +65,9 @@ public class Item : Component
 
             ContextMenuButton giveTo = new ContextMenuButton("Give to...", () =>
             {
-                GameEvent giveItemTo = GameEventPool.Get(GameEventId.PromptToGiveItem)
-                                             .With(EventParameters.Entity, gameEvent.GetValue<string>(EventParameters.Entity))
-                                             .With(EventParameters.Item, Self.ID);
-                World.Services.Self.FireEvent(giveItemTo).Release();
+                Services.WorldUIService.PromptToGiveItem(
+                    Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameters.Entity)),
+                    Self);
             });
             gameEvent.GetValue<List<ContextMenuButton>>(EventParameters.InventoryContextActions).Add(giveTo);
         }

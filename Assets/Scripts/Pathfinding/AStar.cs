@@ -24,13 +24,13 @@ public class AStar : IPathfindingAlgorithm
 
     public AStar(int bufferSize)
     {
-        Dictionary<Point, bool> closedSet = new Dictionary<Point, bool>(bufferSize);
-        Dictionary<Point, bool> openSet = new Dictionary<Point, bool>(bufferSize);
+        closedSet = new Dictionary<Point, bool>(bufferSize);
+        openSet = new Dictionary<Point, bool>(bufferSize);
 
         //cost of start to this key node
-        Dictionary<Point, int> gScore = new Dictionary<Point, int>(bufferSize);
+        gScore = new Dictionary<Point, int>(bufferSize);
         //cost of start to goal, passing through key node
-        Dictionary<Point, int> fScore = new Dictionary<Point, int>(bufferSize);
+        fScore = new Dictionary<Point, int>(bufferSize);
     }
 
     public List<Point> CalculatePath(Point start, Point goal)
@@ -79,14 +79,14 @@ public class AStar : IPathfindingAlgorithm
         GameEvent getPathData = GameEventPool.Get(GameEventId.PathfindingData)
                                     .With(EventParameters.TilePosition, new Point(start.x, start.y))
                                     .With(EventParameters.BlocksMovement, false)
-                                    .With(EventParameters.Weight, 1);
+                                    .With(EventParameters.Weight, 1f);
 
         Tile t = Services.TileInteractionService.GetTile(new Point(start.x, start.y));
         t.GetPathFindingData(getPathData);
 
-        int weight = getPathData.GetValue<int>(EventParameters.Weight);
+        float weight = getPathData.GetValue<float>(EventParameters.Weight);
         getPathData.Release();
-        return distanceH + weight;
+        return distanceH + (int)weight;
     }
 
     private int getGScore(Point pt)

@@ -12,22 +12,20 @@ public class SaveData
     public int CurrentDungeonLevel;
     public string SaveName;
 
-    //public List<string> Events;
     public SaveData(int seed)
     {
         Seed = seed;
-        //Events = new List<string>();
     }
 }
 
-public class SaveSystem : GameService
+public class GameSaveSystem : GameService
 {
     public const string kSaveDataPath = "SaveData";
     [HideInInspector]
     public string CurrentSaveName;
     SaveData m_Data;
 
-    public static SaveSystem Instance { get; set; }
+    public static GameSaveSystem Instance { get; set; }
 
     public void Save()
     {
@@ -49,24 +47,10 @@ public class SaveSystem : GameService
 
         GameEvent getCurrentLevel = GameEventPool.Get(GameEventId.GetCurrentLevel)
                                         .With(EventParameters.Level, -1);
-        m_Data.CurrentDungeonLevel = m_CurrentLevel; //World.Services.Self.FireEvent(getCurrentLevel).GetValue<int>(EventParameters.Level);
+        m_Data.CurrentDungeonLevel = m_CurrentLevel;
         m_Data.SaveName = CurrentSaveName = saveName;
         getCurrentLevel.Release();
 
-        //string path = $"{kSaveDataPath}/{World.Instance.Seed}/tmp_event_log.txt";
-        //Directory.CreateDirectory(Path.GetDirectoryName(path));
-        //if (!File.Exists(path))
-        //    return;
-
-        //using (var reader = new StreamReader(path))
-        //{
-        //    while (!reader.EndOfStream)
-        //    {
-        //        string line = reader.ReadLine();
-        //        m_Data.Events.Add(line);
-        //    }
-        //}
-        //World.Services.Self.FireEvent(GameEventPool.Get(GameEventId.SaveLevel)).Release();
         SaveCurrentLevel();
         Directory.CreateDirectory($"{kSaveDataPath}/{saveName}");
         File.WriteAllText($"{kSaveDataPath}/{saveName}/data.save", JsonUtility.ToJson(m_Data));
@@ -105,9 +89,9 @@ public class SaveSystem : GameService
             level = m_DungeonLevelMap[m_CurrentLevel];
             level.ClearData();
         }
-        else if (SaveSystem.Instance.LoadLevel(m_CurrentLevel) != null)
+        else if (GameSaveSystem.Instance.LoadLevel(m_CurrentLevel) != null)
         {
-            level = SaveSystem.Instance.LoadLevel(m_CurrentLevel);
+            level = GameSaveSystem.Instance.LoadLevel(m_CurrentLevel);
             level.ClearData();
             m_DungeonLevelMap.Add(m_CurrentLevel, level);
         }
@@ -118,15 +102,14 @@ public class SaveSystem : GameService
         {
             GameEvent serializeTile = GameEventPool.Get(GameEventId.SerializeTile)
                                          .With(EventParameters.Value, level);
-            //FireEvent(tile, serializeTile.CreateEvent());
             tile.GetComponent<Tile>().SerializeTile(serializeTile);
             serializeTile.Release();
         }
 
-        foreach (Room room in m_DungeonGenerator.Rooms)
+        foreach (Room room in Services.DungeonService.DungeonGenerator.Rooms)
             level.RoomData.Add(room);
 
-        SaveSystem.Instance.SaveLevel(level, m_CurrentLevel);
+        SaveLevel(level, m_CurrentLevel);
     }
 
     public static void LogEvent(string targetId, GameEvent gameEvent)
@@ -139,45 +122,8 @@ public class SaveSystem : GameService
 
     public void Load(string path)
     {
-        //StartCoroutine(LoadInternal(path));
-
         SaveData data = JsonUtility.FromJson<SaveData>(File.ReadAllText(path));
         CurrentSaveName = data.SaveName;
-        //World.Instance.Self.FireEvent(GameEventPool.Get(GameEventId.LoadLevel, new .With(EventParameters.Level, data.CurrentDungeonLevel)));
-        World.Services.InitWorld(data.Seed, data.CurrentDungeonLevel);
-
-        //foreach (string eventString in data.Events)
-        //{
-        //    GameEventSerializable ges = JsonUtility.FromJson<GameEventSerializable>(eventString);
-        //    string targetID = ges.TargetEntityId;
-        //    GameEvent ge = ges.CreateGameEvent();
-        //    IEntity target = EntityQuery.GetEntity(targetID);
-
-        //    target.FireEvent(target, ge);
-        //    GameEvent builder = GameEventPool.Get(GameEventId.ProgressTimeUntilIdHasTakenTurn)
-        //                            .With(EventParameters.Entity, targetID);
-        //    World.Instance.Self.FireEvent(World.Instance.Self, builder.CreateEvent());
-        //}
+        Services.DungeonService.GenerateDungeon(data.CurrentDungeonLevel, false);
     }
-
-    //internal IEnumerator LoadInternal(string path)
-    //{
-    //    SaveData data = JsonUtility.FromJson<SaveData>(File.ReadAllText(path));
-    //    World.Instance.InitWorld(data.Seed);
-
-    //    foreach (string eventString in data.Events)
-    //    {
-    //        GameEventSerializable ges = JsonUtility.FromJson<GameEventSerializable>(eventString);
-    //        string targetID = ges.TargetEntityId;
-    //        GameEvent ge = ges.CreateGameEvent();
-    //        IEntity target = EntityQuery.GetEntity(targetID);
-
-    //        target.FireEvent(target, ge);
-    //        GameEvent builder = GameEventPool.Get(GameEventId.ProgressTimeUntilIdHasTakenTurn)
-    //                                .With(EventParameters.Entity, targetID);
-    //        World.Instance.Self.FireEvent(World.Instance.Self, builder.CreateEvent());
-
-    //        yield return new WaitForSeconds(1.0f);
-    //    }
-    //}
 }

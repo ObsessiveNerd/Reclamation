@@ -23,9 +23,7 @@ public class PlayerInputController : InputControllerBase
             {
                 FireEvent(Self, GameEventPool.Get(GameEventId.MoveKeyPressed)
                     .With(EventParameters.InputDirection, desiredDirection), true).Release();
-                GameEvent setCamera = GameEventPool.Get(GameEventId.SetCameraPosition)
-                                    .With(EventParameters.Point, PathfindingUtility.GetEntityLocation(Self));
-                FireEvent(World.Services.Self, setCamera).Release();
+                Services.CameraService.SetCameraPosition(PathfindingUtility.GetEntityLocation(Self));
                 energyUsed = true;
             }
 
@@ -39,7 +37,7 @@ public class PlayerInputController : InputControllerBase
 #if UNITY_EDITOR
             else if (Input.GetKeyDown(KeyCode.M))
             {
-                FireEvent(World.Services.Self, GameEventPool.Get(GameEventId.RevealAllTiles));
+                Services.FOVService.RevealAllTiles();
             }
 #endif
             else if (InputBinder.PerformRequestedAction(RequestedAction.FireRangedWeapon))
@@ -104,10 +102,7 @@ public class PlayerInputController : InputControllerBase
 
             else if (InputBinder.PerformRequestedAction(RequestedAction.PickupItem))
             {
-                GameEvent pickupItems = GameEventPool.Get(GameEventId.Pickup)
-                                            .With(EventParameters.Entity, Self.ID);
-
-                FireEvent(World.Services.Self, pickupItems).Release();
+                Services.TileInteractionService.Pickup(Self);
                 energyUsed = true;
 
                 //var getInteractableObjectsPositions = FireEvent(World.Instance.Self, GameEventPool.Get(GameEventId.GetInteractableObjects, new .With(EventParameters.Value, new List<Point>())));
@@ -137,7 +132,7 @@ public class PlayerInputController : InputControllerBase
             }
 
             else if (Input.GetKeyDown(KeyCode.Escape))
-                GameObject.FindObjectOfType<SaveSystem>().Save();
+                Services.SaveAndLoadService.Save();
             ///
 
             if (energyUsed)
@@ -165,8 +160,8 @@ public class PlayerInputController : InputControllerBase
 
     void RotateActiveCharacter(GameEvent gameEvent)
     {
-        FireEvent(World.Services.Self, GameEventPool.Get(GameEventId.RotateActiveCharacter));
-        gameEvent.Paramters[EventParameters.UpdateWorldView] = true;
+        Services.PlayerManagerService.RotateActiveCharacter();
+        Services.WorldUpdateService.UpdateWorldView();
         gameEvent.ContinueProcessing = false;
     }
 }

@@ -45,11 +45,8 @@ public class Actor : IEntity
         ID = IDManager.GetNewID().ToString();
         m_Components = new PriorityQueue<IComponent>(new ComponentComparer());
 
-        if (World.Services != null)
-            FireEvent(World.Services.Self, GameEventPool.Get(GameEventId.RegisterEntity)
-                .With(EventParameters.Entity, this)).Release();
-
-        EntityMap.AddEntity(this);
+        Services.EntityMapService.RegisterEntity(this);
+        Services.EntityMapService.AddEntity(this);
         //EntityMap.IDToNameMap[ID] = Name;
     }
 
@@ -61,11 +58,9 @@ public class Actor : IEntity
             IDManager.SetId(int.Parse(id));
 
         m_Components = new PriorityQueue<IComponent>(new ComponentComparer());
-        if (World.Services != null)
-            FireEvent(World.Services.Self, GameEventPool.Get(GameEventId.RegisterEntity)
-                .With(EventParameters.Entity, this)).Release();
-
-        EntityMap.AddEntity(this);
+        Services.EntityMapService.RegisterEntity(this);
+        Services.EntityMapService.AddEntity(this);
+        
         //EntityMap.IDToNameMap[ID] = Name;
     }
 
@@ -83,7 +78,7 @@ public class Actor : IEntity
     public GameEvent FireEvent(IEntity target, GameEvent gameEvent, bool logEvent = false)
     {
         if (logEvent && target != null)
-            SaveSystem.LogEvent(target.ID, gameEvent);
+            GameSaveSystem.LogEvent(target.ID, gameEvent);
 
         target?.HandleEvent(gameEvent);
         return gameEvent;
@@ -92,7 +87,7 @@ public class Actor : IEntity
     public GameEvent FireEvent(GameEvent gameEvent, bool logEvent = false)
     {
         if (logEvent)
-            SaveSystem.LogEvent(ID, gameEvent);
+            GameSaveSystem.LogEvent(ID, gameEvent);
 
         HandleEvent(gameEvent);
         return gameEvent;

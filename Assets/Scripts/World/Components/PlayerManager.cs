@@ -60,7 +60,7 @@ public class PlayerManager : GameService
 
     public void UnRegisterCharacter(string id)
     {
-        UnregisterPlayer(m_EntityIdToEntityMap[id]);
+        UnRegisterPlayer(m_EntityIdToEntityMap[id]);
         if (m_Players.Count == 0)
         {
             m_TimeProgression.Stop();
@@ -81,7 +81,7 @@ public class PlayerManager : GameService
         }
     }
 
-    public void UnregisterPlayer(IEntity entity)
+    public void UnRegisterPlayer(IEntity entity)
     {
         m_Players.Remove(entity);
         if (entity == m_ActivePlayer.Value)

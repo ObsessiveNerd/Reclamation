@@ -79,16 +79,14 @@ public class WorldUIController : GameService
             UpdatableUI.Add(go);
     }
 
-    public void OpenChestUI(GameEvent gameEvent)
+    public void OpenChestUI(IEntity chest, IEntity character)
     {
-        IEntity source = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameters.Entity));
-        IEntity character = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameters.Character));
-        GameObject.FindObjectOfType<ChestMono>().Init(source, character);
+        GameObject.FindObjectOfType<ChestMono>().Init(chest, character);
     }
 
-    public void OpenSpellExaminationUI(GameEvent gameEvent)
+    public void OpenSpellExaminationUI(List<string> spellIds)
     {
-        GameObject.FindObjectOfType<SpellExaminationUI>().Setup(gameEvent.GetValue<List<string>>(EventParameters.SpellList));
+        GameObject.FindObjectOfType<SpellExaminationUI>().Setup(spellIds);
     }
 
     public void RegisterPlayableCharacter(string id)

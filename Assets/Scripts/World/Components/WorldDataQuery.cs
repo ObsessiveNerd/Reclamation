@@ -5,6 +5,15 @@ using UnityEngine;
 
 public class WorldDataQuery : GameService
 {
+    public int MapRows;
+    public int MapColumns;
+    public int Seed { get { return m_Seed; }}
+    public WorldDataQuery(int mapRows, int mapColumns)
+    {
+        MapRows = mapRows;
+        MapColumns = mapColumns;
+    }
+
     public string GetActivePlayerId()
     {
         return m_ActivePlayer?.Value.ID;

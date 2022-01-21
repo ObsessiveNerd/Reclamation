@@ -58,23 +58,40 @@ public class DungeonMetaData
 public class DungeonManager : GameService
 {
     GameObject m_TilePrefab;
-    IDungeonGenerator m_DungeonGenerator;
+    public IDungeonGenerator DungeonGenerator;
     int m_Vertical, m_Horizontal;
 
-    public DungeonManager(int seed, GameObject tilePrefab)
+    public DungeonManager(int seed, GameObject tilePrefab, int rows, int columns)
     {
         m_Seed = seed;
         m_TilePrefab = tilePrefab;
+        m_Vertical = rows;
+        m_Horizontal = columns;
     }
 
-    public void GenerateDungeon(int level, int rows, int columns, bool newGame)
+    public void GenerateDungeon(bool startNew, string loadPath)
+    {
+        if (startNew)
+        {
+            using (new DiagnosticsTimer("Start World"))
+                GenerateDungeon(1, true);
+            using (new DiagnosticsTimer("Update world view"))
+                Services.WorldUpdateService.UpdateWorldView();
+        }
+        else
+        {
+            Services.SaveAndLoadService.Load($"{loadPath}/data.save");
+        }
+    }
+
+    public void GenerateDungeon(int level, bool newGame)
     {
         Debug.Log("Start world called");
         Clean();
-        CreateTiles(rows, columns);
+        CreateTiles(m_Horizontal, m_Vertical);
 
         m_CurrentLevel = level;
-        m_DungeonGenerator = new BasicDungeonGenerator(rows, columns);
+        DungeonGenerator = new BasicDungeonGenerator(m_Horizontal, m_Vertical);
 
         LoadOrCreateDungeon();
 
@@ -131,12 +148,12 @@ public class DungeonManager : GameService
 
     public Point GetRandomValidPoint()
     {
-        if (m_DungeonGenerator == null)
+        if (DungeonGenerator == null)
             return new Point(1, 1);
         else
         {
-            int roomIndex = RecRandom.Instance.GetRandomValue(0, m_DungeonGenerator.Rooms.Count - 1);
-            return m_DungeonGenerator.Rooms[roomIndex].GetValidPoint(null);
+            int roomIndex = RecRandom.Instance.GetRandomValue(0, DungeonGenerator.Rooms.Count - 1);
+            return DungeonGenerator.Rooms[roomIndex].GetValidPoint(null);
         }
     }
 
@@ -161,7 +178,7 @@ public class DungeonManager : GameService
     {
         if (!m_DungeonLevelMap.ContainsKey(m_CurrentLevel))
         {
-            DungeonGenerationResult loadedLevel = SaveSystem.Instance.LoadLevel(m_CurrentLevel);
+            DungeonGenerationResult loadedLevel = Services.SaveAndLoadService.LoadLevel(m_CurrentLevel);
             if (loadedLevel != null)
                 m_DungeonLevelMap.Add(m_CurrentLevel, loadedLevel);
         }
@@ -171,7 +188,7 @@ public class DungeonManager : GameService
             EntityFactory.ReloadTempBlueprints();
             DungeonGenerationResult dungeonLevel = m_DungeonLevelMap[m_CurrentLevel];
             foreach (var room in dungeonLevel.RoomData)
-                m_DungeonGenerator.Rooms.Add(room);
+                DungeonGenerator.Rooms.Add(room);
 
             foreach(string wall in dungeonLevel.Walls)
             {
@@ -213,7 +230,7 @@ public class DungeonManager : GameService
         else
         {
             DungeonMetaData dmd = new DungeonMetaData($"{LevelMetaData.MetadataPath}/{m_CurrentLevel}.lvl");
-            DungeonGenerationResult dr = m_DungeonGenerator.GenerateDungeon(dmd);
+            DungeonGenerationResult dr = DungeonGenerator.GenerateDungeon(dmd);
             using (new DiagnosticsTimer("Setting visited status"))
             {
                 foreach (var point in m_Tiles.Keys)
@@ -244,13 +261,13 @@ public class DungeonManager : GameService
             m_EntityToPointMap.Remove(entity);
             m_TimeProgression.RemoveEntity(entity);
         }
-        m_DungeonGenerator.Clean();
+        DungeonGenerator.Clean();
         Services.FOVService.CleanFoVData();
     }
 
     void SpawnPlayers()
     {
-        string charactersPath = SaveSystem.kSaveDataPath + "/" + SaveSystem.Instance.CurrentSaveName + "/Blueprints/Characters";
+        string charactersPath = GameSaveSystem.kSaveDataPath + "/" + Services.SaveAndLoadService.CurrentSaveName + "/Blueprints/Characters";
 #if UNITY_EDITOR
         if (!Directory.Exists(charactersPath))
         {
@@ -258,7 +275,7 @@ public class DungeonManager : GameService
             {
                 IEntity player = EntityFactory.CreateEntity("DwarfWarrior");
                 Services.PlayerManagerService.ConvertToPlayableEntity(player);
-                Spawner.Spawn(player, m_DungeonGenerator.Rooms[0].GetValidPoint(null));
+                Spawner.Spawn(player, DungeonGenerator.Rooms[0].GetValidPoint(null));
 
                 player.CleanupComponents();
 
@@ -273,7 +290,7 @@ public class DungeonManager : GameService
             {
                 IEntity player = EntityFactory.CreateEntity(Path.GetFileNameWithoutExtension(bp));
                 Services.PlayerManagerService.ConvertToPlayableEntity(player);
-                Spawner.Spawn(player, m_DungeonGenerator.Rooms[0].GetValidPoint(null));
+                Spawner.Spawn(player, DungeonGenerator.Rooms[0].GetValidPoint(null));
 
                 player.CleanupComponents();
 
@@ -292,9 +309,9 @@ public class DungeonManager : GameService
             var entity = EntityQuery.GetEntity(player);
 
             if (movingDown)
-                Spawner.Spawn(entity, m_DungeonGenerator.Rooms[0].GetValidPoint(null));
+                Spawner.Spawn(entity, DungeonGenerator.Rooms[0].GetValidPoint(null));
             else
-                Spawner.Spawn(entity, m_DungeonGenerator.Rooms[m_DungeonLevelMap[m_CurrentLevel].StairsDownRoomIndex].GetValidPoint(null));
+                Spawner.Spawn(entity, DungeonGenerator.Rooms[m_DungeonLevelMap[m_CurrentLevel].StairsDownRoomIndex].GetValidPoint(null));
 
             FireEvent(entity, GameEventPool.Get(GameEventId.RegisterPlayableCharacter)).Release();
             FireEvent(entity, GameEventPool.Get(GameEventId.InitFOV)).Release();

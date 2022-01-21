@@ -111,7 +111,7 @@ public class TimeProgression
         using (new DiagnosticsTimer("Update world view"))
         {
             if ((bool)update.Paramters[EventParameters.UpdateWorldView])
-                World.Services.Self.FireEvent(World.Services.Self, GameEventPool.Get(GameEventId.UpdateWorldView)).Release();
+                Services.WorldUpdateService.UpdateWorldView();
         }
 
         if ((bool)update.Paramters[EventParameters.TakeTurn])
@@ -129,7 +129,7 @@ public class TimeProgression
                 startTurn.Release();
             }
             endTurn.Release();
-            World.Services.Self.FireEvent(World.Services.Self, GameEventPool.Get(GameEventId.UpdateWorldView)).Release();
+            Services.WorldUpdateService.UpdateWorldView();
         }
 
         //ObjectPool.Return(update);

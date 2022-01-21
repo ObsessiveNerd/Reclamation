@@ -48,11 +48,7 @@ public class Desire : Component
             m_DesiredValue = 0;
             foreach (var point in visiblePoints)
             {
-                GameEvent getTileValue = GameEventPool.Get(GameEventId.GetValueOnTile)
-                                            .With(EventParameters.TilePosition, point)
-                                            .With(EventParameters.Value, 0);
-                int valueOnTile = FireEvent(World.Services.Self, getTileValue).GetValue<int>(EventParameters.Value);
-                getTileValue.Release();
+                int valueOnTile = Services.WorldDataQuery.GetValueOnTile(point);
                 if(valueOnTile > m_DesiredValue)
                 {
                     m_CurrentDestination = point;
@@ -76,11 +72,8 @@ public class Desire : Component
     {
         if (m_CurrentPosition == m_CurrentDestination)
         {
-            GameEvent pickupItem = GameEventPool.Get(GameEventId.Pickup)
-                                        .With(EventParameters.Entity, Self.ID);
-            FireEvent(World.Services.Self, pickupItem);
-            pickupItem.Release();
-
+            Services.TileInteractionService.Pickup(Self);
+            
             GameEvent tryEquip = GameEventPool.Get(GameEventId.TryEquip)
                                         .With(EventParameters.Entity, Self.ID);
             Self.FireEvent(tryEquip).Release();

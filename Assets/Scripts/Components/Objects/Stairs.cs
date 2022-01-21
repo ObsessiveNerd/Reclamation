@@ -31,12 +31,10 @@ public class Stairs : Component
             string e = gameEvent.GetValue<string>(EventParameters.Entity);
             if (WorldUtility.IsActivePlayer(e))
             {
-                GameEvent move = GameEventPool.Get(GameEventId.MoveUp);
-
                 if (Direction == StairDirection.Down)
-                    move = GameEventPool.Get(GameEventId.MoveDown);
-
-                FireEvent(World.Services.Self, move).Release();
+                    Services.DungeonService.MoveDown();
+                else
+                    Services.DungeonService.MoveUp();
             }
         }
     }

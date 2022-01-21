@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Move : Component
 {
-    float m_EnergyRequired = 1f;
+    readonly float m_EnergyRequired = 1f;
     bool m_StopMovement = false;
 
     public Move()
@@ -32,16 +32,9 @@ public class Move : Component
 
             FireEvent(Self, beforeMoving);
 
-            //Need to get a result from this and check that the world says it's valid to move in the desired direction
-            GameEvent beforeMovingCheckWorld = GameEventPool.Get(GameEventId.BeforeMoving)
-                .With(EventParameters.Entity, Self.ID)
-                .With(EventParameters.EntityType, EntityType.Creature)
-                .With(EventParameters.InputDirection, beforeMoving.Paramters[EventParameters.InputDirection])
-                .With(EventParameters.RequiredEnergy, m_EnergyRequired);
-            
-            FireEvent(World.Services.Self, beforeMovingCheckWorld);
 
-            float energyRequired = (float)beforeMovingCheckWorld.Paramters[EventParameters.RequiredEnergy];
+            MoveDirection validMoveDirection = Services.EntityMovementService.BeforeMoving(Self,
+                beforeMoving.GetValue<MoveDirection>(EventParameters.InputDirection), out float energyRequired);
 
             //Make sure we have enough energy;
             GameEvent currentEnergyEvent = FireEvent(Self, GameEventPool.Get(GameEventId.GetEnergy)
@@ -50,40 +43,21 @@ public class Move : Component
             
             if (energyRequired > 0f && currentEnergy >= energyRequired && !m_StopMovement)
             {
-                GameEvent moveWorld = GameEventPool.Get(GameEventId.MoveEntity).With(EventParameters.Entity, Self.ID)
-                                                                                .With(EventParameters.EntityType, EntityType.Creature)
-                                                                                .With(EventParameters.InputDirection, beforeMovingCheckWorld.Paramters[EventParameters.InputDirection])
-                                                                                .With(EventParameters.RequiredEnergy, energyRequired);
-
-                if (moveWorld.Paramters.Count < 4)
-                    throw new Exception();
-
-                FireEvent(World.Services.Self, moveWorld);
-
-                //See if there's anything on the player that needs to happen when moving
-                GameEvent moving = GameEventPool.Get(GameEventId.ExecuteMove).With(moveWorld.Paramters);
-                FireEvent(Self, moving);
-
+                Services.EntityMovementService.Move(Self, validMoveDirection);
 
                 //Check if there are any effects that need to occur after moving
-                GameEvent afterMoving = GameEventPool.Get(GameEventId.AfterMoving).With(moving.Paramters);
-                FireEvent(Self, afterMoving);
+                //GameEvent afterMoving = GameEventPool.Get(GameEventId.AfterMoving).With(moving.Paramters);
+                //FireEvent(Self, afterMoving);
 
                 //energyRequired = (float)afterMoving.Paramters[EventParameters.RequiredEnergy];
-                GameEvent useEnergy = GameEventPool.Get(GameEventId.UseEnergy).With(EventParameters.Value, energyRequired);
+                GameEvent useEnergy = GameEventPool.Get(GameEventId.UseEnergy).With(EventParameters.Value, m_EnergyRequired);
                 FireEvent(Self, useEnergy).Release();
-
-                moving.Release();
-                moveWorld.Release();
-                
-                afterMoving.Release();
 
             }
             else if (m_StopMovement)
                 FireEvent(Self, GameEventPool.Get(GameEventId.SkipTurn)).Release();
 
             currentEnergyEvent.Release();
-            beforeMovingCheckWorld.Release();
             beforeMoving.Release();
         }
         if (gameEvent.ID == GameEventId.GetMinimumEnergyForAction)

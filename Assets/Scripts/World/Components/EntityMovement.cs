@@ -4,15 +4,19 @@ using UnityEngine;
 
 public class EntityMovement : GameService
 {
-    public MoveDirection BeforeMoving(IEntity entity, MoveDirection moveDirection, ref int energyRequired)
+    public MoveDirection BeforeMoving(IEntity entity, MoveDirection moveDirection, out float energyRequired)
     {
         if (!m_EntityToPointMap.ContainsKey(entity))
+        {
+            energyRequired = 0f;
             return MoveDirection.None;
+        }
 
+        float energy = 1f;
         GameEvent entityBeforeMoveCheck = GameEventPool.Get(GameEventId.BeforeMoving)
                                             .With(EventParameters.Entity, entity.ID)
                                             .With(EventParameters.InputDirection, moveDirection)
-                                            .With(EventParameters.RequiredEnergy, energyRequired);
+                                            .With(EventParameters.RequiredEnergy, energy);
 
         Point currentPoint = m_EntityToPointMap[entity];
         Point newPoint = GetTilePointInDirection(currentPoint, moveDirection);
@@ -21,6 +25,7 @@ public class EntityMovement : GameService
 
         var ret = entityBeforeMoveCheck.GetValue<MoveDirection>(EventParameters.InputDirection);
         entityBeforeMoveCheck.Release();
+        energyRequired = energy;
         return ret;
     }
 
@@ -58,7 +63,7 @@ public class EntityMovement : GameService
         if (m_Tiles.ContainsKey(newPoint))
         {
             var pointEvent = FireEvent(entity, GameEventPool.Get(GameEventId.SetPoint).With(EventParameters.TilePosition, newPoint));
-            Spawner.Move(entity, newPoint);
+            SetEntityPosition(entity, newPoint);
             pointEvent.Release();
         }
     }

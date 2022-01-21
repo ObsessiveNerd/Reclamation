@@ -30,7 +30,7 @@ public class TileSelection : GameService
         return newPoint;
     }
 
-    private void SelectTile(Point p)
+    public void SelectTile(Point p)
     {
         //IEntity entity = Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameters.Entity));
         //IEntity target = Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameters.Target));

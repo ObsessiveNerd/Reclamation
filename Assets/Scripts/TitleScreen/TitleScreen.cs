@@ -29,7 +29,7 @@ public class TitleScreen : MonoBehaviour
 
     public void OpenLoadGames()
     {
-        foreach (var directory in Directory.EnumerateDirectories(SaveSystem.kSaveDataPath))
+        foreach (var directory in Directory.EnumerateDirectories(GameSaveSystem.kSaveDataPath))
         {
             Debug.Log(directory);
             GameObject instance = Instantiate(Button, Content.transform);
@@ -39,7 +39,7 @@ public class TitleScreen : MonoBehaviour
                 SceneManager.LoadSceneAsync("Dungeon").completed += (scene) =>
                 {
                     FindObjectOfType<World>().StartWorld(directory);
-                    FindObjectOfType<World>().GenerateDungeon(false, directory);
+                    Services.DungeonService.GenerateDungeon(false, directory);
                 };
             });
         }

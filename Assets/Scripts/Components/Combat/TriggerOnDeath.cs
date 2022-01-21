@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -20,9 +21,11 @@ public class TriggerOnDeath : Component
     {
         if(gameEvent.ID == GameEventId.Died)
         {
-            GameEvent eb = GameEventPool.Get(EventId)
-                                .With(EventParameters.Entity, Self.ID);
-            FireEvent(World.Services.Self, eb).Release();
+            throw new Exception("Need to fix win condition");
+
+            //GameEvent eb = GameEventPool.Get(EventId)
+            //                    .With(EventParameters.Entity, Self.ID);
+            //FireEvent(World.Services.Self, eb).Release();
         }
     }
 }

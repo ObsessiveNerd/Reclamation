@@ -45,10 +45,8 @@ public class AreaOfEffect : Component
                 .With(EventParameters.TilePosition, null);
 
             foreach (var tile in m_VisibleTiles)
-            {
-                endSelection.Paramters[EventParameters.TilePosition] = tile;
-                FireEvent(World.Services.Self, endSelection);
-            }
+                Services.TileSelectionService.EndTileSelection(tile);
+            
             m_VisibleTiles.Clear();
             endSelection.Release();
         }
@@ -66,9 +64,7 @@ public class AreaOfEffect : Component
             Point p = gameEvent.GetValue<Point>(EventParameters.TilePosition);
             foreach(var tile in m_VisibleTiles)
             {
-                GameEvent eb = GameEventPool.Get(GameEventId.EndSelection)
-                                    .With(EventParameters.TilePosition, tile);
-                FireEvent(World.Services.Self, eb).Release();
+                Services.TileSelectionService.EndTileSelection(tile);
             }
             GameEvent builder = GameEventPool.Get(GameEventId.SelectTile)
                                     .With(EventParameters.TilePosition, p);
@@ -82,10 +78,8 @@ public class AreaOfEffect : Component
                 .With(EventParameters.TilePosition, null);
 
             foreach (var tile in m_VisibleTiles)
-            {
-                endSelection.Paramters[EventParameters.TilePosition] = tile;
-                FireEvent(World.Services.Self, endSelection);
-            }
+                Services.TileSelectionService.EndTileSelection(tile);
+            
             m_VisibleTiles.Clear();
             endSelection.Release();
         }
@@ -102,10 +96,7 @@ public class AreaOfEffect : Component
         if (sendWorldEvents)
         {
             foreach (var point in visibleTiles)
-            {
-                gameEvent.Paramters[EventParameters.TilePosition] = point;
-                FireEvent(World.Services.Self, gameEvent);
-            }
+                Services.TileSelectionService.SelectTile(point);
         }
     }
 }

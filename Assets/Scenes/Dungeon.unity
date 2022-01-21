@@ -4411,7 +4411,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: World
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 6241948252624630926, guid: 111d7f65e2b1f5f468dafe018551f1fd, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 111d7f65e2b1f5f468dafe018551f1fd, type: 3}
 --- !u!1001 &6364748973573346074
 PrefabInstance:

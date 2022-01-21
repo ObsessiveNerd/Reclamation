@@ -6,7 +6,7 @@ public class EntityQuery
 {
     public static IEntity GetEntity(string id)
     {
-        return EntityMap.GetEntity(id);
+        return Services.EntityMapService.GetEntity(id);
 
         //if (string.IsNullOrEmpty(id))
         //    return null;
@@ -27,8 +27,6 @@ public class EntityQuery
 
     public static string GetEntityName(string id)
     {
-        if (!string.IsNullOrEmpty(id) && EntityMap.IDToNameMap.ContainsKey(id))
-            return EntityMap.IDToNameMap[id];
-        return "";
+        return Services.EntityMapService.GetEntity(id)?.Name;
     }
 }

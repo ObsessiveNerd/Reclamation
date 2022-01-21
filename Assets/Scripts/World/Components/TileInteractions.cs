@@ -27,6 +27,12 @@ public class TileInteractions : GameService
         pickup.Release();
     }
 
+    public bool IsTileBlocking(Point p)
+    {
+        if (m_Tiles.ContainsKey(p))
+            return m_Tiles[p].GetComponent<Tile>().IsTileBlocking;
+        return false;
+    }
     public void Drop(IEntity droppingEntity, IEntity entity)
     {
         GameEvent getEntityType = GameEventPool.Get(GameEventId.GetEntityType)

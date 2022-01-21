@@ -20,7 +20,7 @@ public static class Services
     }
 
     public static WorldSpawner SpawnerService { get { return DependencyInjection.GetInstance<WorldSpawner>(); } }
-    public static SaveSystem SaveAndLoadService { get { return DependencyInjection.GetInstance<SaveSystem>(); } }
+    public static GameSaveSystem SaveAndLoadService { get { return DependencyInjection.GetInstance<GameSaveSystem>(); } }
     public static DungeonManager DungeonService { get { return DependencyInjection.GetInstance<DungeonManager>(); } }
     public static WorldUpdate WorldUpdateService { get { return DependencyInjection.GetInstance<WorldUpdate>(); } }
     public static TileSelection TileSelectionService { get { return DependencyInjection.GetInstance<TileSelection>(); } }

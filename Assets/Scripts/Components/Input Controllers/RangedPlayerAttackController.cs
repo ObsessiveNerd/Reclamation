@@ -34,13 +34,8 @@ public class RangedPlayerAttackController : InputControllerBase
             startingTarget = Self;
         isInFOV.Release();
 
-        GameEvent selectTile = GameEventPool.Get(GameEventId.SelectTile).With(EventParameters.Entity, Self.ID)
-                                                                                .With(EventParameters.Target, startingTarget.ID)
-                                                                                .With(EventParameters.TilePosition, null);
-        FireEvent(World.Services.Self, selectTile);
-        m_TileSelection = (Point)selectTile.Paramters[EventParameters.TilePosition];
-        selectTile.Release();
-        FireEvent(World.Services.Self, GameEventPool.Get(GameEventId.UpdateWorldView)).Release();
+        Services.TileSelectionService.SelectTile(Services.WorldDataQuery.GetEntityLocation(startingTarget));
+        Services.WorldUpdateService.UpdateWorldView();
         UIManager.Push(null);
     }
 
@@ -58,14 +53,8 @@ public class RangedPlayerAttackController : InputControllerBase
 
             if (desiredDirection != MoveDirection.None)
             {
-                GameEvent moveSelection = GameEventPool.Get(GameEventId.SelectNewTileInDirection)
-                    .With(EventParameters.InputDirection, desiredDirection)
-                    .With(EventParameters.TilePosition, m_TileSelection);
-
-                FireEvent(World.Services.Self, moveSelection);
-                m_TileSelection = (Point)moveSelection.Paramters[EventParameters.TilePosition];
-                gameEvent.Paramters[EventParameters.UpdateWorldView] = true;
-                moveSelection.Release();
+                m_TileSelection = Services.TileSelectionService.SelectTileInNewDirection(m_TileSelection, desiredDirection);
+                Services.WorldUpdateService.UpdateWorldView();
             }
 
             if(Input.GetKeyDown(KeyCode.Return) || InputBinder.PerformRequestedAction(RequestedAction.FireRangedWeapon))

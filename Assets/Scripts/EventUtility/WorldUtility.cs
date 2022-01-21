@@ -6,14 +6,7 @@ public static class WorldUtility
 {
     public static IEntity GetEntityAtPosition(Point position, bool includeTile = true)
     {
-        GameEvent result = World.Services.Self.FireEvent(GameEventPool.Get(GameEventId.GetEntityOnTile)
-                .With(EventParameters.TilePosition, position)
-                .With(EventParameters.Entity, null)
-                .With(EventParameters.IncludeSelf, includeTile));
-
-        var ret = EntityQuery.GetEntity((string)result.Paramters[EventParameters.Entity]);
-        result.Release();
-        return ret;
+        return Services.WorldDataQuery.GetEntityOnTile(position);
     }
 
     public static Point GetEntityPosition(IEntity entity)
@@ -26,69 +19,28 @@ public static class WorldUtility
         return ret;
     }
 
-    public static bool IsPlayableCharacter(string id)
-    {
-        GameEvent isPlayableCharacter = GameEventPool.Get(GameEventId.IsPlayableCharacter)
-                                            .With(EventParameters.Entity, id)
-                                            .With(EventParameters.Value, false);
-        var ret = World.Services.Self.FireEvent(isPlayableCharacter).GetValue<bool>(EventParameters.Value);
-        isPlayableCharacter.Release();
-        return ret;
-    }
-
     public static IEntity GetClosestEnemyTo(IEntity e)
     {
-        GameEvent getClosestEnemy = GameEventPool.Get(GameEventId.GetClosestEnemy)
-                                    .With(EventParameters.Entity, e.ID)
-                                    .With(EventParameters.Value, null);
-
-        string id = World.Services.Self.FireEvent(getClosestEnemy).GetValue<string>(EventParameters.Value);
-        var entity = EntityQuery.GetEntity(id);
-        getClosestEnemy.Release();
-        return entity;
+        return Services.WorldDataQuery.GetClosestEnemy(e);
     }
 
     public static GameObject GetGameObject(IEntity e)
     {
-        GameEvent getGameObjectLocation = GameEventPool.Get(GameEventId.GameObject)
-                                                .With(EventParameters.Point, GetEntityPosition(e))
-                                                .With(EventParameters.Value, null);
-        var ret = World.Services.Self.FireEvent(getGameObjectLocation).GetValue<GameObject>(EventParameters.Value);
-        getGameObjectLocation.Release();
-        return ret;
+        return Services.WorldDataQuery.GetGameObject(Services.EntityMapService.GetPointWhereEntityIs(e));
     }
 
     public static bool IsActivePlayer(string entityId)
     {
-        GameEvent isActivePlayer = GameEventPool.Get(GameEventId.GetActivePlayerId)
-                                        .With(EventParameters.Value, null);
-        var ret = entityId == World.Services.Self.FireEvent(isActivePlayer).GetValue<string>(EventParameters.Value);
-        isActivePlayer.Release();
-        return ret;
-    }
-
-    public static string GetActivePlayerId()
-    {
-        GameEvent isActivePlayer = GameEventPool.Get(GameEventId.GetActivePlayerId)
-                                        .With(EventParameters.Value, null);
-        var ret = World.Services.Self.FireEvent(isActivePlayer).GetValue<string>(EventParameters.Value);
-        isActivePlayer.Release();
-        return ret;
+        return Services.WorldDataQuery.GetActivePlayerId() == entityId;
     }
 
     public static void RegisterUI(IUpdatableUI ui)
     {
-        GameEvent e = GameEventPool.Get(GameEventId.RegisterUI)
-                            .With(EventParameters.GameObject, ui);
-
-        World.Services.Self.FireEvent(e).Release();
+        Services.WorldUIService.RegisterUpdatableUI(ui);
     }
 
     public static void UnRegisterUI(IUpdatableUI ui)
     {
-        GameEvent e = GameEventPool.Get(GameEventId.UnRegisterUI)
-                            .With(EventParameters.GameObject, ui);
-
-        World.Services.Self.FireEvent(e).Release();
+        Services.WorldUIService.UnregisterUpdatableUI(ui);
     }
 }

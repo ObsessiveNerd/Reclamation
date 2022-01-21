@@ -28,13 +28,6 @@ public class WorldFov : GameService
         UpdateTiles(oldVisibleTiles);
     }
 
-    public bool IsTileBlocking(Point p)
-    {
-        if (m_Tiles.ContainsKey(p))
-            return m_Tiles[p].GetComponent<Tile>().IsTileBlocking;
-        return false;
-    }
-
     public void RevealAllTiles()
     {
         foreach (var tile in m_Tiles.Values)

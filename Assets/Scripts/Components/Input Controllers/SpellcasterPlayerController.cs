@@ -73,15 +73,10 @@ public class SpellcasterPlayerController : InputControllerBase
         else
             startingTarget = Self;
 
-        GameEvent selectTile = GameEventPool.Get(GameEventId.SelectTile).With(EventParameters.Entity, Self.ID)
-                                                                                .With(EventParameters.Target, startingTarget.ID)
-                                                                                .With(EventParameters.TilePosition, null);
-        FireEvent(World.Services.Self, selectTile);
-        FireEvent(m_Attack, selectTile);
-        m_TileSelection = (Point)selectTile.Paramters[EventParameters.TilePosition];
-        FireEvent(World.Services.Self, GameEventPool.Get(GameEventId.UpdateWorldView));
+        Services.TileSelectionService.SelectTile(Services.WorldDataQuery.GetEntityLocation(startingTarget));
+        Services.WorldUpdateService.UpdateWorldView();
+
         UIManager.Push(null);
-        selectTile.Release();
     }
 
     public override void HandleEvent(GameEvent gameEvent)
@@ -100,10 +95,10 @@ public class SpellcasterPlayerController : InputControllerBase
             {
                 GameEvent moveSelection = GameEventPool.Get(GameEventId.SelectNewTileInDirection).With(EventParameters.InputDirection, desiredDirection)
                                                                                                     .With(EventParameters.TilePosition, m_TileSelection);
-                FireEvent(World.Services.Self, moveSelection);
+                moveSelection.Paramters[EventParameters.TilePosition] = Services.TileSelectionService.SelectTileInNewDirection(m_TileSelection, desiredDirection);
                 FireEvent(m_Attack, moveSelection);
                 m_TileSelection = (Point)moveSelection.Paramters[EventParameters.TilePosition];
-                gameEvent.Paramters[EventParameters.UpdateWorldView] = true;
+                Services.WorldUpdateService.UpdateWorldView();
                 moveSelection.Release();
             }
 

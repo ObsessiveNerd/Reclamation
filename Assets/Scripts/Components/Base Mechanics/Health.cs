@@ -32,10 +32,7 @@ public class Health : Component
                 RecLog.Log($"{Self.Name} took {damage.DamageAmount} damage of type {damage.DamageType}");
                 CurrentHealth -= damage.DamageAmount;
 
-                GameEvent entityTookDamage = GameEventPool.Get(GameEventId.EntityTookDamage)
-                                                    .With(EventParameters.Entity, Self.ID)
-                                                    .With(EventParameters.Damage, damage.DamageAmount);
-                World.Services.Self.FireEvent(entityTookDamage).Release();
+                Services.WorldUIService.EntityTookDamage(Self, damage.DamageAmount);
 
                 if (CurrentHealth <= 0)
                 {
@@ -63,10 +60,7 @@ public class Health : Component
             int healAmount = (int)gameEvent.Paramters[EventParameters.Healing];
             CurrentHealth = Mathf.Min(CurrentHealth + healAmount, MaxHealth);
 
-            GameEvent entityHealedDamage = GameEventPool.Get(GameEventId.EntityHealedDamage)
-                                                    .With(EventParameters.Entity, Self.ID)
-                                                    .With(EventParameters.Healing, healAmount);
-            World.Services.Self.FireEvent(entityHealedDamage).Release();
+            Services.WorldUIService.EntityHealedDamage(Self, healAmount);
         }
 
         else if(gameEvent.ID == GameEventId.GetHealth)

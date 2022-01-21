@@ -4,8 +4,13 @@ using UnityEngine;
 
 public class Pathfinder : GameService
 {
-    public const int ImpassableWeight = 5000;
+    public const float ImpassableWeight = 5000f;
     IPathfindingAlgorithm m_Pathfinder;
+
+    public Pathfinder(IPathfindingAlgorithm algorithm)
+    {
+        m_Pathfinder = algorithm;
+    }
 
     public void GetPathfindingData(Point p,  out bool blocksMovement, out float weight)
     {
