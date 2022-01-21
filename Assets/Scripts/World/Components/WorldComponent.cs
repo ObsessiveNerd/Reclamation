@@ -32,6 +32,7 @@ public abstract class GameService //: Component
     {
         if (m_EntityToPointMap.ContainsKey(e))
             return m_EntityToPointMap[e];
+        Debug.LogError($"Could not find posiiton for {e.InternalName}");
         return new Point(-1, -1);
     }
 

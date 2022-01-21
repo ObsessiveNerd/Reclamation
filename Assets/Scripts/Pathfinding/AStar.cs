@@ -77,7 +77,7 @@ public class AStar : IPathfindingAlgorithm
         int distanceH = Math.Abs(dx) + Math.Abs(dy);
 
         GameEvent getPathData = GameEventPool.Get(GameEventId.PathfindingData)
-                                    .With(EventParameters.TilePosition, new Point(start.x, start.y))
+                                    //.With(EventParameters.TilePosition, new Point(start.x, start.y))
                                     .With(EventParameters.BlocksMovement, false)
                                     .With(EventParameters.Weight, 1f);
 
@@ -143,11 +143,11 @@ public class AStar : IPathfindingAlgorithm
 
     public bool IsValidNeighbor(Point pt)
     {
-        if (Services.TileInteractionService.GetTile(pt) == null)
+        Tile t = Services.TileInteractionService.GetTile(pt);
+        if (t == null)
             return false;
 
-        Services.PathfinderService.GetPathfindingData(pt, out bool blocksMovement, out float weight);
-        return blocksMovement;
+        return !t.BlocksMovement;
     }
 
     private List<Point> Reconstruct(Point current)

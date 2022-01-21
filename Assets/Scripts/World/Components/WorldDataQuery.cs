@@ -75,6 +75,7 @@ public class WorldDataQuery : GameService
     {
         if (m_GameObjectMap.ContainsKey(p))
             return m_GameObjectMap[p];
+        Debug.LogError($"Could not find gameobject for {p}");
         return null;
     }
 
