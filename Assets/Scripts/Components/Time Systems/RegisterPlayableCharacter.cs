@@ -13,11 +13,16 @@ public class RegisterPlayableCharacter : Component
 
     public override void HandleEvent(GameEvent gameEvent)
     {
-        if(gameEvent.ID == GameEventId.RegisterPlayableCharacter)
+        if (gameEvent.ID == GameEventId.RegisterPlayableCharacter)
+        {
             Services.PlayerManagerService.RegisterPlayer(Self);
+            Services.WorldUIService.RegisterPlayableCharacter(Self.ID);
+        }
 
         if (gameEvent.ID == GameEventId.Died)
+        {
             Services.PlayerManagerService.UnRegisterPlayer(Self);
+        }
     }
 }
 

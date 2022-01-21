@@ -32,7 +32,7 @@ public class CharacterTab : MonoBehaviour
         firedEvent.Release();
     }
 
-    public void Update2()
+    public void Update()
     {
         if (m_Entity == null)
             m_Entity = EntityQuery.GetEntity(m_EId);
