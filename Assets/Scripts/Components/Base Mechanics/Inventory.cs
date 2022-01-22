@@ -27,8 +27,7 @@ public class Inventory : Component
     {
         if (gameEvent.ID == GameEventId.OpenInventory)
         {
-            FireEvent(World.Instance.Self, new GameEvent(GameEventId.OpenInventoryUI, new KeyValuePair<string, object>(EventParameters.Value, InventoryItems),
-                                                                                        new KeyValuePair<string, object>(EventParameters.Entity, Self.ID)));
+            Services.WorldUIService.OpenInventory(Self);
         }
 
         if (gameEvent.ID == GameEventId.AddToInventory)
@@ -37,8 +36,10 @@ public class Inventory : Component
             if (!InventoryItems.Contains(item))
             {
                 InventoryItems.Add(item);
-                if(WorldUtility.IsActivePlayer(Self.ID))
-                    FireEvent(World.Instance.Self, new GameEvent(GameEventId.UpdateUI, new KeyValuePair<string, object>(EventParameters.Entity, Self.ID)));
+                if (WorldUtility.IsActivePlayer(Self.ID))
+                    Services.WorldUIService.UpdateUI(Self.ID);
+                    //FireEvent(World.Instance.Self, GameEventPool.Get(GameEventId.UpdateUI)
+                    //    .With(EventParameters.Entity, Self.ID)).Release();
             }
         }
 
@@ -52,9 +53,7 @@ public class Inventory : Component
         if (gameEvent.ID == GameEventId.Died)
         {
             foreach (IEntity item in InventoryItems)
-                FireEvent(World.Instance.Self, new GameEvent(GameEventId.Drop, new KeyValuePair<string, object>(EventParameters.Entity, item.ID),
-                                                                                new KeyValuePair<string, object>(EventParameters.Creature, Self.ID),
-                                                                                new KeyValuePair<string, object>(EventParameters.EntityType, EntityType.Item)));
+                Services.TileInteractionService.Drop(Self, item);
             InventoryItems.Clear();
         }
 

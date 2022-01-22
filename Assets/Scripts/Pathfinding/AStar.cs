@@ -3,15 +3,15 @@ using System.Collections.Generic;
 
 public class AStar : IPathfindingAlgorithm
 {
-    Dictionary<IMapNode, bool> closedSet = new Dictionary<IMapNode, bool>(World.Instance.MapColumns * World.Instance.MapRows);
-    Dictionary<IMapNode, bool> openSet = new Dictionary<IMapNode, bool>(World.Instance.MapColumns * World.Instance.MapRows);
+    Dictionary<Point, bool> closedSet;
+    Dictionary<Point, bool> openSet;
 
     //cost of start to this key node
-    Dictionary<IMapNode, int> gScore = new Dictionary<IMapNode, int>(World.Instance.MapColumns * World.Instance.MapRows);
+    Dictionary<Point, int> gScore;
     //cost of start to goal, passing through key node
-    Dictionary<IMapNode, int> fScore = new Dictionary<IMapNode, int>(World.Instance.MapColumns * World.Instance.MapRows);
+    Dictionary<Point, int> fScore;
 
-    Dictionary<IMapNode, IMapNode> nodeLinks = new Dictionary<IMapNode, IMapNode>();
+    Dictionary<Point, Point> nodeLinks = new Dictionary<Point, Point>();
 
     public void Clear()
     {
@@ -22,7 +22,18 @@ public class AStar : IPathfindingAlgorithm
         nodeLinks.Clear();
     }
 
-    public List<IMapNode> CalculatePath(IMapNode start, IMapNode goal)
+    public AStar(int bufferSize)
+    {
+        closedSet = new Dictionary<Point, bool>(bufferSize);
+        openSet = new Dictionary<Point, bool>(bufferSize);
+
+        //cost of start to this key node
+        gScore = new Dictionary<Point, int>(bufferSize);
+        //cost of start to goal, passing through key node
+        fScore = new Dictionary<Point, int>(bufferSize);
+    }
+
+    public List<Point> CalculatePath(Point start, Point goal)
     {
         openSet[start] = true;
         gScore[start] = 0;
@@ -56,42 +67,46 @@ public class AStar : IPathfindingAlgorithm
 
             }
         }
-        return new List<IMapNode>();
+        return new List<Point>();
     }
 
-    private int Heuristic(IMapNode start, IMapNode goal)
+    private int Heuristic(Point start, Point goal)
     {
         var dx = goal.x - start.x;
         var dy = goal.y - start.y;
         int distanceH = Math.Abs(dx) + Math.Abs(dy);
 
-        EventBuilder getPathData = EventBuilderPool.Get(GameEventId.PathfindingData)
-                                    .With(EventParameters.TilePosition, new Point(start.x, start.y))
+        GameEvent getPathData = GameEventPool.Get(GameEventId.PathfindingData)
+                                    //.With(EventParameters.TilePosition, new Point(start.x, start.y))
                                     .With(EventParameters.BlocksMovement, false)
-                                    .With(EventParameters.Weight, 1);
+                                    .With(EventParameters.Weight, 1f);
 
-        int weight = World.Instance.Self.FireEvent(World.Instance.Self, getPathData.CreateEvent()).GetValue<int>(EventParameters.Weight);
-        return distanceH + weight;
+        Tile t = Services.TileInteractionService.GetTile(new Point(start.x, start.y));
+        t.GetPathFindingData(getPathData);
+
+        float weight = getPathData.GetValue<float>(EventParameters.Weight);
+        getPathData.Release();
+        return distanceH + (int)weight;
     }
 
-    private int getGScore(IMapNode pt)
+    private int getGScore(Point pt)
     {
         int score = int.MaxValue;
         gScore.TryGetValue(pt, out score);
         return score;
     }
 
-    private int getFScore(IMapNode pt)
+    private int getFScore(Point pt)
     {
         int score = int.MaxValue;
         fScore.TryGetValue(pt, out score);
         return score;
     }
 
-    public IEnumerable<IMapNode> Neighbors(IMapNode center)
+    public IEnumerable<Point> Neighbors(Point center)
     {
 
-        IMapNode pt = new Point(center.x - 1, center.y - 1);
+        Point pt = new Point(center.x - 1, center.y - 1);
         if (IsValidNeighbor(pt))
             yield return pt;
 
@@ -126,20 +141,18 @@ public class AStar : IPathfindingAlgorithm
             yield return pt;
     }
 
-    public bool IsValidNeighbor(IMapNode pt)
+    public bool IsValidNeighbor(Point pt)
     {
-        EventBuilder getPathData = EventBuilderPool.Get(GameEventId.PathfindingData)
-                                    .With(EventParameters.TilePosition, pt)
-                                    .With(EventParameters.BlocksMovement, false)
-                                    .With(EventParameters.Weight, 1);
+        Tile t = Services.TileInteractionService.GetTile(pt);
+        if (t == null)
+            return false;
 
-        Tile t = World.Instance.Self.GetComponent<TileInteractions>().GetTile(new Point(pt.x, pt.y));
-        return t == null ? false : !t.BlocksMovement;
+        return !t.BlocksMovement;
     }
 
-    private List<IMapNode> Reconstruct(IMapNode current)
+    private List<Point> Reconstruct(Point current)
     {
-        List<IMapNode> path = new List<IMapNode>();
+        List<Point> path = new List<Point>();
         while (nodeLinks.ContainsKey(current))
         {
             path.Add(current);
@@ -150,10 +163,10 @@ public class AStar : IPathfindingAlgorithm
         return path;
     }
 
-    private IMapNode NextBest()
+    private Point NextBest()
     {
         int best = int.MaxValue;
-        IMapNode bestPt = null;
+        Point bestPt = Point.InvalidPoint;
         foreach (var node in openSet.Keys)
         {
             var score = getFScore(node);

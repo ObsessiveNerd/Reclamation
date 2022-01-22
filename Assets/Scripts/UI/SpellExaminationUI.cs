@@ -27,8 +27,10 @@ public class SpellExaminationUI : EscapeableMono//, IUpdatableUI
             IEntity spell = EntityQuery.GetEntity(spellId);
 
             GameObject spriteGoResource = Resources.Load<GameObject>("UI/SpellUI");
-            Sprite sprite = spell.FireEvent(spell, new GameEvent(GameEventId.GetSprite, 
-                new KeyValuePair<string, object>(EventParameters.RenderSprite, null))).GetValue<Sprite>(EventParameters.RenderSprite);
+            GameEvent getSpriteEvent = GameEventPool.Get(GameEventId.GetSprite)
+                .With(EventParameters.RenderSprite, null);
+            Sprite sprite = spell.FireEvent(spell, getSpriteEvent).GetValue<Sprite>(EventParameters.RenderSprite);
+            getSpriteEvent.Release();
             if (sprite != null)
             {
                 GameObject spriteGo = Instantiate(spriteGoResource);
@@ -42,7 +44,7 @@ public class SpellExaminationUI : EscapeableMono//, IUpdatableUI
                 button.onClick.AddListener(() =>
                 {
                     UpdateUI(spell);
-                    //source.FireEvent(new GameEvent(GameEventId.SpellSelected, new KeyValuePair<string, object>(EventParameters.Spell, spellId)));
+                    //source.FireEvent(GameEventPool.Get(GameEventId.SpellSelected, new .With(EventParameters.Spell, spellId)));
                     //Close();
                 });
                 index++;
@@ -61,14 +63,15 @@ public class SpellExaminationUI : EscapeableMono//, IUpdatableUI
         Title.text = newSource.Name;
 
         Dictionary<string, string> classToInfoMap = new Dictionary<string, string>();
-        EventBuilder getInfo = EventBuilderPool.Get(GameEventId.GetInfo)
+        GameEvent getInfo = GameEventPool.Get(GameEventId.GetInfo)
                                 .With(EventParameters.Info, classToInfoMap);
 
-        var result = newSource.FireEvent(getInfo.CreateEvent()).GetValue<Dictionary<string, string>>(EventParameters.Info);
+        var result = newSource.FireEvent(getInfo).GetValue<Dictionary<string, string>>(EventParameters.Info);
         StringBuilder sb = new StringBuilder();
         foreach (var s in result.Values)
             sb.AppendLine(s);
-
+        
+        getInfo.Release();
         Body.text = sb.ToString();
     }
 

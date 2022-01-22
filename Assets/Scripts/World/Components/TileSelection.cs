@@ -2,79 +2,44 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TileSelection : WorldComponent
+public class TileSelection : GameService
 {
-    public override void Init(IEntity self)
+    public void EndTileSelection(Point currentTilePos)
     {
-        base.Init(self);
-        RegisteredEvents.Add(GameEventId.SelectTile);
-        RegisteredEvents.Add(GameEventId.SelectNewTileInDirection);
-        RegisteredEvents.Add(GameEventId.EndSelection);
+        if(!m_Tiles.ContainsKey(currentTilePos)) return;
+
+            m_TileEntity[currentTilePos].RemoveComponent(typeof(SelectedTile));
+            m_TileEntity[currentTilePos].CleanupComponents();
     }
 
-    public override void HandleEvent(GameEvent gameEvent)
+    public Point SelectTileInNewDirection(Point currentTilePos, MoveDirection moveDirection)
     {
-        if (gameEvent.ID == GameEventId.SelectTile)
+        if (m_Tiles.ContainsKey(currentTilePos))
         {
-            if(gameEvent.Paramters[EventParameters.TilePosition] == null)
-            {
-                EventBuilder getEntity = EventBuilderPool.Get(GameEventId.GetEntity)
-                                        .With(EventParameters.Entity, null)
-                                        .With(EventParameters.Value, gameEvent.Paramters[EventParameters.Entity]);
-
-                IEntity entity = FireEvent(Self, getEntity.CreateEvent()).GetValue<IEntity>(EventParameters.Entity);
-
-                EventBuilder getTarget = EventBuilderPool.Get(GameEventId.GetEntity)
-                                        .With(EventParameters.Entity, null)
-                                        .With(EventParameters.Value, gameEvent.Paramters[EventParameters.Target]);
-                IEntity target = gameEvent.Paramters[EventParameters.Target] == null ? null : FireEvent(Self, getTarget.CreateEvent()).GetValue<IEntity>(EventParameters.Entity);
-
-                Point p = m_EntityToPointMap[target == null ? entity : target];
-
-                m_Tiles[p].AddComponent(new SelectedTile());
-                m_Tiles[p].CleanupComponents();
-
-                gameEvent.Paramters[EventParameters.TilePosition] = p;
-            }
-            else
-            {
-                Point p = gameEvent.GetValue<Point>(EventParameters.TilePosition);
-                if(m_Tiles.ContainsKey(p))
-                {
-                    m_Tiles[p].AddComponent(new SelectedTile());
-                    m_Tiles[p].CleanupComponents();
-                }
-            }
+            m_TileEntity[currentTilePos].RemoveComponent(typeof(SelectedTile));
+            m_TileEntity[currentTilePos].CleanupComponents();
         }
 
-        if (gameEvent.ID == GameEventId.SelectNewTileInDirection)
+        Point newPoint = GetTilePointInDirection(currentTilePos, moveDirection);
+        if (m_Tiles.ContainsKey(newPoint))
         {
-            Point currentTilePos = (Point)gameEvent.Paramters[EventParameters.TilePosition];
-            MoveDirection moveDirection = (MoveDirection)gameEvent.Paramters[EventParameters.InputDirection];
-
-            if (m_Tiles.ContainsKey(currentTilePos))
-            {
-                m_Tiles[currentTilePos].RemoveComponent(typeof(SelectedTile));
-                m_Tiles[currentTilePos].CleanupComponents();
-            }
-
-            Point newPoint = GetTilePointInDirection(currentTilePos, moveDirection);
-            if(m_Tiles.ContainsKey(newPoint))
-            {
-                m_Tiles[newPoint].AddComponent(new SelectedTile());
-                m_Tiles[newPoint].CleanupComponents();
-            }
-            gameEvent.Paramters[EventParameters.TilePosition] = newPoint;
+            m_TileEntity[newPoint].AddComponent(new SelectedTile());
+            m_TileEntity[newPoint].CleanupComponents();
         }
 
-        if (gameEvent.ID == GameEventId.EndSelection)
-        {
-            Point currentTilePos = (Point)gameEvent.Paramters[EventParameters.TilePosition];
-            if(!m_Tiles.ContainsKey(currentTilePos)) return;
+        return newPoint;
+    }
 
-            m_Tiles[currentTilePos].RemoveComponent(typeof(SelectedTile));
-            m_Tiles[currentTilePos].CleanupComponents();
-            gameEvent.Paramters[EventParameters.TilePosition] = null;
-        }
+    public void SelectTile(Point p)
+    {
+        //IEntity entity = Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameters.Entity));
+        //IEntity target = Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameters.Target));
+
+        //Point p = m_EntityToPointMap[target == null ? entity : target];
+
+        m_TileEntity[p].AddComponent(new SelectedTile());
+        m_TileEntity[p].CleanupComponents();
+
+        //gameEvent.Paramters[EventParameters.TilePosition] = p;
     }
 }

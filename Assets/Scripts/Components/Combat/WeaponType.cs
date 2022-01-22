@@ -3,11 +3,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// As a note, Melee and Finesse use AC to determine hit, but can be spells (touch spells)
+/// Ranged also uses AC to determine hit but can be spells (ranged attack spells)
+/// Other spells use saving throws to determine success
+/// </summary>
 public enum TypeWeapon
 {
     None,
     Melee,
     Ranged,
+    RangedSpell,
     Wand,
     MagicStaff,
     Finesse,

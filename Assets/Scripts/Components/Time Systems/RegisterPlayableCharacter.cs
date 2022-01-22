@@ -13,11 +13,16 @@ public class RegisterPlayableCharacter : Component
 
     public override void HandleEvent(GameEvent gameEvent)
     {
-        if(gameEvent.ID == GameEventId.RegisterPlayableCharacter)
-            FireEvent(World.Instance.Self, new GameEvent(GameEventId.RegisterPlayableCharacter, new KeyValuePair<string, object>(EventParameters.Entity, Self.ID)));
+        if (gameEvent.ID == GameEventId.RegisterPlayableCharacter)
+        {
+            Services.PlayerManagerService.RegisterPlayer(Self);
+            Services.WorldUIService.RegisterPlayableCharacter(Self.ID);
+        }
 
         if (gameEvent.ID == GameEventId.Died)
-            FireEvent(World.Instance.Self, new GameEvent(GameEventId.UnRegisterPlayer, new KeyValuePair<string, object>(EventParameters.Entity, Self.ID)));
+        {
+            Services.PlayerManagerService.UnRegisterPlayer(Self);
+        }
     }
 }
 

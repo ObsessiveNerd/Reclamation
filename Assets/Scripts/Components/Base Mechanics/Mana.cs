@@ -7,6 +7,8 @@ public class Mana : Component
     public int MaxMana;
     public int CurrentMana;
 
+    int modMultiplier = 5;
+
     public override int Priority { get { return 10; } }
 
     private int PercentMana {get{ return (CurrentMana / MaxMana) * 100; } }
@@ -19,6 +21,7 @@ public class Mana : Component
         RegisteredEvents.Add(GameEventId.RestoreMana);
         RegisteredEvents.Add(GameEventId.DepleteMana);
         RegisteredEvents.Add(GameEventId.GetMana);
+        RegisteredEvents.Add(GameEventId.StatBoosted);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
@@ -27,6 +30,12 @@ public class Mana : Component
         {
             int healAmount = (int)gameEvent.Paramters[EventParameters.Mana];
             CurrentMana = Mathf.Min(CurrentMana + healAmount, MaxMana);
+        }
+
+        else if (gameEvent.ID == GameEventId.StatBoosted)
+        {
+            Stats stats = gameEvent.GetValue<Stats>(EventParameters.Stats);
+            MaxMana = Mathf.Max(0, stats.CalculateModifier(stats.Int) * modMultiplier);
         }
 
         else if (gameEvent.ID == GameEventId.DepleteMana)

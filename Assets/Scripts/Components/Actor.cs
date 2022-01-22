@@ -13,9 +13,11 @@ public class Actor : IEntity
     public string Name {
         get
         {
-            EventBuilder getName = EventBuilderPool.Get(GameEventId.GetName)
+            GameEvent getName = GameEventPool.Get(GameEventId.GetName)
                                     .With(EventParameters.Name, InternalName);
-            return FireEvent(getName.CreateEvent()).GetValue<string>(EventParameters.Name);
+            var ret = FireEvent(getName).GetValue<string>(EventParameters.Name);
+            getName.Release();
+            return ret;
         }
         internal set
         {
@@ -43,10 +45,8 @@ public class Actor : IEntity
         ID = IDManager.GetNewID().ToString();
         m_Components = new PriorityQueue<IComponent>(new ComponentComparer());
 
-        if (World.Instance != null)
-            FireEvent(World.Instance.Self, new GameEvent(GameEventId.RegisterEntity, new KeyValuePair<string, object>(EventParameters.Entity, this)));
-
-        EntityMap.AddEntity(this);
+        Services.EntityMapService.RegisterEntity(this);
+        Services.EntityMapService.AddEntity(this);
         //EntityMap.IDToNameMap[ID] = Name;
     }
 
@@ -58,10 +58,9 @@ public class Actor : IEntity
             IDManager.SetId(int.Parse(id));
 
         m_Components = new PriorityQueue<IComponent>(new ComponentComparer());
-        if (World.Instance != null)
-            FireEvent(World.Instance.Self, new GameEvent(GameEventId.RegisterEntity, new KeyValuePair<string, object>(EventParameters.Entity, this)));
-
-        EntityMap.AddEntity(this);
+        Services.EntityMapService.RegisterEntity(this);
+        Services.EntityMapService.AddEntity(this);
+        
         //EntityMap.IDToNameMap[ID] = Name;
     }
 
@@ -79,7 +78,7 @@ public class Actor : IEntity
     public GameEvent FireEvent(IEntity target, GameEvent gameEvent, bool logEvent = false)
     {
         if (logEvent && target != null)
-            SaveSystem.LogEvent(target.ID, gameEvent);
+            GameSaveSystem.LogEvent(target.ID, gameEvent);
 
         target?.HandleEvent(gameEvent);
         return gameEvent;
@@ -88,7 +87,7 @@ public class Actor : IEntity
     public GameEvent FireEvent(GameEvent gameEvent, bool logEvent = false)
     {
         if (logEvent)
-            SaveSystem.LogEvent(ID, gameEvent);
+            GameSaveSystem.LogEvent(ID, gameEvent);
 
         HandleEvent(gameEvent);
         return gameEvent;

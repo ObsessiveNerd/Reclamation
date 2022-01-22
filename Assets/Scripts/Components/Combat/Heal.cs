@@ -24,9 +24,9 @@ public class Heal : Component
         if (gameEvent.ID == GameEventId.ApplyEffectToTarget)
         {
             IEntity target = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameters.Entity));
-            EventBuilder e = EventBuilderPool.Get(GameEventId.RestoreHealth)
+            GameEvent e = GameEventPool.Get(GameEventId.RestoreHealth)
                                 .With(EventParameters.Healing, HealAmount);
-            target.FireEvent(e.CreateEvent());
+            target.FireEvent(e).Release();
         }
         else if (gameEvent.ID == GameEventId.GetInfo)
         {

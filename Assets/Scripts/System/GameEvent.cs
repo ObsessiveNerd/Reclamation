@@ -18,7 +18,8 @@ public static class GameEventId
     public const string SetHasBeenVisited = nameof(SetHasBeenVisited);
     public const string VisibilityUpdated = nameof(VisibilityUpdated);
     public const string CheckVisibility = nameof(CheckVisibility);
-    public const string IsTileBlocking = nameof(IsTileBlocking);
+    public const string BlocksMovement = nameof(BlocksMovement);
+    public const string BlocksVision = nameof(BlocksVision);
     public const string InitFOV = nameof(InitFOV);
     public const string GetVisibleTiles = nameof(GetVisibleTiles);
     public const string EntityVisibilityState = nameof(EntityVisibilityState);
@@ -83,7 +84,7 @@ public static class GameEventId
     public const string UnPauseTime = nameof(UnPauseTime);
     public const string RegisterEntity = nameof(RegisterEntity);
     public const string DestroyEntity = nameof(DestroyEntity);
-    public const string GetEntity = nameof(GetEntity);
+    //public const string GetEntity = nameof(GetEntity);
     public const string CalculatePath = nameof(CalculatePath);
     public const string IsValidDungeonTile = nameof(IsValidDungeonTile);
     public const string GetClosestEnemy = nameof(GetClosestEnemy);
@@ -195,6 +196,8 @@ public static class GameEventId
     public const string ManaCost = nameof(ManaCost);
     public const string Quaff = nameof(Quaff);
     public const string FireRangedAttack = nameof(FireRangedAttack);
+    public const string SavingThrow = nameof(SavingThrow);
+    public const string SaveFailed = nameof(SaveFailed);
 
     //Stats
     public const string GetPrimaryStatType = nameof(GetPrimaryStatType);
@@ -205,6 +208,7 @@ public static class GameEventId
     public const string LevelUp = nameof(LevelUp);
     public const string GetLevel = nameof(GetLevel);
     public const string BoostStat = nameof(BoostStat);
+    public const string StatBoosted = nameof(StatBoosted);
     public const string GetAttributePoints = nameof(GetAttributePoints);
 
     //Body
@@ -234,7 +238,7 @@ public static class GameEventId
     public const string SetName = nameof(SetName);
     public const string GetInfo = nameof(GetInfo);
     public const string GetPortrait = nameof(GetPortrait);
-    public const string UpdateUI = nameof(UpdateUI);
+    //public const string UpdateUI = nameof(UpdateUI);
     public const string GetContextMenuActions = nameof(GetContextMenuActions);
     public const string EntityTookDamage = nameof(EntityTookDamage);
     public const string EntityHealedDamage = nameof(EntityHealedDamage);
@@ -247,6 +251,7 @@ public static class GameEventId
     public const string SpellSelected = nameof(SpellSelected);
     public const string OpenSpellSelector = nameof(OpenSpellSelector);
     public const string AffectArea = nameof(AffectArea);
+    public const string GetSpellSaveDC = nameof(GetSpellSaveDC);
 
     //Party
     public const string LookingForGroup = nameof(LookingForGroup);
@@ -291,8 +296,10 @@ public static class EventParameters
     public const string DamageList = nameof(DamageList);
     public const string Healing = nameof(Healing);
     public const string Mana = nameof(Mana);
+    public const string Melee = nameof(Melee);
     public const string DamageType = nameof(DamageType);
     public const string RollToHit = nameof(RollToHit);
+    public const string Crit = nameof(Crit);
     public const string WeaponType = nameof(WeaponType);
     public const string WeaponTypeList = nameof(WeaponTypeList);
     public const string Weapon = nameof(Weapon);
@@ -316,6 +323,7 @@ public static class EventParameters
     public const string StatType = nameof(StatType);
     public const string SpellList = nameof(SpellList);
     public const string Spell = nameof(Spell);
+    public const string SpellContinues = nameof(SpellContinues);
     public const string Name = nameof(Name);
     public const string Head = nameof(Head);
     public const string Torso = nameof(Torso);
@@ -334,6 +342,7 @@ public static class EventParameters
     public const string Info = nameof(Info);
     public const string Exp = nameof(Exp);
     public const string StatBoostAmount = nameof(StatBoostAmount);
+    public const string Stats = nameof(Stats);
     public const string AttributePoints = nameof(AttributePoints);
     public const string Key = nameof(Key);
     public const string Owner = nameof(Owner);
@@ -341,138 +350,57 @@ public static class EventParameters
     public const string Effect = nameof(Effect);
 }
 
-//[Serializable]
-//public class GameEventSerializable
-//{
-//    [SerializeField]
-//    public string TargetEntityId;
-//    [SerializeField]
-//    public string Id;
-//    [SerializeField]
-//    public List<string> ParameterKeys;
-//    [SerializeField]
-//    public List<string> ParameterValues;
-
-//    public GameEventSerializable(string targetId, GameEvent ge)
-//    {
-//        TargetEntityId = targetId;
-//        Id = ge.ID;
-//        ParameterKeys = new List<string>();
-//        ParameterValues = new List<string>();
-//        foreach(var key in ge.Paramters.Keys)
-//        {
-//            ParameterKeys.Add(key);
-//            ParameterValues.Add(ge.Paramters[key].ToString());
-//        }
-//    }
-
-//    public GameEvent CreateGameEvent()
-//    {
-//        Dictionary<string, object> parameters = new Dictionary<string, object>();
-//        for(int i = 0; i < ParameterKeys.Count; i++)
-//            parameters.Add(ParameterKeys[i], ParameterValues[i]);
-//        GameEvent ge = new GameEvent(Id, parameters);
-//        return ge;
-//    }
-//}
-
-//public class TypedGameEvent : GameEvent
-//{
-//    public Dictionary<string, T> TypedParameters { get { return m_TypedParameters; } }
-//    Dictionary<string, T> m_TypedParameters = new Dictionary<string, T>();
-
-//    public TypedGameEvent(string id, params KeyValuePair<string, object>[] parameters) : base(id)
-//    {
-
-//    }
-//}
-
-//public class GetTypedEvent<T> : GameEvent
-//{
-    
-
-//    public GetTypedEvent(string id, params KeyValuePair<string, T>[] parameters) : base(id)
-//    {
-//        foreach (var kvp in parameters)
-//            m_TypedParameters.Add(kvp.Key, kvp.Value);
-//    }
-
-//    public override bool HasParameter(string parameterId)
-//    {
-//        return TypedParameters.ContainsKey(parameterId);
-//    }
-
-//    public T GetValue(string parameterId)
-//    {
-//        if (TypedParameters.TryGetValue(parameterId, out T value))
-//        {
-//            if (value == null)
-//                return default(T);
-//            return (T)value;
-//        }
-//        return default(T);
-//    }
-//}
-
 public class GameEvent
 {
+    public bool IsValid = true;
     public bool ContinueProcessing;
     public string ID { get { return m_ID; } }
-    protected string m_ID { get; set; }
+    string m_ID { get; set; }
 
     public Dictionary<string, object> Paramters { get { return m_Parameters; } }
-    Dictionary<string, object> m_Parameters;
+    Dictionary<string, object> m_Parameters = new Dictionary<string, object>();
 
-    public GameEvent(string id, params KeyValuePair<string, object>[] parameters)
+    public GameEvent(string id)
     {
-        ContinueProcessing = true;
         m_ID = id;
-        m_Parameters = new Dictionary<string, object>();
-        foreach (var param in parameters)
-        {
-            if (string.IsNullOrEmpty(param.Key))
-                break;
-            m_Parameters[param.Key] = param.Value;
-        }
-    }
-
-    public GameEvent(string id, Dictionary<string, object> parameters)
-    {
         ContinueProcessing = true;
+        //string i = string.IsNullOrEmpty(m_ID) ? "NO ID" : m_ID;
+        //Debug.Log($"New gameevent was created with id {i}");
+        //GameEventPool.m_InUse.Add(this);
+    }
+
+    public GameEvent SetId(string id)
+    {
+        if(!string.IsNullOrEmpty(m_ID))
+            Debug.LogWarning($"GameEvent still has id: {m_ID} but you're attempting to change it into {id}");
         m_ID = id;
-        m_Parameters = parameters;
+        return this;
     }
 
-    public void Setup(string id, params KeyValuePair<string, object>[] parameters)
+    public GameEvent With(string id, object value)
     {
-        ContinueProcessing = true;
-        m_ID = id;
-        if(m_Parameters == null) m_Parameters = new Dictionary<string, object>();
-
-        m_Parameters.Clear(); //= new Dictionary<string, object>();
-        foreach (var param in parameters)
-        {
-            if (string.IsNullOrEmpty(param.Key))
-                break;
-            m_Parameters[param.Key] = param.Value;
-        }
+        if (m_Parameters.ContainsKey(id))
+            m_Parameters[id] = value;
+        else
+            m_Parameters.Add(id, value);
+        return this;
     }
 
-    public void Setup(string id, Dictionary<string, object> parameters)
+    public GameEvent With(Dictionary<string, object> values)
     {
-        ContinueProcessing = true;
-        m_ID = id;
-        m_Parameters = parameters;
+        foreach(var key in values.Keys)
+            m_Parameters[key] = values[key];
+        return this;
     }
 
-    public virtual bool HasParameter(string parameterId)
+    public bool HasParameter(string parameterId)
     {
-        return Paramters.ContainsKey(parameterId);
+        return m_Parameters.ContainsKey(parameterId);
     }
 
-    public virtual T GetValue<T>(string parameterId)
+    public T GetValue<T>(string parameterId)
     {
-        if (Paramters.TryGetValue(parameterId, out object value))
+        if (m_Parameters.TryGetValue(parameterId, out object value))
         {
             if (value == null)
                 return default(T);
@@ -481,8 +409,20 @@ public class GameEvent
         return default(T);
     }
 
+    public void Release()
+    {
+        //Debug.Log($"Game event {m_ID} released");
+        GameEventPool.Release(this);
+    }
+
     public void Clean()
     {
+        if(!IsValid)
+        {
+            throw new Exception("not valid GameEvent");
+        }
+
+        IsValid = true;
         ContinueProcessing = true;
         m_ID = "";
         m_Parameters.Clear();

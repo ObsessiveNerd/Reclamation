@@ -20,7 +20,7 @@ public class BlocksNonHostileMovement : Component
                     Spawner.Swap(Self, overtakingEntity);
             //else
 
-            FireEvent(overtakingEntity, new GameEvent(GameEventId.StopMovement));
+            FireEvent(overtakingEntity, GameEventPool.Get(GameEventId.StopMovement)).Release();
         }
     }
 }

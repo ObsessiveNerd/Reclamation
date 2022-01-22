@@ -14,9 +14,8 @@ public abstract class InputControllerBase : Component
     {
         Self.RemoveComponent(this);
         Self.AddComponent(new PlayerInputController());
-        FireEvent(World.Instance.Self, new GameEvent(GameEventId.EndSelection, new KeyValuePair<string, object>(EventParameters.TilePosition, tileSelection)));
-        gameEvent.Paramters[EventParameters.UpdateWorldView] = true;
-        //gameEvent.Paramters[EventParameters.CleanupComponents] = true;
+        Services.TileSelectionService.EndTileSelection(tileSelection);
+        Services.WorldUpdateService.UpdateWorldView();
         UIManager.ForcePop();
     }
 

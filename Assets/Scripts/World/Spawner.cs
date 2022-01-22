@@ -14,17 +14,12 @@ public static class Spawner
         if (x == -1 && y == -1)
             return;
 
-        EntityType entityType = (EntityType)e.FireEvent(e, new GameEvent(GameEventId.GetEntityType, new KeyValuePair<string, object>(EventParameters.EntityType, EntityType.None))).Paramters[EventParameters.EntityType];
-
-
-        World.Instance.Self.FireEvent(World.Instance.Self, new GameEvent(GameEventId.Spawn, new KeyValuePair<string, object>(EventParameters.Entity, e.ID),
-                                                                            new KeyValuePair<string, object>(EventParameters.EntityType, entityType),
-                                                                            new KeyValuePair<string, object>(EventParameters.Point, new Point(x, y))));
+        Services.SpawnerService.Spawn(e, new Point(x, y));
 
         foreach (var comp in e.GetComponents())
             comp.Start();
 
-        e.FireEvent(new GameEvent(GameEventId.InitFOV));
+        e.FireEvent(GameEventPool.Get(GameEventId.InitFOV)).Release();
     }
 
     public static void Despawn(IEntity e)
@@ -32,11 +27,7 @@ public static class Spawner
         if (e == null)
             return;
 
-        EntityType entityType = (EntityType)e.FireEvent(e, new GameEvent(GameEventId.GetEntityType, new KeyValuePair<string, object>(EventParameters.EntityType, EntityType.None))).Paramters[EventParameters.EntityType];
-
-
-        World.Instance.Self.FireEvent(World.Instance.Self, new GameEvent(GameEventId.Despawn, new KeyValuePair<string, object>(EventParameters.Entity, e.ID),
-                                                                            new KeyValuePair<string, object>(EventParameters.EntityType, entityType)));
+        Services.SpawnerService.Despawn(e);
     }
 
     public static void Swap(IEntity lhs, IEntity rhs)
@@ -54,22 +45,11 @@ public static class Spawner
         //rhsPos = WorldUtility.GetEntityPosition(rhs);
     }
 
-    public static void Move(IEntity e, Point newPoint)
-    {
-        if (e == null)
-            return;
-
-        EntityType entityType = (EntityType)e.FireEvent(e, new GameEvent(GameEventId.GetEntityType, new KeyValuePair<string, object>(EventParameters.EntityType, EntityType.None))).Paramters[EventParameters.EntityType];
-
-
-        World.Instance.Self.FireEvent(World.Instance.Self, new GameEvent(GameEventId.SetEntityPosition, new KeyValuePair<string, object>(EventParameters.Entity, e.ID),
-                                                                            new KeyValuePair<string, object>(EventParameters.EntityType, entityType),
-                                                                            new KeyValuePair<string, object>(EventParameters.TilePosition, newPoint)));
-    }
-
     public static void Restore(IEntity e)
     {
-        Point spawnPoint = (Point)e.FireEvent(e, new GameEvent(GameEventId.GetPoint, new KeyValuePair<string, object>(EventParameters.Value, null))).Paramters[EventParameters.Value];
+        GameEvent getPoint = GameEventPool.Get(GameEventId.GetPoint).With(EventParameters.Value, null);
+        Point spawnPoint = (Point)e.FireEvent(e,getPoint).Paramters[EventParameters.Value];
         Spawn(e, spawnPoint);
+        getPoint.Release();
     }
 }

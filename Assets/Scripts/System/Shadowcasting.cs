@@ -19,14 +19,14 @@ public class Shadowcasting : IFovAlgorithm
 
         m_Range = range;
         m_Source = source;
-        var getSourcePoint = source.FireEvent(World.Instance.Self, new GameEvent(GameEventId.GetEntityLocation, new KeyValuePair<string, object>(EventParameters.Entity, source.ID),
-                                                                                                            new KeyValuePair<string, object>(EventParameters.TilePosition, null)));
-        m_SourcePoint = getSourcePoint.GetValue<Point>(EventParameters.TilePosition);
+        m_SourcePoint = Services.WorldDataQuery.GetEntityLocation(source);
+
         m_VisiblePoints = new List<Point>();
         m_VisiblePoints.Add(m_SourcePoint);
         foreach (int octant in m_VisibleOctants)
             ScanOctant(1, octant, 1.0, 0.0);
         m_VisiblePoints = m_VisiblePoints.Distinct(new PointComparer()).ToList();
+        
         return m_VisiblePoints;
     }
 
@@ -79,7 +79,7 @@ public class Shadowcasting : IFovAlgorithm
                 if (y < 0) return;
 
                 x = m_SourcePoint.x + Convert.ToInt32((pStartSlope * Convert.ToDouble(pDepth)));
-                if (x >= World.Instance.MapColumns) x = World.Instance.MapColumns - 1;
+                if (x >= Services.WorldDataQuery.MapColumns) x = Services.WorldDataQuery.MapColumns - 1;
 
                 while (GetSlope(x, y, m_SourcePoint.x, m_SourcePoint.y, false) <= pEndSlope)
                 {
@@ -87,14 +87,14 @@ public class Shadowcasting : IFovAlgorithm
                     {
                         if (TileIsBlocking(x, y))
                         {
-                            if (x + 1 < World.Instance.MapColumns && !TileIsBlocking(x + 1, y))
+                            if (x + 1 < Services.WorldDataQuery.MapColumns && !TileIsBlocking(x + 1, y))
                                 ScanOctant(pDepth + 1, pOctant, pStartSlope, GetSlope(x + 0.5, y + 0.5, m_SourcePoint.x, m_SourcePoint.y, false));
                             else
                                 m_VisiblePoints.Add(new Point(x, y));
                         }
                         else
                         {
-                            if (x + 1 < World.Instance.MapColumns && TileIsBlocking(x + 1, y))
+                            if (x + 1 < Services.WorldDataQuery.MapColumns && TileIsBlocking(x + 1, y))
                                 pStartSlope = -GetSlope(x + 0.5, y - 0.5, m_SourcePoint.x, m_SourcePoint.y, false);
 
                             m_VisiblePoints.Add(new Point(x, y));
@@ -108,7 +108,7 @@ public class Shadowcasting : IFovAlgorithm
             case 3:
 
                 x = m_SourcePoint.x + pDepth;
-                if (x >= World.Instance.MapColumns) return;
+                if (x >= Services.WorldDataQuery.MapColumns) return;
 
                 y = m_SourcePoint.y - Convert.ToInt32((pStartSlope * Convert.ToDouble(pDepth)));
                 if (y < 0) y = 0;
@@ -142,10 +142,10 @@ public class Shadowcasting : IFovAlgorithm
             case 4:
 
                 x = m_SourcePoint.x + pDepth;
-                if (x >= World.Instance.MapColumns) return;
+                if (x >= Services.WorldDataQuery.MapColumns) return;
 
                 y = m_SourcePoint.y + Convert.ToInt32((pStartSlope * Convert.ToDouble(pDepth)));
-                if (y >= World.Instance.MapRows) y = World.Instance.MapRows - 1;
+                if (y >= Services.WorldDataQuery.MapRows) y = Services.WorldDataQuery.MapRows - 1;
 
                 while (GetSlope(x, y, m_SourcePoint.x, m_SourcePoint.y, true) >= pEndSlope)
                 {
@@ -155,14 +155,14 @@ public class Shadowcasting : IFovAlgorithm
 
                         if (TileIsBlocking(x, y))
                         {
-                            if (y + 1 < World.Instance.MapRows && !TileIsBlocking(x, y + 1))
+                            if (y + 1 < Services.WorldDataQuery.MapRows && !TileIsBlocking(x, y + 1))
                                 ScanOctant(pDepth + 1, pOctant, pStartSlope, GetSlope(x - 0.5, y + 0.5, m_SourcePoint.x, m_SourcePoint.y, true));
                             else
                                 m_VisiblePoints.Add(new Point(x, y));
                         }
                         else
                         {
-                            if (y + 1 < World.Instance.MapRows && TileIsBlocking(x, y + 1))
+                            if (y + 1 < Services.WorldDataQuery.MapRows && TileIsBlocking(x, y + 1))
                                 pStartSlope = GetSlope(x + 0.5, y + 0.5, m_SourcePoint.x, m_SourcePoint.y, true);
 
                             m_VisiblePoints.Add(new Point(x, y));
@@ -176,10 +176,10 @@ public class Shadowcasting : IFovAlgorithm
             case 5:
 
                 y = m_SourcePoint.y + pDepth;
-                if (y >= World.Instance.MapRows) return;
+                if (y >= Services.WorldDataQuery.MapRows) return;
 
                 x = m_SourcePoint.x + Convert.ToInt32((pStartSlope * Convert.ToDouble(pDepth)));
-                if (x >= World.Instance.MapColumns) x = World.Instance.MapColumns - 1;
+                if (x >= Services.WorldDataQuery.MapColumns) x = Services.WorldDataQuery.MapColumns - 1;
 
                 while (GetSlope(x, y, m_SourcePoint.x, m_SourcePoint.y, false) >= pEndSlope)
                 {
@@ -188,14 +188,14 @@ public class Shadowcasting : IFovAlgorithm
 
                         if (TileIsBlocking(x, y))
                         {
-                            if (x + 1 < World.Instance.MapRows && !TileIsBlocking(x + 1, y))
+                            if (x + 1 < Services.WorldDataQuery.MapRows && !TileIsBlocking(x + 1, y))
                                 ScanOctant(pDepth + 1, pOctant, pStartSlope, GetSlope(x + 0.5, y - 0.5, m_SourcePoint.x, m_SourcePoint.y, false));
                             //else
                                 m_VisiblePoints.Add(new Point(x, y));
                         }
                         else
                         {
-                            if (x + 1 < World.Instance.MapRows
+                            if (x + 1 < Services.WorldDataQuery.MapRows
                                     && TileIsBlocking(x + 1, y))
                                 pStartSlope = GetSlope(x + 0.5, y + 0.5, m_SourcePoint.x, m_SourcePoint.y, false);
 
@@ -210,7 +210,7 @@ public class Shadowcasting : IFovAlgorithm
             case 6:
 
                 y = m_SourcePoint.y + pDepth;
-                if (y >= World.Instance.MapRows) return;
+                if (y >= Services.WorldDataQuery.MapRows) return;
 
                 x = m_SourcePoint.x - Convert.ToInt32((pStartSlope * Convert.ToDouble(pDepth)));
                 if (x < 0) x = 0;
@@ -247,7 +247,7 @@ public class Shadowcasting : IFovAlgorithm
                 if (x < 0) return;
 
                 y = m_SourcePoint.y + Convert.ToInt32((pStartSlope * Convert.ToDouble(pDepth)));
-                if (y >= World.Instance.MapRows) y = World.Instance.MapRows - 1;
+                if (y >= Services.WorldDataQuery.MapRows) y = Services.WorldDataQuery.MapRows - 1;
 
                 while (GetSlope(x, y, m_SourcePoint.x, m_SourcePoint.y, true) <= pEndSlope)
                 {
@@ -257,14 +257,14 @@ public class Shadowcasting : IFovAlgorithm
 
                         if (TileIsBlocking(x, y))
                         {
-                            if (y + 1 < World.Instance.MapRows && !TileIsBlocking(x, y + 1))
+                            if (y + 1 < Services.WorldDataQuery.MapRows && !TileIsBlocking(x, y + 1))
                                 ScanOctant(pDepth + 1, pOctant, pStartSlope, GetSlope(x + 0.5, y + 0.5, m_SourcePoint.x, m_SourcePoint.y, true));
                             //else
                                 m_VisiblePoints.Add(new Point(x, y));
                         }
                         else
                         {
-                            if (y + 1 < World.Instance.MapRows && TileIsBlocking(x, y + 1))
+                            if (y + 1 < Services.WorldDataQuery.MapRows && TileIsBlocking(x, y + 1))
                                 pStartSlope = -GetSlope(x - 0.5, y + 0.5, m_SourcePoint.x, m_SourcePoint.y, true);
 
                             m_VisiblePoints.Add(new Point(x, y));
@@ -314,13 +314,13 @@ public class Shadowcasting : IFovAlgorithm
 
         if (x < 0)
             x = 0;
-        else if (x >= World.Instance.MapColumns)
-            x = World.Instance.MapColumns - 1;
+        else if (x >= Services.WorldDataQuery.MapColumns)
+            x = Services.WorldDataQuery.MapColumns - 1;
 
         if (y < 0)
             y = 0;
-        else if (y >= World.Instance.MapRows)
-            y = World.Instance.MapRows - 1;
+        else if (y >= Services.WorldDataQuery.MapRows)
+            y = Services.WorldDataQuery.MapRows - 1;
 
         if (pDepth < m_Range & !TileIsBlocking(x, y))
             ScanOctant(pDepth + 1, pOctant, pStartSlope, pEndSlope);
@@ -342,8 +342,6 @@ public class Shadowcasting : IFovAlgorithm
 
     bool TileIsBlocking(int x, int y)
     {
-        bool tileIsBlocking = (bool)m_Source.FireEvent(World.Instance.Self, new GameEvent(GameEventId.IsTileBlocking, new KeyValuePair<string, object>(EventParameters.TilePosition, new Point(x, y)),
-                                                                                                                        new KeyValuePair<string, object>(EventParameters.Value, false))).Paramters[EventParameters.Value];
-        return tileIsBlocking;
+        return Services.TileInteractionService.TileBlocksVision(new Point(x, y));
     }
 }

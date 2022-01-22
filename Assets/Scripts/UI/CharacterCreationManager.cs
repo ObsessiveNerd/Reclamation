@@ -21,7 +21,7 @@ public class CharacterCreationManager : MonoBehaviour
 
         SceneManager.LoadSceneAsync("Dungeon").completed += s =>
         {
-            world.GenerateDungeon(true, SaveSystem.Instance.CurrentSaveName);
+            Services.DungeonService.GenerateDungeon(true, Services.SaveAndLoadService.CurrentSaveName);
         };
     }
 

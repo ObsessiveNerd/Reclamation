@@ -17,8 +17,8 @@ public class FOV : Component
         RegisteredEvents.Add(GameEventId.InitFOV);
         m_Fov = new Shadowcasting();
 
-        //FireEvent(World.Instance.Self, new GameEvent(GameEventId.FOVRecalculated, new KeyValuePair<string, object>(EventParameters.Entity, Self),
-        //                                                                                new KeyValuePair<string, object>(EventParameters.VisibleTiles, m_Fov.GetVisibleTiles(Self, FOVRange))));
+        //FireEvent(World.Instance.Self, GameEventPool.Get(GameEventId.FOVRecalculated, new .With(EventParameters.Entity, Self),
+        //                                                                                new .With(EventParameters.VisibleTiles, m_Fov.GetVisibleTiles(Self, FOVRange))));
     }
 
     public override void HandleEvent(GameEvent gameEvent)
@@ -26,12 +26,18 @@ public class FOV : Component
         if (gameEvent.ID == GameEventId.AfterMoving || gameEvent.ID == GameEventId.InitFOV)
         {
             int baseRange = FOVRange;
-            GameEvent beforeFOVCalculated = new GameEvent(GameEventId.BeforeFOVRecalculated, new KeyValuePair<string, object>(EventParameters.FOVRange, FOVRange));
-            beforeFOVCalculated = (GameEvent)FireEvent(Self, new GameEvent(GameEventId.CheckEquipment, new KeyValuePair<string, object>(EventParameters.GameEvent, beforeFOVCalculated))).Paramters[EventParameters.GameEvent];
-            FOVRange = (int)beforeFOVCalculated.Paramters[EventParameters.FOVRange];
-            FireEvent(Self, new GameEvent(GameEventId.FOVRecalculated, new KeyValuePair<string, object>(EventParameters.Entity, Self.ID),
-                                                                                        new KeyValuePair<string, object>(EventParameters.VisibleTiles, m_Fov.GetVisibleTiles(Self, FOVRange))));
+            GameEvent beforeFOVCalculated = GameEventPool.Get(GameEventId.BeforeFOVRecalculated)
+                .With(EventParameters.FOVRange, FOVRange);
+            //GameEvent checkEquipment = (GameEvent)FireEvent(Self, GameEventPool.Get(GameEventId.CheckEquipment)
+            //    .With(EventParameters.GameEvent, beforeFOVCalculated)).Paramters[EventParameters.GameEvent];
+            //FOVRange = (int)checkEquipment.Paramters[EventParameters.FOVRange];
+            FireEvent(Self, GameEventPool.Get(GameEventId.FOVRecalculated)
+                .With(EventParameters.Entity, Self.ID)
+                .With(EventParameters.VisibleTiles, m_Fov.GetVisibleTiles(Self, FOVRange))).Release();
             FOVRange = baseRange;
+
+            beforeFOVCalculated.Release();
+            //checkEquipment.Release();
         }
     }
 }

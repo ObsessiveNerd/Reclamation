@@ -18,27 +18,24 @@ public class RangedPlayerAttackController : InputControllerBase
 
         IEntity startingTarget = WorldUtility.GetClosestEnemyTo(Self);
 
-        EventBuilder isVisible = EventBuilderPool.Get(GameEventId.EntityVisibilityState)
-                                    .With(EventParameters.Entity, startingTarget.ID)
-                                    .With(EventParameters.Value, false);
+        //GameEvent isVisible = GameEventPool.Get(GameEventId.EntityVisibilityState)
+        //                            .With(EventParameters.Entity, startingTarget.ID)
+        //                            .With(EventParameters.Value, false);
 
         //Here we can check isVisible to see if the target is invisible or something
         //FireEvent(startingTarget, isVisible.CreateEvent());
 
-        EventBuilder isInFOV = EventBuilderPool.Get(GameEventId.IsInFOV)
+        GameEvent isInFOV = GameEventPool.Get(GameEventId.IsInFOV)
                                 .With(EventParameters.Entity, startingTarget.ID)
                                 .With(EventParameters.Value, false);
 
-        bool isInFoVResult = FireEvent(Self, isInFOV.CreateEvent()).GetValue<bool>(EventParameters.Value);
+        bool isInFoVResult = FireEvent(Self, isInFOV).GetValue<bool>(EventParameters.Value);
         if (!isInFoVResult)
             startingTarget = Self;
+        isInFOV.Release();
 
-        GameEvent selectTile = new GameEvent(GameEventId.SelectTile, new KeyValuePair<string, object>(EventParameters.Entity, Self.ID),
-                                                                                new KeyValuePair<string, object>(EventParameters.Target, startingTarget.ID),
-                                                                                new KeyValuePair<string, object>(EventParameters.TilePosition, null));
-        FireEvent(World.Instance.Self, selectTile);
-        m_TileSelection = (Point)selectTile.Paramters[EventParameters.TilePosition];
-        FireEvent(World.Instance.Self, new GameEvent(GameEventId.UpdateWorldView));
+        Services.TileSelectionService.SelectTile(Services.WorldDataQuery.GetEntityLocation(startingTarget));
+        Services.WorldUpdateService.UpdateWorldView();
         UIManager.Push(null);
     }
 
@@ -56,11 +53,8 @@ public class RangedPlayerAttackController : InputControllerBase
 
             if (desiredDirection != MoveDirection.None)
             {
-                GameEvent moveSelection = new GameEvent(GameEventId.SelectNewTileInDirection, new KeyValuePair<string, object>(EventParameters.InputDirection, desiredDirection),
-                                                                                                    new KeyValuePair<string, object>(EventParameters.TilePosition, m_TileSelection));
-                FireEvent(World.Instance.Self, moveSelection);
-                m_TileSelection = (Point)moveSelection.Paramters[EventParameters.TilePosition];
-                gameEvent.Paramters[EventParameters.UpdateWorldView] = true;
+                m_TileSelection = Services.TileSelectionService.SelectTileInNewDirection(m_TileSelection, desiredDirection);
+                Services.WorldUpdateService.UpdateWorldView();
             }
 
             if(Input.GetKeyDown(KeyCode.Return) || InputBinder.PerformRequestedAction(RequestedAction.FireRangedWeapon))
@@ -72,14 +66,16 @@ public class RangedPlayerAttackController : InputControllerBase
 
                 EndSelection(gameEvent, m_TileSelection);
 
-                //EventBuilder fireRangedWeapon = EventBuilderPool.Get(GameEventId.FireRangedAttack)
+                //GameEvent fireRangedWeapon = GameEventPool.Get(GameEventId.FireRangedAttack)
                 //                                .With(EventParameters.Entity, WorldUtility.GetGameObject(Self).transform.position)
                 //                                .With(EventParameters.Target, WorldUtility.GetGameObject(target).transform.position);
                 //FireEvent(m_Attack, fireRangedWeapon.CreateEvent());
 
-                GameEvent checkForEnergy = new GameEvent(GameEventId.HasEnoughEnergyToTakeATurn, new KeyValuePair<string, object>(EventParameters.TakeTurn, false));
+                GameEvent checkForEnergy = GameEventPool.Get(GameEventId.HasEnoughEnergyToTakeATurn)
+                    .With(EventParameters.TakeTurn, false);
                 FireEvent(Self, checkForEnergy);
                 gameEvent.Paramters[EventParameters.TakeTurn] = (bool)checkForEnergy.Paramters[EventParameters.TakeTurn];
+                checkForEnergy.Release();
             }
 
             if (Input.GetKeyDown(KeyCode.Escape))

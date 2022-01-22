@@ -6,74 +6,41 @@ public static class WorldUtility
 {
     public static IEntity GetEntityAtPosition(Point position, bool includeTile = true)
     {
-        GameEvent result = World.Instance.Self.FireEvent(new GameEvent(GameEventId.GetEntityOnTile, new KeyValuePair<string, object>(EventParameters.TilePosition, position),
-                                                                                            new KeyValuePair<string, object>(EventParameters.Entity, null),
-                                                                                            new KeyValuePair<string, object>(EventParameters.IncludeSelf, includeTile)));
-
-        return EntityQuery.GetEntity((string)result.Paramters[EventParameters.Entity]);
+        return Services.WorldDataQuery.GetEntityOnTile(position);
     }
 
     public static Point GetEntityPosition(IEntity entity)
     {
-        GameEvent result = entity.FireEvent(new GameEvent(GameEventId.GetPoint, new KeyValuePair<string, object>(EventParameters.Value, null)));
+        GameEvent result = entity.FireEvent(GameEventPool.Get(GameEventId.GetPoint)
+            .With(EventParameters.Value, null));
 
-        return result.GetValue<Point>(EventParameters.Value);
-    }
-
-    public static bool IsPlayableCharacter(string id)
-    {
-        EventBuilder isPlayableCharacter = EventBuilderPool.Get(GameEventId.IsPlayableCharacter)
-                                            .With(EventParameters.Entity, id)
-                                            .With(EventParameters.Value, false);
-        return World.Instance.Self.FireEvent(isPlayableCharacter.CreateEvent()).GetValue<bool>(EventParameters.Value);
+        var ret = result.GetValue<Point>(EventParameters.Value);
+        result.Release();
+        return ret;
     }
 
     public static IEntity GetClosestEnemyTo(IEntity e)
     {
-        EventBuilder eventBuilder = EventBuilderPool.Get(GameEventId.GetClosestEnemy)
-                                    .With(EventParameters.Entity, e.ID)
-                                    .With(EventParameters.Value, null);
-
-        string id = World.Instance.Self.FireEvent(eventBuilder.CreateEvent()).GetValue<string>(EventParameters.Value);
-        var entity = EntityQuery.GetEntity(id);
-        return entity;
+        return Services.WorldDataQuery.GetClosestEnemy(e);
     }
 
     public static GameObject GetGameObject(IEntity e)
     {
-        EventBuilder getGameObjectLocation = EventBuilderPool.Get(GameEventId.GameObject)
-                                                .With(EventParameters.Point, GetEntityPosition(e))
-                                                .With(EventParameters.Value, null);
-        return World.Instance.Self.FireEvent(getGameObjectLocation.CreateEvent()).GetValue<GameObject>(EventParameters.Value);
+        return Services.WorldDataQuery.GetGameObject(Services.EntityMapService.GetPointWhereEntityIs(e));
     }
 
     public static bool IsActivePlayer(string entityId)
     {
-        EventBuilder isActivePlayer = EventBuilderPool.Get(GameEventId.GetActivePlayerId)
-                                        .With(EventParameters.Value, null);
-        return entityId == World.Instance.Self.FireEvent(isActivePlayer.CreateEvent()).GetValue<string>(EventParameters.Value);
-    }
-
-    public static string GetActivePlayerId()
-    {
-        EventBuilder isActivePlayer = EventBuilderPool.Get(GameEventId.GetActivePlayerId)
-                                        .With(EventParameters.Value, null);
-        return World.Instance.Self.FireEvent(isActivePlayer.CreateEvent()).GetValue<string>(EventParameters.Value);
+        return Services.WorldDataQuery.GetActivePlayerId() == entityId;
     }
 
     public static void RegisterUI(IUpdatableUI ui)
     {
-        EventBuilder e = EventBuilderPool.Get(GameEventId.RegisterUI)
-                            .With(EventParameters.GameObject, ui);
-
-        World.Instance.Self.FireEvent(e.CreateEvent());
+        Services.WorldUIService.RegisterUpdatableUI(ui);
     }
 
     public static void UnRegisterUI(IUpdatableUI ui)
     {
-        EventBuilder e = EventBuilderPool.Get(GameEventId.UnRegisterUI)
-                            .With(EventParameters.GameObject, ui);
-
-        World.Instance.Self.FireEvent(e.CreateEvent());
+        Services.WorldUIService.UnregisterUpdatableUI(ui);
     }
 }

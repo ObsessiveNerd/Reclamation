@@ -85,11 +85,11 @@ public class SpellContainer : Component
             string sourceId = gameEvent.GetValue<string>(EventParameters.Owner);
             if (WorldUtility.IsActivePlayer(sourceId))
             {
-                EventBuilder openSpellUI = EventBuilderPool.Get(GameEventId.OpenSpellUI)
-                                            .With(EventParameters.Entity, Self.ID)
-                                            .With(EventParameters.SpellList, SpellNameToIdMap.Values.Select(s => s.ID).ToList());
+                //GameEvent openSpellUI = GameEventPool.Get(GameEventId.OpenSpellUI)
+                //                            .With(EventParameters.Entity, Self.ID)
+                //                            .With(EventParameters.SpellList, SpellNameToIdMap.Values.Select(s => s.ID).ToList());
 
-                FireEvent(World.Instance.Self, openSpellUI.CreateEvent());
+                Services.WorldUIService.OpenSpellUI(Self);
             }
         }
 
@@ -97,10 +97,7 @@ public class SpellContainer : Component
         {
             ContextMenuButton button = new ContextMenuButton("Examine", () =>
             {
-                EventBuilder openSpellExamination = EventBuilderPool.Get(GameEventId.OpenSpellExaminationUI)
-                                                    .With(EventParameters.SpellList, SpellNameToIdMap.Keys.ToList());
-
-                World.Instance.Self.FireEvent(openSpellExamination.CreateEvent());
+                Services.WorldUIService.OpenSpellExaminationUI(SpellNameToIdMap.Keys.ToList());
             });
 
             gameEvent.GetValue<List<ContextMenuButton>>(EventParameters.InventoryContextActions).Add(button);

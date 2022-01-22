@@ -31,12 +31,13 @@ public class StatsUIMono : MonoBehaviour//, IUpdatableUI
 
         m_Source = source;
 
-        EventBuilder getStat = EventBuilderPool.Get(GameEventId.GetStatRaw)
+        GameEvent getStat = GameEventPool.Get(GameEventId.GetStatRaw)
                                 .With(EventParameters.StatType, ControlledStat)
                                 .With(EventParameters.Value, Stat.Str);
 
-        int value = source.FireEvent(getStat.CreateEvent()).GetValue<int>(EventParameters.Value);
+        int value = source.FireEvent(getStat).GetValue<int>(EventParameters.Value);
         Text.text = $"{ControlledStat.ToString()}: {value}";
+        getStat.Release();
     }
 
     public void UpdateUI(IEntity newSource)

@@ -7,27 +7,29 @@ public class PlayerInputController : InputControllerBase
     public override void Init(IEntity self)
     {
         base.Init(self);
+        RegisteredEvents.Add(GameEventId.UpdateEntity);
         //RegisteredEvents.Add(GameEventId.GetSprite);
         //RegisteredEvents.Add(GameEventId.AlterSprite);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
     {
+        bool energyUsed = false;
         if (gameEvent.ID == GameEventId.UpdateEntity)
         {
             MoveDirection desiredDirection = InputUtility.GetMoveDirection();
 
             if (desiredDirection != MoveDirection.None)
             {
-                FireEvent(Self, new GameEvent(GameEventId.MoveKeyPressed, new KeyValuePair<string, object>(EventParameters.InputDirection, desiredDirection)), true);
-                EventBuilder setCamera = EventBuilderPool.Get(GameEventId.SetCameraPosition)
-                                    .With(EventParameters.Point, PathfindingUtility.GetEntityLocation(Self));
-                FireEvent(World.Instance.Self, setCamera.CreateEvent());
+                FireEvent(Self, GameEventPool.Get(GameEventId.MoveKeyPressed)
+                    .With(EventParameters.InputDirection, desiredDirection), true).Release();
+                Services.CameraService.SetCameraPosition(PathfindingUtility.GetEntityLocation(Self));
+                energyUsed = true;
             }
 
             else if (InputBinder.PerformRequestedAction(RequestedAction.OpenInventory))
             {
-                FireEvent(Self, new GameEvent(GameEventId.OpenInventory));
+                FireEvent(Self, GameEventPool.Get(GameEventId.OpenInventory)).Release();
                 Self.RemoveComponent(this);
                 Self.AddComponent(new PlayerUIController());
             }
@@ -35,12 +37,13 @@ public class PlayerInputController : InputControllerBase
 #if UNITY_EDITOR
             else if (Input.GetKeyDown(KeyCode.M))
             {
-                FireEvent(World.Instance.Self, new GameEvent(GameEventId.RevealAllTiles));
+                Services.FOVService.RevealAllTiles();
             }
 #endif
             else if (InputBinder.PerformRequestedAction(RequestedAction.FireRangedWeapon))
             {
-                GameEvent getRangedWeapon = FireEvent(Self, new GameEvent(GameEventId.GetRangedWeapon, new KeyValuePair<string, object>(EventParameters.Value, null)));
+                GameEvent getRangedWeapon = FireEvent(Self, GameEventPool.Get(GameEventId.GetRangedWeapon)
+                    .With(EventParameters.Value, null));
                 IEntity rangedWeapon = EntityQuery.GetEntity((string)getRangedWeapon.Paramters[EventParameters.Value]);
                 if (rangedWeapon != null)
                 {
@@ -51,22 +54,24 @@ public class PlayerInputController : InputControllerBase
                 }
                 else
                     RecLog.Log("No ranged weapon equiped");
+                getRangedWeapon.Release();
+                energyUsed = true;
             }
 #if UNITY_EDITOR
             else if (Input.GetKeyDown(KeyCode.P))
             {
-                EventBuilder giveExp = EventBuilderPool.Get(GameEventId.GainExperience)
+                GameEvent giveExp = GameEventPool.Get(GameEventId.GainExperience)
                                     .With(EventParameters.Exp, 10);
-                Self.FireEvent(giveExp.CreateEvent());
+                Self.FireEvent(giveExp).Release();
             }
 
             else if (Input.GetKeyDown(KeyCode.O))
             {
-                EventBuilder takeDamage = EventBuilderPool.Get(GameEventId.TakeDamage)
+                GameEvent takeDamage = GameEventPool.Get(GameEventId.TakeDamage)
                                     .With(EventParameters.DamageList, new List<Damage>() { new Damage(10, DamageType.Slashing) })
                                     .With(EventParameters.RollToHit, 20)
                                     .With(EventParameters.DamageSource, Self.ID);
-                Self.FireEvent(takeDamage.CreateEvent());
+                Self.FireEvent(takeDamage).Release();
             }
 #endif
             else if (InputBinder.PerformRequestedAction(RequestedAction.Look))
@@ -85,7 +90,7 @@ public class PlayerInputController : InputControllerBase
 
             //else if (Input.GetKeyDown(KeyCode.G))
             //{
-            //    FireEvent(World.Instance.Self, new GameEvent(GameEventId.Pickup, new KeyValuePair<string, object>(EventParameters.Entity, Self.ID)));
+            //    FireEvent(World.Instance.Self, GameEventPool.Get(GameEventId.Pickup, new .With(EventParameters.Entity, Self.ID)));
             //    gameEvent.Paramters[EventParameters.UpdateWorldView] = true;
             //}
 
@@ -97,18 +102,16 @@ public class PlayerInputController : InputControllerBase
 
             else if (InputBinder.PerformRequestedAction(RequestedAction.PickupItem))
             {
-                EventBuilder pickupItems = EventBuilderPool.Get(GameEventId.Pickup)
-                                            .With(EventParameters.Entity, Self.ID);
+                Services.TileInteractionService.Pickup(Self);
+                energyUsed = true;
 
-                FireEvent(World.Instance.Self, pickupItems.CreateEvent());
-
-                //var getInteractableObjectsPositions = FireEvent(World.Instance.Self, new GameEvent(GameEventId.GetInteractableObjects, new KeyValuePair<string, object>(EventParameters.Value, new List<Point>())));
+                //var getInteractableObjectsPositions = FireEvent(World.Instance.Self, GameEventPool.Get(GameEventId.GetInteractableObjects, new .With(EventParameters.Value, new List<Point>())));
                 //var result = (List<Point>)getInteractableObjectsPositions.Paramters[EventParameters.Value];
                 //if (result.Count == 0)
                 //    return;
                 //if(result.Count == 1)
-                //    FireEvent(World.Instance.Self, new GameEvent(GameEventId.Interact, new KeyValuePair<string, object>(EventParameters.Entity, Self.ID),
-                //                                                                        new KeyValuePair<string, object>(EventParameters.TilePosition, result[0])));
+                //    FireEvent(World.Instance.Self, GameEventPool.Get(GameEventId.Interact, new .With(EventParameters.Entity, Self.ID),
+                //                                                                        new .With(EventParameters.TilePosition, result[0])));
                 //else
                 //{
                 //    Self.RemoveComponent(this);
@@ -116,8 +119,8 @@ public class PlayerInputController : InputControllerBase
                 //    {
                 //        Self.RemoveComponent(typeof(PromptForDirectionController));
                 //        Self.AddComponent(new PlayerInputController());
-                //        FireEvent(World.Instance.Self, new GameEvent(GameEventId.InteractInDirection, new KeyValuePair<string, object>(EventParameters.Entity, Self.ID),
-                //                                                                                        new KeyValuePair<string, object>(EventParameters.InputDirection, dir)));
+                //        FireEvent(World.Instance.Self, GameEventPool.Get(GameEventId.InteractInDirection, new .With(EventParameters.Entity, Self.ID),
+                //                                                                                        new .With(EventParameters.InputDirection, dir)));
                 //    }));
                 //}
             }
@@ -129,12 +132,17 @@ public class PlayerInputController : InputControllerBase
             }
 
             else if (Input.GetKeyDown(KeyCode.Escape))
-                GameObject.FindObjectOfType<SaveSystem>().Save();
+                Services.SaveAndLoadService.Save();
             ///
 
-            GameEvent checkForEnergy = new GameEvent(GameEventId.HasEnoughEnergyToTakeATurn, new KeyValuePair<string, object>(EventParameters.TakeTurn, false));
-            FireEvent(Self, checkForEnergy);
-            gameEvent.Paramters[EventParameters.TakeTurn] = (bool)checkForEnergy.Paramters[EventParameters.TakeTurn];
+            if (energyUsed)
+            {
+                GameEvent checkForEnergy = GameEventPool.Get(GameEventId.HasEnoughEnergyToTakeATurn)
+                    .With(EventParameters.TakeTurn, false);
+                FireEvent(Self, checkForEnergy);
+                gameEvent.Paramters[EventParameters.TakeTurn] = (bool)checkForEnergy.Paramters[EventParameters.TakeTurn];
+                checkForEnergy.Release();
+            }
         }
 
         //Just for testing
@@ -152,8 +160,8 @@ public class PlayerInputController : InputControllerBase
 
     void RotateActiveCharacter(GameEvent gameEvent)
     {
-        FireEvent(World.Instance.Self, new GameEvent(GameEventId.RotateActiveCharacter));
-        gameEvent.Paramters[EventParameters.UpdateWorldView] = true;
+        Services.PlayerManagerService.RotateActiveCharacter();
+        Services.WorldUpdateService.UpdateWorldView();
         gameEvent.ContinueProcessing = false;
     }
 }

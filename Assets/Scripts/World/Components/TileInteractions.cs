@@ -2,75 +2,77 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TileInteractions : WorldComponent
+public class TileInteractions : GameService
 {
-    public override void Init(IEntity self)
-    {
-        base.Init(self);
-        RegisteredEvents.Add(GameEventId.ShowTileInfo);
-        RegisteredEvents.Add(GameEventId.AddComponentToTile);
-        //RegisteredEvents.Add(GameEventId.Interact);
-        RegisteredEvents.Add(GameEventId.Pickup);
-        RegisteredEvents.Add(GameEventId.Drop);
-        RegisteredEvents.Add(GameEventId.DestroyObject);
-        RegisteredEvents.Add(GameEventId.GetInteractableObjects);
-    }
-
     public Tile GetTile(Point p)
     {
         if (!m_Tiles.ContainsKey(p))
             return null;
-        return m_Tiles[p].GetComponent<Tile>();
+        return m_Tiles[p];
     }
 
-    public override void HandleEvent(GameEvent gameEvent)
+    public void TileChanged(Tile t)
     {
-        //if (gameEvent.ID == GameEventId.Interact)
-        //{
-        //    IEntity entity = (IEntity)gameEvent.Paramters[EventParameters.Entity];
-        //    Point currentPoint = m_EntityToPointMap[entity];
-        //    FireEvent(m_Tiles[currentPoint], new GameEvent(GameEventId.Interact, new KeyValuePair<string, object>(EventParameters.Entity, entity)));
-        //}
+        m_ChangedTiles.Add(t);
+    }
 
-        if (gameEvent.ID == GameEventId.Pickup)
-        {
-            IEntity entity = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Entity]);
-            Point p = m_EntityToPointMap[entity];
-            FireEvent(m_Tiles[p], gameEvent);
-        }
+    public void Pickup(IEntity pickupEntity)
+    {
+        GameEvent pickup = GameEventPool.Get(GameEventId.Pickup)
+                            .With(EventParameters.Entity, pickupEntity.ID);
 
-        if (gameEvent.ID == GameEventId.Drop)
-        {
-            IEntity entity = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Entity]);
-            IEntity droppingEntity = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Creature]);
-            EntityType entityType = (EntityType)gameEvent.Paramters[EventParameters.EntityType];
+        Point p = m_EntityToPointMap[pickupEntity];
+        m_Tiles[p].Pickup(pickup);
 
-            if(!m_EntityToPointMap.ContainsKey(droppingEntity)) return;
+        pickup.Release();
+    }
 
-            Point p = m_EntityToPointMap[droppingEntity];
-            FireEvent(Self, new GameEvent(GameEventId.Spawn, new KeyValuePair<string, object>(EventParameters.Entity, entity.ID),
-                                                                    new KeyValuePair<string, object>(EventParameters.EntityType, EntityType.Item),
-                                                                    new KeyValuePair<string, object>(EventParameters.Point, p)));
-        }
+    public bool TileBlocksMovement(Point p)
+    {
+        if (m_Tiles.ContainsKey(p))
+            return m_Tiles[p].BlocksMovement;
+        return false;
+    }
 
-        if (gameEvent.ID == GameEventId.ShowTileInfo)
-        {
-            Point currentTilePos = (Point)gameEvent.Paramters[EventParameters.TilePosition];
-            FireEvent(m_Tiles[currentTilePos], gameEvent);
-        }
+    public bool TileBlocksVision(Point p)
+    {
+         if (m_Tiles.ContainsKey(p))
+            return m_Tiles[p].BlocksVision;
+        return false;
+    }
 
-        if (gameEvent.ID == GameEventId.AddComponentToTile)
-        {
-            //Todo
-        }
+    public void Drop(IEntity droppingEntity, IEntity entity)
+    {
+        GameEvent getEntityType = GameEventPool.Get(GameEventId.GetEntityType)
+                                    .With(EventParameters.EntityType, EntityType.None);
+        FireEvent(entity, getEntityType);
 
-        if(gameEvent.ID == GameEventId.DestroyObject)
-        {
-            Point p = gameEvent.GetValue<Point>(EventParameters.Point);
-            if (!m_Tiles.ContainsKey(p))
-                Debug.Log($"P isn't here. {p}");
-            else
-                FireEvent(m_Tiles[p], gameEvent);
-        }
+        EntityType entityType = getEntityType.GetValue<EntityType>(EventParameters.EntityType);
+        getEntityType.Release();
+
+        if (!m_EntityToPointMap.ContainsKey(droppingEntity))
+            return;
+
+        Point p = m_EntityToPointMap[droppingEntity];
+        Services.SpawnerService.Spawn(entity, p);
+    }
+
+    public string ShowTileInfo(Point pos)
+    {
+        GameEvent showTileInfo = GameEventPool.Get(GameEventId.ShowTileInfo)
+            .With(EventParameters.Info, "");
+
+        m_Tiles[pos].ShowTileInfo(showTileInfo);
+        string value = showTileInfo.GetValue<string>(EventParameters.Info);
+        showTileInfo.Release();
+        return value;
+    }
+
+    public void DestroyObject(Point p)
+    {
+        if (!m_Tiles.ContainsKey(p))
+            Debug.Log($"P isn't here. {p}");
+        else
+            m_Tiles[p].DestroyObject();
     }
 }

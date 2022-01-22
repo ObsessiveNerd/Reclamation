@@ -18,31 +18,30 @@ public class Aggression : Component
         if(gameEvent.ID == GameEventId.GetActionToTake)
         {
             m_CurrentLocation = PathfindingUtility.GetEntityLocation(Self);
-            EventBuilder getMyAggressionLevel = EventBuilderPool.Get(GameEventId.GetCombatRating)
+            GameEvent getMyAggressionLevel = GameEventPool.Get(GameEventId.GetCombatRating)
                                                         .With(EventParameters.Value, -1);
 
-            int myCombatLevel = FireEvent(Self, getMyAggressionLevel.CreateEvent()).GetValue<int>(EventParameters.Value);
+            int myCombatLevel = FireEvent(Self, getMyAggressionLevel).GetValue<int>(EventParameters.Value);
+            getMyAggressionLevel.Release();
 
-            EventBuilder getVisiblePoints = EventBuilderPool.Get(GameEventId.GetVisibleTiles)
+            GameEvent getVisiblePoints = GameEventPool.Get(GameEventId.GetVisibleTiles)
                                             .With(EventParameters.VisibleTiles, new List<Point>());
-            List<Point> visiblePoints = FireEvent(Self, getVisiblePoints.CreateEvent()).GetValue<List<Point>>(EventParameters.VisibleTiles);
+            List<Point> visiblePoints = FireEvent(Self, getVisiblePoints).GetValue<List<Point>>(EventParameters.VisibleTiles);
+            getVisiblePoints.Release();
             foreach(var point in visiblePoints)
             {
                 if (point == m_CurrentLocation) continue;
 
-                EventBuilder getEntity = EventBuilderPool.Get(GameEventId.GetEntityOnTile)
-                                                        .With(EventParameters.TilePosition, point)
-                                                        .With(EventParameters.Entity, "");
-
-                IEntity target = EntityQuery.GetEntity(FireEvent(World.Instance.Self, getEntity.CreateEvent()).GetValue<string>(EventParameters.Entity));
+                IEntity target = Services.WorldDataQuery.GetEntityOnTile(point);
                 if (target == null) continue;
 
                 if (Factions.GetDemeanorForTarget(Self, target) != Demeanor.Hostile) continue;
 
-                EventBuilder getCombatRatingOfTile = EventBuilderPool.Get(GameEventId.GetCombatRating)
+                GameEvent getCombatRatingOfTile = GameEventPool.Get(GameEventId.GetCombatRating)
                                                         .With(EventParameters.Value, -1);
 
-                int targetCombatRating = FireEvent(target, getCombatRatingOfTile.CreateEvent()).GetValue<int>(EventParameters.Value);
+                int targetCombatRating = FireEvent(target, getCombatRatingOfTile).GetValue<int>(EventParameters.Value);
+                getCombatRatingOfTile.Release();
                 Debug.Log($"{Self.Name} combat rating is {myCombatLevel}.  Target {target.Name} CR is {targetCombatRating}");
                 if (/*targetCombatRating > -1 && */CombatUtility.ICanTakeThem(myCombatLevel, targetCombatRating))
                 {
@@ -62,9 +61,10 @@ public class Aggression : Component
     //Todo: will need to check for ranged weapons and perform ranged attack if it wants to
     MoveDirection MakeAttack()
     {
-        EventBuilder getWeapon = EventBuilderPool.Get(GameEventId.GetWeapon)
+        GameEvent getWeapon = GameEventPool.Get(GameEventId.GetWeapon)
                                 .With(EventParameters.Weapon, new List<string>());
-        var list = FireEvent(Self, getWeapon.CreateEvent()).GetValue<List<string>>(EventParameters.Weapon);
+        var list = FireEvent(Self, getWeapon).GetValue<List<string>>(EventParameters.Weapon);
+        getWeapon.Release();
         foreach(var id in list)
         {
             var weapon = EntityQuery.GetEntity(id);
@@ -105,7 +105,7 @@ public class Aggression : Component
     {
         Point randomPoint = PathfindingUtility.GetRandomValidPoint();
         var path = PathfindingUtility.GetPath(m_CurrentLocation, randomPoint);
-        FireEvent(Self, new GameEvent(GameEventId.BreakRank));
+        FireEvent(Self, GameEventPool.Get(GameEventId.BreakRank));
         if(path.Count >= 1)
             return PathfindingUtility.GetDirectionTo(m_CurrentLocation, path[0]);
         return PathfindingUtility.GetDirectionTo(m_CurrentLocation, m_CurrentLocation);

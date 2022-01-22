@@ -96,11 +96,13 @@ public static class Factions
 
     public static Demeanor GetDemeanorForTarget(IEntity source, IEntity target)
     {
-        GameEvent getSourceFaction = new GameEvent(GameEventId.GetFaction, new KeyValuePair<string, object>(EventParameters.Value, null));
+        GameEvent getSourceFaction = GameEventPool.Get(GameEventId.GetFaction).With(EventParameters.Value, null);
         Faction sourceFaction = (Faction)source.FireEvent(source, getSourceFaction).Paramters[EventParameters.Value];
+        getSourceFaction.Release();
 
-        GameEvent getTargetFaction = new GameEvent(GameEventId.GetFaction, new KeyValuePair<string, object>(EventParameters.Value, null));
+        GameEvent getTargetFaction = GameEventPool.Get(GameEventId.GetFaction).With(EventParameters.Value, null);
         Faction targetFaction = (Faction)target.FireEvent(target, getTargetFaction).Paramters[EventParameters.Value];
+        getTargetFaction.Release();
 
         if (sourceFaction == null || targetFaction == null)
             return Demeanor.None;

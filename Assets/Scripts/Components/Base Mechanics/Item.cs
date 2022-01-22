@@ -31,22 +31,24 @@ public class Item : Component
         if (gameEvent.ID == GameEventId.Pickup)
         {
             IEntity entity = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Entity]);
-            FireEvent(entity, new GameEvent(GameEventId.AddToInventory, new KeyValuePair<string, object>(EventParameters.Entity, Self.ID)));
+            FireEvent(entity, GameEventPool.Get(GameEventId.AddToInventory)
+                .With(EventParameters.Entity, Self.ID)).Release();
         }
 
         if (gameEvent.ID == GameEventId.Drop)
         {
             IEntity droppingEntity = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Entity]);
-            FireEvent(World.Instance.Self, new GameEvent(GameEventId.Drop, new KeyValuePair<string, object>(EventParameters.Entity, Self.ID),
-                                                                           new KeyValuePair<string, object>(EventParameters.EntityType, EntityType.Item),
-                                                                           new KeyValuePair<string, object>(EventParameters.Creature, droppingEntity.ID)));
+            Services.TileInteractionService.Drop(droppingEntity, Self);
 
-            EventBuilder unequip = EventBuilderPool.Get(GameEventId.Unequip)
+            GameEvent unequip = GameEventPool.Get(GameEventId.Unequip)
                                 .With(EventParameters.Entity, droppingEntity.ID)
                                 .With(EventParameters.Item, Self.ID);
 
-            FireEvent(droppingEntity, unequip.CreateEvent());
-            FireEvent(droppingEntity, new GameEvent(GameEventId.RemoveFromInventory, new KeyValuePair<string, object>(EventParameters.Entity, Self.ID)));
+            FireEvent(droppingEntity, unequip);
+            FireEvent(droppingEntity, GameEventPool.Get(GameEventId.RemoveFromInventory)
+                .With(EventParameters.Entity, Self.ID)).Release();
+            unequip.Release();
+
         }
 
         if (gameEvent.ID == GameEventId.GetContextMenuActions)
@@ -54,19 +56,16 @@ public class Item : Component
             IEntity source = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameters.Entity));
             ContextMenuButton dropButton = new ContextMenuButton("Drop", () =>
             {
-                EventBuilder drop = EventBuilderPool.Get(GameEventId.Drop)
+                GameEvent drop = GameEventPool.Get(GameEventId.Drop)
                                         .With(EventParameters.Entity, source.ID);
 
-                FireEvent(Self, drop.CreateEvent(), true);
+                FireEvent(Self, drop, true).Release();
             });
             gameEvent.GetValue<List<ContextMenuButton>>(EventParameters.InventoryContextActions).Add(dropButton);
 
             ContextMenuButton giveTo = new ContextMenuButton("Give to...", () =>
             {
-                EventBuilder giveItemTo = EventBuilderPool.Get(GameEventId.PromptToGiveItem)
-                                             .With(EventParameters.Entity, gameEvent.GetValue<string>(EventParameters.Entity))
-                                             .With(EventParameters.Item, Self.ID);
-                World.Instance.Self.FireEvent(giveItemTo.CreateEvent());
+                Services.WorldUIService.PromptToGiveItem(source,Self);
             });
             gameEvent.GetValue<List<ContextMenuButton>>(EventParameters.InventoryContextActions).Add(giveTo);
         }

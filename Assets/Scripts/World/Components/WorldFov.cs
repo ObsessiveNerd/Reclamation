@@ -3,59 +3,37 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class WorldFov : WorldComponent
+public class WorldFov : GameService
 {
     Dictionary<IEntity, List<Point>> m_PlayerToVisibleTiles = new Dictionary<IEntity, List<Point>>();
 
-    public override void Init(IEntity self)
+    public void UnRegisterPlayer(IEntity player)
     {
-        base.Init(self);
-        RegisteredEvents.Add(GameEventId.FOVRecalculated);
-        RegisteredEvents.Add(GameEventId.IsTileBlocking);
-        RegisteredEvents.Add(GameEventId.RevealAllTiles);
-        RegisteredEvents.Add(GameEventId.CleanFoVData);
+        if (m_PlayerToVisibleTiles.ContainsKey(player))
+            m_PlayerToVisibleTiles.Remove(player);
     }
 
-    public override void HandleEvent(GameEvent gameEvent)
+    public void CleanFoVData()
     {
-        if(gameEvent.ID == GameEventId.RevealAllTiles)
-        {
-            foreach (var tile in m_Tiles.Values)
-                FireEvent(tile, new GameEvent(GameEventId.SetVisibility, new KeyValuePair<string, object>(EventParameters.TileInSight, true)));
-            FireEvent(Self, new GameEvent(GameEventId.UpdateWorldView));
-        }
+        m_PlayerToVisibleTiles.Clear();
+    }
 
-        if (gameEvent.ID == GameEventId.UnRegisterPlayer)
-        {
-            IEntity player = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Entity]);
-            if (m_PlayerToVisibleTiles.ContainsKey(player))
-                m_PlayerToVisibleTiles.Remove(player);
-        }
+    public void FoVRecalculated(IEntity source, List<Point> newVisibleTiles)
+    {
+        if (!m_PlayerToVisibleTiles.ContainsKey(source))
+            m_PlayerToVisibleTiles.Add(source, newVisibleTiles);
 
-        if (gameEvent.ID == GameEventId.CleanFoVData)
-        {
-            m_PlayerToVisibleTiles.Clear();
-        }
+        List<Point> oldVisibleTiles = m_PlayerToVisibleTiles[source];
+        m_PlayerToVisibleTiles[source] = newVisibleTiles;
+        UpdateTiles(oldVisibleTiles);
+    }
 
-        if(gameEvent.ID == GameEventId.FOVRecalculated)
-        {
-            IEntity source = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Entity]);
-            List<Point> newVisibleTiles = (List<Point>)gameEvent.Paramters[EventParameters.VisibleTiles];
-
-            if (!m_PlayerToVisibleTiles.ContainsKey(source))
-                m_PlayerToVisibleTiles.Add(source, newVisibleTiles);
-
-            List<Point> oldVisibleTiles = m_PlayerToVisibleTiles[source];
-            m_PlayerToVisibleTiles[source] = newVisibleTiles;
-            UpdateTiles(oldVisibleTiles);
-        }
-
-        if(gameEvent.ID == GameEventId.IsTileBlocking)
-        {
-            Point p = (Point)gameEvent.Paramters[EventParameters.TilePosition];
-            if(m_Tiles.ContainsKey(p))
-                FireEvent(m_Tiles[p], gameEvent);
-        }
+    public void RevealAllTiles()
+    {
+        foreach (var tile in m_TileEntity.Values)
+            FireEvent(tile, GameEventPool.Get(GameEventId.SetVisibility)
+                .With(EventParameters.TileInSight, true)).Release();
+        Services.WorldUpdateService.UpdateWorldView();
     }
 
     void UpdateTiles(List<Point> oldTiles)
@@ -65,10 +43,12 @@ public class WorldFov : WorldComponent
             allVisibleTiles.AddRange(m_PlayerToVisibleTiles[key]);
 
         foreach(Point tile in allVisibleTiles)
-                FireEvent(m_Tiles[tile], new GameEvent(GameEventId.SetVisibility, new KeyValuePair<string, object>(EventParameters.TileInSight, true)));
+                FireEvent(m_TileEntity[tile], GameEventPool.Get(GameEventId.SetVisibility)
+                    .With(EventParameters.TileInSight, true)).Release();
 
         foreach (Point tile in oldTiles)
             if(!allVisibleTiles.Contains(tile))
-                FireEvent(m_Tiles[tile], new GameEvent(GameEventId.SetVisibility, new KeyValuePair<string, object>(EventParameters.TileInSight, false)));
+                FireEvent(m_TileEntity[tile], GameEventPool.Get(GameEventId.SetVisibility)
+                    .With(EventParameters.TileInSight, false)).Release();
     }
 }

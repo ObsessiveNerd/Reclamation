@@ -21,11 +21,12 @@ public class InteractsWithWorld : Component
                 case Demeanor.Friendly:
                 case Demeanor.None:
                 case Demeanor.Neutral:
-                    FireEvent(target, new GameEvent(GameEventId.Interact, new KeyValuePair<string, object>(EventParameters.Entity, Self.ID)));
+                    FireEvent(target, GameEventPool.Get(GameEventId.Interact).With(EventParameters.Entity, Self.ID)).Release();
                     break;
                 case Demeanor.Hostile:
-                    FireEvent(Self, new GameEvent(GameEventId.PerformAttack, new KeyValuePair<string, object>(EventParameters.Target, target.ID),
-                                                                             new KeyValuePair<string, object>(EventParameters.WeaponType, TypeWeapon.Melee & TypeWeapon.Finesse)));
+                    FireEvent(Self, GameEventPool.Get(GameEventId.PerformAttack)
+                            .With(EventParameters.Target, target.ID))
+                            .With(EventParameters.Melee, true).Release();
                     break;
             }
         }

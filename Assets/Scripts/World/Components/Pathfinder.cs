@@ -2,37 +2,39 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Pathfinder : WorldComponent
+public class Pathfinder : GameService
 {
-    public const int ImpassableWeight = 5000;
-
+    public const float ImpassableWeight = 5000f;
     IPathfindingAlgorithm m_Pathfinder;
-    public override void Init(IEntity self)
-    {
-        base.Init(self);
-        m_Pathfinder = new AStar();
 
-        RegisteredEvents.Add(GameEventId.PathfindingData);
-        RegisteredEvents.Add(GameEventId.CalculatePath);
+    public Pathfinder(IPathfindingAlgorithm algorithm)
+    {
+        m_Pathfinder = algorithm;
     }
 
-    public override void HandleEvent(GameEvent gameEvent)
+    public void GetPathfindingData(Point p,  out bool blocksMovement, out float weight)
     {
-        if(gameEvent.ID == GameEventId.PathfindingData)
+        if(p == Point.InvalidPoint)
         {
-            Point p = gameEvent.GetValue<Point>(EventParameters.TilePosition);
-            if(m_Tiles.TryGetValue(p, out Actor tile))
-                FireEvent(tile, gameEvent);
+            throw new System.Exception("Cannot use invalid point for path finding data");
         }
 
-        else if(gameEvent.ID == GameEventId.CalculatePath)
-        {
-            m_Pathfinder.Clear();
+        GameEvent ge = GameEventPool.Get(GameEventId.PathfindingData)
+                        .With(EventParameters.BlocksMovement, false)
+                        .With(EventParameters.Weight, 0f);
 
-            Point startingPoint = gameEvent.GetValue<Point>(EventParameters.StartPos);
-            Point targetPoint = gameEvent.GetValue<Point>(EventParameters.EndPos);
+        if (!m_Tiles.ContainsKey(p))
+            throw new System.Exception($"Tiles does not have {p}");
 
-            gameEvent.Paramters[EventParameters.Path] = m_Pathfinder.CalculatePath(startingPoint, targetPoint);
-        }
+        m_Tiles[p].GetPathFindingData(ge);
+        blocksMovement = ge.GetValue<bool>(EventParameters.BlocksMovement);
+        weight = ge.GetValue<float>(EventParameters.Weight);
+        ge.Release();
+    }
+
+    public List<Point> CalculatePath(Point start, Point end)
+    {
+        m_Pathfinder.Clear();
+        return m_Pathfinder.CalculatePath(start, end);
     }
 }

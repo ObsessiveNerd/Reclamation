@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -21,18 +22,25 @@ public class Stats : Component
     public int Int;
     public int Cha;
 
+    public Stat PrimaryStatType;
+
     public int AttributePoints;
 
-    public Stats(int Str, int Agi, int Con, int Wis, int Int, int Cha, int attributePoints)
+    public Stats(int Str, int Agi, int Con, int Wis, int Int, int Cha, int attributePoints, Stat primaryStatType)
     {
         SetStats(Str, Agi, Con, Wis, Int, Cha);
         AttributePoints = attributePoints;
+        PrimaryStatType = primaryStatType;
+
         RegisteredEvents.Add(GameEventId.RollToHit);
         RegisteredEvents.Add(GameEventId.GetStat);
         RegisteredEvents.Add(GameEventId.GetStatRaw);
         RegisteredEvents.Add(GameEventId.LevelUp);
         RegisteredEvents.Add(GameEventId.BoostStat);
         RegisteredEvents.Add(GameEventId.GetAttributePoints);
+        RegisteredEvents.Add(GameEventId.GetSpellSaveDC);
+        RegisteredEvents.Add(GameEventId.SavingThrow);
+        RegisteredEvents.Add(GameEventId.GetPrimaryStatType);
     }
 
     void SetStats(int Str, int Agi, int Con, int Wis, int Int, int Cha)
@@ -50,89 +58,40 @@ public class Stats : Component
         if(gameEvent.ID == GameEventId.RollToHit)
         {
             int totalRoll = Dice.Roll("1d20");
+            gameEvent.Paramters[EventParameters.Crit] = ((totalRoll + CalculateModifier(Wis)) >= 20);
             TypeWeapon weaponType = (TypeWeapon)gameEvent.Paramters[EventParameters.WeaponType];
-            switch(weaponType)
-            {
-                case TypeWeapon.Melee:
-                case TypeWeapon.StrSpell:
-                    totalRoll += GetModifier(Str);
-                    break;
-                case TypeWeapon.Finesse:
-                case TypeWeapon.Ranged:
-                case TypeWeapon.AgiSpell:
-                    totalRoll += GetModifier(Agi);
-                    break;
-                case TypeWeapon.MagicStaff:
-                case TypeWeapon.IntSpell:
-                    totalRoll += GetModifier(Int);
-                    break;
-                case TypeWeapon.ConSpell:
-                    totalRoll += GetModifier(Con);
-                    break;
-                case TypeWeapon.WisSpell:
-                    totalRoll += GetModifier(Wis);
-                    break;
-                case TypeWeapon.ChaSpell:
-                    totalRoll += GetModifier(Cha);
-                    break;
-            }
+            totalRoll += CalculateModifierForWeaponType(weaponType);
             gameEvent.Paramters[EventParameters.RollToHit] = totalRoll;
         }
         else if(gameEvent.ID == GameEventId.GetStat)
         {
             Stat s = gameEvent.GetValue<Stat>(EventParameters.StatType);
-            switch (s)
-            {
-                case Stat.Str:
-                    gameEvent.Paramters[EventParameters.Value] = GetModifier(Str);
-                    break;
-                case Stat.Agi:
-                    gameEvent.Paramters[EventParameters.Value] = GetModifier(Agi);
-                    break;
-                case Stat.Con:
-                    gameEvent.Paramters[EventParameters.Value] = GetModifier(Con);
-                    break;
-                case Stat.Wis:
-                    gameEvent.Paramters[EventParameters.Value] = GetModifier(Wis);
-                    break;
-                case Stat.Int:
-                    gameEvent.Paramters[EventParameters.Value] = GetModifier(Int);
-                    break;
-                case Stat.Cha:
-                    gameEvent.Paramters[EventParameters.Value] = GetModifier(Cha);
-                    break;
-            }
+            gameEvent.Paramters[EventParameters.Value] = GetModifier(s);
         }
         else if(gameEvent.ID == GameEventId.GetStatRaw)
         {
             Stat s = gameEvent.GetValue<Stat>(EventParameters.StatType);
-            switch (s)
-            {
-                case Stat.Str:
-                    gameEvent.Paramters[EventParameters.Value] = Str;
-                    break;
-                case Stat.Agi:
-                    gameEvent.Paramters[EventParameters.Value] = Agi;
-                    break;
-                case Stat.Con:
-                    gameEvent.Paramters[EventParameters.Value] = Con;
-                    break;
-                case Stat.Wis:
-                    gameEvent.Paramters[EventParameters.Value] = Wis;
-                    break;
-                case Stat.Int:
-                    gameEvent.Paramters[EventParameters.Value] = Int;
-                    break;
-                case Stat.Cha:
-                    gameEvent.Paramters[EventParameters.Value] = Cha;
-                    break;
-            }
+            gameEvent.Paramters[EventParameters.Value] = GetStat(s);
         }
         else if(gameEvent.ID == GameEventId.LevelUp)
         {
             int newLevel = gameEvent.GetValue<int>(EventParameters.Level);
             if(newLevel % 2 == 0)
                 AttributePoints += 2;
+        }
+        else if (gameEvent.ID == GameEventId.GetSpellSaveDC)
+        {
+            gameEvent.Paramters[EventParameters.Value] = 11 + GetModifier(PrimaryStatType);
+        }
+        else if (gameEvent.ID == GameEventId.SavingThrow)
+        {
+            int roll = Dice.Roll("1d20");
+            var weaponType = gameEvent.GetValue<TypeWeapon>(EventParameters.WeaponType);
+            roll += CalculateModifierForWeaponType(weaponType);
+            if (GetStatTypeForWeapon(weaponType) == PrimaryStatType)
+                roll += 2;
+            gameEvent.Paramters[EventParameters.Value] = roll;
+
         }
         else if(gameEvent.ID == GameEventId.BoostStat)
         {
@@ -161,15 +120,128 @@ public class Stats : Component
                     break;
             }
 
+            GameEvent statBoosted = GameEventPool.Get(GameEventId.StatBoosted)
+                .With(EventParameters.Stats, this);
+
+            FireEvent(Self, statBoosted);
+
             AttributePoints = Mathf.Max(0, AttributePoints - 1);
         }
         else if(gameEvent.ID == GameEventId.GetAttributePoints)
         {
             gameEvent.Paramters[EventParameters.AttributePoints] = AttributePoints;
         }
+        if(gameEvent.ID == GameEventId.GetPrimaryStatType)
+        {
+            gameEvent.Paramters[EventParameters.Value] = PrimaryStatType;
+        }
     }
 
-    int GetModifier(int value)
+    int GetModifier(Stat s)
+    {
+        int stat = GetStat(s);
+        return CalculateModifier(stat);
+    }
+
+    Stat GetStatTypeForWeapon(TypeWeapon weaponType)
+    {
+        Stat value = 0;
+        switch(weaponType)
+        {
+            case TypeWeapon.Melee:
+            case TypeWeapon.StrSpell:
+                value = Stat.Str;
+                break;
+            case TypeWeapon.Finesse:
+            case TypeWeapon.Ranged:
+            case TypeWeapon.AgiSpell:
+                value = Stat.Agi;
+                break;
+            case TypeWeapon.RangedSpell:
+                value = PrimaryStatType;
+                break;
+            case TypeWeapon.MagicStaff:
+            case TypeWeapon.IntSpell:
+                value = Stat.Int;
+                break;
+            case TypeWeapon.ConSpell:
+                value = Stat.Con;
+                break;
+            case TypeWeapon.WisSpell:
+                value = Stat.Wis;
+                break;
+            case TypeWeapon.ChaSpell:
+                value = Stat.Cha;
+                break;
+        }
+
+        return value;
+    }
+
+    int CalculateModifierForWeaponType(TypeWeapon weaponType)
+    {
+        int value = 0;
+        switch(weaponType)
+        {
+            case TypeWeapon.Melee:
+            case TypeWeapon.StrSpell:
+                value = CalculateModifier(Str);
+                break;
+            case TypeWeapon.Finesse:
+            case TypeWeapon.Ranged:
+            case TypeWeapon.AgiSpell:
+                value = CalculateModifier(Agi);
+                break;
+            case TypeWeapon.RangedSpell:
+                value = GetModifier(PrimaryStatType);
+                break;
+            case TypeWeapon.MagicStaff:
+            case TypeWeapon.IntSpell:
+                value = CalculateModifier(Int);
+                break;
+            case TypeWeapon.ConSpell:
+                value = CalculateModifier(Con);
+                break;
+            case TypeWeapon.WisSpell:
+                value = CalculateModifier(Wis);
+                break;
+            case TypeWeapon.ChaSpell:
+                value = CalculateModifier(Cha);
+                break;
+        }
+
+        return value;
+    }
+
+    int GetStat(Stat statType)
+    {
+        int value = 0;
+        switch (statType)
+        {
+            case Stat.Str:
+                value = Str;
+                break;
+            case Stat.Agi:
+                value = Agi;
+                break;
+            case Stat.Con:
+                value = Con;
+                break;
+            case Stat.Wis:
+                value = Wis;
+                break;
+            case Stat.Int:
+                value = Int;
+                break;
+            case Stat.Cha:
+                value = Cha;
+                break;
+        }
+
+        return value;
+    }
+
+    public int CalculateModifier(int value)
     {
         return (value - 10) / 2;
     }
@@ -187,6 +259,7 @@ public class DTO_Stats : IDataTransferComponent
     int Cha;
 
     int AttributePoints = 0;
+    Stat PrimaryStatType;
 
     public void CreateComponent(string data)
     {
@@ -217,14 +290,17 @@ public class DTO_Stats : IDataTransferComponent
                 case nameof(AttributePoints):
                     AttributePoints = int.Parse(statValue[1]);
                     break;
+                case nameof(PrimaryStatType):
+                    PrimaryStatType = (Stat)Enum.Parse(typeof(Stat), statValue[1]);
+                    break;
             }
         }
-        Component = new Stats(Str, Agi, Con, Wis, Int, Cha, AttributePoints);
+        Component = new Stats(Str, Agi, Con, Wis, Int, Cha, AttributePoints, PrimaryStatType);
     }
 
     public string CreateSerializableData(IComponent component)
     {
         Stats stats = (Stats)component;
-        return $"{nameof(Stats)}: Str={stats.Str}, Agi={stats.Agi}, Con={stats.Con}, Wis={stats.Wis}, Int={stats.Int}, Cha={stats.Cha}, AttributePoints={stats.AttributePoints}";
+        return $"{nameof(Stats)}: Str={stats.Str}, Agi={stats.Agi}, Con={stats.Con}, Wis={stats.Wis}, Int={stats.Int}, Cha={stats.Cha}, AttributePoints={stats.AttributePoints}, {nameof(stats.PrimaryStatType)}={stats.PrimaryStatType}";
     }
 }

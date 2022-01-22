@@ -107,9 +107,9 @@ public static class EntityFactory
 
     public static void InitTempBlueprints()
     {
-        if (World.Instance != null && !m_LoadedTempBlueprints && SaveSystem.Instance != null)
+        if (!m_LoadedTempBlueprints && GameSaveSystem.Instance != null)
         {
-            string tempBlueprints = $"{SaveSystem.kSaveDataPath}/{SaveSystem.Instance.CurrentSaveName}/Blueprints";
+            string tempBlueprints = $"{GameSaveSystem.kSaveDataPath}/{GameSaveSystem.Instance.CurrentSaveName}/Blueprints";
             if (Directory.Exists(tempBlueprints))
             {
                 foreach (var bpPath in Directory.EnumerateFiles(tempBlueprints, "*", SearchOption.AllDirectories))
@@ -174,7 +174,7 @@ public static class EntityFactory
         Actor a = new Actor("<empty>");
         string path = m_Blueprints[blueprintName]; //$"{m_BluePrintPath}/{blueprintName}.bp";
         if(!File.Exists(path))
-            path = $"{SaveSystem.kSaveDataPath}/{World.Instance.Seed}/Blueprints/{blueprintName}.bp"; //todo: need proper seed
+            path = $"{GameSaveSystem.kSaveDataPath}/{Services.WorldDataQuery.Seed}/Blueprints/{blueprintName}.bp"; //todo: need proper seed
         if (!File.Exists(path))
             return null;
 
@@ -230,7 +230,7 @@ public static class EntityFactory
         a.CleanupComponents();
 
 
-        //EventBuilder register = EventBuilderPool.Get(GameEventId.RegisterEntity)
+        //GameEvent register = GameEventPool.Get(GameEventId.RegisterEntity)
         //                            .With(EventParameters.Entity, a);
         //World.Instance.Self.FireEvent(register.CreateEvent());
 
@@ -420,7 +420,7 @@ public static class EntityFactory
         //    Debug.Log("bad");
 
         string path = $"Blueprints/{blueprintName}.bp";
-        SaveSystem.Instance.WriteData(path, data);
+        Services.SaveAndLoadService.WriteData(path, data);
     }
 }
 

@@ -2,21 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class StateManager : WorldComponent
+public class StateManager : GameService
 {
-    public override void Init(IEntity self)
+    public void GameOver(bool win)
     {
-        base.Init(self);
-        RegisteredEvents.Add(GameEventId.GameWin);
-        RegisteredEvents.Add(GameEventId.GameFailure);
-    }
-
-    public override void HandleEvent(GameEvent gameEvent)
-    {
-        if(gameEvent.ID == GameEventId.GameWin)
-            GameObject.FindObjectOfType<GameEndMono>().EnableEndState(true);
-
-        if(gameEvent.ID == GameEventId.GameFailure)
-            GameObject.FindObjectOfType<GameEndMono>().EnableEndState(false);
+        GameObject.FindObjectOfType<GameEndMono>().EnableEndState(win);
     }
 }

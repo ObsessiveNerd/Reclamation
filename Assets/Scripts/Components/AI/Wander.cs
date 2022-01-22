@@ -7,7 +7,7 @@ public class Wander : Component
 {
     public int Weight => 5;
     private Point m_Destination;
-    private List<IMapNode> m_CurrentPath;
+    private List<Point> m_CurrentPath;
     private Point m_PreviousPosition;
 
     public override void Init(IEntity self)
@@ -19,7 +19,7 @@ public class Wander : Component
     public override void Start()
     {
         m_Destination = PathfindingUtility.GetRandomValidPoint();
-        m_CurrentPath = new List<IMapNode>();
+        m_CurrentPath = new List<Point>();
     }
 
     public override void HandleEvent(GameEvent gameEvent)
@@ -49,6 +49,9 @@ public class Wander : Component
         if (m_Destination == null || currentPos == m_Destination)
             m_Destination = PathfindingUtility.GetRandomValidPoint();
 
+        if (Services.TileInteractionService.GetTile(m_Destination).BlocksMovement)
+            return MoveDirection.None;
+
         if (m_CurrentPath.Count == 0 || !IsNeighbor(currentPos, m_CurrentPath[0]))
             m_CurrentPath = PathfindingUtility.GetPath(currentPos, m_Destination);
 
@@ -57,18 +60,18 @@ public class Wander : Component
 
         //m_PreviousPosition = currentPos;
 
-        IMapNode nextNode = m_CurrentPath[0];
+        Point nextNode = m_CurrentPath[0];
         m_CurrentPath.RemoveAt(0);
         return PathfindingUtility.GetDirectionTo(currentPos, nextNode);
     }
 
-    bool IsNeighbor(IMapNode current, IMapNode neighbor)
+    bool IsNeighbor(Point current, Point neighbor)
     {
         for(int i = current.x - 1; i < current.x + 1; i++)
         {
             for(int j = current.y - 1; j < current.y + 1; j++)
             {
-                IMapNode p = new Point(i, j);
+                Point p = new Point(i, j);
                 if (neighbor == p)
                     return true;
             }

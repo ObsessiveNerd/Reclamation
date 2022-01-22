@@ -34,9 +34,10 @@ public class EquipmentSlot : Component
         var entity = EntityQuery.GetEntity(EquipmentId);
         if (entity == null)
         {
-            EntityMap.AddEntity(entity);
-            //entity = EntityFactory.CreateEntity(EquipmentId);
-            //EventBuilder register = EventBuilderPool.Get(GameEventId.RegisterEntity)
+            entity = EntityFactory.CreateEntity(EquipmentId);
+            Services.EntityMapService.AddEntity(entity);
+
+            //GameEvent register = GameEventPool.Get(GameEventId.RegisterEntity)
             //                        .With(EventParameters.Entity, entity);
             //World.Instance.Self.FireEvent(register.CreateEvent());
         }
@@ -44,10 +45,10 @@ public class EquipmentSlot : Component
         if (entity != null)
         {
             EquipmentId = entity.ID;
-            EventBuilder equip = EventBuilderPool.Get(GameEventId.Equip)
+            GameEvent equip = GameEventPool.Get(GameEventId.Equip)
                                 .With(EventParameters.Equipment, EquipmentId)
                                 .With(EventParameters.EntityType, BodyPartType);
-            FireEvent(Self, equip.CreateEvent());
+            FireEvent(Self, equip).Release();
         }
     }
 
@@ -116,8 +117,8 @@ public class EquipmentSlot : Component
             if (EquipmentId != null && gameEvent.GetValue<string>(EventParameters.Item) == EquipmentId)
             {
                 IEntity owner = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameters.Entity));
-                FireEvent(owner, new GameEvent(GameEventId.AddToInventory, new KeyValuePair<string, object>(EventParameters.Entity, EquipmentId)));
-                FireEvent(EntityQuery.GetEntity(EquipmentId), new GameEvent(GameEventId.ItemUnequipped));
+                FireEvent(owner, GameEventPool.Get(GameEventId.AddToInventory).With(EventParameters.Entity, EquipmentId)).Release();
+                FireEvent(EntityQuery.GetEntity(EquipmentId), GameEventPool.Get(GameEventId.ItemUnequipped)).Release();
                 EquipmentId = null;
                 //EquipmentName = "";
             }
@@ -125,25 +126,18 @@ public class EquipmentSlot : Component
 
         else if (gameEvent.ID == GameEventId.PerformAttack)
         {
-            TypeWeapon desiredWeaponToAttack = (TypeWeapon)gameEvent.Paramters[EventParameters.WeaponType];
-            //foreach (IEntity hand in Arm)
-            //{
-                //EventBuilder getEquipment = EventBuilderPool.Get(GameEventId.GetEquipment)
-                //                            .With(EventParameters.Equipment, null);
+            IEntity equipmentEntity = EntityQuery.GetEntity(EquipmentId);
+            if (equipmentEntity == null) return;
 
-                //string equipment = FireEvent(hand, getEquipment.CreateEvent()).GetValue<string>(EventParameters.Equipment);
-                //IEntity equipmentEntity = EntityQuery.GetEntity(equipment);
-                IEntity equipmentEntity = EntityQuery.GetEntity(EquipmentId);
+            bool melee = gameEvent.GetValue<bool>(EventParameters.Melee);
 
-            if (equipmentEntity != null && equipmentEntity.HasComponent(typeof(TwoHanded)))
+            if (equipmentEntity.HasComponent(typeof(TwoHanded)))
                 gameEvent.ContinueProcessing = false;
-                
-                //if (equipmentEntity == null)
-                //    equipmentEntity = EntityFactory.CreateEntity("UnarmedStrike");
 
-                if (equipmentEntity != null && CombatUtility.GetWeaponType(equipmentEntity).HasFlag(desiredWeaponToAttack))
-                    CombatUtility.Attack(Self, EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Target]), equipmentEntity, desiredWeaponToAttack == TypeWeapon.Melee || desiredWeaponToAttack == TypeWeapon.Finesse);
-            //}
+            CombatUtility.Attack(Self,
+                EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Target]),
+                equipmentEntity,
+                melee);
         }
 
         else if (gameEvent.ID == GameEventId.Drop)
@@ -157,11 +151,11 @@ public class EquipmentSlot : Component
             if (string.IsNullOrEmpty(EquipmentId))
                 return;
 
-            EventBuilder builder = EventBuilderPool.Get(GameEventId.Drop)
+            GameEvent builder = GameEventPool.Get(GameEventId.Drop)
                                     .With(EventParameters.Entity, Self.ID)
                                     .With(EventParameters.Item, EquipmentId);
 
-            FireEvent(EntityQuery.GetEntity(EquipmentId), builder.CreateEvent());
+            FireEvent(EntityQuery.GetEntity(EquipmentId), builder).Release();
         }
 
         else if(gameEvent.ID == GameEventId.CheckItemEquiped)

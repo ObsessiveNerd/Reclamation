@@ -38,6 +38,10 @@ public class FadeTextMono : MonoBehaviour
         }
         
         GameObject go = WorldUtility.GetGameObject(m_Target);
+
+        if(go == null)
+            Destroy(gameObject);
+
         Vector2 newPos = (Vector2)Camera.main.WorldToScreenPoint(go.transform.position);
         newPos.y += (go.GetComponent<SpriteRenderer>().sprite.textureRect.height);
         newPos.y += (Time.time - m_StartTime) * 2;

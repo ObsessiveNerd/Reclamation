@@ -10,6 +10,6 @@ public class DungeonLevelUI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Level.text = $"{WorldComponent.CurrentLevel}";
+        Level.text = $"{GameService.CurrentLevel}";
     }
 }

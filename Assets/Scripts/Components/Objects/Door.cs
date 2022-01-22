@@ -29,7 +29,8 @@ public class Door : Component
         RegisteredEvents.Add(GameEventId.Interact);
         RegisteredEvents.Add(GameEventId.ForceInteract);
         RegisteredEvents.Add(GameEventId.PathfindingData);
-        RegisteredEvents.Add(GameEventId.IsTileBlocking);
+        RegisteredEvents.Add(GameEventId.BlocksMovement);
+        RegisteredEvents.Add(GameEventId.BlocksVision);
         RegisteredEvents.Add(GameEventId.GetSprite);
     }
 
@@ -57,7 +58,12 @@ public class Door : Component
                 gameEvent.Paramters[EventParameters.Weight] = Pathfinder.ImpassableWeight;
             }
         }
-        else if (gameEvent.ID == GameEventId.IsTileBlocking)
+        else if (gameEvent.ID == GameEventId.BlocksMovement)
+        {
+            if(Locked)
+                gameEvent.Paramters[EventParameters.BlocksMovement] = true;
+        }
+        else if(gameEvent.ID == GameEventId.BlocksVision)
         {
             if(Closed)
                 gameEvent.Paramters[EventParameters.Value] = true;
