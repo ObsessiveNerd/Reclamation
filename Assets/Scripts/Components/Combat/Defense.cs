@@ -10,41 +10,77 @@ public class Defense : Component
     public Defense()
     {
         RegisteredEvents.Add(GameEventId.TakeDamage);
-        RegisteredEvents.Add(GameEventId.Sharpness);
+        //RegisteredEvents.Add(GameEventId.Sharpness);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
     {
-        //Todo: we need to check what the weapon type is and decide if we need to get armor/resistances/other...
         if (gameEvent.ID == GameEventId.TakeDamage)
         {
-            int rollToHit = (int)gameEvent.Paramters[EventParameters.RollToHit];
-            GameEvent getArmor = GameEventPool.Get(GameEventId.AddArmorValue)
-                .With(EventParameters.Value, 0);
-            int armorBonus = (int)FireEvent(Self, getArmor).Paramters[EventParameters.Value];
-            getArmor.Release();
-            if (rollToHit >= kBaseAC + armorBonus)
-                RecLog.Log($"{Self.Name} was hit!");
+            TypeWeapon weaponType = gameEvent.GetValue<TypeWeapon>(EventParameters.WeaponType);
+            if (weaponType == TypeWeapon.Melee 
+                || weaponType == TypeWeapon.Finesse 
+                || weaponType == TypeWeapon.Ranged 
+                || weaponType == TypeWeapon.RangedSpell)
+            {
+                int rollToHit = (int)gameEvent.Paramters[EventParameters.RollToHit];
+                GameEvent getArmor = GameEventPool.Get(GameEventId.AddArmorValue)
+                    .With(EventParameters.Value, 0);
+                int armorBonus = (int)FireEvent(Self, getArmor).Paramters[EventParameters.Value];
+                getArmor.Release();
+                if (rollToHit >= kBaseAC + armorBonus)
+                    RecLog.Log($"{Self.Name} was hit!");
+                else
+                {
+                    RecLog.Log($"Attack missed because armor was {kBaseAC + armorBonus}!");
+                    gameEvent.ContinueProcessing = false;
+                }
+            }
             else
             {
-                RecLog.Log($"Attack missed because armor was {kBaseAC + armorBonus}!");
-                gameEvent.ContinueProcessing = false;
+                IEntity weapon = Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameters.Weapon));
+                IEntity damageSource = Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameters.DamageSource));
+                GameEvent getSpellSaveDC = GameEventPool.Get(GameEventId.GetSpellSaveDC)
+                    .With(EventParameters.Value, -1);
+                int saveDC = damageSource.FireEvent(getSpellSaveDC).GetValue<int>(EventParameters.Value);
+                getSpellSaveDC.Release();
+
+                GameEvent save = GameEventPool.Get(GameEventId.SavingThrow)
+                    .With(EventParameters.Value, 0)
+                    .With(EventParameters.WeaponType, weaponType);
+                FireEvent(Self, save);
+                int saveThrow = save.GetValue<int>(EventParameters.Value);
+                save.Release();
+
+                Debug.Log($"{weapon.Name} Spell was cast, Save DC was {saveDC} and save was {saveThrow}");
+
+                if (saveThrow < saveDC)
+                {
+                    GameEvent saveFailed = GameEventPool.Get(GameEventId.SaveFailed)
+                        .With(EventParameters.SpellContinues, true)
+                        .With(EventParameters.DamageList, gameEvent.Paramters[EventParameters.DamageList]);
+                    FireEvent(weapon, saveFailed);
+                    if (!saveFailed.GetValue<bool>(EventParameters.SpellContinues))
+                        gameEvent.ContinueProcessing = false;
+                    
+                    saveFailed.Release();
+                }
             }
         }
 
-        if (gameEvent.ID == GameEventId.Sharpness)
-        {
-            int rollToHit = (int)gameEvent.Paramters[EventParameters.RollToHit];
-            GameEvent getArmor = GameEventPool.Get(GameEventId.AddArmorValue)
-                .With(EventParameters.Value, 0);
-            int armorBonus = (int)FireEvent(Self, getArmor).Paramters[EventParameters.Value];
-            getArmor.Release();
+        //if (gameEvent.ID == GameEventId.Sharpness)
+        //{
+        //    int rollToHit = (int)gameEvent.Paramters[EventParameters.RollToHit];
+        //    GameEvent getArmor = GameEventPool.Get(GameEventId.AddArmorValue)
+        //        .With(EventParameters.Value, 0);
+        //    int armorBonus = (int)FireEvent(Self, getArmor).Paramters[EventParameters.Value];
+        //    getArmor.Release();
 
-            if (rollToHit < kBaseAC + armorBonus)
-                RecLog.Log("Nothing was severed.");
-            else
-                FireEvent(Self, GameEventPool.Get(GameEventId.SeverBodyPart));
-        }
+        //    if (rollToHit < kBaseAC + armorBonus)
+        //        RecLog.Log("Nothing was severed.");
+        //    else
+        //        FireEvent(Self, GameEventPool.Get(GameEventId.SeverBodyPart));
+        //}
     }
 }
 

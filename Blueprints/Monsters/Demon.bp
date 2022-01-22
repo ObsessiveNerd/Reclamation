@@ -1,7 +1,6 @@
 <Demon> (
 	GraphicContainer:SpritePath= Textures/Monsters/td_monsters_demon_d2
 	Defense
-	PrimaryStatType:PrimaryStat=Str
 	Position:PositionPoint=0
 	Move
 	InteractOnTileOvertake
@@ -10,7 +9,7 @@
 	AIController
 	AIFOVHandler
 	InteractsWithWorld
-	Stats:Str=10,Agi=12,Con=10,Wis=9,Int=7,Cha=8,AttributePoints=0
+	Stats:Str=10,Agi=12,Con=10,Wis=9,Int=7,Cha=8,AttributePoints=0,PrimaryStatType=Str
 	Faction:ID=Demons
 	FOV:FOVRange=2
 	Aggression

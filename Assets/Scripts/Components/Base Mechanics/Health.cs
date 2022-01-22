@@ -6,7 +6,7 @@ public class Health : Component
 {
     public int MaxHealth;
     public int CurrentHealth;
-
+    int modMultiplier = 5;
     public override int Priority { get { return 10; } }
 
     private float PercentHealth {get{ return ((float)CurrentHealth / (float)MaxHealth) * 100f; } }
@@ -21,6 +21,7 @@ public class Health : Component
         RegisteredEvents.Add(GameEventId.RegenHealth);
         RegisteredEvents.Add(GameEventId.GetCombatRating);
         RegisteredEvents.Add(GameEventId.GetHealth);
+        RegisteredEvents.Add(GameEventId.StatBoosted);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
@@ -47,6 +48,11 @@ public class Health : Component
                     break;
                 }
             }
+        }
+        else if (gameEvent.ID == GameEventId.StatBoosted)
+        {
+            Stats stats = gameEvent.GetValue<Stats>(EventParameters.Stats);
+            MaxHealth = Mathf.Max(0, stats.CalculateModifier(stats.Int) * modMultiplier);
         }
 
         else if(gameEvent.ID == GameEventId.RegenHealth)

@@ -196,6 +196,8 @@ public static class GameEventId
     public const string ManaCost = nameof(ManaCost);
     public const string Quaff = nameof(Quaff);
     public const string FireRangedAttack = nameof(FireRangedAttack);
+    public const string SavingThrow = nameof(SavingThrow);
+    public const string SaveFailed = nameof(SaveFailed);
 
     //Stats
     public const string GetPrimaryStatType = nameof(GetPrimaryStatType);
@@ -206,6 +208,7 @@ public static class GameEventId
     public const string LevelUp = nameof(LevelUp);
     public const string GetLevel = nameof(GetLevel);
     public const string BoostStat = nameof(BoostStat);
+    public const string StatBoosted = nameof(StatBoosted);
     public const string GetAttributePoints = nameof(GetAttributePoints);
 
     //Body
@@ -248,6 +251,7 @@ public static class GameEventId
     public const string SpellSelected = nameof(SpellSelected);
     public const string OpenSpellSelector = nameof(OpenSpellSelector);
     public const string AffectArea = nameof(AffectArea);
+    public const string GetSpellSaveDC = nameof(GetSpellSaveDC);
 
     //Party
     public const string LookingForGroup = nameof(LookingForGroup);
@@ -292,8 +296,10 @@ public static class EventParameters
     public const string DamageList = nameof(DamageList);
     public const string Healing = nameof(Healing);
     public const string Mana = nameof(Mana);
+    public const string Melee = nameof(Melee);
     public const string DamageType = nameof(DamageType);
     public const string RollToHit = nameof(RollToHit);
+    public const string Crit = nameof(Crit);
     public const string WeaponType = nameof(WeaponType);
     public const string WeaponTypeList = nameof(WeaponTypeList);
     public const string Weapon = nameof(Weapon);
@@ -317,6 +323,7 @@ public static class EventParameters
     public const string StatType = nameof(StatType);
     public const string SpellList = nameof(SpellList);
     public const string Spell = nameof(Spell);
+    public const string SpellContinues = nameof(SpellContinues);
     public const string Name = nameof(Name);
     public const string Head = nameof(Head);
     public const string Torso = nameof(Torso);
@@ -335,6 +342,7 @@ public static class EventParameters
     public const string Info = nameof(Info);
     public const string Exp = nameof(Exp);
     public const string StatBoostAmount = nameof(StatBoostAmount);
+    public const string Stats = nameof(Stats);
     public const string AttributePoints = nameof(AttributePoints);
     public const string Key = nameof(Key);
     public const string Owner = nameof(Owner);

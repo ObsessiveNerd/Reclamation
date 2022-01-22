@@ -1,9 +1,9 @@
 <Firebolt> (
-	GraphicContainer: Textures/Spells/SpellBook06_18
+	GraphicContainer:SpritePath= Textures/Spells/SpellBook06_18
 	Spell:ManaCost=4
-	DealDamage:DamageType=Fire,Dice=1d12
+	DealDamage:DamageType=Fire,Dice=1d4
 	Range
-	WeaponType:TypeWeapon=IntSpell
+	WeaponType:TypeWeapon=RangedSpell
 	Sound:SoundPath=Sounds/MAGIC_SPELLS/MAGIC_SPELL_Flame_01_mono.wav,Key=Cast
 	Ammo:TexturePath=Textures/Effects/tiny_dungeon_fx_fireball
 )

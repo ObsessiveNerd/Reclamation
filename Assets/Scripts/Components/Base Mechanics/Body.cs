@@ -155,8 +155,6 @@ public class Body : Component
         }
         else if (gameEvent.ID == GameEventId.PerformAttack)
         {
-            TypeWeapon desiredWeaponToAttack = (TypeWeapon)gameEvent.Paramters[EventParameters.WeaponType];
-
             GameEvent builder = GameEventPool.Get(GameEventId.GetBodyPartType)
                                     .With(EventParameters.BodyParts, new Dictionary<BodyPart, List<Component>>())
                                     .With(EventParameters.DesiredBodyPartTypes, new List<BodyPart>(){ BodyPart.Arm, BodyPart.Leg, BodyPart.Torso, BodyPart.Head });
@@ -185,10 +183,7 @@ public class Body : Component
             }
 
             var equipmentEntity = EntityFactory.CreateEntity("UnarmedStrike");
-
-            if (equipmentEntity != null && CombatUtility.GetWeaponType(equipmentEntity).HasFlag(desiredWeaponToAttack))
-                CombatUtility.Attack(Self, EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Target]), equipmentEntity, true);
-
+            CombatUtility.Attack(Self, EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Target]), equipmentEntity, true);
             builder.Release();
         }
         else if(gameEvent.ID == GameEventId.GetCurrentEquipment)

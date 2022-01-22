@@ -126,26 +126,18 @@ public class EquipmentSlot : Component
 
         else if (gameEvent.ID == GameEventId.PerformAttack)
         {
-            TypeWeapon desiredWeaponToAttack = (TypeWeapon)gameEvent.Paramters[EventParameters.WeaponType];
-            //foreach (IEntity hand in Arm)
-            //{
-                //GameEvent getEquipment = GameEventPool.Get(GameEventId.GetEquipment)
-                //                            .With(EventParameters.Equipment, null);
+            IEntity equipmentEntity = EntityQuery.GetEntity(EquipmentId);
+            if (equipmentEntity == null) return;
 
-                //string equipment = FireEvent(hand, getEquipment.CreateEvent()).GetValue<string>(EventParameters.Equipment);
-                //IEntity equipmentEntity = EntityQuery.GetEntity(equipment);
-                IEntity equipmentEntity = EntityQuery.GetEntity(EquipmentId);
+            bool melee = gameEvent.GetValue<bool>(EventParameters.Melee);
 
-            if (equipmentEntity != null && equipmentEntity.HasComponent(typeof(TwoHanded)))
+            if (equipmentEntity.HasComponent(typeof(TwoHanded)))
                 gameEvent.ContinueProcessing = false;
-                
-                //if (equipmentEntity == null)
-                //    equipmentEntity = EntityFactory.CreateEntity("UnarmedStrike");
 
-                if (equipmentEntity != null && CombatUtility.GetWeaponType(equipmentEntity).HasFlag(desiredWeaponToAttack))
-                    CombatUtility.Attack(Self, EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Target]), equipmentEntity, 
-                        desiredWeaponToAttack == TypeWeapon.Melee || desiredWeaponToAttack == TypeWeapon.Finesse);
-            //}
+            CombatUtility.Attack(Self,
+                EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Target]),
+                equipmentEntity,
+                melee);
         }
 
         else if (gameEvent.ID == GameEventId.Drop)

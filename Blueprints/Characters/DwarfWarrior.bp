@@ -4,8 +4,7 @@
 	Defense
 	Inventory:InventoryItems=[<Spellbook>&<BronzeHelmet>&<LongSword>&<Warhammer>]
 	Move
-	Stats:Str=10,Agi=9,Con=13,Wis=11,Int=12,Cha=10,AttributePoints=0
-	PrimaryStatType:PrimaryStat=Str
+	Stats:Str=10,Agi=9,Con=13,Wis=11,Int=12,Cha=10,AttributePoints=0, PrimaryStatType=Str
 	Faction:ID=DwarvenExpedition
 	Energy:EnergyRegineration=1,CurrentEnergy=0,HasHadTurnStarted=False
 	PackTactics:PartyLeaderId=

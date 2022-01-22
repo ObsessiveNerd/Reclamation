@@ -2,7 +2,6 @@
 	GraphicContainer:SpritePath= Textures/Monsters/td_monsters_goblin_mage_d1
 	Defense
 	Energy:EnergyRegineration=1,CurrentEnergy=0,HasHadTurnStarted=False
-	PrimaryStatType:PrimaryStat=Int
 	InteractsWithWorld
 	InteractOnTileOvertake
 	Position:PositionPoint=0
@@ -22,7 +21,7 @@
 	PackTactics:PartyLeaderId=
 	Move
 	Level:CurrentLevel=2,CurrentExp=0
-	Stats:Str=8,Agi=10,Con=10,Wis=9,Int=13,Cha=8,AttributePoints=0
+	Stats:Str=8,Agi=10,Con=10,Wis=9,Int=13,Cha=8,AttributePoints=0, PrimaryStatType=Int
 	Info:InfoMessage="It's a nasty little goblin.  Its slimy green skin reeks with the pungent odor of dirt and mold."
 	Health:MaxHealth=10,CurrentHealth=10
 	Mana:MaxMana=10,CurrentMana=10

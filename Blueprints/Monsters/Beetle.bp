@@ -4,7 +4,7 @@
 	Faction:ID=None
 	Energy:EnergyRegineration=1,CurrentEnergy=0,HasHadTurnStarted=False
 	InteractOnTileOvertake
-	Stats:Str=8,Agi=8,Con=10,Wis=9,Int=5,Cha=5
+	Stats:Str=8,Agi=8,Con=10,Wis=9,Int=5,Cha=5,PrimaryStatType=Agi
 	BlocksNonHostileMovement
 	CombatRating
 	Wander
@@ -18,7 +18,6 @@
 	Position:PositionPoint=0,0
 	Move
 	FOV:FOVRange=6
-	PrimaryStatType:PrimaryStat=Agi
 	Body:Head=1[], Torso=1[], Arm=2[], Leg=2[]
 	Health:MaxHealth=5,CurrentHealth=5
 	Level:CurrentLevel=1,CurrentExp=0

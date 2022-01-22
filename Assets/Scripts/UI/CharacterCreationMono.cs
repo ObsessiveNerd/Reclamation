@@ -75,7 +75,7 @@ public class CharacterCreationMono : MonoBehaviour
             m_CharacterArchitypes[currentClassIndex].Wis,
             m_CharacterArchitypes[currentClassIndex].Int,
             m_CharacterArchitypes[currentClassIndex].Cha,
-            0));
+            0, m_CharacterArchitypes[currentClassIndex].PrimaryStatType));
         var ca = m_CharacterArchitypes[currentClassIndex];
 
         character.AddComponent(new EquipmentSlot(ca.HeadEquip, BodyPart.Head));
@@ -84,8 +84,6 @@ public class CharacterCreationMono : MonoBehaviour
         character.AddComponent(new EquipmentSlot(ca.ArmEquip2, BodyPart.Arm));
         character.AddComponent(new EquipmentSlot(ca.LegEquip1, BodyPart.Leg));
         character.AddComponent(new EquipmentSlot(ca.LegEquip2, BodyPart.Leg));
-
-        character.AddComponent(new PrimaryStatType(ca.PrimaryStatType));
 
         character.CleanupComponents();
         character.Start();

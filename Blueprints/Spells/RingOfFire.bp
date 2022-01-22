@@ -3,7 +3,7 @@
 	Spell:ManaCost=4
 	DealDamage:DamageType=Fire,Dice=1d12
 	Range
-	WeaponType:TypeWeapon=IntSpell
+	WeaponType:TypeWeapon=AgiSpell
 	Sound:SoundPath=Sounds/MAGIC_SPELLS/MAGIC_SPELL_Flame_01_mono.wav,Key=Cast
 	Ammo:TexturePath=Textures/Effects/tiny_dungeon_fx_fireball
 	AreaOfEffect:Range=3,AOEType=Circle

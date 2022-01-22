@@ -9,7 +9,6 @@
 	Move
 	Body
 	Aggression
-	PrimaryStatType:PrimaryStat=Str
 	RegisterWithTimeSystem
 	EntityTypeContainer:Type=Creature
 	AIFOVHandler
@@ -22,7 +21,7 @@
 	Position:PositionPoint=0
 	InteractOnTileOvertake
 	InteractsWithWorld
-	Stats:Str=15,Agi=10,Con=18,Wis=13,Int=12,Cha=15,AttributePoints=0
+	Stats:Str=15,Agi=10,Con=18,Wis=13,Int=12,Cha=15,AttributePoints=0,PrimaryStatType=Str
 	TriggerOnDeath:EventId=GameWin
 	Level:CurrentLevel=5,CurrentExp=0
 	Health:MaxHealth=15,CurrentHealth=15

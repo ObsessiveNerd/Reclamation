@@ -34,6 +34,7 @@ public static class CombatUtility
 
         GameEvent rollToHitEvent = GameEventPool.Get(GameEventId.RollToHit)
             .With(EventParameters.RollToHit, 0)
+            .With(EventParameters.Crit, false)
             .With(EventParameters.WeaponType, weaponType);
         int rollToHit = (int)source.FireEvent(source, rollToHitEvent).Paramters[EventParameters.RollToHit];
         rollToHitEvent.Release();
@@ -42,6 +43,7 @@ public static class CombatUtility
 
         GameEvent amAttacking = GameEventPool.Get(GameEventId.AmAttacking)
                                 .With(EventParameters.RollToHit, rollToHit)
+                                .With(EventParameters.Crit, rollToHitEvent.Paramters[EventParameters.Crit])
                                 .With(EventParameters.Attack, weapon)
                                 .With(EventParameters.DamageList, new List<Damage>());
 
@@ -63,7 +65,6 @@ public static class CombatUtility
                 break;
             case TypeWeapon.Finesse:
             case TypeWeapon.Ranged:
-            case TypeWeapon.AgiSpell:
                 getStatModForDamage = getStatModForDamage.With(EventParameters.StatType, Stat.Agi);
                 addStatBasedDamage = true;
                 break;

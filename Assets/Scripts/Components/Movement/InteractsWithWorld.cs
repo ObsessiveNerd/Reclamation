@@ -25,8 +25,8 @@ public class InteractsWithWorld : Component
                     break;
                 case Demeanor.Hostile:
                     FireEvent(Self, GameEventPool.Get(GameEventId.PerformAttack)
-                            .With(EventParameters.Target, target.ID)
-                            .With(EventParameters.WeaponType, TypeWeapon.Melee & TypeWeapon.Finesse)).Release();
+                            .With(EventParameters.Target, target.ID))
+                            .With(EventParameters.Melee, true).Release();
                     break;
             }
         }

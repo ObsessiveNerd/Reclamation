@@ -10,7 +10,7 @@
 	Inventory:InventoryItems=
 	RegisterWithTimeSystem
 	EntityTypeContainer:Type=Creature
-	Stats:Str=10,Agi=12,Con=10,Wis=9,Int=7,Cha=8,AttributePoints=0
+	Stats:Str=10,Agi=12,Con=10,Wis=9,Int=7,Cha=8,AttributePoints=0,PrimaryStatType=Str
 	Energy:EnergyRegineration=1,CurrentEnergy=0,HasHadTurnStarted=False
 	FOV:FOVRange=2
 	BlocksNonHostileMovement
@@ -19,7 +19,6 @@
 	Position:PositionPoint=0
 	InteractOnTileOvertake
 	InteractsWithWorld
-	PrimaryStatType:PrimaryStat=Str
 	Info:InfoMessage="It's a nasty little goblin.  Its slimy green skin reeks with the pungent odor of dirt and mold."
 	Health:MaxHealth=10,CurrentHealth=10
 	EquipmentSlot:EquipmentId=Warhammer,BodyPartType=Arm
