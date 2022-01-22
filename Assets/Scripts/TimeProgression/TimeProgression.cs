@@ -131,6 +131,7 @@ public class TimeProgression
             endTurn.Release();
             Services.WorldUpdateService.UpdateWorldView();
         }
+        update.Release();
 
         //ObjectPool.Return(update);
         if (m_PostFrameCallback != null)
@@ -138,8 +139,5 @@ public class TimeProgression
             m_PostFrameCallback.Invoke();
             m_PostFrameCallback = null;
         }
-
-        update.Release();
-
     }
 }

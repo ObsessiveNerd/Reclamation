@@ -434,7 +434,7 @@ public class BasicDungeonGenerator : IDungeonGenerator
 
         using (new DiagnosticsTimer("spawning"))
         {
-            //SpawnEnemies();
+            SpawnEnemies();
             SpawnItems();
             SpawnStairs();
         }
