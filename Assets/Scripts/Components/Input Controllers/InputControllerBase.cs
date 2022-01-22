@@ -10,7 +10,7 @@ public abstract class InputControllerBase : Component
         RegisteredEvents.Add(GameEventId.UpdateEntity);
     }
 
-    protected void EndSelection(GameEvent gameEvent, Point tileSelection)
+    protected void EndSelection(Point tileSelection)
     {
         Self.RemoveComponent(this);
         Self.AddComponent(new PlayerInputController());

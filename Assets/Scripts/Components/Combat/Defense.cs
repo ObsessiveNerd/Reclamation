@@ -38,7 +38,7 @@ public class Defense : Component
             }
             else
             {
-                IEntity weapon = Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameters.Weapon));
+                IEntity weapon = gameEvent.GetValue<IEntity>(EventParameters.Attack);
                 IEntity damageSource = Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameters.DamageSource));
                 GameEvent getSpellSaveDC = GameEventPool.Get(GameEventId.GetSpellSaveDC)
                     .With(EventParameters.Value, -1);

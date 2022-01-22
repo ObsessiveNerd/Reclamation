@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -20,26 +21,21 @@ public static class GameEventPool
         if (m_Pool.Count > 0)
         {
             var ge = m_Pool.Pop();
-            ge.SetId(id);
-            if (!ge.IsValid)
-                throw new System.Exception("NOT VALID GAME EVENT");
-            //if (ge.Paramters.Count > 0)
-            //    throw new System.Exception();
-            m_InUse.Add(ge);
-            return ge;
+            if (string.IsNullOrEmpty(ge.ID))
+            {
+                ge.SetId(id);
+                m_InUse.Add(ge);
+                return ge;
+            }
         }
 
         var ge2 = new GameEvent(id);
         m_InUse.Add(ge2);
         return ge2;
-
     }
 
     public static void Release(GameEvent obj)
     {
-        if (!obj.IsValid)
-            throw new System.Exception("NOt valid game event");
-
         m_InUse.Remove(obj);
         obj.Clean();
         //if(m_Pool.Contains(obj))

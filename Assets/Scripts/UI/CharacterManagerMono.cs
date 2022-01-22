@@ -20,6 +20,9 @@ public class CharacterManagerMono : EscapeableMono, IUpdatableUI
 
     public void AddCharacter(IEntity source)
     {
+        if (characters.ContainsKey(source))
+            return;
+
         GameObject go = Instantiate(m_ViewPrefab, CharacterManagerObject.transform);
         //go.transform.SetParent(CharacterManagerObject.transform);
         CharacterMono cm = go.GetComponent<CharacterMono>();

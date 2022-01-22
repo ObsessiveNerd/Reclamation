@@ -34,7 +34,8 @@ public class RangedPlayerAttackController : InputControllerBase
             startingTarget = Self;
         isInFOV.Release();
 
-        Services.TileSelectionService.SelectTile(Services.WorldDataQuery.GetEntityLocation(startingTarget));
+        m_TileSelection = Services.WorldDataQuery.GetEntityLocation(startingTarget);
+        Services.TileSelectionService.SelectTile(m_TileSelection);
         Services.WorldUpdateService.UpdateWorldView();
         UIManager.Push(null);
     }
@@ -45,7 +46,7 @@ public class RangedPlayerAttackController : InputControllerBase
         {
             if (m_Attack == null)
             {
-                EndSelection(gameEvent, m_TileSelection);
+                EndSelection(m_TileSelection);
                 return;
             }
 
@@ -62,9 +63,9 @@ public class RangedPlayerAttackController : InputControllerBase
                 TypeWeapon weaponType = CombatUtility.GetWeaponType(m_Attack);
                 IEntity target = WorldUtility.GetEntityAtPosition(m_TileSelection);
 
-                CombatUtility.Attack(Self, target, m_Attack, false);
+                CombatUtility.Attack(Self, target, m_Attack, TypeWeapon.Ranged);
 
-                EndSelection(gameEvent, m_TileSelection);
+                EndSelection(m_TileSelection);
 
                 //GameEvent fireRangedWeapon = GameEventPool.Get(GameEventId.FireRangedAttack)
                 //                                .With(EventParameters.Entity, WorldUtility.GetGameObject(Self).transform.position)
@@ -79,7 +80,7 @@ public class RangedPlayerAttackController : InputControllerBase
             }
 
             if (Input.GetKeyDown(KeyCode.Escape))
-                EndSelection(gameEvent, m_TileSelection);
+                EndSelection(m_TileSelection);
         }
     }
 }

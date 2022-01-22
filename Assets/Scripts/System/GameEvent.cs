@@ -198,6 +198,7 @@ public static class GameEventId
     public const string FireRangedAttack = nameof(FireRangedAttack);
     public const string SavingThrow = nameof(SavingThrow);
     public const string SaveFailed = nameof(SaveFailed);
+    public const string CastSpellEffect = nameof(CastSpellEffect);
 
     //Stats
     public const string GetPrimaryStatType = nameof(GetPrimaryStatType);
@@ -352,7 +353,7 @@ public static class EventParameters
 
 public class GameEvent
 {
-    public bool IsValid = true;
+    public bool Locked = false;
     public bool ContinueProcessing;
     public string ID { get { return m_ID; } }
     string m_ID { get; set; }
@@ -372,7 +373,7 @@ public class GameEvent
     public GameEvent SetId(string id)
     {
         if(!string.IsNullOrEmpty(m_ID))
-            Debug.LogWarning($"GameEvent still has id: {m_ID} but you're attempting to change it into {id}");
+            Debug.LogError($"GameEvent still has id: {m_ID} but you're attempting to change it into {id}");
         m_ID = id;
         return this;
     }
@@ -411,18 +412,15 @@ public class GameEvent
 
     public void Release()
     {
+        if (Locked)
+            throw new Exception("Cannot release a locked event.");
+        else
         //Debug.Log($"Game event {m_ID} released");
-        GameEventPool.Release(this);
+            GameEventPool.Release(this);
     }
 
     public void Clean()
     {
-        if(!IsValid)
-        {
-            throw new Exception("not valid GameEvent");
-        }
-
-        IsValid = true;
         ContinueProcessing = true;
         m_ID = "";
         m_Parameters.Clear();

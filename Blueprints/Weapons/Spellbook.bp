@@ -10,6 +10,5 @@
 	TwoHanded
 	WeaponType:TypeWeapon=Wand
 	Value:Amount=100
-	WeaponType:TypeWeapon=Melee
 	DealDamage:DamageType=Blunt,Dice=1d4
 )

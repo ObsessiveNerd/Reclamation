@@ -1,6 +1,6 @@
 <IceRay> (
 	GraphicContainer:SpritePath= Textures/Spells/SpellBook06_04
-	Spell:ManaCost=1
+	Spell:ManaCost=1,SpellFailed=None
 	DealDamage:DamageType=Ice,Dice=1d4
 	Range
 	WeaponType:TypeWeapon=RangedSpell

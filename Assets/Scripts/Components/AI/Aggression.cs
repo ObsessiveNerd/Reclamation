@@ -72,7 +72,7 @@ public class Aggression : Component
             if(weaponTypes.Contains(TypeWeapon.Ranged))
             {
                 var target = WorldUtility.GetEntityAtPosition(m_TargetLocation);
-                CombatUtility.Attack(Self, target, EntityQuery.GetEntity(id), false);
+                CombatUtility.Attack(Self, target, EntityQuery.GetEntity(id), TypeWeapon.Ranged);
                 int howToMove = RecRandom.Instance.GetRandomValue(0, 100);
                 if (howToMove < 20)
                     return PathfindingUtility.GetDirectionTo(m_CurrentLocation, m_TargetLocation);
@@ -84,7 +84,11 @@ public class Aggression : Component
             else if(weaponTypes.Contains(TypeWeapon.Wand) || weaponTypes.Contains(TypeWeapon.MagicStaff))
             {
                 var target = WorldUtility.GetEntityAtPosition(m_TargetLocation);
-                CombatUtility.CastSpell(Self, target, EntityQuery.GetEntity(id));
+
+                var spells = CombatUtility.GetSpells(EntityQuery.GetEntity(id));
+                var spell = spells[RecRandom.Instance.GetRandomValue(0, spells.Count)];
+                CombatUtility.Attack(Self, target, spell, CombatUtility.GetWeaponType(spell));
+                
                 int howToMove = RecRandom.Instance.GetRandomValue(0, 100);
                 if (howToMove < 20)
                     return PathfindingUtility.GetDirectionTo(m_CurrentLocation, m_TargetLocation);
@@ -94,6 +98,7 @@ public class Aggression : Component
                     return PathfindingUtility.GetDirectionAwayFrom(m_CurrentLocation, m_TargetLocation);
             }
         }
+
         var path = PathfindingUtility.GetPath(m_CurrentLocation, m_TargetLocation);
         if (path.Count == 0)
             return MoveDirection.None;

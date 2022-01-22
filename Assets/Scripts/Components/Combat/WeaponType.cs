@@ -33,6 +33,7 @@ public class WeaponType : Component
     {
         TypeWeapon = type;
         RegisteredEvents.Add(GameEventId.GetWeapon);
+        RegisteredEvents.Add(GameEventId.GetRangedWeapon);
         RegisteredEvents.Add(GameEventId.GetWeaponType);
         RegisteredEvents.Add(GameEventId.GetWeaponTypes);
     }
@@ -45,6 +46,11 @@ public class WeaponType : Component
             gameEvent.GetValue<List<TypeWeapon>>(EventParameters.WeaponTypeList).Add(TypeWeapon);
         else if (gameEvent.ID == GameEventId.GetWeapon)
             gameEvent.GetValue<List<string>>(EventParameters.Weapon).Add(Self.ID);
+        else if (gameEvent.ID == GameEventId.GetRangedWeapon)
+        {
+            if(TypeWeapon == TypeWeapon.Ranged)
+                gameEvent.GetValue<List<string>>(EventParameters.Weapon).Add(Self.ID);
+        }
     }
 }
 

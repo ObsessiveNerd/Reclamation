@@ -183,7 +183,10 @@ public class Body : Component
             }
 
             var equipmentEntity = EntityFactory.CreateEntity("UnarmedStrike");
-            CombatUtility.Attack(Self, EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Target]), equipmentEntity, true);
+            CombatUtility.Attack(Self, 
+                EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Target]), 
+                equipmentEntity, TypeWeapon.Melee);
+
             builder.Release();
         }
         else if(gameEvent.ID == GameEventId.GetCurrentEquipment)

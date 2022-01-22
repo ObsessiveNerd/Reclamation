@@ -42,9 +42,13 @@ public class PlayerInputController : InputControllerBase
 #endif
             else if (InputBinder.PerformRequestedAction(RequestedAction.FireRangedWeapon))
             {
+
                 GameEvent getRangedWeapon = FireEvent(Self, GameEventPool.Get(GameEventId.GetRangedWeapon)
-                    .With(EventParameters.Value, null));
-                IEntity rangedWeapon = EntityQuery.GetEntity((string)getRangedWeapon.Paramters[EventParameters.Value]);
+                    .With(EventParameters.Weapon, new List<string>()));
+                List<string> rangedWeapons = getRangedWeapon.GetValue<List<string>>(EventParameters.Weapon);
+                if (rangedWeapons.Count == 0) return;
+
+                IEntity rangedWeapon = EntityQuery.GetEntity(rangedWeapons[0]);
                 if (rangedWeapon != null)
                 {
                     Self.RemoveComponent(this);
@@ -55,7 +59,7 @@ public class PlayerInputController : InputControllerBase
                 else
                     RecLog.Log("No ranged weapon equiped");
                 getRangedWeapon.Release();
-                energyUsed = true;
+                //energyUsed = true;
             }
 #if UNITY_EDITOR
             else if (Input.GetKeyDown(KeyCode.P))

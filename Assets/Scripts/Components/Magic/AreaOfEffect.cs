@@ -53,10 +53,7 @@ public class AreaOfEffect : Component
 
         else if(gameEvent.ID == GameEventId.SelectTile)
         {
-            bool sendWorldEvents = true;
-            if(gameEvent.HasParameter(EventParameters.Value))
-                sendWorldEvents = gameEvent.GetValue<bool>(EventParameters.Value);
-            SelectAroundPosition(gameEvent, sendWorldEvents);
+            SelectAroundPosition(gameEvent);
         }
 
         else if(gameEvent.ID == GameEventId.SelectNewTileInDirection)
@@ -68,7 +65,7 @@ public class AreaOfEffect : Component
             }
             GameEvent builder = GameEventPool.Get(GameEventId.SelectTile)
                                     .With(EventParameters.TilePosition, p);
-            SelectAroundPosition(builder, true);
+            SelectAroundPosition(builder);
             builder.Release();
         }
 
@@ -85,7 +82,7 @@ public class AreaOfEffect : Component
         }
     }
 
-    void SelectAroundPosition(GameEvent gameEvent, bool sendWorldEvents)
+    void SelectAroundPosition(GameEvent gameEvent)
     {
         Point p = gameEvent.GetValue<Point>(EventParameters.TilePosition);
         Shadowcasting sc = new Shadowcasting();
@@ -93,11 +90,8 @@ public class AreaOfEffect : Component
         m_VisibleTiles = visibleTiles;
         m_VisibleTiles.Add(p);
 
-        if (sendWorldEvents)
-        {
-            foreach (var point in visibleTiles)
-                Services.TileSelectionService.SelectTile(point);
-        }
+        foreach (var point in visibleTiles)
+            Services.TileSelectionService.SelectTile(point);
     }
 }
 

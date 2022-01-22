@@ -1,6 +1,6 @@
 <Firebolt> (
 	GraphicContainer:SpritePath= Textures/Spells/SpellBook06_18
-	Spell:ManaCost=4
+	Spell:ManaCost=4,SpellFailed=None
 	DealDamage:DamageType=Fire,Dice=1d4
 	Range
 	WeaponType:TypeWeapon=RangedSpell

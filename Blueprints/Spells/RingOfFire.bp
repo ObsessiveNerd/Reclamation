@@ -1,6 +1,6 @@
 <RingOfFire> (
 	GraphicContainer:SpritePath= Textures/Spells/SpellBook06_18
-	Spell:ManaCost=4
+	Spell:ManaCost=4,SpellFailed=DamageHalved
 	DealDamage:DamageType=Fire,Dice=1d12
 	Range
 	WeaponType:TypeWeapon=AgiSpell

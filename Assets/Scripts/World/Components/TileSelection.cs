@@ -6,10 +6,12 @@ public class TileSelection : GameService
 {
     public void EndTileSelection(Point currentTilePos)
     {
-        if(!m_Tiles.ContainsKey(currentTilePos)) return;
+        if (!m_Tiles.ContainsKey(currentTilePos))
+            return;
 
-            m_TileEntity[currentTilePos].RemoveComponent(typeof(SelectedTile));
-            m_TileEntity[currentTilePos].CleanupComponents();
+        m_TileEntity[currentTilePos].RemoveComponent(typeof(SelectedTile));
+        m_TileEntity[currentTilePos].CleanupComponents();
+        m_ChangedTiles.Add(m_Tiles[currentTilePos]);
     }
 
     public Point SelectTileInNewDirection(Point currentTilePos, MoveDirection moveDirection)
@@ -18,6 +20,8 @@ public class TileSelection : GameService
         {
             m_TileEntity[currentTilePos].RemoveComponent(typeof(SelectedTile));
             m_TileEntity[currentTilePos].CleanupComponents();
+            m_ChangedTiles.Add(m_Tiles[currentTilePos]);
+
         }
 
         Point newPoint = GetTilePointInDirection(currentTilePos, moveDirection);
@@ -25,7 +29,9 @@ public class TileSelection : GameService
         {
             m_TileEntity[newPoint].AddComponent(new SelectedTile());
             m_TileEntity[newPoint].CleanupComponents();
+            m_ChangedTiles.Add(m_Tiles[newPoint]);
         }
+
 
         return newPoint;
     }
@@ -40,6 +46,7 @@ public class TileSelection : GameService
         m_TileEntity[p].AddComponent(new SelectedTile());
         m_TileEntity[p].CleanupComponents();
 
+        m_ChangedTiles.Add(m_Tiles[p]);
         //gameEvent.Paramters[EventParameters.TilePosition] = p;
     }
 }

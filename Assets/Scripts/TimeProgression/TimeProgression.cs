@@ -81,16 +81,18 @@ public class TimeProgression
         }
         Update();
     }
+    
+    GameEvent update = GameEventPool.Get(GameEventId.UpdateEntity)
+        .With(EventParameters.TakeTurn, false)
+        .With(EventParameters.UpdateWorldView, false);
 
     public void Update()
     {
-         GameEvent update = GameEventPool.Get(GameEventId.UpdateEntity)
-            .With(EventParameters.TakeTurn, false)
-            .With(EventParameters.UpdateWorldView, false);
+        update.Paramters[EventParameters.TakeTurn] = false;
+        update.Paramters[EventParameters.UpdateWorldView] = false;
 
         if (m_EntityList.Count == 0 || m_IsStopped)
         {
-            update.Release();
             return;
         }
 
@@ -110,8 +112,16 @@ public class TimeProgression
 
         using (new DiagnosticsTimer("Update world view"))
         {
-            if ((bool)update.Paramters[EventParameters.UpdateWorldView])
-                Services.WorldUpdateService.UpdateWorldView();
+            try
+            {
+                if ((bool)update.Paramters[EventParameters.UpdateWorldView])
+                    Services.WorldUpdateService.UpdateWorldView();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
 
         if ((bool)update.Paramters[EventParameters.TakeTurn])
@@ -131,7 +141,6 @@ public class TimeProgression
             endTurn.Release();
             Services.WorldUpdateService.UpdateWorldView();
         }
-        update.Release();
 
         //ObjectPool.Return(update);
         if (m_PostFrameCallback != null)

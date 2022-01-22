@@ -96,7 +96,7 @@ public class PlayerManager : GameService
     public void UnRegisterPlayer(IEntity entity)
     {
         m_Players.Remove(entity);
-        if (entity == m_ActivePlayer.Value)
+        if (m_ActivePlayer.Value == null || entity == m_ActivePlayer.Value)
             RotateCharacter();
         m_TimeProgression.RemoveEntity(entity);
         Services.SpawnerService.Despawn(entity);

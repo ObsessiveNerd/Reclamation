@@ -40,16 +40,11 @@ public class Wander : Component
     {
         Point currentPos = PathfindingUtility.GetEntityLocation(Self);
 
-        //if (m_PreviousPosition == currentPos)
-        //{
-        //    m_CurrentPath.Clear();
-        //    m_Destination = PathfindingUtility.GetRandomValidPoint();
-        //}
-
         if (m_Destination == null || currentPos == m_Destination)
             m_Destination = PathfindingUtility.GetRandomValidPoint();
 
-        if (Services.TileInteractionService.GetTile(m_Destination).BlocksMovement)
+        Tile t = Services.TileInteractionService.GetTile(m_Destination);
+        if (t == null || t.BlocksMovement)
             return MoveDirection.None;
 
         if (m_CurrentPath.Count == 0 || !IsNeighbor(currentPos, m_CurrentPath[0]))
@@ -57,8 +52,6 @@ public class Wander : Component
 
         if (m_CurrentPath.Count == 0)
             return MoveDirection.None;
-
-        //m_PreviousPosition = currentPos;
 
         Point nextNode = m_CurrentPath[0];
         m_CurrentPath.RemoveAt(0);

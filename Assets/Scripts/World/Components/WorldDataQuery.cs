@@ -48,18 +48,24 @@ public class WorldDataQuery : GameService
     public IEntity GetClosestEnemy(IEntity source)
     {
         IEntity closestEnemy = null;
-        float distance = float.MaxValue;
         Point sourcePoint = m_EntityToPointMap[source];
-        foreach (var entity in m_EntityToPointMap.Keys)
+        foreach (var tile  in m_Tiles.Values)
         {
-            if (entity == source)
-                continue;
+            IEntity e = tile.CreatureSlot;
+            if (e == null) continue;
 
-            if (Point.Distance(sourcePoint, m_EntityToPointMap[entity]) < distance &&
-                Factions.GetDemeanorForTarget(source, entity) == Demeanor.Hostile)
+            Demeanor demeanor = Factions.GetDemeanorForTarget(source, e);
+            if (demeanor == Demeanor.Hostile)
             {
-                closestEnemy = entity;
-                distance = Point.Distance(sourcePoint, m_EntityToPointMap[entity]);
+                if (closestEnemy == null)
+                    closestEnemy = e;
+                else
+                {
+                    if (Point.Distance(m_EntityToPointMap[e], sourcePoint) < Point.Distance(m_EntityToPointMap[closestEnemy], sourcePoint))
+                    {
+                        closestEnemy = e;
+                    }
+                }
             }
         }
 
