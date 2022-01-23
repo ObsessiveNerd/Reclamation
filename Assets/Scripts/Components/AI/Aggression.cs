@@ -68,11 +68,11 @@ public class Aggression : Component
         foreach(var id in list)
         {
             var weapon = EntityQuery.GetEntity(id);
-            List<TypeWeapon> weaponTypes = CombatUtility.GetWeaponTypes(weapon);
-            if(weaponTypes.Contains(TypeWeapon.Ranged))
+            AttackType attackType = CombatUtility.GetWeaponType(weapon);
+            if(attackType == AttackType.Ranged)
             {
                 var target = WorldUtility.GetEntityAtPosition(m_TargetLocation);
-                CombatUtility.Attack(Self, target, EntityQuery.GetEntity(id), TypeWeapon.Ranged);
+                CombatUtility.Attack(Self, target, EntityQuery.GetEntity(id), AttackType.Ranged);
                 int howToMove = RecRandom.Instance.GetRandomValue(0, 100);
                 if (howToMove < 20)
                     return PathfindingUtility.GetDirectionTo(m_CurrentLocation, m_TargetLocation);
@@ -81,13 +81,13 @@ public class Aggression : Component
                 else
                     return PathfindingUtility.GetDirectionAwayFrom(m_CurrentLocation, m_TargetLocation);
             }
-            else if(weaponTypes.Contains(TypeWeapon.Wand) || weaponTypes.Contains(TypeWeapon.MagicStaff))
+            else if(weapon.HasComponent(typeof(SpellContainer)))
             {
                 var target = WorldUtility.GetEntityAtPosition(m_TargetLocation);
 
                 var spells = CombatUtility.GetSpells(EntityQuery.GetEntity(id));
                 var spell = spells[RecRandom.Instance.GetRandomValue(0, spells.Count)];
-                CombatUtility.Attack(Self, target, spell, CombatUtility.GetWeaponType(spell));
+                CombatUtility.CastSpell(Self, target, spell);
                 
                 int howToMove = RecRandom.Instance.GetRandomValue(0, 100);
                 if (howToMove < 20)

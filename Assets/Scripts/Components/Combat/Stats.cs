@@ -59,8 +59,8 @@ public class Stats : Component
         {
             int totalRoll = Dice.Roll("1d20");
             gameEvent.Paramters[EventParameters.Crit] = ((totalRoll + CalculateModifier(Wis)) >= 20);
-            TypeWeapon weaponType = (TypeWeapon)gameEvent.Paramters[EventParameters.WeaponType];
-            totalRoll += CalculateModifierForWeaponType(weaponType);
+            AttackType weaponType = (AttackType)gameEvent.Paramters[EventParameters.WeaponType];
+            totalRoll += CalculateModifier(weaponType);
             gameEvent.Paramters[EventParameters.RollToHit] = totalRoll;
         }
         else if(gameEvent.ID == GameEventId.GetStat)
@@ -81,14 +81,15 @@ public class Stats : Component
         }
         else if (gameEvent.ID == GameEventId.GetSpellSaveDC)
         {
-            gameEvent.Paramters[EventParameters.Value] = 11 + GetModifier(PrimaryStatType);
+            SpellType spellType = gameEvent.GetValue<SpellType>(EventParameters.SpellType);
+            gameEvent.Paramters[EventParameters.Value] = 11 + GetModifier(GetStatTypeForSpell(spellType));
         }
         else if (gameEvent.ID == GameEventId.SavingThrow)
         {
             int roll = Dice.Roll("1d20");
-            var weaponType = gameEvent.GetValue<TypeWeapon>(EventParameters.WeaponType);
-            roll += CalculateModifierForWeaponType(weaponType);
-            if (GetStatTypeForWeapon(weaponType) == PrimaryStatType)
+            var spellType = gameEvent.GetValue<SpellType>(EventParameters.WeaponType);
+            roll += CalculateModifier(spellType);
+            if (GetStatTypeForSpell(spellType) == PrimaryStatType)
                 roll += 2;
             gameEvent.Paramters[EventParameters.Value] = roll;
 
@@ -143,34 +144,47 @@ public class Stats : Component
         return CalculateModifier(stat);
     }
 
-    Stat GetStatTypeForWeapon(TypeWeapon weaponType)
+    Stat GetStatTypeForWeapon(AttackType weaponType)
     {
         Stat value = 0;
         switch(weaponType)
         {
-            case TypeWeapon.Melee:
-            case TypeWeapon.StrSpell:
+            case AttackType.Melee:
                 value = Stat.Str;
                 break;
-            case TypeWeapon.Finesse:
-            case TypeWeapon.Ranged:
-            case TypeWeapon.AgiSpell:
+            case AttackType.Finesse:
+            case AttackType.Ranged:
                 value = Stat.Agi;
                 break;
-            case TypeWeapon.RangedSpell:
+            case AttackType.RangedSpell:
                 value = PrimaryStatType;
                 break;
-            case TypeWeapon.MagicStaff:
-            case TypeWeapon.IntSpell:
+        }
+
+        return value;
+    }
+
+    Stat GetStatTypeForSpell(SpellType spellType)
+    {
+        Stat value = 0;
+        switch (spellType)
+        {
+            case SpellType.StrSpell:
+                value = Stat.Str;
+                break;
+            case SpellType.AgiSpell:
+                value = Stat.Agi;
+                break;
+            case SpellType.IntSpell:
                 value = Stat.Int;
                 break;
-            case TypeWeapon.ConSpell:
+            case SpellType.ConSpell:
                 value = Stat.Con;
                 break;
-            case TypeWeapon.WisSpell:
+            case SpellType.WisSpell:
                 value = Stat.Wis;
                 break;
-            case TypeWeapon.ChaSpell:
+            case SpellType.ChaSpell:
                 value = Stat.Cha;
                 break;
         }
@@ -178,35 +192,48 @@ public class Stats : Component
         return value;
     }
 
-    int CalculateModifierForWeaponType(TypeWeapon weaponType)
+    int CalculateModifier(SpellType spellType)
+    {
+        int value = 0;
+        switch (spellType)
+        {
+            case SpellType.StrSpell:
+                value = CalculateModifier(Str);
+                break;
+            case SpellType.AgiSpell:
+                value = CalculateModifier(Agi);
+                break;
+            case SpellType.IntSpell:
+                value = CalculateModifier(Int);
+                break;
+            case SpellType.ConSpell:
+                value = CalculateModifier(Con);
+                break;
+            case SpellType.WisSpell:
+                value = CalculateModifier(Wis);
+                break;
+            case SpellType.ChaSpell:
+                value = CalculateModifier(Cha);
+                break;
+        }
+
+        return value;
+    }
+
+    int CalculateModifier(AttackType weaponType)
     {
         int value = 0;
         switch(weaponType)
         {
-            case TypeWeapon.Melee:
-            case TypeWeapon.StrSpell:
+            case AttackType.Melee:
                 value = CalculateModifier(Str);
                 break;
-            case TypeWeapon.Finesse:
-            case TypeWeapon.Ranged:
-            case TypeWeapon.AgiSpell:
+            case AttackType.Finesse:
+            case AttackType.Ranged:
                 value = CalculateModifier(Agi);
                 break;
-            case TypeWeapon.RangedSpell:
+            case AttackType.RangedSpell:
                 value = GetModifier(PrimaryStatType);
-                break;
-            case TypeWeapon.MagicStaff:
-            case TypeWeapon.IntSpell:
-                value = CalculateModifier(Int);
-                break;
-            case TypeWeapon.ConSpell:
-                value = CalculateModifier(Con);
-                break;
-            case TypeWeapon.WisSpell:
-                value = CalculateModifier(Wis);
-                break;
-            case TypeWeapon.ChaSpell:
-                value = CalculateModifier(Cha);
                 break;
         }
 

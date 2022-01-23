@@ -24,7 +24,8 @@ public class UIManager : MonoBehaviour
 
     public static void ForcePop()
     {
-        UIMonoBehaviors.Pop()?.OnEscape();
+        if(UIMonoBehaviors.Count > 0)
+            UIMonoBehaviors.Pop()?.OnEscape();
     }
 
     public static EscapeableMono GetTopStack()

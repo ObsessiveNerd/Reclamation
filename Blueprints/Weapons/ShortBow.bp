@@ -1,15 +1,15 @@
 <Short Bow> (
-	GraphicContainer: Textures/Weapons/td_items_weapon_bow
-	Portrait: Portraits/Weapons/bows_and_crossbows/bw_t_01
-	Position:PositionPoint=0,0
+	GraphicContainer:SpritePath= Textures/Weapons/td_items_weapon_bow
+	Portrait:SpritePath= Portraits/Weapons/bows_and_crossbows/bw_t_01
+	Position:PositionPoint=0
 	InteractOnTileOvertake
 	EntityTypeContainer:Type=Item
 	Item:Rarity=Uncommon
-	WeaponType:TypeWeapon=Ranged
-	DealDamage:DamageType=Piercing,Dice=1d8
+	WeaponType:Type=Melee
 	Equipment:PreferredBodyPartWhenEquipped=Arm
 	TwoHanded
 	Value:Amount=20
 	Sound:SoundPath=Sounds/Bow_Arrow/BOW_Release_Arrow_Large_mono.wav,Key=BowAttack
-	Ammo:TexturePath=Textures/Items/td_items_arrow
+	DealDamage:DamageType=Blunt,Dice=1d4
+	Bow:ArrowEntityName=Arrow
 )

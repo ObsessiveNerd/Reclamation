@@ -25,7 +25,6 @@ public class Body : Component
         //    //RegisteredEvents.Add(GameEventId.GrowBodyPart);
         RegisteredEvents.Add(GameEventId.AddArmorValue);
         RegisteredEvents.Add(GameEventId.PerformAttack);
-        RegisteredEvents.Add(GameEventId.GetRangedWeapon);
         RegisteredEvents.Add(GameEventId.GetWeapon);
         RegisteredEvents.Add(GameEventId.Equip);
         RegisteredEvents.Add(GameEventId.Unequip);
@@ -185,7 +184,7 @@ public class Body : Component
             var equipmentEntity = EntityFactory.CreateEntity("UnarmedStrike");
             CombatUtility.Attack(Self, 
                 EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Target]), 
-                equipmentEntity, TypeWeapon.Melee);
+                equipmentEntity, AttackType.Melee);
 
             builder.Release();
         }

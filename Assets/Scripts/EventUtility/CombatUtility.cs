@@ -6,149 +6,147 @@ public static class CombatUtility
 {
     static int CombatRatingBuffer => 4;
 
-    public static void Attack(IEntity source, IEntity target, IEntity weapon, TypeWeapon weaponType)
+    public static void CastSpell(IEntity source, IEntity target, IEntity weapon)
     {
-        if (weaponType == TypeWeapon.None)
-            return;
+        GameEvent getMana = GameEventPool.Get(GameEventId.GetMana)
+            .With(EventParameters.Value, 0);
+        int mana = source.FireEvent(getMana).GetValue<int>(EventParameters.Value);
 
-        RecLog.Log($"{source.Name} is performing a {weaponType} attack with {weapon.Name}");
+        GameEvent getSpells = GameEventPool.Get(GameEventId.GetSpells)
+            .With(EventParameters.SpellList, new HashSet<string>());
 
-        if (TypeWeaponRequiresAttackRoll(weaponType))
+        GameEvent manaCost = GameEventPool.Get(GameEventId.ManaCost)
+            .With(EventParameters.Value, 0);
+        int cost = weapon.FireEvent(manaCost).GetValue<int>(EventParameters.Value);
+        if (cost <= mana)
         {
-            if (TypeWeaponUsesMana(weaponType))
-            {
-                GameEvent getMana = GameEventPool.Get(GameEventId.GetMana)
-                    .With(EventParameters.Value, 0);
-                int mana = source.FireEvent(getMana).GetValue<int>(EventParameters.Value);
-                getMana.Release();
-
-                GameEvent manaCost = GameEventPool.Get(GameEventId.ManaCost)
-                    .With(EventParameters.Value, 0);
-                int cost = weapon.FireEvent(manaCost).GetValue<int>(EventParameters.Value);
-                manaCost.Release();
-
-                if (cost > mana)
-                {
-                    RecLog.Log($"{source.Name} does not have enough mana to cast {weapon.Name}");
-                    return;
-                }
-
-                GameEvent depleteMana = GameEventPool.Get(GameEventId.DepleteMana).With(EventParameters.Mana, cost);
-                source.FireEvent(depleteMana);
-
-            }
-
-            GameEvent rollToHitEvent = GameEventPool.Get(GameEventId.RollToHit)
-                .With(EventParameters.RollToHit, 0)
-                .With(EventParameters.Crit, false)
-                .With(EventParameters.WeaponType, weaponType);
-            int rollToHit = (int)source.FireEvent(source, rollToHitEvent).Paramters[EventParameters.RollToHit];
-
-            RecLog.Log($"Roll to hit was {rollToHit}");
-
-            GameEvent amAttacking = GameEventPool.Get(GameEventId.AmAttacking)
-                .With(EventParameters.DamageList, new List<Damage>());
-
-            GameEvent checkWeaponAttack = source.FireEvent(weapon, amAttacking);
-            checkWeaponAttack.Paramters.Add(EventParameters.DamageSource, source.ID);
-
-            GameEvent getStatModForDamage = GameEventPool.Get(GameEventId.GetStat)
-                .With(EventParameters.Value, 0);
-
-            var damageList = checkWeaponAttack.GetValue<List<Damage>>(EventParameters.DamageList);
-            int statBasedDamage = 0;
-            bool addStatBasedDamage = false;
-            switch (weaponType)
-            {
-                case TypeWeapon.Melee:
-                case TypeWeapon.StrSpell:
-                    getStatModForDamage = getStatModForDamage.With(EventParameters.StatType, Stat.Str);
-                    addStatBasedDamage = true;
-                    break;
-                case TypeWeapon.Finesse:
-                case TypeWeapon.Ranged:
-                    getStatModForDamage = getStatModForDamage.With(EventParameters.StatType, Stat.Agi);
-                    addStatBasedDamage = true;
-                    break;
-            }
-
-            if (addStatBasedDamage)
-            {
-                statBasedDamage = source.FireEvent(getStatModForDamage).GetValue<int>(EventParameters.Value);
-                damageList.First(d => d.DamageType == DamageType.Blunt || d.DamageType == DamageType.Slashing || d.DamageType == DamageType.Piercing).DamageAmount += statBasedDamage;
-            }
-
-            GameEvent attack = GameEventPool.Get(GameEventId.TakeDamage)
-                .With(checkWeaponAttack.Paramters)
-                .With(EventParameters.Attack, weapon)
-                .With(EventParameters.WeaponType, weaponType)
-                .With(EventParameters.RollToHit, rollToHit)
-                .With(EventParameters.Crit, rollToHitEvent.Paramters[EventParameters.Crit]);
-
-            source.FireEvent(target, attack);
+            CastSpellAtTarget(weapon, source, target);
 
             GameEvent affectArea = GameEventPool.Get(GameEventId.AffectArea)
-                .With(EventParameters.Effect, 
-                    new Action<IEntity>((t) => t.FireEvent(attack)));
-            
-            rollToHitEvent.Release();
+                .With(EventParameters.Effect,
+                    new Action<IEntity>((t) =>
+                    {
+                        CastSpellAtTarget(weapon, source, t);
+                    }));
             weapon.FireEvent(affectArea);
+            GameEvent depleteMana = GameEventPool.Get(GameEventId.DepleteMana).With(EventParameters.Mana, cost);
+            source.FireEvent(depleteMana);
+
+
+            depleteMana.Release();
             affectArea.Release();
-            attack.Release();
-
-            if (weaponType != TypeWeapon.Melee && weaponType != TypeWeapon.Finesse)
-            {
-                GameEvent fireRangedWeapon = GameEventPool.Get(GameEventId.FireRangedAttack)
-                    .With(EventParameters.Entity, WorldUtility.GetGameObject(source).transform.position)
-                    .With(EventParameters.Target, WorldUtility.GetGameObject(target).transform.position);
-                weapon.FireEvent(fireRangedWeapon).Release();
-            }
-
-            getStatModForDamage.Release();
-            amAttacking.Release();
-
-            //if(useEnergy)
-            source.FireEvent(source, GameEventPool.Get(GameEventId.UseEnergy)
-                .With(EventParameters.Value, 1f)).Release(); //todo: temp energy value.  Energy value should come from the weapon probably
-        }
-        else
-        {
-            GameEvent getMana = GameEventPool.Get(GameEventId.GetMana)
-                                .With(EventParameters.Value, 0);
-            int mana = source.FireEvent(getMana).GetValue<int>(EventParameters.Value);
-
-            GameEvent getSpells = GameEventPool.Get(GameEventId.GetSpells)
-                                    .With(EventParameters.SpellList, new HashSet<string>());
-
-            GameEvent manaCost = GameEventPool.Get(GameEventId.ManaCost)
-                                    .With(EventParameters.Value, 0);
-            int cost = weapon.FireEvent(manaCost).GetValue<int>(EventParameters.Value);
-            if (cost <= mana)
-            {
-                CastSpellAtTarget(weapon, source,target);
-
-                GameEvent affectArea = GameEventPool.Get(GameEventId.AffectArea)
-                                            .With(EventParameters.Effect, 
-                                                new Action<IEntity>((t) =>
-                                                {
-                                                    CastSpellAtTarget(weapon, source, t);
-                                                }));
-                weapon.FireEvent(affectArea);
-                GameEvent depleteMana = GameEventPool.Get(GameEventId.DepleteMana).With(EventParameters.Mana, cost);
-                source.FireEvent(depleteMana);
-                
-
-                depleteMana.Release();
-                affectArea.Release();
-                manaCost.Release();
-                getSpells.Release();
-                getMana.Release();
-            }
-
             manaCost.Release();
             getSpells.Release();
             getMana.Release();
         }
+
+        manaCost.Release();
+        getSpells.Release();
+        getMana.Release();
+    }
+
+    public static void Attack(IEntity source, IEntity target, IEntity weapon, AttackType attackType)
+    {
+        if (attackType == AttackType.None)
+            return;
+
+        RecLog.Log($"{source.Name} is performing a {attackType} attack with {weapon.Name}");
+
+
+        if (TypeWeaponUsesMana(attackType))
+        {
+            GameEvent getMana = GameEventPool.Get(GameEventId.GetMana)
+                    .With(EventParameters.Value, 0);
+            int mana = source.FireEvent(getMana).GetValue<int>(EventParameters.Value);
+            getMana.Release();
+
+            GameEvent manaCost = GameEventPool.Get(GameEventId.ManaCost)
+                    .With(EventParameters.Value, 0);
+            int cost = weapon.FireEvent(manaCost).GetValue<int>(EventParameters.Value);
+            manaCost.Release();
+
+            if (cost > mana)
+            {
+                RecLog.Log($"{source.Name} does not have enough mana to cast {weapon.Name}");
+                return;
+            }
+
+            GameEvent depleteMana = GameEventPool.Get(GameEventId.DepleteMana).With(EventParameters.Mana, cost);
+            source.FireEvent(depleteMana);
+
+        }
+
+        GameEvent rollToHitEvent = GameEventPool.Get(GameEventId.RollToHit)
+                .With(EventParameters.RollToHit, 0)
+                .With(EventParameters.Crit, false)
+                .With(EventParameters.WeaponType, attackType);
+        int rollToHit = (int)source.FireEvent(source, rollToHitEvent).Paramters[EventParameters.RollToHit];
+
+        RecLog.Log($"Roll to hit was {rollToHit}");
+
+        GameEvent amAttacking = GameEventPool.Get(GameEventId.AmAttacking)
+                .With(EventParameters.DamageList, new List<Damage>());
+
+        GameEvent checkWeaponAttack = source.FireEvent(weapon, amAttacking);
+        checkWeaponAttack.Paramters.Add(EventParameters.DamageSource, source.ID);
+
+        GameEvent getStatModForDamage = GameEventPool.Get(GameEventId.GetStat)
+                .With(EventParameters.Value, 0);
+
+        var damageList = checkWeaponAttack.GetValue<List<Damage>>(EventParameters.DamageList);
+        int statBasedDamage = 0;
+        bool addStatBasedDamage = false;
+        switch (attackType)
+        {
+            case AttackType.Melee:
+                getStatModForDamage = getStatModForDamage.With(EventParameters.StatType, Stat.Str);
+                addStatBasedDamage = true;
+                break;
+            case AttackType.Finesse:
+            case AttackType.Ranged:
+                getStatModForDamage = getStatModForDamage.With(EventParameters.StatType, Stat.Agi);
+                addStatBasedDamage = true;
+                break;
+        }
+
+        if (addStatBasedDamage)
+        {
+            statBasedDamage = source.FireEvent(getStatModForDamage).GetValue<int>(EventParameters.Value);
+            damageList.First(d => d.DamageType == DamageType.Blunt || d.DamageType == DamageType.Slashing || d.DamageType == DamageType.Piercing).DamageAmount += statBasedDamage;
+        }
+
+        GameEvent attack = GameEventPool.Get(GameEventId.TakeDamage)
+                .With(checkWeaponAttack.Paramters)
+                .With(EventParameters.Attack, weapon)
+                .With(EventParameters.WeaponType, attackType)
+                .With(EventParameters.RollToHit, rollToHit)
+                .With(EventParameters.Crit, rollToHitEvent.Paramters[EventParameters.Crit]);
+
+        source.FireEvent(target, attack);
+
+        GameEvent affectArea = GameEventPool.Get(GameEventId.AffectArea)
+                .With(EventParameters.Effect,
+                    new Action<IEntity>((t) => t.FireEvent(attack)));
+
+        rollToHitEvent.Release();
+        weapon.FireEvent(affectArea);
+        affectArea.Release();
+        attack.Release();
+
+        if (attackType != AttackType.Melee && attackType != AttackType.Finesse)
+        {
+            GameEvent fireRangedWeapon = GameEventPool.Get(GameEventId.FireRangedAttack)
+                    .With(EventParameters.Entity, WorldUtility.GetGameObject(source).transform.position)
+                    .With(EventParameters.Target, WorldUtility.GetGameObject(target).transform.position);
+            weapon.FireEvent(fireRangedWeapon).Release();
+        }
+
+        getStatModForDamage.Release();
+        amAttacking.Release();
+
+        //if(useEnergy)
+        source.FireEvent(source, GameEventPool.Get(GameEventId.UseEnergy)
+            .With(EventParameters.Value, 1f)).Release(); //todo: temp energy value.  Energy value should come from the weapon probably
     }
 
     static void CastSpellAtTarget(IEntity weapon, IEntity source, IEntity target)
@@ -326,50 +324,38 @@ public static class CombatUtility
         return spells.Select(id => Services.EntityMapService.GetEntity(id)).ToList();
     }
 
-    public static TypeWeapon GetWeaponType(IEntity weapon)
+    public static AttackType GetWeaponType(IEntity weapon)
     {
         var typedEvent = GameEventPool.Get(GameEventId.GetWeaponType)
-            .With(EventParameters.WeaponType, TypeWeapon.None);
+            .With(EventParameters.WeaponType, AttackType.None);
 
         weapon.FireEvent(weapon, typedEvent);
-        var retValue = typedEvent.GetValue<TypeWeapon>(EventParameters.WeaponType);
+        var retValue = typedEvent.GetValue<AttackType>(EventParameters.WeaponType);
         typedEvent.Release();
         return retValue;
     }
 
-    public static List<TypeWeapon> GetWeaponTypes(IEntity weapon)
+    public static SpellType GetSpellType(IEntity spell)
     {
-        var typedEvent = GameEventPool.Get(GameEventId.GetWeaponTypes)
-            .With(EventParameters.WeaponTypeList, new List<TypeWeapon>());
+        var typedEvent = GameEventPool.Get(GameEventId.GetSpellType)
+            .With(EventParameters.SpellType, SpellType.None);
 
-        weapon.FireEvent(weapon, typedEvent);
-        var retValue = typedEvent.GetValue<List<TypeWeapon>>(EventParameters.WeaponTypeList);
+        spell.FireEvent(typedEvent);
+        var retValue = typedEvent.GetValue<SpellType>(EventParameters.SpellType);
         typedEvent.Release();
         return retValue;
     }
 
-    public static TypeWeapon GetMeleeType(IEntity weapon)
+    public static bool TypeWeaponRequiresAttackRoll(AttackType weaponType)
     {
-        var typedEvent = GameEventPool.Get(GameEventId.GetWeaponTypes)
-            .With(EventParameters.WeaponTypeList, new List<TypeWeapon>());
-
-        weapon.FireEvent(weapon, typedEvent);
-        var retValue = typedEvent.GetValue<List<TypeWeapon>>(EventParameters.WeaponTypeList)
-            .FirstOrDefault(t => t == TypeWeapon.Melee || t == TypeWeapon.Finesse);
-        typedEvent.Release();
-        return retValue;
-    }
-
-    public static bool TypeWeaponRequiresAttackRoll(TypeWeapon weaponType)
-    {
-        if (weaponType == TypeWeapon.RangedSpell || weaponType == TypeWeapon.Finesse || weaponType == TypeWeapon.Melee || weaponType == TypeWeapon.Ranged)
+        if (weaponType == AttackType.RangedSpell || weaponType == AttackType.Finesse || weaponType == AttackType.Melee || weaponType == AttackType.Ranged)
             return true;
         return false;
     }
 
-    public static bool TypeWeaponUsesMana(TypeWeapon weaponType)
+    public static bool TypeWeaponUsesMana(AttackType weaponType)
     {
-        if (weaponType == TypeWeapon.Finesse || weaponType == TypeWeapon.Melee || weaponType == TypeWeapon.Ranged)
+        if (weaponType == AttackType.Finesse || weaponType == AttackType.Melee || weaponType == AttackType.Ranged)
             return false;
         return true;
     }

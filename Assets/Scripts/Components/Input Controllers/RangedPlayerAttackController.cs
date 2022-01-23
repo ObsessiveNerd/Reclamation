@@ -60,10 +60,15 @@ public class RangedPlayerAttackController : InputControllerBase
 
             if(Input.GetKeyDown(KeyCode.Return) || InputBinder.PerformRequestedAction(RequestedAction.FireRangedWeapon))
             {
-                TypeWeapon weaponType = CombatUtility.GetWeaponType(m_Attack);
+                //AttackType weaponType = CombatUtility.GetWeaponType(m_Attack);
                 IEntity target = WorldUtility.GetEntityAtPosition(m_TileSelection);
 
-                CombatUtility.Attack(Self, target, m_Attack, TypeWeapon.Ranged);
+                GameEvent getAmmo = GameEventPool.Get(GameEventId.GetAmmo)
+                    .With(EventParameters.Value, null);
+
+                IEntity attack = FireEvent(m_Attack, getAmmo).GetValue<IEntity>(EventParameters.Value);
+
+                CombatUtility.Attack(Self, target, attack, AttackType.Ranged);
 
                 EndSelection(m_TileSelection);
 

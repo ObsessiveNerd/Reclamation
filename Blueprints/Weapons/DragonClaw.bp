@@ -1,11 +1,11 @@
 <DragonClaw> (
-	GraphicContainer: Textures/Armor/td_items_dragons_claw
-	Portrait: Portraits/Weapons/addons/085_t
-	Position:PositionPoint=0,0
+	GraphicContainer:SpritePath= Textures/Armor/td_items_dragons_claw
+	Portrait:SpritePath= Portraits/Weapons/addons/085_t
+	Position:PositionPoint=0
 	InteractOnTileOvertake
 	EntityTypeContainer:Type=Item
 	Item:Rarity=Epic
-	WeaponType:TypeWeapon=Melee
+	WeaponType:Type=Melee
 	DealDamage:DamageType=Slashing,Dice=1d12
 	Equipment:PreferredBodyPartWhenEquipped=Arm
 	Value:Amount=50

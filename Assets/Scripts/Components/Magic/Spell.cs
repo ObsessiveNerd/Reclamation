@@ -14,11 +14,13 @@ public class Spell : Component
 {
     public int ManaCost;
     public SpellFailedSaveEffect SpellFailed;
+    public SpellType SpellType;
 
-    public Spell(int cost, SpellFailedSaveEffect spellFailed)
+    public Spell(int cost, SpellFailedSaveEffect spellFailed, SpellType spellType)
     {
         ManaCost = cost;
         SpellFailed = spellFailed;
+        SpellType = spellType;
     }
 
     public override void Init(IEntity self)
@@ -29,6 +31,7 @@ public class Spell : Component
         RegisteredEvents.Add(GameEventId.GetInfo);
         RegisteredEvents.Add(GameEventId.SaveFailed);
         RegisteredEvents.Add(GameEventId.CastSpellEffect);
+        RegisteredEvents.Add(GameEventId.GetSpellType);
     }
 
     protected virtual void CastSpellEffect(GameEvent gameEvent){ }
@@ -37,6 +40,9 @@ public class Spell : Component
     {
         if (gameEvent.ID == GameEventId.GetSpells)
             gameEvent.GetValue<HashSet<string>>(EventParameters.SpellList).Add(Self.ID);
+
+        else if(gameEvent.ID == GameEventId.GetSpellType)
+            gameEvent.Paramters[EventParameters.SpellType] = SpellType;
 
         else if (gameEvent.ID == GameEventId.ManaCost)
             gameEvent.Paramters[EventParameters.Value] = ManaCost;
@@ -76,6 +82,7 @@ public class DTO_Spell : IDataTransferComponent
     {
         int manaCost = 0;
         SpellFailedSaveEffect failed = SpellFailedSaveEffect.None;
+        SpellType st = SpellType.None;
 
         foreach (string kvp in data.Split(','))
         {
@@ -90,13 +97,17 @@ public class DTO_Spell : IDataTransferComponent
             {
                 failed = (SpellFailedSaveEffect)Enum.Parse(typeof(SpellFailedSaveEffect), value);
             }
+            else if (key == "SpellType")
+            {
+                st = (SpellType)Enum.Parse(typeof(SpellType), value);
+            }
         }
-        Component = new Spell(manaCost, failed);
+        Component = new Spell(manaCost, failed, st);
     }
 
     public string CreateSerializableData(IComponent component)
     {
         Spell s = (Spell)component;
-        return $"{nameof(Spell)}: {nameof(s.ManaCost)}={s.ManaCost}, {nameof(s.SpellFailed)}={s.SpellFailed}";
+        return $"{nameof(Spell)}: {nameof(s.ManaCost)}={s.ManaCost}, {nameof(s.SpellFailed)}={s.SpellFailed}, {nameof(s.SpellType)}={s.SpellType}";
     }
 }

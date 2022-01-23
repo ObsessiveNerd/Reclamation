@@ -8,7 +8,7 @@
 	SpellContainer:MaxSpell=5,RandomSpells=True,SpecificSpell=
 	Equipment:PreferredBodyPartWhenEquipped=Arm
 	TwoHanded
-	WeaponType:TypeWeapon=Wand
+	WeaponType:Type=Melee
 	Value:Amount=100
 	DealDamage:DamageType=Blunt,Dice=1d4
 )

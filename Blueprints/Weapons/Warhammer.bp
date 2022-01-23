@@ -5,7 +5,7 @@
 	InteractOnTileOvertake
 	EntityTypeContainer:Type=Item
 	Item:Rarity=Uncommon
-	WeaponType:TypeWeapon=Melee
+	WeaponType:Type=Melee
 	DealDamage:DamageType=Blunt,Dice=1d12
 	Equipment:PreferredBodyPartWhenEquipped=Arm
 	Value:Amount=10

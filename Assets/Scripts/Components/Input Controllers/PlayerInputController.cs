@@ -43,18 +43,18 @@ public class PlayerInputController : InputControllerBase
             else if (InputBinder.PerformRequestedAction(RequestedAction.FireRangedWeapon))
             {
 
-                GameEvent getRangedWeapon = FireEvent(Self, GameEventPool.Get(GameEventId.GetRangedWeapon)
+                GameEvent getRangedWeapon = FireEvent(Self, GameEventPool.Get(GameEventId.GetWeapon)
                     .With(EventParameters.Weapon, new List<string>()));
-                List<string> rangedWeapons = getRangedWeapon.GetValue<List<string>>(EventParameters.Weapon);
-                if (rangedWeapons.Count == 0) return;
 
-                IEntity rangedWeapon = EntityQuery.GetEntity(rangedWeapons[0]);
-                if (rangedWeapon != null)
+                List<string> weapons = getRangedWeapon.GetValue<List<string>>(EventParameters.Weapon);
+                if (weapons.Count == 0) return;
+
+                IEntity weapon = EntityQuery.GetEntity(weapons[0]);
+                if (weapon.HasComponent(typeof(Bow)))
                 {
                     Self.RemoveComponent(this);
-                    Self.AddComponent(new RangedPlayerAttackController(rangedWeapon));
+                    Self.AddComponent(new RangedPlayerAttackController(weapon));
                     gameEvent.Paramters[EventParameters.UpdateWorldView] = true;
-                    //gameEvent.Paramters[EventParameters.CleanupComponents] = true;
                 }
                 else
                     RecLog.Log("No ranged weapon equiped");
@@ -76,6 +76,13 @@ public class PlayerInputController : InputControllerBase
                                     .With(EventParameters.RollToHit, 20)
                                     .With(EventParameters.DamageSource, Self.ID);
                 Self.FireEvent(takeDamage).Release();
+            }
+
+            else if (Input.GetKeyDown(KeyCode.L))
+            {
+                GameEvent gainMana = GameEventPool.Get(GameEventId.RestoreMana)
+                    .With(EventParameters.Mana, 10);
+                FireEvent(Self, gainMana).Release();
             }
 #endif
             else if (InputBinder.PerformRequestedAction(RequestedAction.Look))

@@ -57,7 +57,6 @@ public class EquipmentSlot : Component
         RegisteredEvents.Add(GameEventId.AddArmorValue);
         RegisteredEvents.Add(GameEventId.GetSpells);
         RegisteredEvents.Add(GameEventId.GetWeapon);
-        RegisteredEvents.Add(GameEventId.GetRangedWeapon);
         RegisteredEvents.Add(GameEventId.GetEquipment);
         RegisteredEvents.Add(GameEventId.GetSpells);
         RegisteredEvents.Add(GameEventId.ItemEquipped);
@@ -89,11 +88,6 @@ public class EquipmentSlot : Component
 
         if (gameEvent.ID == GameEventId.GetEquipment)
             gameEvent.Paramters[EventParameters.Equipment] = EquipmentId;
-        else if (gameEvent.ID == GameEventId.GetRangedWeapon)
-        {
-            if (!string.IsNullOrEmpty(EquipmentId))
-                FireEvent(EntityQuery.GetEntity(EquipmentId), gameEvent);
-        }
         else if (gameEvent.ID == GameEventId.GetWeapon)
         {
             if (!string.IsNullOrEmpty(EquipmentId))
@@ -140,16 +134,10 @@ public class EquipmentSlot : Component
             if (equipmentEntity.HasComponent(typeof(TwoHanded)))
                 gameEvent.ContinueProcessing = false;
 
-            TypeWeapon type = TypeWeapon.None;
-            if (melee)
-                type = CombatUtility.GetMeleeType(equipmentEntity);
-            else
-                type = CombatUtility.GetWeaponType(equipmentEntity);
-
             CombatUtility.Attack(Self,
                 EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Target]),
                 equipmentEntity,
-                type);
+                CombatUtility.GetWeaponType(equipmentEntity));
         }
 
         else if (gameEvent.ID == GameEventId.Drop)

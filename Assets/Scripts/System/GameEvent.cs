@@ -45,7 +45,6 @@ public static class GameEventId
     public const string Equip = nameof(Equip);
     public const string TryEquip = nameof(TryEquip);
     public const string Unequip = nameof(Unequip);
-    public const string GetRangedWeapon = nameof(GetRangedWeapon);
     public const string GetWeapon = nameof(GetWeapon);
     public const string GetIcon = nameof(GetIcon);
     public const string GetCurrentInventory = nameof(GetCurrentInventory);
@@ -186,6 +185,7 @@ public static class GameEventId
     public const string DepleteMana = nameof(DepleteMana);
     public const string ApplyEffectToTarget = nameof(ApplyEffectToTarget);
     public const string GetWeaponType = nameof(GetWeaponType);
+    public const string GetSpellType = nameof(GetSpellType);
     public const string GetWeaponTypes = nameof(GetWeaponTypes);
     public const string GetEquipment = nameof(GetEquipment);
     public const string AddArmorValue = nameof(AddArmorValue);
@@ -199,6 +199,7 @@ public static class GameEventId
     public const string SavingThrow = nameof(SavingThrow);
     public const string SaveFailed = nameof(SaveFailed);
     public const string CastSpellEffect = nameof(CastSpellEffect);
+    public const string GetAmmo = nameof(GetAmmo);
 
     //Stats
     public const string GetPrimaryStatType = nameof(GetPrimaryStatType);
@@ -302,6 +303,7 @@ public static class EventParameters
     public const string RollToHit = nameof(RollToHit);
     public const string Crit = nameof(Crit);
     public const string WeaponType = nameof(WeaponType);
+    public const string SpellType = nameof(SpellType);
     public const string WeaponTypeList = nameof(WeaponTypeList);
     public const string Weapon = nameof(Weapon);
     public const string GameEvent = nameof(GameEvent);

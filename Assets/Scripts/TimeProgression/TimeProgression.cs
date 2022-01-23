@@ -90,6 +90,7 @@ public class TimeProgression
     {
         update.Paramters[EventParameters.TakeTurn] = false;
         update.Paramters[EventParameters.UpdateWorldView] = false;
+        update.ContinueProcessing = true;
 
         if (m_EntityList.Count == 0 || m_IsStopped)
         {

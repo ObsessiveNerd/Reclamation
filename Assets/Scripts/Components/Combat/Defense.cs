@@ -17,11 +17,11 @@ public class Defense : Component
     {
         if (gameEvent.ID == GameEventId.TakeDamage)
         {
-            TypeWeapon weaponType = gameEvent.GetValue<TypeWeapon>(EventParameters.WeaponType);
-            if (weaponType == TypeWeapon.Melee 
-                || weaponType == TypeWeapon.Finesse 
-                || weaponType == TypeWeapon.Ranged 
-                || weaponType == TypeWeapon.RangedSpell)
+            AttackType weaponType = gameEvent.GetValue<AttackType>(EventParameters.WeaponType);
+            if (weaponType == AttackType.Melee 
+                || weaponType == AttackType.Finesse 
+                || weaponType == AttackType.Ranged 
+                || weaponType == AttackType.RangedSpell)
             {
                 int rollToHit = (int)gameEvent.Paramters[EventParameters.RollToHit];
                 GameEvent getArmor = GameEventPool.Get(GameEventId.AddArmorValue)
@@ -41,6 +41,7 @@ public class Defense : Component
                 IEntity weapon = gameEvent.GetValue<IEntity>(EventParameters.Attack);
                 IEntity damageSource = Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameters.DamageSource));
                 GameEvent getSpellSaveDC = GameEventPool.Get(GameEventId.GetSpellSaveDC)
+                    .With(EventParameters.SpellType, CombatUtility.GetSpellType(weapon))
                     .With(EventParameters.Value, -1);
                 int saveDC = damageSource.FireEvent(getSpellSaveDC).GetValue<int>(EventParameters.Value);
                 getSpellSaveDC.Release();

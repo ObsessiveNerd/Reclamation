@@ -3,20 +3,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>
-/// As a note, Melee and Finesse use AC to determine hit, but can be spells (touch spells)
-/// Ranged also uses AC to determine hit but can be spells (ranged attack spells)
-/// Other spells use saving throws to determine success
-/// </summary>
-public enum TypeWeapon
+public enum AttackType
 {
     None,
     Melee,
     Ranged,
     RangedSpell,
-    Wand,
-    MagicStaff,
-    Finesse,
+    Finesse
+    
+}
+
+public enum SpellType
+{
+    None,
     StrSpell,
     AgiSpell,
     ConSpell,
@@ -27,13 +26,12 @@ public enum TypeWeapon
 
 public class WeaponType : Component
 {
-    public TypeWeapon TypeWeapon;
+    public AttackType Type;
 
-    public WeaponType(TypeWeapon type)
+    public WeaponType(AttackType type)
     {
-        TypeWeapon = type;
+        Type = type;
         RegisteredEvents.Add(GameEventId.GetWeapon);
-        RegisteredEvents.Add(GameEventId.GetRangedWeapon);
         RegisteredEvents.Add(GameEventId.GetWeaponType);
         RegisteredEvents.Add(GameEventId.GetWeaponTypes);
     }
@@ -41,16 +39,11 @@ public class WeaponType : Component
     public override void HandleEvent(GameEvent gameEvent)
     {
         if (gameEvent.ID == GameEventId.GetWeaponType)
-            gameEvent.Paramters[EventParameters.WeaponType] = TypeWeapon;
+            gameEvent.Paramters[EventParameters.WeaponType] = Type;
         else if (gameEvent.ID == GameEventId.GetWeaponTypes)
-            gameEvent.GetValue<List<TypeWeapon>>(EventParameters.WeaponTypeList).Add(TypeWeapon);
+            gameEvent.GetValue<List<AttackType>>(EventParameters.WeaponTypeList).Add(Type);
         else if (gameEvent.ID == GameEventId.GetWeapon)
             gameEvent.GetValue<List<string>>(EventParameters.Weapon).Add(Self.ID);
-        else if (gameEvent.ID == GameEventId.GetRangedWeapon)
-        {
-            if(TypeWeapon == TypeWeapon.Ranged)
-                gameEvent.GetValue<List<string>>(EventParameters.Weapon).Add(Self.ID);
-        }
     }
 }
 
@@ -64,13 +57,13 @@ public class DTO_WeaponType : IDataTransferComponent
         if (data.Contains("="))
             value = data.Split('=')[1];
 
-        TypeWeapon tw = (TypeWeapon)Enum.Parse(typeof(TypeWeapon), value);
+        AttackType tw = (AttackType)Enum.Parse(typeof(AttackType), value);
         Component = new WeaponType(tw);
     }
 
     public string CreateSerializableData(IComponent component)
     {
         WeaponType wt = (WeaponType)component;
-        return $"{nameof(WeaponType)}:{wt.TypeWeapon}";
+        return $"{nameof(WeaponType)}:{nameof(wt.Type)}={wt.Type}";
     }
 }

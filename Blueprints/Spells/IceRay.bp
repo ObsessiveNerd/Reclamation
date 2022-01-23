@@ -1,9 +1,9 @@
 <IceRay> (
 	GraphicContainer:SpritePath= Textures/Spells/SpellBook06_04
-	Spell:ManaCost=1,SpellFailed=None
+	Spell:ManaCost=1,SpellFailed=None,SpellType=None
 	DealDamage:DamageType=Ice,Dice=1d4
 	Range
-	WeaponType:TypeWeapon=RangedSpell
+	WeaponType:Type=RangedSpell
 	Sound:SoundPath=Sounds/MAGIC_SPELLS/MAGIC_SPELL_Gather_Blast_mono.wav,Key=Cast
 	Ammo:TexturePath=Textures/Effects/tiny_dungeon_fx_iceball
 )
