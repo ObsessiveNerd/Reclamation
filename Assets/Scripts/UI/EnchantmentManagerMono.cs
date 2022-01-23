@@ -5,6 +5,8 @@ using UnityEngine;
 public class EnchantmentManagerMono : EscapeableMono
 {
     public Transform Inventories;
+    public EnchantItemMono ItemToEnchant;
+    public EnchantItemMono Result;
 
     public void Setup(IEntity enchantment)
     {

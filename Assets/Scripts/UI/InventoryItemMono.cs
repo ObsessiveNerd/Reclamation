@@ -17,6 +17,7 @@ public class InventoryItemMono : ItemMono, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
+        Debug.Log("Click");
         if (eventData.button == PointerEventData.InputButton.Left)
         {
             if (Source == null || ItemObject == null)

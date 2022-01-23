@@ -1,14 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
+using UnityEngine.UIElements;
+using Debug = UnityEngine.Debug;
 
-public class EnchantItemMono : InventoryItemMono
+public class EnchantItemMono : MonoBehaviour, IDropHandler
 {
-    protected override void OnClick()
+    public bool AcceptsDrop;
+    public void OnDrop(PointerEventData eventData)
     {
-        foreach (var component in Source.GetComponents())
+        if (AcceptsDrop)
         {
-            ItemObject.AddComponent(component);
+            Debug.Log($"{eventData.pointerDrag} is dropped");
+            eventData.pointerDrag.GetComponent<DragAndDrop>().Set(transform.position, transform);
         }
     }
 }

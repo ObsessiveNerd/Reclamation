@@ -5,20 +5,25 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class ItemMono : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class ItemMono : DragAndDrop, IPointerEnterHandler, IPointerExitHandler
 {
     private GameObject m_Popup;
     private GameObject m_PopupInstance;
 
-    void Start()
+    protected override void Start()
     {
         m_Popup = Resources.Load<GameObject>("UI/ItemPopup");
         if (m_Popup == null)
             Debug.LogError("UI Item Popup could not be loaded.");
+        base.Start();
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
+        if(IsDragging)
+            return;
+
+        Debug.Log("OnPointerEnter");
         string id = GetItemId();
         if (string.IsNullOrEmpty(id))
             return;
@@ -52,6 +57,7 @@ public class ItemMono : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public void OnPointerExit(PointerEventData eventData)
     {
+        Debug.Log("On pointer exit");
         DestroyPopup();
     }
 
