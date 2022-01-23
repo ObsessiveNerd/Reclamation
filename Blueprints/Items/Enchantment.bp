@@ -1,0 +1,9 @@
+<Enchantment> (
+	Position:PositionPoint=
+	InteractOnTileOvertake
+	EntityTypeContainer:Type=Item
+	Item:Rarity=
+	GraphicContainer:SpritePath=Textures/Items/td_items_scroll
+	Portrait:SpritePath=Portraits/Items/addons/133_t
+	Enchantment:EnchantmentEntity=
+)

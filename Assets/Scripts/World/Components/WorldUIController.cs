@@ -1,7 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 public class WorldUIController : GameService
 {
@@ -105,5 +107,10 @@ public class WorldUIController : GameService
 
         foreach (var entity in m_Players)
             GameObject.FindObjectOfType<CharacterManagerMono>().AddCharacter(entity);
+    }
+
+    public void OpenEnchantmentUI(IEntity enchantment)
+    {
+        GameObject.FindObjectOfType<EnchantmentManagerMono>().Setup(enchantment);
     }
 }

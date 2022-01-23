@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -53,12 +54,6 @@ public class InventoryManagerMono : MonoBehaviour//, IUpdatableUI
         foreach (GameObject go in m_Items)
                 Destroy(go);
         m_Items.Clear();
-    }
-
-    public void UpdateUI(IEntity newSource)
-    {
-        Cleanup();
-        Setup(newSource);
     }
 
     public void Close()

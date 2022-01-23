@@ -255,6 +255,9 @@ public static class GameEventId
     public const string AffectArea = nameof(AffectArea);
     public const string GetSpellSaveDC = nameof(GetSpellSaveDC);
 
+    //Enchanment
+    public const string EnchantItem = nameof(EnchantItem);
+
     //Party
     public const string LookingForGroup = nameof(LookingForGroup);
     public const string SetLeader = nameof(SetLeader);
