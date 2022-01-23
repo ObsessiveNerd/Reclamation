@@ -6,8 +6,8 @@ using UnityEngine.EventSystems;
 
 public class InventoryItemMono : ItemMono, IPointerClickHandler
 {
-    protected IEntity Source { get; set; }
-    protected IEntity ItemObject { get; set; }
+    public IEntity Source { get; set; }
+    public IEntity ItemObject { get; set; }
 
     public void Init(IEntity source, IEntity thisObject)
     {

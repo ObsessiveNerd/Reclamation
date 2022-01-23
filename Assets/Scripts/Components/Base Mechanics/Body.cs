@@ -8,6 +8,7 @@ using UnityEngine;
 
 public enum BodyPart
 {
+    None,
     Head,
     Torso,
     Arm,

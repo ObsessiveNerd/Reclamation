@@ -353,6 +353,7 @@ public static class EventParameters
     public const string Key = nameof(Key);
     public const string Owner = nameof(Owner);
     public const string BodyParts = nameof(BodyParts);
+    public const string BodyPart = nameof(BodyPart);
     public const string Effect = nameof(Effect);
 }
 

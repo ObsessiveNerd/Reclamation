@@ -14,8 +14,9 @@ public class DragAndDrop : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndD
 
     public void Set(Vector2 position, Transform parent)
     {
+        previousParent = parent;
+        transform.SetParent(previousParent);
         m_LastPosition = position;
-        transform.SetParent(parent);
     }
 
     protected virtual void Start()
@@ -38,6 +39,7 @@ public class DragAndDrop : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndD
         canvasGroup.blocksRaycasts = true;
         transform.SetParent(previousParent);
         transform.position = m_LastPosition;
+        transform.SetAsLastSibling();
     }
 
     public void OnBeginDrag(PointerEventData eventData)

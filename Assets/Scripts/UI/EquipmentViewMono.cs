@@ -1,7 +1,15 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+
+//[Serializable]
+//public class EquipmentSlotData
+//{
+//    public GameObject ObjectSlot;
+//    public BodyPart BodyPartyType;
+//}
 
 public class EquipmentViewMono : MonoBehaviour//, IUpdatableUI
 {
@@ -11,21 +19,41 @@ public class EquipmentViewMono : MonoBehaviour//, IUpdatableUI
     public GameObject Torso;
     public GameObject LeftArm;
     public GameObject RightArm;
-    public GameObject Legs;
+    public GameObject LeftLeg;
+
+    //Needs to be hooked up
+    public GameObject RightLeg;
 
     IEntity m_Source;
+
+    List<GameObject> AllEquipmentSlots
+    {
+        get
+        {
+            return new List<GameObject>()
+            {
+                Head,
+                Torso,
+                LeftArm,
+                RightArm,
+                LeftArm,
+                RightLeg
+            };
+        }
+    }
 
     public void Setup(IEntity source)
     {
         if(source != null)
             m_Source = source;
 
-        //WorldUtility.RegisterUI(this);
+        foreach(var slotMono in AllEquipmentSlots)
+            slotMono.GetComponent<EquipmentItemSlotMono>().Setup(source);
+
         GameEvent getEquipment = GameEventPool.Get(GameEventId.GetCurrentEquipment)
                                     .With(EventParameters.Head, null)
                                     .With(EventParameters.Torso, null)
                                     .With(EventParameters.Arms, null)
-                                    //.With(EventParameters.RightArm, null)
                                     .With(EventParameters.Legs, null);
 
         var firedEvent = m_Source.FireEvent(getEquipment);
@@ -33,19 +61,12 @@ public class EquipmentViewMono : MonoBehaviour//, IUpdatableUI
         SetEquipment(firedEvent.GetValue<List<Component>>(EventParameters.Head), new List<GameObject>() { Head });
         SetEquipment(firedEvent.GetValue<List<Component>>(EventParameters.Torso), new List<GameObject>() { Torso });
         SetEquipment(firedEvent.GetValue<List<Component>>(EventParameters.Arms), new List<GameObject>() { LeftArm, RightArm });
-        //SetEquipment(firedEvent.GetValue<string>(EventParameters.RightArm), RightArm);
-        SetEquipment(firedEvent.GetValue<List<Component>>(EventParameters.Legs), new List<GameObject>() { Legs });
+        SetEquipment(firedEvent.GetValue<List<Component>>(EventParameters.Legs), new List<GameObject>() { LeftLeg });
         firedEvent.Release();
     }
 
     void SetEquipment(List<Component> components, List<GameObject> slots)
     {
-        //if (string.IsNullOrEmpty(equipmentId))
-        //{
-        //    slot.GetComponent<Image>().sprite = DefaultImage;
-        //    return;
-        //}
-
         if (components == null || components.Count == 0)
             return;
 
@@ -63,19 +84,17 @@ public class EquipmentViewMono : MonoBehaviour//, IUpdatableUI
             if (!string.IsNullOrEmpty(equipmentId))
             {
                 IEntity equipment = EntityQuery.GetEntity(equipmentId);
-                GameEvent getImage = GameEventPool.Get(GameEventId.GetPortrait)
-                                        .With(EventParameters.RenderSprite, null);
-                var equipmentInfo = equipment.FireEvent(getImage);
-                slots[i].GetComponent<Image>().sprite = equipmentInfo.GetValue<Sprite>(EventParameters.RenderSprite);
-                var equipmentSlotMono = slots[i].GetComponentInParent<InventoryItemMono>();
-                if (equipmentSlotMono != null)
-                    equipmentSlotMono.Init(m_Source, equipment);
-                equipmentInfo.Release();
+                
+                //TODO, we should probably not assume that the current equipment object is what we're trying to equip
+                if (slots[i].transform.childCount > 0)
+                    Destroy(slots[i].transform.GetChild(0).gameObject);
+
+                UIUtility.CreateItemGameObject(m_Source, equipment, slots[i].transform);
             }
             else
             {
-                slots[i].GetComponent<Image>().sprite = DefaultImage;
-                slots[i].GetComponentInParent<InventoryItemMono>().Init(m_Source, null);
+                if (slots[i].transform.childCount > 0)
+                    Destroy(slots[i].transform.GetChild(0).gameObject);
             }
         }
     }
@@ -88,7 +107,6 @@ public class EquipmentViewMono : MonoBehaviour//, IUpdatableUI
     public void Close()
     {
         Cleanup();
-        //WorldUtility.UnRegisterUI(this);
     }
 
     public void UpdateUI(IEntity newSource)

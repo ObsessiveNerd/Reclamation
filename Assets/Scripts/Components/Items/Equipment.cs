@@ -17,6 +17,7 @@ public class Equipment : Component
         base.Init(self);
         RegisteredEvents.Add(GameEventId.GetContextMenuActions);
         RegisteredEvents.Add(GameEventId.TryEquip);
+        RegisteredEvents.Add(GameEventId.GetBodyPartType);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
@@ -59,7 +60,7 @@ public class Equipment : Component
             }
         }
 
-        if (gameEvent.ID == GameEventId.TryEquip)
+        else if (gameEvent.ID == GameEventId.TryEquip)
         {
             IEntity source = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameters.Entity));
             GameEvent equip = GameEventPool.Get(GameEventId.Equip)
@@ -67,6 +68,11 @@ public class Equipment : Component
                                             .With(EventParameters.Equipment, Self.ID);
             Debug.LogWarning($"{source?.Name} is trying to equip {Self?.Name}");
             source.FireEvent(equip, true).Release();
+        }
+
+        else if (gameEvent.ID == GameEventId.GetBodyPartType)
+        {
+            gameEvent.Paramters[EventParameters.BodyPart] = PreferredBodyPartWhenEquipped;
         }
     }
 }

@@ -6,7 +6,7 @@ using UnityEngine.UI;
 using UnityEngine.UIElements;
 using Debug = UnityEngine.Debug;
 
-public class EnchantItemMono : MonoBehaviour, IDropHandler
+public class EnchantItemSlotMono : MonoBehaviour, IDropHandler
 {
     public bool AcceptsDrop;
     public void OnDrop(PointerEventData eventData)
