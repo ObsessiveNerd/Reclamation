@@ -7,6 +7,11 @@ public static class UIUtility
 {
     public static GameObject CreateItemGameObject(IEntity source, IEntity item, Transform parent)
     {
+        if (source == null || item == null || parent == null)
+        {
+            throw new System.Exception("Cannot create inventory item with null parameters");
+        }
+
         GameObject spriteGoResource = Resources.Load<GameObject>("UI/InventoryItem");
 
         if (item == null)
@@ -29,5 +34,19 @@ public static class UIUtility
         }
 
         return null;
+    }
+
+    public static List<GameObject> CreatePlayerInventories(Transform parent)
+    {
+        List<GameObject> inventories = new List<GameObject>();
+        GameObject inventory = Resources.Load<GameObject>("UI/Inventory");
+        foreach (string id in Services.WorldDataQuery.GetPlayableCharacters())
+        {
+            GameObject go = GameObject.Instantiate(inventory);
+            go.GetComponent<InventoryManagerMono>().Setup(Services.EntityMapService.GetEntity(id));
+            go.transform.SetParent(parent, false);
+            inventories.Add(go);
+        }
+        return inventories;
     }
 }

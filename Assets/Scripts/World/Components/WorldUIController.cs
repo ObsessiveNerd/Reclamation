@@ -57,7 +57,7 @@ public class WorldUIController : GameService
             source.FireEvent(unEquip).Release();
 
             GameEvent removeFromInventory = GameEventPool.Get(GameEventId.RemoveFromInventory)
-                                                .With(EventParameters.Entity, item.ID);
+                                                .With(EventParameters.Item, item.ID);
             source.FireEvent(removeFromInventory).Release();
 
             GameEvent addToInventory = GameEventPool.Get(GameEventId.AddToInventory)
@@ -83,7 +83,7 @@ public class WorldUIController : GameService
 
     public void OpenChestUI(IEntity chest, IEntity character)
     {
-        GameObject.FindObjectOfType<ChestMono>().Init(chest, character);
+        GameObject.FindObjectOfType<ChestMono>().Init(chest);
     }
 
     public void OpenSpellExaminationUI(List<string> spellIds)

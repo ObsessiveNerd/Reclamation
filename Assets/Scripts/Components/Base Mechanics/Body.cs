@@ -137,7 +137,7 @@ public class Body : Component
 
                     target[bp][i].HandleEvent(itemEquiped);
                     FireEvent(Self, GameEventPool.Get(GameEventId.RemoveFromInventory)
-                            .With(EventParameters.Entity, gameEvent.Paramters[EventParameters.Equipment])).Release();
+                            .With(EventParameters.Item, gameEvent.Paramters[EventParameters.Equipment])).Release();
                     itemEquiped.Release();
                 }
 

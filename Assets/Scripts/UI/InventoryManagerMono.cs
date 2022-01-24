@@ -6,9 +6,18 @@ using TMPro;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class InventoryManagerMono : MonoBehaviour, IDropHandler//, IUpdatableUI
+public class InventoryManagerMono : MonoBehaviour, IDropHandler, IUpdatableUI
 {
-    public Transform InventoryView;
+    Transform m_InventoryView;
+    Transform InventoryView
+    {
+        get
+        {
+            if (m_InventoryView == null)
+                m_InventoryView = transform.Find("InventoryView").transform;
+            return m_InventoryView;
+        }
+    }
     public IEntity Source;
     Dictionary<IEntity, GameObject> m_Items = new Dictionary<IEntity,GameObject>();
 
@@ -19,7 +28,7 @@ public class InventoryManagerMono : MonoBehaviour, IDropHandler//, IUpdatableUI
 
         Cleanup();
 
-        //WorldUtility.RegisterUI(this);
+        WorldUtility.RegisterUI(this);
         GameEvent getCurrentInventory = GameEventPool.Get(GameEventId.GetCurrentInventory)
                                             .With(EventParameters.Value, new List<IEntity>());
 
@@ -40,7 +49,7 @@ public class InventoryManagerMono : MonoBehaviour, IDropHandler//, IUpdatableUI
     public void Close()
     {
         Cleanup();
-        //WorldUtility.UnRegisterUI(this);
+        WorldUtility.UnRegisterUI(this);
     }
 
     public void OnDrop(PointerEventData eventData)
@@ -68,17 +77,22 @@ public class InventoryManagerMono : MonoBehaviour, IDropHandler//, IUpdatableUI
         if (source != Source)
         {
             GameEvent removeFromInventory = GameEventPool.Get(GameEventId.RemoveFromInventory)
-                                        .With(EventParameters.Entity, item.ID);
+                                        .With(EventParameters.Item, item.ID);
             source.FireEvent(removeFromInventory);
             removeFromInventory.Release();
-            Services.WorldUIService.UpdateUI(source.ID);
+            //Services.WorldUIService.UpdateUI(source.ID);
         }
 
         GameEvent addToInventory = GameEventPool.Get(GameEventId.AddToInventory)
                                     .With(EventParameters.Entity, item.ID);
         Source.FireEvent(addToInventory);
 
+        eventData.pointerDrag.GetComponent<InventoryItemMono>().Init(Source, item);
         eventData.pointerDrag.GetComponent<DragAndDrop>().Set(InventoryView.position, InventoryView.transform);
+
+        Services.WorldUIService.UpdateUI(Source.ID);
+        if(source != Source)
+            Services.WorldUIService.UpdateUI(source.ID);
 
         if (!m_Items.ContainsKey(item))
         {
@@ -90,7 +104,11 @@ public class InventoryManagerMono : MonoBehaviour, IDropHandler//, IUpdatableUI
             Debug.Log($"Destroy {item.Name}");
             Destroy(eventData.pointerDrag);
         }
+    }
 
-        Services.WorldUIService.UpdateUI(Source.ID);
+    public void UpdateUI(IEntity newSource)
+    {
+        Cleanup();
+        Setup(Source);
     }
 }

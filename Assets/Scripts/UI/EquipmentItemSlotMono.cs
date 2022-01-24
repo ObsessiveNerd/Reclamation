@@ -44,7 +44,7 @@ public class EquipmentItemSlotMono : MonoBehaviour, IDropHandler
                 source.FireEvent(unEquip).Release();
 
                 GameEvent removeFromInventory = GameEventPool.Get(GameEventId.RemoveFromInventory)
-                                        .With(EventParameters.Entity, item.ID);
+                                        .With(EventParameters.Item, item.ID);
                 source.FireEvent(removeFromInventory).Release();
 
                 Services.WorldUIService.UpdateUI(source.ID);

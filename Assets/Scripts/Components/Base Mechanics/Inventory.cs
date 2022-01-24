@@ -45,7 +45,7 @@ public class Inventory : Component
 
         if (gameEvent.ID == GameEventId.RemoveFromInventory)
         {
-            IEntity item = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Entity]);
+            IEntity item = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Item]);
             if (InventoryItems.Contains(item))
                 InventoryItems.Remove(item);
         }

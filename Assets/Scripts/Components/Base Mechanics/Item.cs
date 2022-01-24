@@ -46,7 +46,7 @@ public class Item : Component
 
             FireEvent(droppingEntity, unequip);
             FireEvent(droppingEntity, GameEventPool.Get(GameEventId.RemoveFromInventory)
-                .With(EventParameters.Entity, Self.ID)).Release();
+                .With(EventParameters.Item, Self.ID)).Release();
             unequip.Release();
 
         }

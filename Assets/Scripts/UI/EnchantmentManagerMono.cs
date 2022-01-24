@@ -8,15 +8,16 @@ public class EnchantmentManagerMono : EscapeableMono
     public EnchantItemSlotMono ItemToEnchant;
     public EnchantItemSlotMono Result;
 
+    List<GameObject> m_Inventories;
     public void Setup(IEntity enchantment)
     {
         UIManager.Push(this);
-        GameObject inventory = Resources.Load<GameObject>("UI/Inventory");
-        foreach (string id in Services.WorldDataQuery.GetPlayableCharacters())
-        {
-            GameObject go = Instantiate(inventory);
-            go.GetComponent<InventoryManagerMono>().Setup(Services.EntityMapService.GetEntity(id));
-            go.transform.SetParent(Inventories, false);
-        }
+        m_Inventories = UIUtility.CreatePlayerInventories(Inventories);
+    }
+
+    public override void OnEscape()
+    {
+        foreach (GameObject go in m_Inventories)
+            Destroy(go);
     }
 }

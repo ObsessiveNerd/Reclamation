@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -23,7 +24,15 @@ public class DragAndDrop : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndD
     {
         canvasGroup = gameObject.AddComponent<CanvasGroup>(); //GetComponent<CanvasGroup>();
         m_LastPosition = transform.position;
+     
+        try
+        { 
         previousParent = transform.parent.transform;
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError(ex.Message);
+        }
     }
 
     public void OnDrag(PointerEventData eventData)

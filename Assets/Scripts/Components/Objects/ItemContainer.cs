@@ -23,7 +23,7 @@ public class ItemContainer : Component
         RegisteredEvents.Add(GameEventId.DropItemsOnMap);
         RegisteredEvents.Add(GameEventId.AddItemsToInventory);
         RegisteredEvents.Add(GameEventId.Interact);
-        RegisteredEvents.Add(GameEventId.RemoveItem);
+        RegisteredEvents.Add(GameEventId.RemoveFromInventory);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
@@ -55,7 +55,7 @@ public class ItemContainer : Component
             foreach(var name in names)
                 AddItem(name);
         }
-        else if(gameEvent.ID == GameEventId.RemoveItem)
+        else if(gameEvent.ID == GameEventId.RemoveFromInventory)
         {
             string id = gameEvent.GetValue<string>(EventParameters.Item);
             if(IDToEntityMap.ContainsKey(id))

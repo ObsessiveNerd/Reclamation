@@ -33,7 +33,7 @@ public class Potion : Component
                 Self.FireEvent(quaff).Release();
 
                 GameEvent remove = GameEventPool.Get(GameEventId.RemoveFromInventory)
-                                        .With(EventParameters.Entity, Self.ID);
+                                        .With(EventParameters.Item, Self.ID);
                 source.FireEvent(remove).Release();
             });
 
