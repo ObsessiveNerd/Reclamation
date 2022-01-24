@@ -23,7 +23,6 @@ public class ItemMono : DragAndDrop, IPointerEnterHandler, IPointerExitHandler
         if(IsDragging)
             return;
 
-        Debug.Log("OnPointerEnter");
         string id = GetItemId();
         if (string.IsNullOrEmpty(id))
             return;
@@ -57,7 +56,6 @@ public class ItemMono : DragAndDrop, IPointerEnterHandler, IPointerExitHandler
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        Debug.Log("On pointer exit");
         DestroyPopup();
     }
 

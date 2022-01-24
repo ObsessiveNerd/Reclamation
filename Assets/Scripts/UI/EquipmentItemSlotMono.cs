@@ -35,6 +35,7 @@ public class EquipmentItemSlotMono : MonoBehaviour, IDropHandler
         {
             if(source != Source)
             {
+                Debug.Log("Source does not equel source");
                GameEvent unEquip = GameEventPool.Get(GameEventId.Unequip)
                 .With(EventParameters.EntityType, equipmentBodyPart)
                 .With(EventParameters.Item, item.ID)
@@ -45,6 +46,8 @@ public class EquipmentItemSlotMono : MonoBehaviour, IDropHandler
                 GameEvent removeFromInventory = GameEventPool.Get(GameEventId.RemoveFromInventory)
                                         .With(EventParameters.Entity, item.ID);
                 source.FireEvent(removeFromInventory).Release();
+
+                Services.WorldUIService.UpdateUI(source.ID);
             }
 
             GameEvent equip = GameEventPool.Get(GameEventId.Equip)
@@ -60,14 +63,17 @@ public class EquipmentItemSlotMono : MonoBehaviour, IDropHandler
             IEntity current = inventoryItem.Source;
             IEntity currentItem = inventoryItem.ItemObject;
 
+            Debug.Log($"Trying to unequip {item.Name}");
+
              GameEvent unEquip = GameEventPool.Get(GameEventId.Unequip)
                 .With(EventParameters.EntityType, equipmentBodyPart)
-                .With(EventParameters.Item, currentItem.ID);
+                .With(EventParameters.Item, currentItem.ID)
+                .With(EventParameters.Entity, current.ID);
 
             current.FireEvent(unEquip);
             unEquip.Release();
 
-            inventoryItem.Set(inventoryManager.InventoryView.position, inventoryManager.InventoryView);
+            Destroy(inventoryItem.gameObject);
             Services.WorldUIService.UpdateUI(current.ID);
         }
 

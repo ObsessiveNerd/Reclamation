@@ -84,10 +84,10 @@ public class EquipmentViewMono : MonoBehaviour//, IUpdatableUI
             if (!string.IsNullOrEmpty(equipmentId))
             {
                 IEntity equipment = EntityQuery.GetEntity(equipmentId);
-                
+
                 //TODO, we should probably not assume that the current equipment object is what we're trying to equip
-                if (slots[i].transform.childCount > 0)
-                    Destroy(slots[i].transform.GetChild(0).gameObject);
+                for (int j = 0; j < slots[i].transform.childCount; j++)
+                    Destroy(slots[i].transform.GetChild(j).gameObject);
 
                 UIUtility.CreateItemGameObject(m_Source, equipment, slots[i].transform);
             }

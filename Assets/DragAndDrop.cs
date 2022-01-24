@@ -28,13 +28,11 @@ public class DragAndDrop : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndD
 
     public void OnDrag(PointerEventData eventData)
     {
-        Debug.Log($"OnDrag {eventData.position}");
         transform.position = eventData.position;
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        Debug.Log("OnDragEnd");
         IsDragging = false;
         canvasGroup.blocksRaycasts = true;
         transform.SetParent(previousParent);
@@ -44,7 +42,6 @@ public class DragAndDrop : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndD
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        Debug.Log("BeginDrag");
         IsDragging = true;
         m_LastPosition = transform.position;
         transform.SetParent(FindObjectOfType<Canvas>().transform);

@@ -10,7 +10,7 @@ public class InventoryManagerMono : MonoBehaviour, IDropHandler//, IUpdatableUI
 {
     public Transform InventoryView;
     public IEntity Source;
-    List<GameObject> m_Items = new List<GameObject>();
+    Dictionary<IEntity, GameObject> m_Items = new Dictionary<IEntity,GameObject>();
 
     public void Setup(IEntity source)
     {
@@ -27,12 +27,12 @@ public class InventoryManagerMono : MonoBehaviour, IDropHandler//, IUpdatableUI
         getCurrentInventory.Release();
 
         foreach (var item in inventory)
-            m_Items.Add(UIUtility.CreateItemGameObject(Source, item, InventoryView));
+            m_Items.Add(item, UIUtility.CreateItemGameObject(Source, item, InventoryView));
     }
 
     public void Cleanup()
     {
-        foreach (GameObject go in m_Items)
+        foreach (GameObject go in m_Items.Values)
             Destroy(go);
         m_Items.Clear();
     }
@@ -79,9 +79,17 @@ public class InventoryManagerMono : MonoBehaviour, IDropHandler//, IUpdatableUI
         Source.FireEvent(addToInventory);
 
         eventData.pointerDrag.GetComponent<DragAndDrop>().Set(InventoryView.position, InventoryView.transform);
-        
-        if(!m_Items.Contains(eventData.pointerDrag))
-            m_Items.Add(eventData.pointerDrag);
+
+        if (!m_Items.ContainsKey(item))
+        {
+            Debug.Log($"Item {item.Name} is getting added to inventory");
+            m_Items.Add(item, eventData.pointerDrag);
+        }
+        else
+        {
+            Debug.Log($"Destroy {item.Name}");
+            Destroy(eventData.pointerDrag);
+        }
 
         Services.WorldUIService.UpdateUI(Source.ID);
     }
