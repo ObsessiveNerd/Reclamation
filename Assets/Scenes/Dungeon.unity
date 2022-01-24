@@ -1115,6 +1115,38 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 293026546}
   m_CullTransparentMesh: 1
+--- !u!1 &300030057 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 700018240, guid: d34b641438d86674cbef3a5c82a29aa0,
+    type: 3}
+  m_PrefabInstance: {fileID: 859157200}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &300030058
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 300030057}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59f8146938fff824cb5fd77236b75775, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Padding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 0
+  m_Spacing: 0
+  m_ChildForceExpandWidth: 1
+  m_ChildForceExpandHeight: 1
+  m_ChildControlWidth: 1
+  m_ChildControlHeight: 1
+  m_ChildScaleWidth: 0
+  m_ChildScaleHeight: 0
+  m_ReverseArrangement: 0
 --- !u!1 &321278769
 GameObject:
   m_ObjectHideFlags: 0
@@ -2710,20 +2742,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 900815867}
     m_Modifications:
-    - target: {fileID: 743052257335722723, guid: d34b641438d86674cbef3a5c82a29aa0,
-        type: 3}
-      propertyPath: Inventories
-      value: 
-      objectReference: {fileID: 1253845889}
     - target: {fileID: 4371282694222936034, guid: d34b641438d86674cbef3a5c82a29aa0,
         type: 3}
       propertyPath: m_Name
       value: EnchantmentManager
-      objectReference: {fileID: 0}
-    - target: {fileID: 4371282694222936034, guid: d34b641438d86674cbef3a5c82a29aa0,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4371282694222936045, guid: d34b641438d86674cbef3a5c82a29aa0,
         type: 3}
@@ -2838,6 +2860,36 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 859157200}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &859157202 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2118276392, guid: d34b641438d86674cbef3a5c82a29aa0,
+    type: 3}
+  m_PrefabInstance: {fileID: 859157200}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d7b4a21aeb3b1746aa2c887bd6024ec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &859157203 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 700018244, guid: d34b641438d86674cbef3a5c82a29aa0,
+    type: 3}
+  m_PrefabInstance: {fileID: 859157200}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 300030057}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d7b4a21aeb3b1746aa2c887bd6024ec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!1 &859157204 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4371282694222936034, guid: d34b641438d86674cbef3a5c82a29aa0,
+    type: 3}
+  m_PrefabInstance: {fileID: 859157200}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &894072839
 GameObject:
   m_ObjectHideFlags: 0
@@ -2917,6 +2969,7 @@ GameObject:
   - component: {fileID: 900815871}
   - component: {fileID: 900815874}
   - component: {fileID: 900815869}
+  - component: {fileID: 900815875}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -3110,6 +3163,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Level: {fileID: 45037264}
+--- !u!114 &900815875
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 900815863}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 217eda6cb6fb9604b9ca2d0862e81c20, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  View: {fileID: 859157204}
+  Inventories: {fileID: 1253845889}
+  ItemToEnchant: {fileID: 859157203}
+  Result: {fileID: 859157202}
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0

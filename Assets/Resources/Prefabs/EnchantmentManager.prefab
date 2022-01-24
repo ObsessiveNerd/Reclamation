@@ -376,14 +376,13 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4371282694222936045}
-  - component: {fileID: 743052257335722723}
   m_Layer: 5
   m_Name: EnchantmentManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &4371282694222936045
 RectTransform:
   m_ObjectHideFlags: 0
@@ -404,18 +403,3 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &743052257335722723
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4371282694222936034}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 217eda6cb6fb9604b9ca2d0862e81c20, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Inventories: {fileID: 0}
-  ItemToEnchant: {fileID: 700018244}
-  Result: {fileID: 2118276392}

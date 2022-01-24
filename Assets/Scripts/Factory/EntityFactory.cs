@@ -107,9 +107,9 @@ public static class EntityFactory
 
     public static void InitTempBlueprints()
     {
-        if (!m_LoadedTempBlueprints && GameSaveSystem.Instance != null)
+        if (!m_LoadedTempBlueprints)
         {
-            string tempBlueprints = $"{GameSaveSystem.kSaveDataPath}/{GameSaveSystem.Instance.CurrentSaveName}/Blueprints";
+            string tempBlueprints = $"{GameSaveSystem.kSaveDataPath}/{Services.SaveAndLoadService.CurrentSaveName}/Blueprints";
             if (Directory.Exists(tempBlueprints))
             {
                 foreach (var bpPath in Directory.EnumerateFiles(tempBlueprints, "*", SearchOption.AllDirectories))

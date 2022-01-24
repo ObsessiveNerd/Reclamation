@@ -33,6 +33,7 @@ public class Enchantment : Component
                 .Add(new ContextMenuButton("Enchant", () =>
             {
                 UIManager.ForcePop();
+                UIManager.ForcePop();
                 Services.WorldUIService.OpenEnchantmentUI(Self);
             }));
         }

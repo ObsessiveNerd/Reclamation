@@ -2,7 +2,7 @@
 	GraphicContainer:SpritePath=Textures/Characters/td_monsters_dwarf_d2
 	Portrait:SpritePath=Portraits/Characters/Tex_Dwarf_warrior_male_bg
 	Defense
-	Inventory:InventoryItems=[<Spellbook>&<BronzeHelmet>&<LongSword>&<Warhammer>&<ShortBow>]
+	Inventory:InventoryItems=[<Spellbook>&<BronzeHelmet>&<LongSword>&<Warhammer>&<ShortBow>&<Enchantment>]
 	Move
 	Stats:Str=10,Agi=9,Con=13,Wis=11,Int=12,Cha=10,PrimaryStatType=Str,AttributePoints=0
 	Faction:ID=DwarvenExpedition
