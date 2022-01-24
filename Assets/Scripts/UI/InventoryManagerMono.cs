@@ -87,8 +87,8 @@ public class InventoryManagerMono : MonoBehaviour, IDropHandler, IUpdatableUI
                                     .With(EventParameters.Entity, item.ID);
         Source.FireEvent(addToInventory);
 
-        eventData.pointerDrag.GetComponent<InventoryItemMono>().Init(Source, item);
-        eventData.pointerDrag.GetComponent<DragAndDrop>().Set(InventoryView.position, InventoryView.transform);
+        //eventData.pointerDrag.GetComponent<InventoryItemMono>().Init(Source, item);
+        //eventData.pointerDrag.GetComponent<DragAndDrop>().Set(InventoryView.position, InventoryView.transform);
 
         Services.WorldUIService.UpdateUI(Source.ID);
         if(source != Source)

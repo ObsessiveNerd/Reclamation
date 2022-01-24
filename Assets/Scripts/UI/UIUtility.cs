@@ -44,7 +44,7 @@ public static class UIUtility
         {
             GameObject go = GameObject.Instantiate(inventory);
             go.GetComponent<InventoryManagerMono>().Setup(Services.EntityMapService.GetEntity(id));
-            go.transform.SetParent(parent, false);
+            go.transform.SetParent(parent);
             inventories.Add(go);
         }
         return inventories;

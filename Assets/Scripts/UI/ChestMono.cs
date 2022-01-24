@@ -58,8 +58,6 @@ public class ChestMono : EscapeableMono//, IUpdatableUI
         foreach (GameObject go in m_Items)
             Destroy(go);
         m_Items.Clear();
-
-
     }
 
     public override void OnEscape()
@@ -68,7 +66,7 @@ public class ChestMono : EscapeableMono//, IUpdatableUI
         Cleanup();
         foreach (GameObject go in m_Inventories)
         {
-            go.GetComponent<InventoryManagerMono>().Cleanup();
+            go.GetComponent<InventoryManagerMono>().Close();
             Destroy(go);
         }
         m_Inventories.Clear();
