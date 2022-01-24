@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ChestMono : EscapeableMono//, IUpdatableUI
+public class ChestMono : EscapeableMono, IUpdatableUI
 {
     public GameObject ChestUI;
     public Transform ChestContent;
@@ -26,7 +26,7 @@ public class ChestMono : EscapeableMono//, IUpdatableUI
         m_Inventories = UIUtility.CreatePlayerInventories(Inventories);
 
         ChestUI.SetActive(true);
-        //WorldUtility.RegisterUI(this);
+        WorldUtility.RegisterUI(this);
         UIManager.Push(this);
         UpdateUI();
     }
@@ -62,7 +62,6 @@ public class ChestMono : EscapeableMono//, IUpdatableUI
 
     public override void OnEscape()
     {
-        //m_Inventory?.Cleanup();
         Cleanup();
         foreach (GameObject go in m_Inventories)
         {
@@ -70,8 +69,35 @@ public class ChestMono : EscapeableMono//, IUpdatableUI
             Destroy(go);
         }
         m_Inventories.Clear();
-        //WorldUtility.UnRegisterUI(this);
+        WorldUtility.UnRegisterUI(this);
         ChestUI.SetActive(false);
         m_Chest = null;
+    }
+
+    public void LootAll()
+    {
+        List<GameObject> items = new List<GameObject>(m_Items);
+        foreach(var item in items)
+        {
+            IEntity itemEntity = item.GetComponent<InventoryItemMono>().ItemObject;
+            GameEvent removeFromChest = GameEventPool.Get(GameEventId.RemoveFromInventory)
+                                        .With(EventParameters.Item, itemEntity.ID);
+            m_Chest.FireEvent(removeFromChest);
+            removeFromChest.Release();
+
+            GameEvent addToInventory = GameEventPool.Get(GameEventId.AddToInventory)
+                                                    .With(EventParameters.Entity, itemEntity.ID);
+            IEntity activePlayer = Services.EntityMapService.GetEntity(Services.WorldDataQuery.GetActivePlayerId());
+            activePlayer.FireEvent(addToInventory);
+            addToInventory.Release();
+
+            Services.WorldUIService.UpdateUI(activePlayer.ID);
+        }
+    }
+
+    public void UpdateUI(IEntity newSource)
+    {
+        Cleanup();
+        UpdateUI();
     }
 }

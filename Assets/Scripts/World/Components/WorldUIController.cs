@@ -64,7 +64,8 @@ public class WorldUIController : GameService
                                             .With(EventParameters.Entity, item.ID);
             EntityQuery.GetEntity(target).FireEvent(addToInventory).Release();
 
-            GameObject.FindObjectOfType<CharacterManagerMono>().UpdateUI(source);
+            Services.WorldUIService.UpdateUI(source.ID); 
+            //GameObject.FindObjectOfType<CharacterManagerMono>().UpdateUI(source);
 
         }, m_Players.Select(player => player.ID).ToList());
     }
