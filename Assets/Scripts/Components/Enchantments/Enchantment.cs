@@ -15,6 +15,7 @@ public class Enchantment : Component
     {
         base.Init(self);
         RegisteredEvents.Add(GameEventId.GetContextMenuActions);
+        RegisteredEvents.Add(GameEventId.GetEnchantments);
 
         if (EnchantmentEntity == null)
         {
@@ -36,6 +37,11 @@ public class Enchantment : Component
                 UIManager.ForcePop();
                 Services.WorldUIService.OpenEnchantmentUI(Self);
             }));
+        }
+
+        else if(gameEvent.ID == GameEventId.GetEnchantments)
+        {
+            gameEvent.GetValue<List<string>>(EventParameters.Enchantments).Add(EnchantmentEntity.ID);
         }
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,12 +10,47 @@ using Debug = UnityEngine.Debug;
 public class EnchantItemSlotMono : MonoBehaviour, IDropHandler
 {
     public bool AcceptsDrop;
+    public Action<InventoryItemMono> Dropped;
+    public Action PickedUp;
+
+    public InventoryItemMono ItemMono;
     public void OnDrop(PointerEventData eventData)
     {
         if (AcceptsDrop)
         {
             Debug.Log($"{eventData.pointerDrag} is dropped");
             eventData.pointerDrag.GetComponent<DragAndDrop>().Set(transform.position, transform);
+            ItemMono = eventData.pointerDrag.GetComponent<InventoryItemMono>();
+            Dropped?.Invoke(ItemMono);
         }
+    }
+
+    public void Cleanup()
+    {
+        if (ItemMono == null)
+            return;
+
+        GameEvent removeFromInventory = GameEventPool.Get(GameEventId.RemoveFromInventory)
+                                        .With(EventParameters.Item, ItemMono.ItemObject.ID);
+        ItemMono.Source.FireEvent(removeFromInventory);
+        removeFromInventory.Release();
+        Destroy(ItemMono.gameObject);
+    }
+
+    bool hadItemPreviously = false;
+    public void Update()
+    {
+        if (transform.childCount == 0)
+        {
+            Debug.Log("No enchantment item");
+            ItemMono = null;
+            if (hadItemPreviously)
+            {
+                hadItemPreviously = false;
+                PickedUp?.Invoke();
+            }
+        }
+        else
+            hadItemPreviously = true;
     }
 }

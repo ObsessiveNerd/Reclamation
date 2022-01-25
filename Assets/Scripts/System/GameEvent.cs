@@ -257,6 +257,7 @@ public static class GameEventId
 
     //Enchanment
     public const string EnchantItem = nameof(EnchantItem);
+    public const string GetEnchantments = nameof(GetEnchantments);
 
     //Party
     public const string LookingForGroup = nameof(LookingForGroup);
@@ -355,6 +356,7 @@ public static class EventParameters
     public const string BodyParts = nameof(BodyParts);
     public const string BodyPart = nameof(BodyPart);
     public const string Effect = nameof(Effect);
+    public const string Enchantments = nameof(Enchantments);
 }
 
 public class GameEvent
