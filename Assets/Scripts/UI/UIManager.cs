@@ -61,7 +61,7 @@ public class UIManager : MonoBehaviour
         if (EscapeForActiveUIPressed.HasValue && EscapeForActiveUIPressed.Value /*&& !UIClear*/)
         {
             var escapeMono = UIMonoBehaviors.Pop();
-            escapeMono.OnEscape();
+            escapeMono?.OnEscape();
         }
     }
 }

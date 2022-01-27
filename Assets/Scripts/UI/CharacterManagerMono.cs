@@ -6,9 +6,13 @@ public class CharacterManagerMono : EscapeableMono, IUpdatableUI
 {
     private bool m_OpenedThisFrame = false;
     public GameObject CharacterManagerObject;
+    public Transform InventoriesView;
 
     private Dictionary<IEntity, CharacterMono> characters = new Dictionary<IEntity, CharacterMono>();
     private GameObject m_ViewPrefab;
+
+    List<GameObject> m_Inventories;
+
     public void Setup(IEntity source)
     {
         UIManager.Push(this);
@@ -16,6 +20,7 @@ public class CharacterManagerMono : EscapeableMono, IUpdatableUI
         CharacterManagerObject.SetActive(true);
         m_OpenedThisFrame = true;
         m_ViewPrefab = Resources.Load<GameObject>("Prefabs/CharacterManager");
+        m_Inventories = UIUtility.CreatePlayerInventories(InventoriesView);
     }
 
     public void AddCharacter(IEntity source)
@@ -62,6 +67,7 @@ public class CharacterManagerMono : EscapeableMono, IUpdatableUI
 
     public void UpdateUI(IEntity newSource)
     {
-        characters[newSource].Setup(newSource);
+        if(characters.ContainsKey(newSource))
+            characters[newSource].Setup(newSource);
     }
 }

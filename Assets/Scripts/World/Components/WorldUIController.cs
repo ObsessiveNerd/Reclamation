@@ -105,9 +105,10 @@ public class WorldUIController : GameService
     public void OpenInventory(IEntity source)
     {
         GameObject.FindObjectOfType<CharacterManagerMono>().Setup(source);
+        GameObject.FindObjectOfType<CharacterManagerMono>().AddCharacter(source);
 
-        foreach (var entity in m_Players)
-            GameObject.FindObjectOfType<CharacterManagerMono>().AddCharacter(entity);
+        //foreach (var entity in m_Players)
+        //    GameObject.FindObjectOfType<CharacterManagerMono>().AddCharacter(entity);
     }
 
     public void OpenEnchantmentUI(IEntity enchantment)

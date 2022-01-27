@@ -119,10 +119,11 @@ public class SpellcasterPlayerController : InputControllerBase
 
             if(Input.GetKeyDown(KeyCode.Return) || SpellSelected(out int spell) && spell == m_SpellIndex)
             {
-                AttackType weaponType = CombatUtility.GetWeaponType(m_Attack);
+                //AttackType weaponType = CombatUtility.GetWeaponType(m_Attack);
                 IEntity target = WorldUtility.GetEntityAtPosition(m_TileSelection);
 
-                CombatUtility.Attack(Self, target, m_Attack, weaponType);
+                CombatUtility.CastSpell(Self, target, m_Attack);
+                //CombatUtility.Attack(Self, target, m_Attack, weaponType);
 
                 EndSelection(m_TileSelection);
 

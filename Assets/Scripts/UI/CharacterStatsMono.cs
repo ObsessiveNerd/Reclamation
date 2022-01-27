@@ -13,7 +13,7 @@ public class CharacterStatsMono : MonoBehaviour//, IUpdatableUI
 
     public void Setup(IEntity source)
     {
-        Name.text = source.Name;
+        //Name.text = source.Name;
         StatMonos = GetComponentsInChildren<StatsUIMono>().ToList();
         GameEvent getAttributePoints = GameEventPool.Get(GameEventId.GetAttributePoints)
                                             .With(EventParameters.AttributePoints, 0);
@@ -58,7 +58,7 @@ public class CharacterStatsMono : MonoBehaviour//, IUpdatableUI
 
     public void Cleanup()
     {
-        Name.text = "";
+        //Name.text = "";
     }
 
     public void UpdateUI(IEntity newSource)
