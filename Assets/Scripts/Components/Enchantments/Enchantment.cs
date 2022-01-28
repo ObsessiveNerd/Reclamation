@@ -16,12 +16,14 @@ public class Enchantment : Component
         base.Init(self);
         RegisteredEvents.Add(GameEventId.GetContextMenuActions);
         RegisteredEvents.Add(GameEventId.GetEnchantments);
+        RegisteredEvents.Add(GameEventId.GetInfo);
 
         if (EnchantmentEntity == null)
         {
-            EnchantmentEntity = new Actor("Enchantment");
-            EnchantmentEntity.AddComponent(new DealDamage(DamageType.Arcane, new Dice("1d8")));
-            EntityFactory.CreateTemporaryBlueprint(EnchantmentEntity.ID, EnchantmentEntity.Serialize());
+            EnchantmentEntity = EntityFactory.CreateEntity(EntityFactory.GetRandomEnchantmentBPName(0));
+            //EnchantmentEntity = new Actor("Enchantment");
+            //EnchantmentEntity.AddComponent(new DealDamage(DamageType.Arcane, new Dice("1d8")));
+            //EntityFactory.CreateTemporaryBlueprint(EnchantmentEntity.ID, EnchantmentEntity.Serialize());
         }
     }
 
@@ -35,13 +37,17 @@ public class Enchantment : Component
             {
                 UIManager.ForcePop();
                 UIManager.ForcePop();
-                Services.WorldUIService.OpenEnchantmentUI(Self);
+                Services.WorldUIService.OpenEnchantmentUI(source, Self);
             }));
         }
 
         else if(gameEvent.ID == GameEventId.GetEnchantments)
         {
             gameEvent.GetValue<List<string>>(EventParameters.Enchantments).Add(EnchantmentEntity.ID);
+        }
+        else if(gameEvent.ID == GameEventId.GetInfo)
+        {
+            EnchantmentEntity.FireEvent(gameEvent);
         }
     }
 }

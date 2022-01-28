@@ -33,6 +33,19 @@ public static class EntityFactory
         }
     }
 
+     private static List<string> s_EnchantmentEntities = new List<string>();
+    public static List<string> EnchantmentEntities
+    {
+        get
+        {
+            if (s_EnchantmentEntities == null)
+                s_EnchantmentEntities = new List<string>();
+            if (m_Blueprints.Count == 0)
+                InitBlueprints();
+            return s_EnchantmentEntities;
+        }
+    }
+
     private static string m_BluePrintPath = "Blueprints";
     private static Dictionary<string, string> m_Blueprints = new Dictionary<string, string>();
 
@@ -55,6 +68,7 @@ public static class EntityFactory
     private static string kEnvironmentPath = "Blueprints\\Environment";
     private static string kWeaponPath = "Blueprints\\Weapons";
     private static string kMonstersPath = "Blueprints\\Monsters";
+    private static string kEnchantmentsPath = "Blueprints\\Enchantments";
     private static string kBossesPath = "Blueprints\\Boss";
     private static string kSpellsPath = "Blueprints\\Spells";
     private static string kObjectsPath = "Blueprints\\Objects";
@@ -84,6 +98,9 @@ public static class EntityFactory
 
             if (bpPath.StartsWith(kArmorPath) || bpPath.StartsWith(kWeaponPath) || bpPath.StartsWith(kItemsPath))
                 s_InventoryEntities.Add(bpName);
+
+            if (bpPath.StartsWith(kEnchantmentsPath))
+                s_EnchantmentEntities.Add(bpName);
 
             if (bpPath.StartsWith(kEnvironmentPath))
                 s_EnvironmentEntities.Add(bpName);
@@ -153,6 +170,12 @@ public static class EntityFactory
     public static string GetRandomItemBPName(int rarity)
     {
         return string.Empty;
+    }
+
+    public static string GetRandomEnchantmentBPName(int rarity)
+    {
+        var list = BlueprintTypeMap[kEnchantmentsPath];
+        return list[RecRandom.Instance.GetRandomValue(0, list.Count)];
     }
 
     public static string GetRandomSpellBPName(int rarity)

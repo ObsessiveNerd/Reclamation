@@ -16,12 +16,18 @@ public class Mana : Component
     public Mana(int maxHealth, int currentHealth = -1)
     {
         MaxMana = maxHealth;
-        CurrentMana = currentHealth > 0 ? currentHealth : maxHealth;
+        //CurrentMana = currentHealth > 0 ? currentHealth : maxHealth;
+        CurrentMana = currentHealth;
 
         RegisteredEvents.Add(GameEventId.RestoreMana);
         RegisteredEvents.Add(GameEventId.DepleteMana);
         RegisteredEvents.Add(GameEventId.GetMana);
         RegisteredEvents.Add(GameEventId.StatBoosted);
+    }
+
+    public override void Start()
+    {
+        CurrentMana = CurrentMana > 0 ? CurrentMana : MaxMana;
     }
 
     public override void HandleEvent(GameEvent gameEvent)
@@ -88,6 +94,6 @@ public class DTO_Mana : IDataTransferComponent
     public string CreateSerializableData(IComponent component)
     {
         Mana mana = (Mana)component;
-        return $"{nameof(Mana)}:{mana.MaxMana},{mana.CurrentMana}";
+        return $"{nameof(Mana)}:{nameof(mana.MaxMana)}={mana.MaxMana},{nameof(mana.CurrentMana)}={mana.CurrentMana}";
     }
 }

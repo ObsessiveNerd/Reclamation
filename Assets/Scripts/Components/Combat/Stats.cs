@@ -15,6 +15,8 @@ public enum Stat
 
 public class Stats : Component
 {
+    public override int Priority => 3;
+
     public int Str;
     public int Agi;
     public int Con;
@@ -41,6 +43,14 @@ public class Stats : Component
         RegisteredEvents.Add(GameEventId.GetSpellSaveDC);
         RegisteredEvents.Add(GameEventId.SavingThrow);
         RegisteredEvents.Add(GameEventId.GetPrimaryStatType);
+    }
+
+    public override void Start()
+    {
+        GameEvent init = GameEventPool.Get(GameEventId.BoostStat)
+                            .With(EventParameters.Stats, this);
+        Self.FireEvent(init);
+        init.Release();
     }
 
     void SetStats(int Str, int Agi, int Con, int Wis, int Int, int Cha)
@@ -124,7 +134,7 @@ public class Stats : Component
             GameEvent statBoosted = GameEventPool.Get(GameEventId.StatBoosted)
                 .With(EventParameters.Stats, this);
 
-            FireEvent(Self, statBoosted);
+            FireEvent(Self, statBoosted).Release();
 
             AttributePoints = Mathf.Max(0, AttributePoints - 1);
         }

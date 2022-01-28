@@ -78,7 +78,7 @@ public class PlayerInputController : InputControllerBase
                 Self.FireEvent(takeDamage).Release();
             }
 
-            else if (Input.GetKeyDown(KeyCode.L))
+            else if (Input.GetKeyDown(KeyCode.Question))
             {
                 GameEvent gainMana = GameEventPool.Get(GameEventId.RestoreMana)
                     .With(EventParameters.Mana, 10);

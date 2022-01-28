@@ -8,9 +8,10 @@ using UnityEngine.EventSystems;
 
 public class InventoryManagerMono : MonoBehaviour, IDropHandler, IUpdatableUI
 {
+    public Action ItemDropped;
     public TextMeshProUGUI Name;
     Transform m_InventoryView;
-    Transform InventoryView
+    public Transform InventoryView
     {
         get
         {
@@ -107,6 +108,8 @@ public class InventoryManagerMono : MonoBehaviour, IDropHandler, IUpdatableUI
             Debug.Log($"Destroy {item.Name}");
             Destroy(eventData.pointerDrag);
         }
+
+        ItemDropped?.Invoke();
     }
 
     public void UpdateUI(IEntity newSource)

@@ -1,0 +1,3 @@
+<FireDamage> (
+	DealDamage:DamageType=Fire,Dice=1d6
+)

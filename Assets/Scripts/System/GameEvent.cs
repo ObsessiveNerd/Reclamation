@@ -200,6 +200,8 @@ public static class GameEventId
     public const string SaveFailed = nameof(SaveFailed);
     public const string CastSpellEffect = nameof(CastSpellEffect);
     public const string GetAmmo = nameof(GetAmmo);
+    public const string GetResistances = nameof(GetResistances);
+    public const string GetImmunity = nameof(GetImmunity);
 
     //Stats
     public const string GetPrimaryStatType = nameof(GetPrimaryStatType);
@@ -282,6 +284,8 @@ public static class EventParameters
     public const string ActionTaken = nameof(ActionTaken);
     public const string RenderSprite = nameof(RenderSprite);
     public const string Restrictions = nameof(Restrictions);
+    public const string Resistances = nameof(Resistances);
+    public const string Immunity = nameof(Immunity);
     public const string Renderer = nameof(Renderer);
     public const string Point = nameof(Point);
     public const string Entity = nameof(Entity);

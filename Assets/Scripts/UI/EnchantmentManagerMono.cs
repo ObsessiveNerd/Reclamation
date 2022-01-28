@@ -11,15 +11,21 @@ public class EnchantmentManagerMono : EscapeableMono
 
     List<GameObject> m_Inventories;
     IEntity m_Enchantment;
+    IEntity m_Source;
 
-    public void Setup(IEntity enchantment)
+    public void Setup(IEntity source, IEntity enchantment)
     {
         UIManager.Push(this);
         View.SetActive(true);
         m_Inventories = UIUtility.CreatePlayerInventories(Inventories);
         m_Enchantment = enchantment;
+        m_Source = source;
+
+        ItemToEnchant.BeforeDrop += NewItemDropped;
         ItemToEnchant.Dropped += CreateEnchantment;
+
         ItemToEnchant.PickedUp += OriginalItemClear;
+
         Result.PickedUp += ResultClear;
     }
 
@@ -36,12 +42,48 @@ public class EnchantmentManagerMono : EscapeableMono
 
     void OriginalItemClear()
     {
-        Result.Cleanup();
+        if(Result.ItemMono != null)
+            Destroy(Result.ItemMono.gameObject);
     }
 
     void ResultClear()
     {
-        ItemToEnchant.Cleanup();
+        if(ItemToEnchant.ItemMono != null)
+        {
+            GameEvent removeFromInventory = GameEventPool.Get(GameEventId.RemoveFromInventory)
+                                        .With(EventParameters.Item, ItemToEnchant.ItemMono.ItemObject.ID);
+            ItemToEnchant.ItemMono.Source.FireEvent(removeFromInventory);
+            removeFromInventory.Release();
+
+            GameEvent destroyEnchantment = GameEventPool.Get(GameEventId.RemoveFromInventory)
+                                            .With(EventParameters.Item, m_Enchantment.ID);
+            m_Source.FireEvent(destroyEnchantment).Release();
+
+            foreach(var imm in FindObjectsOfType<InventoryManagerMono>())
+            {
+                imm.ItemDropped += () =>
+                {
+
+                    UIManager.ForcePop(this);
+                    Services.WorldUIService.UpdateUI();
+                };
+            }
+
+            Destroy(ItemToEnchant.ItemMono.gameObject);
+        }
+    }
+    void NewItemDropped(InventoryItemMono itemMono)
+    {
+        if(itemMono != null && Result.ItemMono != null)
+        {
+            foreach(var imm in FindObjectsOfType<InventoryManagerMono>())
+            {
+                if (imm.Source == itemMono.Source)
+                    itemMono.transform.SetParent(imm.InventoryView, false);
+            }
+            Destroy(Result.ItemMono.gameObject);
+            Result.ItemMono = null;
+        }
     }
 
     void CreateEnchantment(InventoryItemMono itemMono)

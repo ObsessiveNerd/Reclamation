@@ -10,6 +10,7 @@ public class CharacterManagerMono : EscapeableMono, IUpdatableUI
 
     private Dictionary<IEntity, CharacterMono> characters = new Dictionary<IEntity, CharacterMono>();
     private GameObject m_ViewPrefab;
+    private GameObject m_ViewPrefabInstance;
 
     List<GameObject> m_Inventories;
     CharacterMono m_CharacterMono;
@@ -22,16 +23,22 @@ public class CharacterManagerMono : EscapeableMono, IUpdatableUI
         m_OpenedThisFrame = true;
         m_ViewPrefab = Resources.Load<GameObject>("Prefabs/CharacterManager");
         m_Inventories = UIUtility.CreatePlayerInventories(InventoriesView);
+
+        m_ViewPrefabInstance = Instantiate(m_ViewPrefab, CharacterManagerObject.transform);
+        //go.transform.SetParent(CharacterManagerObject.transform);
+        m_CharacterMono = m_ViewPrefabInstance.GetComponent<CharacterMono>();
+        m_CharacterMono.Setup(source);
     }
 
     public void AddCharacter(IEntity source)
     {
+        return;
         if (characters.ContainsKey(source))
             return;
 
-        GameObject go = Instantiate(m_ViewPrefab, CharacterManagerObject.transform);
+        m_ViewPrefabInstance = Instantiate(m_ViewPrefab, CharacterManagerObject.transform);
         //go.transform.SetParent(CharacterManagerObject.transform);
-        m_CharacterMono = go.GetComponent<CharacterMono>();
+        m_CharacterMono = m_ViewPrefabInstance.GetComponent<CharacterMono>();
         m_CharacterMono.Setup(source);
         //characters.Add(source, cm);
     }
@@ -53,6 +60,7 @@ public class CharacterManagerMono : EscapeableMono, IUpdatableUI
     {
         Cleanup();
         CharacterManagerObject.SetActive(false);
+        Destroy(m_ViewPrefabInstance);
         foreach (var inventory in m_Inventories)
         {
             inventory.GetComponent<InventoryManagerMono>().Close();
@@ -64,12 +72,13 @@ public class CharacterManagerMono : EscapeableMono, IUpdatableUI
 
     void Cleanup()
     {
-        foreach(var cm in characters.Keys)
-        {
-            characters[cm].Cleanup();
-            Destroy(characters[cm].gameObject);
-        }
-        characters.Clear();
+        //foreach(var cm in characters.Keys)
+        //{
+        //    characters[cm].Cleanup();
+        //    Destroy(characters[cm].gameObject);
+        //}
+        //characters.Clear();
+        Destroy(m_ViewPrefabInstance);
         WorldUtility.UnRegisterUI(this);
     }
 

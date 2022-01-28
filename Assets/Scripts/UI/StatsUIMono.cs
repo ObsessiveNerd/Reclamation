@@ -7,22 +7,10 @@ using UnityEngine.UI;
 public class StatsUIMono : MonoBehaviour//, IUpdatableUI
 {
     public Stat ControlledStat;
-    TextMeshProUGUI Text;
+    public TextMeshProUGUI Text;
+    public Button Button;
+
     IEntity m_Source;
-    private Button m_Button;
-
-    public Button Button
-    {
-        get
-        {
-            if (m_Button == null)
-            {
-                m_Button = GetComponentInChildren<Button>();
-            }
-            return m_Button;
-
-        }
-    }
 
     public void Setup(IEntity source)
     {

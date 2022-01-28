@@ -16,7 +16,7 @@ public class CharacterMono : MonoBehaviour
     {
         EquipmentView.GetComponent<EquipmentViewMono>().Setup(source);
         CharacterStats.GetComponentInChildren<CharacterStatsMono>().Setup(source);
-        //CharacterStats.GetComponentInChildren<PlayerInfoMono>().Setup(source);
+        InfoView.GetComponentInChildren<PlayerInfoMono>().Setup(source);
         Tab.Setup(source);
     }
 
@@ -24,7 +24,7 @@ public class CharacterMono : MonoBehaviour
     {
         EquipmentView.GetComponent<EquipmentViewMono>().Close();
         CharacterStats.GetComponentInChildren<CharacterStatsMono>().Close();
-        //CharacterStats.GetComponentInChildren<PlayerInfoMono>().Close();
+        InfoView.GetComponentInChildren<PlayerInfoMono>().Close();
     }
 
     public void ToggleSelected(string toggleName)

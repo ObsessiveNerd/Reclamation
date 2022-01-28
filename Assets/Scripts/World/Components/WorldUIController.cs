@@ -17,6 +17,14 @@ public class WorldUIController : GameService
         GameObject.FindObjectOfType<SpellSelectorMono>().Setup(m_ActivePlayer.Value);
     }
 
+    public void UpdateUI()
+    {
+        foreach (var ui in UpdatableUI)
+            ui?.UpdateUI(EntityQuery.GetEntity(Services.WorldDataQuery.GetActivePlayerId()));
+
+        GameObject.FindObjectOfType<SpellSelectorMono>().Setup(m_ActivePlayer.Value);
+    }
+
     public void EntityTookDamage(IEntity entity, int damage)
     {
         if (!m_EntityToPointMap.ContainsKey(entity))
@@ -111,8 +119,8 @@ public class WorldUIController : GameService
         //    GameObject.FindObjectOfType<CharacterManagerMono>().AddCharacter(entity);
     }
 
-    public void OpenEnchantmentUI(IEntity enchantment)
+    public void OpenEnchantmentUI(IEntity source, IEntity enchantment)
     {
-        GameObject.FindObjectOfType<EnchantmentManagerMono>().Setup(enchantment);
+        GameObject.FindObjectOfType<EnchantmentManagerMono>().Setup(source, enchantment);
     }
 }

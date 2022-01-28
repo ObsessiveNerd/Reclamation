@@ -14,7 +14,8 @@ public class Health : Component
     public Health(int maxHealth, int currentHealth = -1)
     {
         MaxHealth = maxHealth;
-        CurrentHealth = currentHealth > 0 ? currentHealth : maxHealth;
+        //CurrentHealth = currentHealth > 0 ? currentHealth : maxHealth;
+        CurrentHealth = currentHealth;
 
         RegisteredEvents.Add(GameEventId.TakeDamage);
         RegisteredEvents.Add(GameEventId.RestoreHealth);
@@ -22,6 +23,11 @@ public class Health : Component
         RegisteredEvents.Add(GameEventId.GetCombatRating);
         RegisteredEvents.Add(GameEventId.GetHealth);
         RegisteredEvents.Add(GameEventId.StatBoosted);
+    }
+
+    public override void Start()
+    {
+        CurrentHealth = CurrentHealth > 0 ? CurrentHealth : MaxHealth;
     }
 
     public override void HandleEvent(GameEvent gameEvent)
@@ -52,7 +58,7 @@ public class Health : Component
         else if (gameEvent.ID == GameEventId.StatBoosted)
         {
             Stats stats = gameEvent.GetValue<Stats>(EventParameters.Stats);
-            MaxHealth = Mathf.Max(0, stats.CalculateModifier(stats.Int) * modMultiplier);
+            MaxHealth = 10 + Mathf.Max(0, stats.CalculateModifier(stats.Con) * modMultiplier);
         }
 
         else if(gameEvent.ID == GameEventId.RegenHealth)
@@ -129,6 +135,6 @@ public class DTO_Health : IDataTransferComponent
     public string CreateSerializableData(IComponent component)
     {
         Health health = (Health)component;
-        return $"{nameof(Health)}:{health.MaxHealth},{health.CurrentHealth}";
+        return $"{nameof(Health)}:{nameof(health.MaxHealth)}={health.MaxHealth},{nameof(health.CurrentHealth)}={health.CurrentHealth}";
     }
 }
