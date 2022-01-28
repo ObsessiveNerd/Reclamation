@@ -55,6 +55,14 @@ public class Equipment : Component
                                             .With(EventParameters.EntityType, PreferredBodyPartWhenEquipped)
                                             .With(EventParameters.Equipment, Self.ID);
 
+                    GameEvent remove = GameEventPool.Get(GameEventId.RemoveFromInventory)
+                                        .With(EventParameters.Item, Self.ID);
+
+                    foreach(var player in Services.WorldDataQuery.GetPlayableCharacters())
+                        Services.EntityMapService.GetEntity(player).FireEvent(remove);
+
+                    remove.Release();
+
                     Services.EntityMapService.GetEntity(Services.WorldDataQuery.GetActivePlayerId()).FireEvent(equip, true).Release();
                     Services.WorldUIService.UpdateUI(Services.WorldDataQuery.GetActivePlayerId());
                 });

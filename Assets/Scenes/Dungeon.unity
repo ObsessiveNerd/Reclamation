@@ -915,8 +915,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 253516613}
-  - component: {fileID: 253516614}
   - component: {fileID: 253516615}
+  - component: {fileID: 253516614}
   m_Layer: 5
   m_Name: CharacterView
   m_TagString: Untagged
@@ -952,7 +952,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 253516612}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8a8695521f0d02e499659fee002a26c2, type: 3}
+  m_Script: {fileID: 11500000, guid: 30649d3a9faa99c48a7b1166b86bf2a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
@@ -960,13 +960,15 @@ MonoBehaviour:
     m_Right: 0
     m_Top: 0
     m_Bottom: 0
-  m_ChildAlignment: 1
-  m_StartCorner: 0
-  m_StartAxis: 1
-  m_CellSize: {x: 200, y: 45}
-  m_Spacing: {x: 10, y: 5}
-  m_Constraint: 0
-  m_ConstraintCount: 1
+  m_ChildAlignment: 4
+  m_Spacing: 0
+  m_ChildForceExpandWidth: 1
+  m_ChildForceExpandHeight: 1
+  m_ChildControlWidth: 1
+  m_ChildControlHeight: 1
+  m_ChildScaleWidth: 0
+  m_ChildScaleHeight: 0
+  m_ReverseArrangement: 0
 --- !u!114 &253516615
 MonoBehaviour:
   m_ObjectHideFlags: 0

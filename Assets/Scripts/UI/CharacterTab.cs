@@ -9,10 +9,16 @@ public class CharacterTab : MonoBehaviour
     public Image m_Portrait;
     public TextMeshProUGUI m_PrettyName;
     public TextMeshProUGUI m_Level;
+
+    public TextMeshProUGUI HealthText;
+    public TextMeshProUGUI ManaText;
+    public TextMeshProUGUI ExpText;
+    
     public Slider m_HealthBar;
     public Slider m_ManaBar;
     public Slider m_ExpBar;
     public GameObject m_ActivePlayerIcon;
+    public bool ShowActivePlayerIcon = true;
 
     private IEntity m_Entity;
     private string m_EId;
@@ -21,7 +27,6 @@ public class CharacterTab : MonoBehaviour
     {
         m_Entity = entity;
         m_EId = m_Entity.ID;
-        m_PrettyName = GetComponentInChildren<TextMeshProUGUI>();
 
         GameEvent characterInfo = GameEventPool.Get(GameEventId.GetPortrait)
                             .With(EventParameters.RenderSprite, null);
@@ -45,6 +50,7 @@ public class CharacterTab : MonoBehaviour
 
         m_HealthBar.maxValue = getHealthResult.GetValue<int>(EventParameters.MaxValue);
         m_HealthBar.value = getHealthResult.GetValue<int>(EventParameters.Value);
+        HealthText.text = $"{m_HealthBar.value}/{m_HealthBar.maxValue}";
 
         getHealthResult.Release();
 
@@ -56,6 +62,7 @@ public class CharacterTab : MonoBehaviour
 
         m_ManaBar.maxValue = getManaResult.GetValue<int>(EventParameters.MaxValue);
         m_ManaBar.value = getManaResult.GetValue<int>(EventParameters.Value);
+        ManaText.text = $"{m_ManaBar.value}/{m_ManaBar.maxValue}";
         getManaResult.Release();
 
         GameEvent getInfo = GameEventPool.Get(GameEventId.GetName)
@@ -71,7 +78,7 @@ public class CharacterTab : MonoBehaviour
 
         m_ExpBar.maxValue = getExpResult.GetValue<int>(EventParameters.MaxValue);
         m_ExpBar.value = getExpResult.GetValue<int>(EventParameters.Value);
-
+        ExpText.text = $"{m_ExpBar.value}/{m_ExpBar.maxValue}";
         getExpResult.Release();
 
         GameEvent getLevel = GameEventPool.Get(GameEventId.GetLevel)
@@ -81,7 +88,7 @@ public class CharacterTab : MonoBehaviour
         m_Level.text = getLevelResult.GetValue<int>(EventParameters.Level).ToString();
         getLevelResult.Release();
 
-        if (WorldUtility.IsActivePlayer(m_Entity.ID))
+        if (WorldUtility.IsActivePlayer(m_Entity.ID) && ShowActivePlayerIcon)
             m_ActivePlayerIcon.SetActive(true);
         else
             m_ActivePlayerIcon.SetActive(false);

@@ -75,7 +75,12 @@ public class CharacterManagerMono : EscapeableMono, IUpdatableUI
 
     public void UpdateUI(IEntity newSource)
     {
-        m_CharacterMono.Setup(newSource);
+        IEntity activePlayer = Services.EntityMapService.GetEntity(Services.WorldDataQuery.GetActivePlayerId());
+        m_CharacterMono.Setup(activePlayer);
+
+        //foreach(var inventory in m_Inventories)
+        //    inventory.GetComponent<InventoryManagerMono>().Setup(null);
+
         //if(characters.ContainsKey(newSource))
         //    characters[newSource].Setup(newSource);
     }

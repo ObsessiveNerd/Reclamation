@@ -8,6 +8,7 @@ using UnityEngine.EventSystems;
 
 public class InventoryManagerMono : MonoBehaviour, IDropHandler, IUpdatableUI
 {
+    public TextMeshProUGUI Name;
     Transform m_InventoryView;
     Transform InventoryView
     {
@@ -27,6 +28,8 @@ public class InventoryManagerMono : MonoBehaviour, IDropHandler, IUpdatableUI
             Source = source;
 
         Cleanup();
+
+        Name.text = Source.Name;
 
         WorldUtility.RegisterUI(this);
         GameEvent getCurrentInventory = GameEventPool.Get(GameEventId.GetCurrentInventory)

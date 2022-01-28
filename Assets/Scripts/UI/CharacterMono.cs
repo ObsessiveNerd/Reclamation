@@ -17,7 +17,7 @@ public class CharacterMono : MonoBehaviour
         EquipmentView.GetComponent<EquipmentViewMono>().Setup(source);
         CharacterStats.GetComponentInChildren<CharacterStatsMono>().Setup(source);
         //CharacterStats.GetComponentInChildren<PlayerInfoMono>().Setup(source);
-
+        Tab.Setup(source);
     }
 
     public void Cleanup()
