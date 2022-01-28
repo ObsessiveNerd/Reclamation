@@ -9,6 +9,8 @@ public class CharacterMono : MonoBehaviour
     public GameObject EquipmentView;
     public GameObject CharacterStats;
     public GameObject InfoView;
+    public CharacterTab Tab;
+
 
     public void Setup(IEntity source)
     {
