@@ -339,6 +339,9 @@ public static class EventParameters
 
     public const string Legs = nameof(Legs);
     public const string Arms = nameof(Arms);
+    public const string Back = nameof(Back);
+    public const string Neck = nameof(Neck);
+    public const string Finger = nameof(Finger);
     public const string Objects = nameof(Objects);
     public const string InventoryContextActions = nameof(InventoryContextActions);
     public const string ChestContextActions = nameof(ChestContextActions);

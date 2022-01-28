@@ -12,6 +12,7 @@ public class CharacterManagerMono : EscapeableMono, IUpdatableUI
     private GameObject m_ViewPrefab;
 
     List<GameObject> m_Inventories;
+    CharacterMono m_CharacterMono;
 
     public void Setup(IEntity source)
     {
@@ -30,9 +31,9 @@ public class CharacterManagerMono : EscapeableMono, IUpdatableUI
 
         GameObject go = Instantiate(m_ViewPrefab, CharacterManagerObject.transform);
         //go.transform.SetParent(CharacterManagerObject.transform);
-        CharacterMono cm = go.GetComponent<CharacterMono>();
-        cm.Setup(source);
-        characters.Add(source, cm);
+        m_CharacterMono = go.GetComponent<CharacterMono>();
+        m_CharacterMono.Setup(source);
+        //characters.Add(source, cm);
     }
 
     public override bool? AlternativeEscapeKeyPressed
@@ -52,6 +53,13 @@ public class CharacterManagerMono : EscapeableMono, IUpdatableUI
     {
         Cleanup();
         CharacterManagerObject.SetActive(false);
+        foreach (var inventory in m_Inventories)
+        {
+            inventory.GetComponent<InventoryManagerMono>().Close();
+            Destroy(inventory);
+        }
+
+        m_Inventories.Clear();
     }
 
     void Cleanup()
@@ -67,7 +75,8 @@ public class CharacterManagerMono : EscapeableMono, IUpdatableUI
 
     public void UpdateUI(IEntity newSource)
     {
-        if(characters.ContainsKey(newSource))
-            characters[newSource].Setup(newSource);
+        m_CharacterMono.Setup(newSource);
+        //if(characters.ContainsKey(newSource))
+        //    characters[newSource].Setup(newSource);
     }
 }

@@ -13,6 +13,7 @@ using UnityEngine.UI;
 
 public class EquipmentViewMono : MonoBehaviour//, IUpdatableUI
 {
+    public Image CharacterSprite;
     public Sprite DefaultImage;
 
     public GameObject Head;
@@ -23,6 +24,10 @@ public class EquipmentViewMono : MonoBehaviour//, IUpdatableUI
 
     //Needs to be hooked up
     public GameObject RightLeg;
+    public GameObject Back;
+    public GameObject Necklace;
+    public GameObject Ring1;
+    public GameObject Ring2;
 
     IEntity m_Source;
 
@@ -61,8 +66,18 @@ public class EquipmentViewMono : MonoBehaviour//, IUpdatableUI
         SetEquipment(firedEvent.GetValue<List<Component>>(EventParameters.Head), new List<GameObject>() { Head });
         SetEquipment(firedEvent.GetValue<List<Component>>(EventParameters.Torso), new List<GameObject>() { Torso });
         SetEquipment(firedEvent.GetValue<List<Component>>(EventParameters.Arms), new List<GameObject>() { LeftArm, RightArm });
-        SetEquipment(firedEvent.GetValue<List<Component>>(EventParameters.Legs), new List<GameObject>() { LeftLeg });
+        SetEquipment(firedEvent.GetValue<List<Component>>(EventParameters.Legs), new List<GameObject>() { LeftLeg, RightLeg });
+        SetEquipment(firedEvent.GetValue<List<Component>>(EventParameters.Legs), new List<GameObject>() { Ring1, Ring2 });
+        SetEquipment(firedEvent.GetValue<List<Component>>(EventParameters.Legs), new List<GameObject>() { Necklace });
+        SetEquipment(firedEvent.GetValue<List<Component>>(EventParameters.Legs), new List<GameObject>() { Back });
         firedEvent.Release();
+
+        GameEvent getPicture = GameEventPool.Get(GameEventId.GetPortrait)
+                                .With(EventParameters.RenderSprite, null);
+        m_Source.FireEvent(getPicture);
+
+        CharacterSprite.sprite = getPicture.GetValue<Sprite>(EventParameters.RenderSprite);
+        getPicture.Release();
     }
 
     void SetEquipment(List<Component> components, List<GameObject> slots)
@@ -87,14 +102,23 @@ public class EquipmentViewMono : MonoBehaviour//, IUpdatableUI
 
                 //TODO, we should probably not assume that the current equipment object is what we're trying to equip
                 for (int j = 0; j < slots[i].transform.childCount; j++)
-                    Destroy(slots[i].transform.GetChild(j).gameObject);
+                    if (slots[i].GetComponent<InventoryItemMono>() != null)
+                        Destroy(slots[i].transform.GetChild(j).gameObject);
+                    else
+                        slots[i].transform.GetChild(j).gameObject.SetActive(false);
 
                 UIUtility.CreateItemGameObject(m_Source, equipment, slots[i].transform);
             }
             else
             {
-                if (slots[i].transform.childCount > 0)
-                    Destroy(slots[i].transform.GetChild(0).gameObject);
+                foreach (var inventoryItem in slots[i].GetComponentsInChildren<InventoryItemMono>(true))
+                    Destroy(inventoryItem.gameObject);
+
+                for (int j = 0; j < slots[i].transform.childCount; j++)
+                    slots[i].transform.GetChild(j).gameObject.SetActive(true);
+                //if (slots[i].transform.childCount > 0)
+                //    if (slots[i].GetComponent<InventoryItemMono>() != null)
+                //        Destroy(slots[i].transform.GetChild(0).gameObject);
             }
         }
     }

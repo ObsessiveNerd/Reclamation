@@ -22,7 +22,7 @@ public class CharacterMono : MonoBehaviour
     {
         EquipmentView.GetComponent<EquipmentViewMono>().Close();
         CharacterStats.GetComponentInChildren<CharacterStatsMono>().Close();
-         //CharacterStats.GetComponentInChildren<PlayerInfoMono>().Close();
+        //CharacterStats.GetComponentInChildren<PlayerInfoMono>().Close();
     }
 
     public void ToggleSelected(string toggleName)
