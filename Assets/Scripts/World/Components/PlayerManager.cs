@@ -26,7 +26,7 @@ public class PlayerManager : GameService
 
     public IEntity GetActivePlayer()
     {
-        return m_ActivePlayer.Value;
+        return m_ActivePlayer?.Value;
     }
 
     public void SetActiveCharacter(string id)

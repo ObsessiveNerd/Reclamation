@@ -31,6 +31,9 @@ public class EquipmentSlot : Component
          if (string.IsNullOrEmpty(EquipmentId))
             return;
 
+        if (Services.EntityMapService.ContainsId(EquipmentId))
+            return;
+
         var entity = EntityQuery.GetEntity(EquipmentId);
         if (entity == null)
         {

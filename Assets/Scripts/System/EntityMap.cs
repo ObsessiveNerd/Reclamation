@@ -17,6 +17,11 @@ public class EntityMap : GameService
         IDToNameMap[e.ID] = e.Name;
     }
 
+    public bool ContainsId(string id)
+    {
+        return m_EntityIdToEntityMap.ContainsKey(id);
+    }
+
     public void DestroyEntity(string id)
     {
         if (m_EntityIdToEntityMap.ContainsKey(id))

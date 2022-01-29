@@ -76,7 +76,7 @@ public class SpellContainer : Component
                 GameEvent removeAbility = GameEventPool.Get(GameEventId.RemoveFromActiveAbilities)
                                             .With(EventParameters.Abilities, SpellNameToIdMap.Values.ToList());
 
-                Services.PlayerManagerService.GetActivePlayer().FireEvent(removeAbility).Release();
+                Services.PlayerManagerService.GetActivePlayer()?.FireEvent(removeAbility).Release();
             }
         }
 
