@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 175686645463201750}
+  - component: {fileID: 6722235546928994460}
   m_Layer: 5
   m_Name: SpellUI
   m_TagString: Untagged
@@ -31,7 +32,6 @@ RectTransform:
   - {fileID: 175686646036566756}
   - {fileID: 5236449230918095575}
   - {fileID: 996246699781531929}
-  - {fileID: 6912162783706496422}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -40,6 +40,21 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &6722235546928994460
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 175686645463201751}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e58a87166062c1a4085b28e480b022f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BG: {fileID: 6027456179975625655}
+  Frame: {fileID: 6748246785461532573}
+  Image: {fileID: 175686646036566759}
 --- !u!1 &175686646036566757
 GameObject:
   m_ObjectHideFlags: 0
@@ -201,6 +216,7 @@ GameObject:
   - component: {fileID: 6912162783706496422}
   - component: {fileID: 3050529849417133846}
   - component: {fileID: 7752090907129714754}
+  - component: {fileID: 4036028700552163935}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -219,11 +235,11 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 175686645463201750}
-  m_RootOrder: 4
+  m_Father: {fileID: 996246699781531929}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.050488696, y: -0.20669532}
-  m_AnchorMax: {x: 0.9495113, y: 0.20085669}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -282,7 +298,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 44.75
+  m_fontSize: 72
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -324,6 +340,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &4036028700552163935
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1129195725947338165}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86710e43de46f6f4bac7c8e50813a599, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_AspectMode: 3
+  m_AspectRatio: 1
 --- !u!1 &6027456179975625655
 GameObject:
   m_ObjectHideFlags: 0
@@ -356,7 +386,7 @@ RectTransform:
   m_Father: {fileID: 175686645463201750}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.20842418, y: -0.2448349}
+  m_AnchorMin: {x: 0.20842385, y: -0.24483502}
   m_AnchorMax: {x: 0.79157704, y: 0.23899627}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
@@ -410,6 +440,7 @@ GameObject:
   - component: {fileID: 996246699781531929}
   - component: {fileID: 3519624174387485136}
   - component: {fileID: 7454369214238931544}
+  - component: {fileID: 3965919633757292507}
   m_Layer: 5
   m_Name: NumberFrame
   m_TagString: Untagged
@@ -427,12 +458,13 @@ RectTransform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
+  m_Children:
+  - {fileID: 6912162783706496422}
   m_Father: {fileID: 175686645463201750}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.20842418, y: -0.2448349}
-  m_AnchorMax: {x: 0.79157704, y: 0.23899627}
+  m_AnchorMin: {x: 0.20842385, y: -0.244717}
+  m_AnchorMax: {x: 0.791577, y: 0.23887831}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -474,3 +506,17 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &3965919633757292507
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6748246785461532573}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86710e43de46f6f4bac7c8e50813a599, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_AspectMode: 1
+  m_AspectRatio: 1

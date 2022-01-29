@@ -12,6 +12,8 @@ public class SpellExaminationUI : EscapeableMono//, IUpdatableUI
     private TextMeshProUGUI Title;
     private TextMeshProUGUI Body;
 
+    IEntity m_ActiveSpell;
+
     public void Setup(List<string> spellList)
     {
         Source = Instantiate(Resources.Load<GameObject>("Prefabs/SpellExamination"));
@@ -38,7 +40,9 @@ public class SpellExaminationUI : EscapeableMono//, IUpdatableUI
                 spriteRenderer.sprite = sprite;
                 spriteGo.transform.SetParent(Content);
 
-                spriteGo.GetComponentInChildren<TextMeshProUGUI>().text = index.ToString();
+                spriteGo.GetComponent<SpellAbilityUIMono>().Setup(spell);
+
+                //spriteGo.GetComponentInChildren<TextMeshProUGUI>().text = index.ToString();
 
                 Button button = spriteGo.AddComponent<Button>();
                 button.onClick.AddListener(() =>
@@ -60,6 +64,8 @@ public class SpellExaminationUI : EscapeableMono//, IUpdatableUI
 
     public void UpdateUI(IEntity newSource)
     {
+        m_ActiveSpell = newSource;
+
         Title.text = newSource.Name;
 
         Dictionary<string, string> classToInfoMap = new Dictionary<string, string>();

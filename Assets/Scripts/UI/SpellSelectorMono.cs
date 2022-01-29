@@ -28,17 +28,23 @@ public class SpellSelectorMono : MonoBehaviour//, IUpdatableUI
         //WorldUIController.UpdateUI(WorldUtility.GetActivePlayerId());
 
         Close();
-        GameEvent getSpells = GameEventPool.Get(GameEventId.GetSpells)
-                                    .With(EventParameters.SpellList, new HashSet<string>());
+        GameEvent getSpells = GameEventPool.Get(GameEventId.GetActiveAbilities)
+                                    .With(EventParameters.Abilities, new List<IEntity>());
 
-        var spellList = source.FireEvent(getSpells).GetValue<HashSet<string>>(EventParameters.SpellList);
+        var spellList = source.FireEvent(getSpells).GetValue<List<IEntity>>(EventParameters.Abilities);
         getSpells.Release();
-        
-        int index = 1;
-        foreach (string spellId in spellList)
-        {
-            IEntity spell = EntityQuery.GetEntity(spellId);
 
+        if (spellList.Count == 0)
+        { 
+            SpellObject.SetActive(false);
+            return;
+        }
+        else
+            SpellObject.SetActive(true);
+
+        int index = 1;
+        foreach (IEntity spell in spellList)
+        {
             GameObject spriteGoResource = Resources.Load<GameObject>("UI/SpellUI");
             GameEvent getSpriteEvent = GameEventPool.Get(GameEventId.GetSprite)
                 .With(EventParameters.RenderSprite, null);
@@ -62,7 +68,6 @@ public class SpellSelectorMono : MonoBehaviour//, IUpdatableUI
                 index++;
             }
         }
-        SpellObject.SetActive(true);
         //UIManager.Push(this);
     }
 

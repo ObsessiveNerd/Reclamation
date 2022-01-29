@@ -13,6 +13,22 @@ public class PlayerManager : GameService
         Services.WorldUIService.UpdateUI(m_ActivePlayer.Value.ID);
     }
 
+    public List<IEntity> GetPlayerActiveAbilities(string id)
+    {
+        List<IEntity> activeAbilities = new List<IEntity>();
+        GameEvent getAbilities = GameEventPool.Get(GameEventId.GetActiveAbilities)
+                                    .With(EventParameters.Abilities, new List<IEntity>());
+        m_EntityIdToEntityMap[id].FireEvent(getAbilities);
+        activeAbilities = getAbilities.GetValue<List<IEntity>>(EventParameters.Abilities);
+        
+        return activeAbilities.Distinct().ToList();
+    }
+
+    public IEntity GetActivePlayer()
+    {
+        return m_ActivePlayer.Value;
+    }
+
     public void SetActiveCharacter(string id)
     {
         string startId = m_ActivePlayer.Value.ID;

@@ -13,6 +13,7 @@
 	Level:CurrentLevel=1,CurrentExp=0
 	EquipmentSlot:EquipmentId=,BodyPartType=Arm
 	EquipmentSlot:EquipmentId=ShortSword,BodyPartType=Arm
+	ActiveAbilities:ActiveAbilitiesList=
 	FOV:FOVRange=5
 	EquipmentSlot:EquipmentId=,BodyPartType=Leg
 	Aggression

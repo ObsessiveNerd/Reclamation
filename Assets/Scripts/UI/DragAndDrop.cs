@@ -10,6 +10,8 @@ public class DragAndDrop : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndD
     CanvasGroup canvasGroup;
     protected bool IsDragging;
 
+    protected virtual bool CanDrag { get { return true; } }
+
     Transform previousParent;
     Vector2 m_LastPosition;
 
@@ -37,24 +39,31 @@ public class DragAndDrop : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndD
 
     public void OnDrag(PointerEventData eventData)
     {
-        transform.position = eventData.position;
+        if(CanDrag)
+            transform.position = eventData.position;
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        IsDragging = false;
-        canvasGroup.blocksRaycasts = true;
-        transform.SetParent(previousParent);
-        transform.position = m_LastPosition;
-        transform.SetAsLastSibling();
+        if(CanDrag)
+        {
+            IsDragging = false;
+            canvasGroup.blocksRaycasts = true;
+            transform.SetParent(previousParent);
+            transform.position = m_LastPosition;
+            transform.SetAsLastSibling();
+        }
     }
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        IsDragging = true;
-        m_LastPosition = transform.position;
-        transform.SetParent(FindObjectOfType<Canvas>().transform);
-        transform.SetAsLastSibling();
-        canvasGroup.blocksRaycasts = false;
+        if(CanDrag)
+        {
+            IsDragging = true;
+            m_LastPosition = transform.position;
+            transform.SetParent(FindObjectOfType<Canvas>().transform);
+            transform.SetAsLastSibling();
+            canvasGroup.blocksRaycasts = false;
+        }
     }
 }

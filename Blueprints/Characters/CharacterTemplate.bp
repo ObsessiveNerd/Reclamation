@@ -16,6 +16,7 @@
 	RegisterWithTimeSystem
 	Body
 	Position:PositionPoint=0
+	ActiveAbilities:ActiveAbilitiesList=
 	Fear
 	Wander
 	AIController

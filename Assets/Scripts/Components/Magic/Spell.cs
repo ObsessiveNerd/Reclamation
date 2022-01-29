@@ -32,6 +32,7 @@ public class Spell : Component
         RegisteredEvents.Add(GameEventId.SaveFailed);
         RegisteredEvents.Add(GameEventId.CastSpellEffect);
         RegisteredEvents.Add(GameEventId.GetSpellType);
+        RegisteredEvents.Add(GameEventId.GetContextMenuActions);
     }
 
     protected virtual void CastSpellEffect(GameEvent gameEvent){ }
@@ -71,6 +72,18 @@ public class Spell : Component
                     break;
             }
         }
+        //else if(gameEvent.ID == GameEventId.GetContextMenuActions)
+        //{
+        //    IEntity source = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameters.Entity));
+        //    ContextMenuButton dropButton = new ContextMenuButton("Add to ActionBar", () =>
+        //    {
+        //        GameEvent addToActiveAbilities = GameEventPool.Get(GameEventId.AddToActiveAbilities)
+        //                                .With(EventParameters.Entity, Self.ID);
+
+        //        FireEvent(source, addToActiveAbilities, true).Release();
+        //    });
+        //    gameEvent.GetValue<List<ContextMenuButton>>(EventParameters.InventoryContextActions).Add(dropButton);
+        //}
     }
 }
 

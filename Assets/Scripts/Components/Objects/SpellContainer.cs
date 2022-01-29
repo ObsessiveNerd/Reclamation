@@ -58,6 +58,7 @@ public class SpellContainer : Component
         RegisteredEvents.Add(GameEventId.GetSpells);
         RegisteredEvents.Add(GameEventId.GetInfo);
         RegisteredEvents.Add(GameEventId.ItemEquipped);
+        RegisteredEvents.Add(GameEventId.ItemUnequipped);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
@@ -66,6 +67,17 @@ public class SpellContainer : Component
         {
             foreach (var key in SpellNameToIdMap.Keys)
                 gameEvent.GetValue<HashSet<string>>(EventParameters.SpellList).Add(SpellNameToIdMap[key].ID);
+        }
+
+        else if(gameEvent.ID == GameEventId.ItemUnequipped)
+        {
+            foreach (var key in SpellNameToIdMap.Keys)
+            {
+                GameEvent removeAbility = GameEventPool.Get(GameEventId.RemoveFromActiveAbilities)
+                                            .With(EventParameters.Abilities, SpellNameToIdMap.Values.ToList());
+
+                Services.PlayerManagerService.GetActivePlayer().FireEvent(removeAbility).Release();
+            }
         }
 
         else if (gameEvent.ID == GameEventId.GetInfo)

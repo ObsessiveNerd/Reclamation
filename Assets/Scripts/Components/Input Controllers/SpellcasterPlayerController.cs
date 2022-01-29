@@ -20,11 +20,11 @@ public class SpellcasterPlayerController : InputControllerBase
     {
         base.Init(self);
 
-        GameEvent getSpells = GameEventPool.Get(GameEventId.GetSpells)
-                                    .With(EventParameters.SpellList, new HashSet<string>());
+        GameEvent getSpells = GameEventPool.Get(GameEventId.GetActiveAbilities)
+                                    .With(EventParameters.Abilities, new List<IEntity>());
 
         var eventResult = Self.FireEvent(getSpells);
-        var spellList = eventResult.GetValue<HashSet<string>>(EventParameters.SpellList);
+        var spellList = eventResult.GetValue<List<IEntity>>(EventParameters.Abilities);
         if(spellList.Count == 0)
         {
             Self.RemoveComponent(this);
@@ -34,7 +34,7 @@ public class SpellcasterPlayerController : InputControllerBase
 
         if(spellList.ToList().Count() > m_SpellIndex)
         {
-            m_Attack = EntityQuery.GetEntity(spellList.ToList()[m_SpellIndex]);
+            m_Attack = spellList[m_SpellIndex];
 
             GameEvent getCurrentMana = GameEventPool.Get(GameEventId.GetMana)
                                             .With(EventParameters.Value, 0);

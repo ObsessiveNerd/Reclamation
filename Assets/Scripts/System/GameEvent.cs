@@ -256,6 +256,9 @@ public static class GameEventId
     public const string OpenSpellSelector = nameof(OpenSpellSelector);
     public const string AffectArea = nameof(AffectArea);
     public const string GetSpellSaveDC = nameof(GetSpellSaveDC);
+    public const string GetActiveAbilities = nameof(GetActiveAbilities);
+    public const string AddToActiveAbilities = nameof(AddToActiveAbilities);
+    public const string RemoveFromActiveAbilities = nameof(RemoveFromActiveAbilities);
 
     //Enchanment
     public const string EnchantItem = nameof(EnchantItem);
@@ -282,6 +285,7 @@ public static class EventParameters
     public const string RequiredEnergy = nameof(RequiredEnergy);
     public const string EnergyRegen = nameof(EnergyRegen);
     public const string ActionTaken = nameof(ActionTaken);
+    public const string Abilities = nameof(Abilities);
     public const string RenderSprite = nameof(RenderSprite);
     public const string Restrictions = nameof(Restrictions);
     public const string Resistances = nameof(Resistances);
