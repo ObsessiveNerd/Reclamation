@@ -62,4 +62,10 @@ public class EnchantItemSlotMono : MonoBehaviour, IDropHandler
         else
             hadItemPreviously = true;
     }
+
+    public void Cleanup()
+    {
+        if(ItemMono != null)
+            Destroy(ItemMono.gameObject);
+    }
 }

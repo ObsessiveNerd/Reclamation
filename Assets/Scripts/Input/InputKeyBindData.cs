@@ -70,16 +70,36 @@ public class InputKeyBindData
     KeyCode SpellSelect5;
 #pragma warning restore 0414
 
-    public InputKeyBindData()
+    public enum InputDefaultType
     {
-        MoveN = KeyCode.Keypad8;
-        MoveNE = KeyCode.Keypad9;
-        MoveE = KeyCode.Keypad6;
-        MoveSE = KeyCode.Keypad3;
-        MoveS = KeyCode.Keypad2;
-        MoveSW = KeyCode.Keypad1;
-        MoveW = KeyCode.Keypad4;
-        MoveNW = KeyCode.Keypad7;
+        FullKeyboard,
+        Laptop
+    }
+
+    public InputKeyBindData(InputDefaultType inputType)
+    {
+        if (inputType == InputDefaultType.FullKeyboard)
+        {
+            MoveN = KeyCode.Keypad8;
+            MoveNE = KeyCode.Keypad9;
+            MoveE = KeyCode.Keypad6;
+            MoveSE = KeyCode.Keypad3;
+            MoveS = KeyCode.Keypad2;
+            MoveSW = KeyCode.Keypad1;
+            MoveW = KeyCode.Keypad4;
+            MoveNW = KeyCode.Keypad7;
+        }
+        else if(inputType == InputDefaultType.Laptop)
+        {
+            MoveN = KeyCode.W;
+            MoveNE = KeyCode.E;
+            MoveE = KeyCode.D;
+            MoveSE = KeyCode.X;
+            MoveS = KeyCode.S;
+            MoveSW = KeyCode.Z;
+            MoveW = KeyCode.A;
+            MoveNW = KeyCode.Q;
+        }
 
         OpenInventory = KeyCode.I;
         FireRangedWeapon = KeyCode.F;

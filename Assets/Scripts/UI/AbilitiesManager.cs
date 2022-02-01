@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,6 +8,7 @@ public class AbilitiesManager : MonoBehaviour
 {
     GameObject ActionBar;
     public Transform Content;
+    public GameObject NoAbilitiesText;
 
     IEntity m_Source;
 
@@ -22,6 +24,11 @@ public class AbilitiesManager : MonoBehaviour
                                 .With(EventParameters.SpellList, new HashSet<string>());
 
         var spellList = source.FireEvent(getSpells).GetValue<HashSet<string>>(EventParameters.SpellList);
+
+        if (spellList.Count == 0)
+            NoAbilitiesText.SetActive(true);
+        else
+            NoAbilitiesText.SetActive(false);
 
         foreach (string spellId in spellList)
         {

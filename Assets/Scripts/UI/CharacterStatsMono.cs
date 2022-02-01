@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public class CharacterStatsMono : MonoBehaviour//, IUpdatableUI
 {
-    public TextMeshProUGUI Name;
+    //public TextMeshProUGUI Name;
     public TextMeshProUGUI AttributePoints;
     List<StatsUIMono> StatMonos;
 

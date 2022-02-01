@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class EnchantmentManagerMono : EscapeableMono
@@ -8,6 +9,7 @@ public class EnchantmentManagerMono : EscapeableMono
     public Transform Inventories;
     public EnchantItemSlotMono ItemToEnchant;
     public EnchantItemSlotMono Result;
+    public TMP_InputField NewAssetName;
 
     List<GameObject> m_Inventories;
     IEntity m_Enchantment;
@@ -21,23 +23,52 @@ public class EnchantmentManagerMono : EscapeableMono
         m_Enchantment = enchantment;
         m_Source = source;
 
+        ItemToEnchant.BeforeDrop -= NewItemDropped;
         ItemToEnchant.BeforeDrop += NewItemDropped;
+        
+        ItemToEnchant.Dropped -= CreateEnchantment;
         ItemToEnchant.Dropped += CreateEnchantment;
 
+        ItemToEnchant.PickedUp -= OriginalItemClear;
         ItemToEnchant.PickedUp += OriginalItemClear;
 
+        Result.PickedUp -= ResultClear;
         Result.PickedUp += ResultClear;
     }
 
     public override void OnEscape()
     {
-        foreach (GameObject go in m_Inventories)
+        Clear(false);
+    }
+
+    void Clear(bool itemDroppedIntoInventory)
+    {
+         foreach (GameObject go in m_Inventories)
         {
             go.GetComponent<InventoryManagerMono>().Close();
             Destroy(go);
         }
+
         m_Inventories.Clear();
         View.SetActive(false);
+
+        if(!itemDroppedIntoInventory && Result.ItemMono != null && ItemToEnchant.ItemMono == null)
+        {
+            //emergency save the item
+            GameEvent addToInventory = GameEventPool.Get(GameEventId.AddToInventory)
+                                        .With(EventParameters.Entity, Result.ItemMono.ItemObject.ID);
+            Services.PlayerManagerService.GetActivePlayer().FireEvent(addToInventory);
+            addToInventory.Release();
+        }
+
+        Result.Cleanup();
+        ItemToEnchant.Cleanup();
+
+        //UIManager.ForcePop(this);
+        Services.WorldUIService.OpenInventory(m_Source);
+        Services.WorldUIService.UpdateUI();
+        ItemToEnchant.AcceptsDrop = true;
+        NewAssetName.text = "Name...";
     }
 
     void OriginalItemClear()
@@ -50,6 +81,7 @@ public class EnchantmentManagerMono : EscapeableMono
     {
         if(ItemToEnchant.ItemMono != null)
         {
+            ItemToEnchant.AcceptsDrop = false;
             GameEvent removeFromInventory = GameEventPool.Get(GameEventId.RemoveFromInventory)
                                         .With(EventParameters.Item, ItemToEnchant.ItemMono.ItemObject.ID);
             ItemToEnchant.ItemMono.Source.FireEvent(removeFromInventory);
@@ -59,13 +91,28 @@ public class EnchantmentManagerMono : EscapeableMono
                                             .With(EventParameters.Item, m_Enchantment.ID);
             m_Source.FireEvent(destroyEnchantment).Release();
 
-            foreach(var imm in FindObjectsOfType<InventoryManagerMono>())
+            if (!Result.ItemMono.ItemObject.HasComponent(typeof(Name)))
+            {
+                Name name = new Name(NewAssetName.text);
+                name.Init(Result.ItemMono.ItemObject);
+                Result.ItemMono.ItemObject.AddComponent(name);
+                Result.ItemMono.ItemObject.CleanupComponents();
+            }
+            else
+            {
+                GameEvent nameNewItem = GameEventPool.Get(GameEventId.SetName)
+                                    .With(EventParameters.Name, NewAssetName.text);
+                Result.ItemMono.ItemObject.FireEvent(nameNewItem);
+                nameNewItem.Release();
+            }
+
+            foreach (var imm in FindObjectsOfType<InventoryManagerMono>())
             {
                 imm.ItemDropped += () =>
                 {
-
-                    UIManager.ForcePop(this);
-                    Services.WorldUIService.UpdateUI();
+                    Clear(true);
+                    foreach(var im in FindObjectsOfType<InventoryManagerMono>())
+                        im.ClearCallback();
                 };
             }
 
@@ -110,5 +157,6 @@ public class EnchantmentManagerMono : EscapeableMono
 
         newObject.CleanupComponents();
         Result.ItemMono = UIUtility.CreateItemGameObject(source, newObject, Result.transform).GetComponent<InventoryItemMono>();
+        NewAssetName.text = ItemToEnchant.ItemMono.ItemObject.Name;
     }
 }

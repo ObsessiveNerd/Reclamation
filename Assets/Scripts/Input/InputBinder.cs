@@ -36,7 +36,7 @@ public class InputBinder : MonoBehaviour
         Directory.CreateDirectory(Path.GetDirectoryName(InputConfigPath));
         if(!File.Exists(InputConfigPath))
         {
-            m_Data = new InputKeyBindData();
+            m_Data = new InputKeyBindData(InputKeyBindData.InputDefaultType.FullKeyboard);
             string stringData = JsonUtility.ToJson(m_Data);
             File.WriteAllText(InputConfigPath, stringData);
         }
@@ -75,7 +75,14 @@ public class InputBinder : MonoBehaviour
 
     public void ResetToDefault()
     {
-        m_Data = new InputKeyBindData();
+        m_Data = new InputKeyBindData(InputKeyBindData.InputDefaultType.FullKeyboard);
+        File.Delete(InputConfigPath);
+        File.WriteAllText(InputConfigPath, JsonUtility.ToJson(m_Data));
+    }
+
+    public void ResetToLaptopDefaults()
+    {
+        m_Data = new InputKeyBindData(InputKeyBindData.InputDefaultType.Laptop);
         File.Delete(InputConfigPath);
         File.WriteAllText(InputConfigPath, JsonUtility.ToJson(m_Data));
     }
