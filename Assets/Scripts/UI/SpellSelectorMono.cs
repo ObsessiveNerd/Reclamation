@@ -4,17 +4,20 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SpellSelectorMono : MonoBehaviour//, IUpdatableUI
+public class SpellSelectorMono : MonoBehaviour, IUpdatableUI
 {
     public GameObject SpellObject;
     public GameObject SpellView;
 
-    //void Start()
-    //{
-    //    //WorldUtility.RegisterUI(this);
+    void Start()
+    {
+        WorldUtility.RegisterUI(this);
+    }
 
-        
-    //}
+    void OnDisable()
+    {
+        WorldUtility.UnRegisterUI(this);
+    }
 
     public void Setup(IEntity source)
     {
@@ -59,6 +62,23 @@ public class SpellSelectorMono : MonoBehaviour//, IUpdatableUI
 
                 spriteGo.GetComponentInChildren<TextMeshProUGUI>().text = index.ToString();
 
+                GameEvent getMana = GameEventPool.Get(GameEventId.GetMana)
+                                    .With(EventParameters.Value, 0)
+                                    .With(EventParameters.MaxValue, 0);
+                source.FireEvent(getMana);
+
+                GameEvent getSpellCost = GameEventPool.Get(GameEventId.ManaCost)
+                                        .With(EventParameters.Value, 0);
+                spell.FireEvent(getSpellCost);
+
+                if (getMana.GetValue<int>(EventParameters.Value) < getSpellCost.GetValue<int>(EventParameters.Value))
+                    spriteRenderer.color = Color.black;
+                else
+                    spriteRenderer.color = Color.white;
+
+                getSpellCost.Release();
+                getMana.Release();
+
                 //Button button = spriteGo.AddComponent<Button>();
                 //button.onClick.AddListener(() =>
                 //{
@@ -73,6 +93,9 @@ public class SpellSelectorMono : MonoBehaviour//, IUpdatableUI
 
     public void UpdateUI(IEntity newSource)
     {
+        if (newSource == null || !WorldUtility.IsActivePlayer(newSource.ID))
+            return;
+
         Debug.Log("Update Spellselector");
         Close();
         Setup(newSource);

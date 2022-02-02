@@ -24,8 +24,8 @@ public class WorldUpdate : GameService
         if (!StopTime && !WorldEnded)
         {
             m_TimeProgression.Update();
-            //if (GameEventPool.GameEventsInUse)
-            //    Debug.LogError("GameEvents were unreleased");
+            if (GameEventPool.GameEventsInUse)
+                Debug.LogError("GameEvents were unreleased");
         }
     }
 }

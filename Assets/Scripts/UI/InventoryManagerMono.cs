@@ -114,6 +114,7 @@ public class InventoryManagerMono : MonoBehaviour, IDropHandler, IUpdatableUI
         GameEvent addToInventory = GameEventPool.Get(GameEventId.AddToInventory)
                                     .With(EventParameters.Entity, item.ID);
         Source.FireEvent(addToInventory);
+        addToInventory.Release();
 
         //eventData.pointerDrag.GetComponent<InventoryItemMono>().Init(Source, item);
         //eventData.pointerDrag.GetComponent<DragAndDrop>().Set(InventoryView.position, InventoryView.transform);

@@ -24,6 +24,7 @@ public class AbilitiesManager : MonoBehaviour
                                 .With(EventParameters.SpellList, new HashSet<string>());
 
         var spellList = source.FireEvent(getSpells).GetValue<HashSet<string>>(EventParameters.SpellList);
+        getSpells.Release();
 
         if (spellList.Count == 0)
             NoAbilitiesText.SetActive(true);

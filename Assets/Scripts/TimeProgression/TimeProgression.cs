@@ -82,7 +82,7 @@ public class TimeProgression
         Update();
     }
     
-    GameEvent update = GameEventPool.Get(GameEventId.UpdateEntity)
+    GameEvent update = new GameEvent(GameEventId.UpdateEntity)
         .With(EventParameters.TakeTurn, false)
         .With(EventParameters.UpdateWorldView, false);
 
@@ -141,6 +141,7 @@ public class TimeProgression
             }
             endTurn.Release();
             Services.WorldUpdateService.UpdateWorldView();
+            Services.WorldUIService.UpdateUI();
         }
 
         //ObjectPool.Return(update);

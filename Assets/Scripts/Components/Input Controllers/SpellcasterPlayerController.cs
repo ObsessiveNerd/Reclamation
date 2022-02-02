@@ -29,6 +29,7 @@ public class SpellcasterPlayerController : InputControllerBase
         {
             Self.RemoveComponent(this);
             Self.AddComponent(new PlayerInputController());
+            getSpells.Release();
             return;
         }
 
@@ -90,7 +91,7 @@ public class SpellcasterPlayerController : InputControllerBase
         m_Attack.FireEvent(selectTile);
         Services.TileSelectionService.SelectTile(m_TileSelection);
         Services.WorldUpdateService.UpdateWorldView();
-
+        selectTile.Release();
         UIManager.Push(null);
     }
 

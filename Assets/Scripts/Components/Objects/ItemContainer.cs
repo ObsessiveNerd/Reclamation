@@ -75,6 +75,7 @@ public class ItemContainer : Component
 
             GameEvent uiOpened = GameEventPool.Get(GameEventId.OpenUI);
             Services.EntityMapService.GetEntity(characterId).FireEvent(uiOpened);
+            uiOpened.Release();
 
             Services.WorldUIService.OpenChestUI(Self, Services.EntityMapService.GetEntity(characterId));
         }

@@ -27,6 +27,7 @@ public class SpellAbilityUIMono : ItemMono, IPointerDownHandler
             Image.color = Color.white;
         else
             Image.color = Color.green;
+        getActiveAbilities.Release();
     }
 
     public void OnPointerDown(PointerEventData eventData)

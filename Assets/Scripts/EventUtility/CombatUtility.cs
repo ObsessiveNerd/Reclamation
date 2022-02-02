@@ -32,7 +32,10 @@ public static class CombatUtility
             GameEvent depleteMana = GameEventPool.Get(GameEventId.DepleteMana).With(EventParameters.Mana, cost);
             source.FireEvent(depleteMana);
 
+            GameEvent useEnergy = GameEventPool.Get(GameEventId.UseEnergy).With(EventParameters.Value, 1.0f);
+            source.FireEvent(useEnergy);
 
+            useEnergy.Release();
             depleteMana.Release();
             affectArea.Release();
             manaCost.Release();
@@ -320,6 +323,7 @@ public static class CombatUtility
                                         .With(EventParameters.SpellList, new HashSet<string>());
 
         HashSet<string> spells = source.FireEvent(getSpells).GetValue<HashSet<string>>(EventParameters.SpellList);
+        getSpells.Release();
 
         return spells.Select(id => Services.EntityMapService.GetEntity(id)).ToList();
     }

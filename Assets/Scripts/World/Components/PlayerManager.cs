@@ -20,7 +20,7 @@ public class PlayerManager : GameService
                                     .With(EventParameters.Abilities, new List<IEntity>());
         m_EntityIdToEntityMap[id].FireEvent(getAbilities);
         activeAbilities = getAbilities.GetValue<List<IEntity>>(EventParameters.Abilities);
-        
+        getAbilities.Release();
         return activeAbilities.Distinct().ToList();
     }
 
