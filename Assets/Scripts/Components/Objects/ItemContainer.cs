@@ -73,6 +73,9 @@ public class ItemContainer : Component
                 sb.AppendLine(item.Name);
             Debug.Log(sb.ToString());
 
+            GameEvent uiOpened = GameEventPool.Get(GameEventId.OpenUI);
+            Services.EntityMapService.GetEntity(characterId).FireEvent(uiOpened);
+
             Services.WorldUIService.OpenChestUI(Self, Services.EntityMapService.GetEntity(characterId));
         }
     }

@@ -8,6 +8,7 @@ public class PlayerInputController : InputControllerBase
     {
         base.Init(self);
         RegisteredEvents.Add(GameEventId.UpdateEntity);
+        RegisteredEvents.Add(GameEventId.OpenUI);
         //RegisteredEvents.Add(GameEventId.GetSprite);
         //RegisteredEvents.Add(GameEventId.AlterSprite);
     }
@@ -47,7 +48,8 @@ public class PlayerInputController : InputControllerBase
                     .With(EventParameters.Weapon, new List<string>()));
 
                 List<string> weapons = getRangedWeapon.GetValue<List<string>>(EventParameters.Weapon);
-                if (weapons.Count == 0) return;
+                if (weapons.Count == 0)
+                    return;
 
                 IEntity weapon = EntityQuery.GetEntity(weapons[0]);
                 if (weapon.HasComponent(typeof(Bow)))
@@ -155,6 +157,13 @@ public class PlayerInputController : InputControllerBase
                 checkForEnergy.Release();
             }
         }
+
+        else if (gameEvent.ID == GameEventId.OpenUI)
+        {
+            Self.RemoveComponent(this);
+            Self.AddComponent(new PlayerUIController());
+        }
+
 
         //Just for testing
         else if (gameEvent.ID == GameEventId.GetSprite)

@@ -17,6 +17,11 @@ public class SimpleTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         m_Popup = Resources.Load<GameObject>("UI/ItemPopup");
     }
 
+    void OnDisable()
+    {
+        Destroy(m_PopupInstance);
+    }
+
     public void OnPointerExit(PointerEventData eventData)
     {
         Destroy(m_PopupInstance);

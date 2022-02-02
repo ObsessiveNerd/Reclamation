@@ -28,6 +28,12 @@ public class StatsUIMono : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         Destroy(m_PopupInstance);
     }
 
+    void OnDisable()
+    {
+        Destroy(m_PopupInstance);
+        m_PopupInstance = null;
+    }
+
     public void Setup(IEntity source)
     {
         if (Text == null)

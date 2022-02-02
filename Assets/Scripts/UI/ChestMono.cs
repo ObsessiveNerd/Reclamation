@@ -35,7 +35,6 @@ public class ChestMono : EscapeableMono, IUpdatableUI
     {
         Cleanup();
 
-
         //GameObject go = Resources.Load<GameObject>("UI/InventoryItem");
         GameEvent getItems = GameEventPool.Get(GameEventId.GetItems)
                                 .With(EventParameters.Items, new List<string>());
@@ -63,12 +62,8 @@ public class ChestMono : EscapeableMono, IUpdatableUI
     public override void OnEscape()
     {
         Cleanup();
-        foreach (GameObject go in m_Inventories)
-        {
-            go.GetComponent<InventoryManagerMono>().Close();
-            Destroy(go);
-        }
-        m_Inventories.Clear();
+        UIUtility.ClosePlayerInventory();
+
         WorldUtility.UnRegisterUI(this);
         ChestUI.SetActive(false);
         m_Chest = null;

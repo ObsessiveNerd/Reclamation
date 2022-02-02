@@ -36,17 +36,33 @@ public static class UIUtility
         return null;
     }
 
+    static List<GameObject> m_Inventories = new List<GameObject>();
+
+    public static void ClosePlayerInventory()
+    {
+        foreach (var inventory in m_Inventories)
+        {
+            inventory.GetComponent<InventoryManagerMono>().Close();
+            GameObject.Destroy(inventory);
+        }
+
+        m_Inventories.Clear();
+    }
+
     public static List<GameObject> CreatePlayerInventories(Transform parent)
     {
-        List<GameObject> inventories = new List<GameObject>();
+        if (m_Inventories.Count > 0)
+            ClosePlayerInventory();
+
+        m_Inventories = new List<GameObject>();
         GameObject inventory = Resources.Load<GameObject>("UI/Inventory");
         foreach (string id in Services.WorldDataQuery.GetPlayableCharacters())
         {
             GameObject go = GameObject.Instantiate(inventory);
             go.GetComponent<InventoryManagerMono>().Setup(Services.EntityMapService.GetEntity(id));
             go.transform.SetParent(parent, false);
-            inventories.Add(go);
+            m_Inventories.Add(go);
         }
-        return inventories;
+        return m_Inventories;
     }
 }

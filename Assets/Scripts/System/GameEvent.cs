@@ -233,6 +233,7 @@ public static class GameEventId
     public const string UIInput = nameof(UIInput);
     public const string CloseUI = nameof(CloseUI);
     public const string OpenInventoryUI = nameof(OpenInventoryUI);
+    public const string OpenUI = nameof(OpenUI);
     public const string OpenChestUI = nameof(OpenChestUI);
     public const string RegisterUI = nameof(RegisterUI);
     public const string UnRegisterUI = nameof(UnRegisterUI);

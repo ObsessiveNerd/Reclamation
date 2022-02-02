@@ -22,7 +22,8 @@ public class CharacterManagerMono : EscapeableMono, IUpdatableUI
         CharacterManagerObject.SetActive(true);
         m_OpenedThisFrame = true;
         m_ViewPrefab = Resources.Load<GameObject>("Prefabs/CharacterManager");
-        m_Inventories = UIUtility.CreatePlayerInventories(InventoriesView);
+
+            m_Inventories = UIUtility.CreatePlayerInventories(InventoriesView);
 
         m_ViewPrefabInstance = Instantiate(m_ViewPrefab, CharacterManagerObject.transform);
         //go.transform.SetParent(CharacterManagerObject.transform);
@@ -59,15 +60,10 @@ public class CharacterManagerMono : EscapeableMono, IUpdatableUI
     public override void OnEscape()
     {
         Cleanup();
+        UIUtility.ClosePlayerInventory();
         CharacterManagerObject.SetActive(false);
         Destroy(m_ViewPrefabInstance);
-        foreach (var inventory in m_Inventories)
-        {
-            inventory.GetComponent<InventoryManagerMono>().Close();
-            Destroy(inventory);
-        }
-
-        m_Inventories.Clear();
+        
     }
 
     void Cleanup()
