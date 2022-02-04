@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CombatRating : Component
+public class CombatRating : EntityComponent
 {
     public override void Init(IEntity self)
     {

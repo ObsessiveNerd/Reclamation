@@ -14,14 +14,14 @@ public interface IComponent
     void Start();
 }
 
-public class Component : IComponent
+public class EntityComponent : IComponent
 {
     public virtual void Init(IEntity self)
     {
         m_Self = self;
     }
 
-    public Component() { }
+    public EntityComponent() { }
 
     //Priority right now is from 1 to 10
     public virtual int Priority { get { return 5; } }

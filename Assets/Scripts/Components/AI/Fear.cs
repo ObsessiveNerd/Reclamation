@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Fear : Component
+public class Fear : EntityComponent
 {
     Point m_CurrentLocation;
     Point m_TargetLocation;

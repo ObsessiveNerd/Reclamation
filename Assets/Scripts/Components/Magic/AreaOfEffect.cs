@@ -10,7 +10,7 @@ public enum AreaOfEffectType
     Cone
 }
 
-public class AreaOfEffect : Component
+public class AreaOfEffect : EntityComponent
 {
     public int Range;
     public AreaOfEffectType AOEType;

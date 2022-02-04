@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LogMessageBeforeMoving : Component
+public class LogMessageBeforeMoving : EntityComponent
 {
     public LogMessageBeforeMoving()
     {

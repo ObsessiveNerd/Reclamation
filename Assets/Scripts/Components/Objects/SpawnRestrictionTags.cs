@@ -36,7 +36,7 @@ public class SpawnRestriction
     }
 }
 
-public class SpawnRestrictor : Component
+public class SpawnRestrictor : EntityComponent
 {
     public SpawnRestriction Restrictions;
 

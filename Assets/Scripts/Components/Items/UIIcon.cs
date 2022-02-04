@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UIIcon : Component
+public class UIIcon : EntityComponent
 {
     public string IconPath;
 

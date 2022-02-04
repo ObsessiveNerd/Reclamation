@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ActiveWhileEquiped : Component
+public class ActiveWhileEquiped : EntityComponent
 {
     public override void Init(IEntity self)
     {

@@ -80,7 +80,7 @@ public struct Point
     }
 }
 
-public class Tile : Component
+public class Tile : EntityComponent
 {
     public IEntity CreatureSlot;
     public IEntity ObjectSlot;

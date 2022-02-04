@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ActiveAbilities : Component
+public class ActiveAbilities : EntityComponent
 {
     public List<IEntity> ActiveAbilitiesList = new List<IEntity>();
 

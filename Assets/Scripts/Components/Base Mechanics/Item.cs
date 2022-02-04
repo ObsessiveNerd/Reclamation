@@ -12,7 +12,7 @@ public enum ItemRarity
     Mythic = 20
 }
 
-public class Item : Component
+public class Item : EntityComponent
 {
     public ItemRarity Rarity;
 

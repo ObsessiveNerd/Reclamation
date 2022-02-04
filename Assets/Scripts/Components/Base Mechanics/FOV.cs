@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-public class FOV : Component
+public class FOV : EntityComponent
 {
     IFovAlgorithm m_Fov;
     public int FOVRange;

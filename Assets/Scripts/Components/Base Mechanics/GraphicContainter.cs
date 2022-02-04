@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GraphicContainer : Component
+public class GraphicContainer : EntityComponent
 {
     private Sprite m_Sprite;
     public string SpritePath;

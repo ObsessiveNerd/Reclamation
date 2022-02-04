@@ -21,7 +21,7 @@ MonoBehaviour:
   - name: Landscape
     checkOrientation:
       expectedOrientation: 1
-      isActive: 1
+      isActive: 0
     checkScreenSize:
       measureType: 1
       unitType: 0
@@ -37,6 +37,6 @@ MonoBehaviour:
       expectedDeviceInfo: 0
       isActive: 0
     optimizedScreenInfo:
-      resolution: {x: 1920, y: 1080}
+      resolution: {x: 1000, y: 1000}
       dpi: 96
     fallbacks: []

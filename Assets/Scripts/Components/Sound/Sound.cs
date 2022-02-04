@@ -29,7 +29,7 @@ public class SoundPath
     }
 }
 
-public class Sound : Component
+public class Sound : EntityComponent
 {
     public SoundPath SoundPath;
     public string Key;

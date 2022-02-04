@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Portrait : Component
+public class Portrait : EntityComponent
 {
     Sprite m_Sprite;
     public string SpritePath;

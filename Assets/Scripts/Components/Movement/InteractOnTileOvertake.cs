@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InteractOnTileOvertake : Component
+public class InteractOnTileOvertake : EntityComponent
 {
     public override void Init(IEntity self)
     {

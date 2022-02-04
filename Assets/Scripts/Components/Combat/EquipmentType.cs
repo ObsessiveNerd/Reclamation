@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EquipmentType : Component
+public class EquipmentType : EntityComponent
 {
     public BodyPart EquipmentBodyPart;
 

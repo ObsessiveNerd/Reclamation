@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Drunk : Component
+public class Drunk : EntityComponent
 {
     public int DrunkRounds;
     public int CurrentDrunkRounds;

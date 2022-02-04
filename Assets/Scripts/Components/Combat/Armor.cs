@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 //This will need to be re-worked some as there should be armor (and weapon) slots instead of adding some of these components directly to the entity
-public class Armor : Component
+public class Armor : EntityComponent
 {
     public int ArmorAmount;
     public Armor(int armor)

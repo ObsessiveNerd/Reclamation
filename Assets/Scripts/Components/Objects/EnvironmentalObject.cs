@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnvironmentalObject : Component
+public class EnvironmentalObject : EntityComponent
 {
     public EnvironmentalObject()
     {

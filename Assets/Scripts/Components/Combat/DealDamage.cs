@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DealDamage : Component
+public class DealDamage : EntityComponent
 {
     public DamageType DamageType;
     public Dice Dice;

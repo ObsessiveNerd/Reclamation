@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-public class ItemContainer : Component
+public class ItemContainer : EntityComponent
 {
     public Dictionary<string, IEntity> IDToEntityMap = new Dictionary<string, IEntity>();
 

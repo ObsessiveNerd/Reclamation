@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Defense : Component
+public class Defense : EntityComponent
 {
     const int kBaseAC = 10;
     public override int Priority => 1;

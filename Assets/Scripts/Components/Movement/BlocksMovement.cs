@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BlocksNonHostileMovement : Component
+public class BlocksNonHostileMovement : EntityComponent
 {
     public BlocksNonHostileMovement()
     {

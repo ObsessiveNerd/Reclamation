@@ -9,7 +9,7 @@ public enum StairDirection
     Down
 }
 
-public class Stairs : Component
+public class Stairs : EntityComponent
 {
     public StairDirection Direction;
 

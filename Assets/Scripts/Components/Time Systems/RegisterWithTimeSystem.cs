@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RegisterWithTimeSystem : Component
+public class RegisterWithTimeSystem : EntityComponent
 {
     public RegisterWithTimeSystem()
     {

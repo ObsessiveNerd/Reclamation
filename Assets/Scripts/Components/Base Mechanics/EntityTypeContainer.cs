@@ -11,7 +11,7 @@ public enum EntityType
     Item
 }
 
-public class EntityTypeContainer : Component
+public class EntityTypeContainer : EntityComponent
 {
     public EntityType Type;
 

@@ -26,7 +26,7 @@ public class ContentCreationWindow : EditorWindow
     public void Setup()
     {
         m_Creator = new BlueprintCreator();
-        var type = typeof(Component);
+        var type = typeof(EntityComponent);
         m_ComponentNames = AppDomain.CurrentDomain.GetAssemblies()
             .SelectMany(s => s.GetTypes())
             .Where(p => type.IsAssignableFrom(p))

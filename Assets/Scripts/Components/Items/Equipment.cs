@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Equipment : Component
+public class Equipment : EntityComponent
 {
     public BodyPart PreferredBodyPartWhenEquipped;
 

@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EquipmentSlot : Component
+public class EquipmentSlot : EntityComponent
 {
     private string m_EquipmentId;
     private string m_EquipmentName;
@@ -197,10 +197,10 @@ public class EquipmentSlot : Component
             {
                 if (BodyPartType == desiredBodyPart)
                 {
-                    if (!gameEvent.GetValue<Dictionary<BodyPart, List<Component>>>(EventParameters.BodyParts).ContainsKey(BodyPartType))
-                        gameEvent.GetValue<Dictionary<BodyPart, List<Component>>>(EventParameters.BodyParts).Add(BodyPartType, new List<Component>());
+                    if (!gameEvent.GetValue<Dictionary<BodyPart, List<EntityComponent>>>(EventParameters.BodyParts).ContainsKey(BodyPartType))
+                        gameEvent.GetValue<Dictionary<BodyPart, List<EntityComponent>>>(EventParameters.BodyParts).Add(BodyPartType, new List<EntityComponent>());
 
-                    gameEvent.GetValue<Dictionary<BodyPart, List<Component>>>(EventParameters.BodyParts)[BodyPartType].Add(this);
+                    gameEvent.GetValue<Dictionary<BodyPart, List<EntityComponent>>>(EventParameters.BodyParts)[BodyPartType].Add(this);
                 }
             }
         }

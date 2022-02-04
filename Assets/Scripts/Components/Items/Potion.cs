@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Potion : Component
+public class Potion : EntityComponent
 {
     public override void Init(IEntity self)
     {

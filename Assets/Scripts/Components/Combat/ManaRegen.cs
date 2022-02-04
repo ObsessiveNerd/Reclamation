@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ManaRegen : Component
+public class ManaRegen : EntityComponent
 {
     public int RegenAmount;
     public int RegenSpeed;

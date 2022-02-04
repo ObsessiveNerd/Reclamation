@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AIFOVHandler : Component
+public class AIFOVHandler : EntityComponent
 {
     private List<Point> m_VisiblePoints = new List<Point>();
     public override void Init(IEntity self)

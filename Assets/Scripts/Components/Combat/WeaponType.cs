@@ -24,7 +24,7 @@ public enum SpellType
     ChaSpell
 }
 
-public class WeaponType : Component
+public class WeaponType : EntityComponent
 {
     public AttackType Type;
 

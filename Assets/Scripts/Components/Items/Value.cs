@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 
-public class Value : Component
+public class Value : EntityComponent
 {
     public int Amount;
 

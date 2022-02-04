@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Health : Component
+public class Health : EntityComponent
 {
     public int MaxHealth;
     public int CurrentHealth;

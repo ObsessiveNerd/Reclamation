@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DestroyAfterTurns : Component
+public class DestroyAfterTurns : EntityComponent
 {
     public int CurrentTurnCount;
     public int DestroyAfterTurnCount;

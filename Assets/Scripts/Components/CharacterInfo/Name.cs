@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Name : Component
+public class Name : EntityComponent
 {
     public string PrettyName;
 

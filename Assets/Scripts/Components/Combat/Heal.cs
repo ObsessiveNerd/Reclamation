@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Heal : Component
+public class Heal : EntityComponent
 {
     public int HealAmount;
 

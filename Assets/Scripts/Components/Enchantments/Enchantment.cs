@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Enchantment : Component
+public class Enchantment : EntityComponent
 {
     public IEntity EnchantmentEntity;
 

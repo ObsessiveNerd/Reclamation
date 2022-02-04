@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Mana : Component
+public class Mana : EntityComponent
 {
     public int MaxMana;
     public int CurrentMana;

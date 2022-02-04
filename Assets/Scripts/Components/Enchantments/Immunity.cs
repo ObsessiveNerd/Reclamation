@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Immunity : Component
+public class Immunity : EntityComponent
 {
     public DamageType Type;
     public Immunity(DamageType type)

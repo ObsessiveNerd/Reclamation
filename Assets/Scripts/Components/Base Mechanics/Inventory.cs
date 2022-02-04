@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Inventory : Component
+public class Inventory : EntityComponent
 {
     public List<IEntity> InventoryItems = new List<IEntity>();
 

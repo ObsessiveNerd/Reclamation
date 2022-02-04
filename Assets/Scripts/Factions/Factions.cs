@@ -17,7 +17,7 @@ public enum FactionId
     Undead
 }
 
-public class Faction : Component
+public class Faction : EntityComponent
 {
     public FactionId ID;
 

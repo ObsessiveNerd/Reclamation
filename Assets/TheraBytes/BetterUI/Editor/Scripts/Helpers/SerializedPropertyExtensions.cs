@@ -64,9 +64,9 @@ namespace TheraBytes.BetterUi.Editor
         /// </summary>
         /// <param name="property">The property that is part of the component</param>
         /// <returns>The root component of the property</returns>
-        public static UnityEngine.Component GetSerializedPropertyRootComponent(SerializedProperty property)
+        public static Component GetSerializedPropertyRootComponent(SerializedProperty property)
         {
-            return (UnityEngine.Component)property.serializedObject.targetObject;
+            return (Component)property.serializedObject.targetObject;
         }
 
         /// <summary>

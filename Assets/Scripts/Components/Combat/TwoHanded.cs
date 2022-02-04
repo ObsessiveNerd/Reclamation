@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TwoHanded : Component
+public class TwoHanded : EntityComponent
 {
     public override void Init(IEntity self)
     {

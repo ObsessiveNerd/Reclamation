@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class InputControllerBase : Component
+public abstract class InputControllerBase : EntityComponent
 {
     public override void Init(IEntity self)
     {

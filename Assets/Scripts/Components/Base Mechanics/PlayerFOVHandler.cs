@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerFOVHandler : Component
+public class PlayerFOVHandler : EntityComponent
 {
     private List<Point> m_VisiblePoints = new List<Point>();
 

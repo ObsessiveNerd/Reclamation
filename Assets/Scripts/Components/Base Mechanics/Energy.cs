@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Energy : Component
+public class Energy : EntityComponent
 {
     public float EnergyRegineration;
     public float CurrentEnergy;

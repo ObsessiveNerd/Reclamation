@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InteractsWithWorld : Component
+public class InteractsWithWorld : EntityComponent
 {
     public InteractsWithWorld()
     {

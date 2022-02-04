@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Aggression : Component
+public class Aggression : EntityComponent
 {
     Point m_CurrentLocation;
     Point m_TargetLocation;

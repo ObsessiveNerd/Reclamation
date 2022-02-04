@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DestroyOnDrop : Component
+public class DestroyOnDrop : EntityComponent
 {
     public override void Init(IEntity self)
     {

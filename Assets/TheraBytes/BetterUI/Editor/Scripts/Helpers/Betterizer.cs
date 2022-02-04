@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using UnityEditor;
 using UnityEngine;
+using Component = UnityEngine.Component;
 
 namespace TheraBytes.BetterUi.Editor
 {
@@ -113,7 +114,7 @@ namespace TheraBytes.BetterUi.Editor
         }
 
 
-        static int GetComponentOrder(UnityEngine.Component comp)
+        static int GetComponentOrder(Component comp)
         {
             int idx = 0;
             while (UnityEditorInternal.ComponentUtility.MoveComponentDown(comp))
@@ -245,9 +246,9 @@ namespace TheraBytes.BetterUi.Editor
             }
         }
 
-        private static IEnumerable<KeyValuePair<SerializedObject, string>> FindReferencesTo(UnityEngine.Component obj, GameObject go)
+        private static IEnumerable<KeyValuePair<SerializedObject, string>> FindReferencesTo(Component obj, GameObject go)
         {
-            var components = go.GetComponents<UnityEngine.Component>();
+            var components = go.GetComponents<Component>();
             for (int k = 0; k < components.Length; k++)
             {
                 var comp = components[k];

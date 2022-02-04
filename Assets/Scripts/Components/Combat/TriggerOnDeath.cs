@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TriggerOnDeath : Component
+public class TriggerOnDeath : EntityComponent
 {
     public string EventId;
     public TriggerOnDeath(string eventId)

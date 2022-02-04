@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class StorageGraphic : Component
+public class StorageGraphic : EntityComponent
 {
     public string HasItemsGraphicPath;
     public string EmptyGraphicPath;

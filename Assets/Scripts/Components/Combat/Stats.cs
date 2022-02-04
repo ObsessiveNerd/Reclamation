@@ -13,7 +13,7 @@ public enum Stat
     Cha
 }
 
-public class Stats : Component
+public class Stats : EntityComponent
 {
     public override int Priority => 3;
 

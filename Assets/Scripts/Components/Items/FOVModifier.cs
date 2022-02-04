@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FOVModifier : Component
+public class FOVModifier : EntityComponent
 {
     public int Modifier;
 

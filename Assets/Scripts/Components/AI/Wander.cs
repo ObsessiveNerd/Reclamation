@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Wander : Component
+public class Wander : EntityComponent
 {
     public int Weight => 5;
     private Point m_Destination;

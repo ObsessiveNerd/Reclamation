@@ -1,4 +1,4 @@
-﻿public class BlocksVisibility : Component
+﻿public class BlocksVisibility : EntityComponent
 {
     public override void Init(IEntity self)
     {

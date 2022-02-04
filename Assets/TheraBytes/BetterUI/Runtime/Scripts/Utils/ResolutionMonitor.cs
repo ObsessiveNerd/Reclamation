@@ -159,6 +159,8 @@ namespace TheraBytes.BetterUi
         static bool isDirty;
 
 #if UNITY_EDITOR
+        static Type gameViewType = null;
+        static UnityEditor.EditorWindow gameViewWindow = null;
         static Version unityVersion;
 
         static ScreenTypeConditions simulatedScreenConfig;
@@ -348,7 +350,7 @@ namespace TheraBytes.BetterUi
             var allObjects = GameObject.FindObjectsOfType<GameObject>();
             foreach (GameObject go in allObjects)
             {
-                var resDeps = go.GetComponents<UnityEngine.Component>().OfType<IResolutionDependency>();
+                var resDeps = go.GetComponents<EntityComponent>().OfType<IResolutionDependency>();
                 foreach (IResolutionDependency comp in resDeps)
                 {
                     yield return comp;

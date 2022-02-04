@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Resitance : Component
+public class Resitance : EntityComponent
 {
     public DamageType Type;
     public Resitance(DamageType type)

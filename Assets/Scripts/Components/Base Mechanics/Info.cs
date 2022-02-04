@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 
-public class Info : Component
+public class Info : EntityComponent
 {
     public string InfoMessage;
     public override int Priority { get { return 6; } }

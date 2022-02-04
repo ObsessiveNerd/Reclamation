@@ -63,13 +63,13 @@ public class EquipmentViewMono : MonoBehaviour//, IUpdatableUI
 
         var firedEvent = m_Source.FireEvent(getEquipment);
 
-        SetEquipment(firedEvent.GetValue<List<Component>>(EventParameters.Head), new List<GameObject>() { Head });
-        SetEquipment(firedEvent.GetValue<List<Component>>(EventParameters.Torso), new List<GameObject>() { Torso });
-        SetEquipment(firedEvent.GetValue<List<Component>>(EventParameters.Arms), new List<GameObject>() { LeftArm, RightArm });
-        SetEquipment(firedEvent.GetValue<List<Component>>(EventParameters.Legs), new List<GameObject>() { LeftLeg, RightLeg });
-        SetEquipment(firedEvent.GetValue<List<Component>>(EventParameters.Legs), new List<GameObject>() { Ring1, Ring2 });
-        SetEquipment(firedEvent.GetValue<List<Component>>(EventParameters.Legs), new List<GameObject>() { Necklace });
-        SetEquipment(firedEvent.GetValue<List<Component>>(EventParameters.Legs), new List<GameObject>() { Back });
+        SetEquipment(firedEvent.GetValue<List<EntityComponent>>(EventParameters.Head), new List<GameObject>() { Head });
+        SetEquipment(firedEvent.GetValue<List<EntityComponent>>(EventParameters.Torso), new List<GameObject>() { Torso });
+        SetEquipment(firedEvent.GetValue<List<EntityComponent>>(EventParameters.Arms), new List<GameObject>() { LeftArm, RightArm });
+        SetEquipment(firedEvent.GetValue<List<EntityComponent>>(EventParameters.Legs), new List<GameObject>() { LeftLeg, RightLeg });
+        SetEquipment(firedEvent.GetValue<List<EntityComponent>>(EventParameters.Legs), new List<GameObject>() { Ring1, Ring2 });
+        SetEquipment(firedEvent.GetValue<List<EntityComponent>>(EventParameters.Legs), new List<GameObject>() { Necklace });
+        SetEquipment(firedEvent.GetValue<List<EntityComponent>>(EventParameters.Legs), new List<GameObject>() { Back });
         firedEvent.Release();
 
         GameEvent getPicture = GameEventPool.Get(GameEventId.GetPortrait)
@@ -80,7 +80,7 @@ public class EquipmentViewMono : MonoBehaviour//, IUpdatableUI
         getPicture.Release();
     }
 
-    void SetEquipment(List<Component> components, List<GameObject> slots)
+    void SetEquipment(List<EntityComponent> components, List<GameObject> slots)
     {
         if (components == null || components.Count == 0)
             return;

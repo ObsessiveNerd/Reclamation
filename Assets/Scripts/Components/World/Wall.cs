@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Wall : Component
+public class Wall : EntityComponent
 {
     public Wall()
     {

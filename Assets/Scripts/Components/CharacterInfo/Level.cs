@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Level : Component
+public class Level : EntityComponent
 {
     public int CurrentLevel;
     public int CurrentExp;

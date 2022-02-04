@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Position : Component
+public class Position : EntityComponent
 {
     public Point PositionPoint;
 

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Desire : Component
+public class Desire : EntityComponent
 {
     public int Greed = 0;
 

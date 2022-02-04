@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TileVisible : Component
+public class TileVisible : EntityComponent
 {
     public bool IsVisible;
     public bool HasBeenVisited;

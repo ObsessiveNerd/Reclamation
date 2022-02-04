@@ -10,7 +10,7 @@ public enum SpellFailedSaveEffect
     SpellStops
 }
 
-public class Spell : Component
+public class Spell : EntityComponent
 {
     public int ManaCost;
     public SpellFailedSaveEffect SpellFailed;

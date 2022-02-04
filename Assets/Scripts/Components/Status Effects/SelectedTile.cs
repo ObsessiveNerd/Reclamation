@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SelectedTile : Component
+public class SelectedTile : EntityComponent
 {
     Sprite m_SelectionSprite;
 

@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Move : Component
+public class Move : EntityComponent
 {
     readonly float m_EnergyRequired = 1f;
     bool m_StopMovement = false;

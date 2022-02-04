@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PackTactics : Component
+public class PackTactics : EntityComponent
 {
     public string PartyLeaderId;
 

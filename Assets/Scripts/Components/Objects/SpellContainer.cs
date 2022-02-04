@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-public class SpellContainer : Component
+public class SpellContainer : EntityComponent
 {
     public int MaxSpell = 5;
     public bool RandomSpells = true;
