@@ -350,7 +350,7 @@ namespace TheraBytes.BetterUi
             var allObjects = GameObject.FindObjectsOfType<GameObject>();
             foreach (GameObject go in allObjects)
             {
-                var resDeps = go.GetComponents<EntityComponent>().OfType<IResolutionDependency>();
+                var resDeps = go.GetComponents<Component>().OfType<IResolutionDependency>();
                 foreach (IResolutionDependency comp in resDeps)
                 {
                     yield return comp;
