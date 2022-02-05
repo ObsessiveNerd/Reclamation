@@ -24,10 +24,11 @@ public class Potion : EntityComponent
 
         else if(gameEvent.ID == GameEventId.GetContextMenuActions)
         {
+            IEntity source = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameters.Entity));
+
             ContextMenuButton button = new ContextMenuButton("Quaff", () =>
             {
-                IEntity source = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameters.Entity));
-
+                Debug.Log(source);
                 GameEvent quaff = GameEventPool.Get(GameEventId.Quaff)
                                         .With(EventParameters.Entity, source.ID);
                 Self.FireEvent(quaff).Release();
