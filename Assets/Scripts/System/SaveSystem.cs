@@ -23,9 +23,30 @@ public class GameSaveSystem : GameService
     public const string kSaveDataPath = "SaveData";
     [HideInInspector]
     public string CurrentSaveName;
+    string m_LoadPath;
     SaveData m_Data;
+    public string CurrentSavePath
+    {
+        get
+        {
+            return $"{m_LoadPath}/data.save";
+        }
+    }
 
-    public static GameSaveSystem Instance { get; set; }
+    //public static GameSaveSystem Instance { get; set; }
+
+    public GameSaveSystem(string loadPath)
+    {
+        m_LoadPath = loadPath;
+        CurrentSaveName = Path.GetFileName(loadPath);
+        if (File.Exists(CurrentSavePath))
+        {
+            m_Data = JsonUtility.FromJson<SaveData>(File.ReadAllText(CurrentSavePath));
+            RecRandom.InitRecRandom(m_Data.Seed);
+        }
+        else
+            RecRandom.InitRecRandom(DateTime.Now.Millisecond);
+    }
 
     public void Save()
     {
@@ -43,7 +64,8 @@ public class GameSaveSystem : GameService
 
     public void Save(string saveName)
     {
-        m_Data = new SaveData(m_Seed);
+        if(m_Data == null)
+            m_Data = new SaveData(m_Seed);
 
         GameEvent getCurrentLevel = GameEventPool.Get(GameEventId.GetCurrentLevel)
                                         .With(EventParameters.Level, -1);
@@ -89,9 +111,9 @@ public class GameSaveSystem : GameService
             level = m_DungeonLevelMap[m_CurrentLevel];
             level.ClearData();
         }
-        else if (GameSaveSystem.Instance.LoadLevel(m_CurrentLevel) != null)
+        else if (LoadLevel(m_CurrentLevel) != null)
         {
-            level = GameSaveSystem.Instance.LoadLevel(m_CurrentLevel);
+            level = LoadLevel(m_CurrentLevel);
             level.ClearData();
             m_DungeonLevelMap.Add(m_CurrentLevel, level);
         }

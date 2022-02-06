@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class RecRandom
 {
-    private int m_Seed;
+    public int Seed;
     private static RecRandom m_Instance;
     public static RecRandom Instance
     {   get
@@ -18,9 +18,9 @@ public class RecRandom
     public static int InitRecRandom(int seed = 0)
     {
         m_Instance = new RecRandom();
-        m_Instance.m_Seed = seed;
-        UnityEngine.Random.InitState(m_Instance.m_Seed);
-        return m_Instance.m_Seed;
+        m_Instance.Seed = seed;
+        UnityEngine.Random.InitState(m_Instance.Seed);
+        return m_Instance.Seed;
     }
 
     public int GetRandomValue(int low, int high)

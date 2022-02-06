@@ -5,7 +5,16 @@ using UnityEngine.SceneManagement;
 
 public class CharacterCreationManager : MonoBehaviour
 {
-    public List<CharacterCreationMono> Characters;
+    public GameObject PlayerCreationObject;
+    public int NumberOfCharacters = 4;
+    public Transform CharactersContent;
+    List<CharacterCreationMono> Characters = new List<CharacterCreationMono>();
+
+    private void Start()
+    {
+        for(int i = 0; i < NumberOfCharacters; i++)
+            Characters.Add(Instantiate(PlayerCreationObject, CharactersContent).GetComponent<CharacterCreationMono>());
+    }
 
     public void Play()
     {

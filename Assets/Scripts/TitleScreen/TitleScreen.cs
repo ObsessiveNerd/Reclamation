@@ -12,18 +12,28 @@ public class TitleScreen : MonoBehaviour
     public GameObject Button;
     public GameObject Content;
     public GameObject GetNewSaveName;
+    public TextMeshProUGUI Error;
 
     public void StartNewGame()
     {
+        UIManager.Push(null);
         GetNewSaveName.SetActive(true);
         GetNewSaveName.GetComponent<TMP_InputField>().onEndEdit.AddListener((val) =>
         {
             //FindObjectOfType<World>().StartWorld(val);
 
-            SceneManager.LoadSceneAsync("CharacterCreation").completed += (scene) =>
+            if(Directory.Exists($"{GameSaveSystem.kSaveDataPath}/{val}"))
             {
-                FindObjectOfType<World>().StartWorld(val);
-            };
+                Error.gameObject.SetActive(true);
+                Error.text = "Save game already exists, please use a different name or load the requested game.";
+            }
+            else
+            {
+                SceneManager.LoadSceneAsync("CharacterCreation").completed += (scene) =>
+                {
+                    FindObjectOfType<World>().StartWorld(val);
+                };
+            }
         });
     }
 
@@ -31,6 +41,7 @@ public class TitleScreen : MonoBehaviour
     {
         foreach (var directory in Directory.EnumerateDirectories(GameSaveSystem.kSaveDataPath))
         {
+            UIManager.Push(null);
             Debug.Log(directory);
             GameObject instance = Instantiate(Button, Content.transform);
             instance.GetComponentInChildren<TextMeshProUGUI>().text = Path.GetFileName(directory);
@@ -55,7 +66,9 @@ public class TitleScreen : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
+            UIManager.ForcePop();
             GetNewSaveName.SetActive(false);
+            Error.gameObject.SetActive(false);
             LoadGames.SetActive(false);
             if (Content.transform.childCount > 0)
             {

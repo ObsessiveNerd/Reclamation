@@ -78,15 +78,13 @@ public class World : MonoBehaviour
         else
             return;
 
-        GameSaveSystem saveSystem = new GameSaveSystem();
-        saveSystem.CurrentSaveName = Path.GetFileName(loadPath);
+        GameSaveSystem saveSystem = new GameSaveSystem(loadPath);
         Application.quitting += () => saveSystem.Save();
 
         DependencyInjection.Register(saveSystem);
         DependencyInjection.Register(new WorldSpawner());
         DependencyInjection.Register(new DungeonManager(
-            RecRandom.InitRecRandom(DateTime.Now.Second), 
-                TilePrefab, MapRows, MapColumns));
+            RecRandom.Instance.Seed, TilePrefab, MapRows, MapColumns));
         DependencyInjection.Register(new WorldUpdate());
         DependencyInjection.Register(new TileSelection());
         DependencyInjection.Register(new TileInteractions());
