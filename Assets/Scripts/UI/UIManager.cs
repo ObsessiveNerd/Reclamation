@@ -11,6 +11,8 @@ public class UIManager : MonoBehaviour
     {
         if (mono == null)
             Debug.LogWarning("pushing null to the UI manager stack.  Could cause issues");
+        else
+            Debug.LogWarning($"Pusing {mono.name} to UI stack");
 
         if (!UIMonoBehaviors.Contains(mono))
             UIMonoBehaviors.Push(mono);
@@ -18,14 +20,21 @@ public class UIManager : MonoBehaviour
 
     public static void ForcePop(EscapeableMono mono)
     {
-        if (UIMonoBehaviors.Peek() == mono)
+        if (UIMonoBehaviors.Count > 0 && UIMonoBehaviors.Peek() == mono)
+        {
+            Debug.LogWarning($"{mono.name} popping from UI stack");
             UIMonoBehaviors.Pop().OnEscape();
+        }
     }
 
     public static void ForcePop()
     {
         if(UIMonoBehaviors.Count > 0)
-            UIMonoBehaviors.Pop()?.OnEscape();
+        {
+            var behavior = UIMonoBehaviors.Pop();
+            Debug.LogWarning($"{behavior} is being popped from UI stack.");
+            behavior?.OnEscape();
+        }
     }
 
     public static EscapeableMono GetTopStack()
@@ -57,6 +66,8 @@ public class UIManager : MonoBehaviour
     {
         if (UIMonoBehaviors.Count == 0)
             return;
+
+        Debug.Log(UIMonoBehaviors.Peek());
 
         if (EscapeForActiveUIPressed.HasValue && EscapeForActiveUIPressed.Value /*&& !UIClear*/)
         {

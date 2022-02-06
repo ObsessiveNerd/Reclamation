@@ -92,7 +92,6 @@ public class SpellcasterPlayerController : InputControllerBase
         Services.TileSelectionService.SelectTile(m_TileSelection);
         Services.WorldUpdateService.UpdateWorldView();
         selectTile.Release();
-        UIManager.Push(null);
     }
 
     public override void HandleEvent(GameEvent gameEvent)

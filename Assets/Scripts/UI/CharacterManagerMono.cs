@@ -28,7 +28,7 @@ public class CharacterManagerMono : EscapeableMono, IUpdatableUI
         m_ViewPrefabInstance = Instantiate(m_ViewPrefab, CharacterManagerObject.transform);
         //go.transform.SetParent(CharacterManagerObject.transform);
         m_CharacterMono = m_ViewPrefabInstance.GetComponent<CharacterMono>();
-        m_CharacterMono.Setup(source);
+        UpdateUI(source);
     }
 
     public void AddCharacter(IEntity source)
@@ -59,23 +59,12 @@ public class CharacterManagerMono : EscapeableMono, IUpdatableUI
 
     public override void OnEscape()
     {
-        Cleanup();
+        WorldUtility.UnRegisterUI(this);
+        UIManager.ForcePop(this);
         UIUtility.ClosePlayerInventory();
         CharacterManagerObject.SetActive(false);
         Destroy(m_ViewPrefabInstance);
         
-    }
-
-    void Cleanup()
-    {
-        //foreach(var cm in characters.Keys)
-        //{
-        //    characters[cm].Cleanup();
-        //    Destroy(characters[cm].gameObject);
-        //}
-        //characters.Clear();
-        Destroy(m_ViewPrefabInstance);
-        WorldUtility.UnRegisterUI(this);
     }
 
     public void UpdateUI(IEntity newSource)
