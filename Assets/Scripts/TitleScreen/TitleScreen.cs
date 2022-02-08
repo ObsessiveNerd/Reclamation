@@ -41,9 +41,9 @@ public class TitleScreen : EscapeableMono
 
     public void OpenLoadGames()
     {
+        UIManager.Push(this);
         foreach (var directory in Directory.EnumerateDirectories(GameSaveSystem.kSaveDataPath))
         {
-            UIManager.Push(this);
             Debug.Log(directory);
             GameObject instance = Instantiate(Button, Content.transform);
             instance.GetComponentInChildren<TextMeshProUGUI>().text = Path.GetFileName(directory);
@@ -69,23 +69,33 @@ public class TitleScreen : EscapeableMono
         UIManager.ForcePop(this);
     }
 
-    private void Update()
+    public override void OnEscape()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        GetNewSaveName.SetActive(false);
+        Error.gameObject.SetActive(false);
+        LoadGames.SetActive(false);
+        if (Content.transform.childCount > 0)
         {
-            UIManager.ForcePop(this);
-            GetNewSaveName.SetActive(false);
-            Error.gameObject.SetActive(false);
-            LoadGames.SetActive(false);
-            if (Content.transform.childCount > 0)
+            foreach (var tran in Content.transform.GetComponentsInChildren<Transform>())
             {
-                foreach (var tran in Content.transform.GetComponentsInChildren<Transform>())
-                {
-                    if (tran == Content.transform)
-                        continue;
-                    Destroy(tran.gameObject);
-                }
+                if (tran == Content.transform)
+                    continue;
+                Destroy(tran.gameObject);
             }
         }
+    }
+
+    public override bool? AlternativeEscapeKeyPressed
+    {
+        get
+        {
+            return Input.GetKeyDown(KeyCode.Escape) && !m_OpenedThisFrame;
+        }
+    }
+
+    bool m_OpenedThisFrame = false;
+    private void LateUpdate()
+    {
+        m_OpenedThisFrame = false;
     }
 }

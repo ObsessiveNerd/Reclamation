@@ -134,18 +134,22 @@ public class EquipmentSlot : EntityComponent
 
         else if (gameEvent.ID == GameEventId.PerformAttack)
         {
-            IEntity equipmentEntity = EntityQuery.GetEntity(EquipmentId);
-            if (equipmentEntity == null) return;
+            if (!string.IsNullOrEmpty(EquipmentId))
+            {
+                IEntity equipmentEntity = EntityQuery.GetEntity(EquipmentId);
+                if (equipmentEntity == null)
+                    return;
 
-            bool melee = gameEvent.GetValue<bool>(EventParameters.Melee);
+                bool melee = gameEvent.GetValue<bool>(EventParameters.Melee);
 
-            if (equipmentEntity.HasComponent(typeof(TwoHanded)))
-                gameEvent.ContinueProcessing = false;
+                if (equipmentEntity.HasComponent(typeof(TwoHanded)))
+                    gameEvent.ContinueProcessing = false;
 
-            CombatUtility.Attack(Self,
-                EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Target]),
-                equipmentEntity,
-                CombatUtility.GetWeaponType(equipmentEntity));
+                CombatUtility.Attack(Self,
+                    EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Target]),
+                    equipmentEntity,
+                    CombatUtility.GetWeaponType(equipmentEntity));
+            }
         }
 
         else if (gameEvent.ID == GameEventId.Drop)

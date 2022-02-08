@@ -4,8 +4,20 @@ using UnityEngine;
 
 public class UIManager : MonoBehaviour
 {
+    static bool ExistsAlready = false;
     static Stack<EscapeableMono> UIMonoBehaviors = new Stack<EscapeableMono>();
     public static bool UIClear => UIMonoBehaviors.Count == 0;
+
+    private void Start()
+    {
+        if (ExistsAlready)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        ExistsAlready = true;
+    }
 
     public static void Push(EscapeableMono mono)
     {
@@ -29,7 +41,7 @@ public class UIManager : MonoBehaviour
 
     public static void ForcePop()
     {
-        if(UIMonoBehaviors.Count > 0)
+        if (UIMonoBehaviors.Count > 0)
         {
             var behavior = UIMonoBehaviors.Pop();
             Debug.LogWarning($"{behavior} is being popped from UI stack.");
@@ -44,7 +56,7 @@ public class UIManager : MonoBehaviour
 
     public static void RemovePopUntilAllOfTypeRemoved<T>()
     {
-        if(UIMonoBehaviors.Count == 0)
+        if (UIMonoBehaviors.Count == 0)
             return;
 
         while (UIMonoBehaviors.Peek().GetType() == typeof(T))
@@ -58,21 +70,24 @@ public class UIManager : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Escape))
                 return true;
 
+            if (UIMonoBehaviors.Count == 0)
+                return false;
+
             return UIMonoBehaviors.Peek()?.AlternativeEscapeKeyPressed.Value;
         }
     }
 
     void Update()
     {
-        if (UIMonoBehaviors.Count == 0)
-            return;
-
-        Debug.Log(UIMonoBehaviors.Peek());
-
         if (EscapeForActiveUIPressed.HasValue && EscapeForActiveUIPressed.Value /*&& !UIClear*/)
         {
-            var escapeMono = UIMonoBehaviors.Pop();
-            escapeMono?.OnEscape();
+            if (UIMonoBehaviors.Count == 0)
+                FindObjectOfType<InputBinder>().Open();
+            else
+            {
+                var escapeMono = UIMonoBehaviors.Pop();
+                escapeMono?.OnEscape();
+            }
         }
     }
 }

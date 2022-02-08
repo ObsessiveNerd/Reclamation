@@ -46,11 +46,13 @@ public class InputBinder : MonoBehaviour
         }
     }
 
+    public void Open()
+    {
+        UI.SetActive(!UI.activeInHierarchy);
+    }
+
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape) && UIManager.UIClear)
-            UI.SetActive(!UI.activeInHierarchy);
-
         if(m_RequestedAction != null && !string.IsNullOrEmpty(Input.inputString))
         {
             var fieldInfo = typeof(InputKeyBindData).GetField(m_RequestedAction, 
