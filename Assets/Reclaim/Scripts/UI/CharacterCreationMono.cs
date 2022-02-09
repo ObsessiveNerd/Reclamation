@@ -21,7 +21,7 @@ public class CharacterCreationMono : MonoBehaviour
     private void Start()
     {
         if(m_CharacterImages == null)
-            m_CharacterImages = Resources.LoadAll<Sprite>("Textures/Characters/").ToList();
+            m_CharacterImages = Resources.LoadAll<Sprite>("Textures/Sprites/Characters/").ToList();
         if (m_CharacterArchitypes == null)
             m_CharacterArchitypes = Resources.LoadAll<ClassArchitype>("Architypes").ToList();
         CharacterImage.sprite = m_CharacterImages[currentIndex];

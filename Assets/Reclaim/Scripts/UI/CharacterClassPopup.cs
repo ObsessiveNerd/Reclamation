@@ -11,7 +11,7 @@ public class CharacterClassPopup : MonoBehaviour
 
     void Start()
     {
-        m_Popup = Resources.Load<GameObject>("UI/ItemPopup");
+        m_Popup = Resources.Load<GameObject>("Prefabs/UI/ItemPopup");
         cc = GetComponentInParent<CharacterCreationMono>();
     }
 

@@ -28,7 +28,7 @@ public class CharacterCreationManager : MonoBehaviour
 
         EntityFactory.ReloadTempBlueprints();
 
-        SceneManager.LoadSceneAsync("Dungeon").completed += s =>
+        SceneManager.LoadSceneAsync("Reclaim/Scenes/Dungeon").completed += s =>
         {
             Services.DungeonService.GenerateDungeon(true, Services.SaveAndLoadService.CurrentSaveName);
         };
