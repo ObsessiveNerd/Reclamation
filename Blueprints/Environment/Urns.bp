@@ -1,5 +1,5 @@
 <Urns> (
-	GraphicContainer: Textures/Environment/td_world_urns_a
+	GraphicContainer: Textures/Sprites/Environment/td_world_urns_a
 	Position:PositionPoint=0,0
 	InteractOnTileOvertake
 	EntityTypeContainer:Type=Object

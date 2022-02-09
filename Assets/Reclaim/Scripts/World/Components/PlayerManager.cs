@@ -10,7 +10,7 @@ public class PlayerManager : GameService
     {
         RotateCharacter();
         UIManager.RemovePopUntilAllOfTypeRemoved<ContextMenuMono>();
-        Services.WorldUIService.UpdateUI(m_ActivePlayer.Value.ID);
+        Services.WorldUIService.UpdateUI();
     }
 
     public List<IEntity> GetPlayerActiveAbilities(string id)
@@ -40,7 +40,7 @@ public class PlayerManager : GameService
                 break;
         }
 
-        Services.WorldUIService.UpdateUI(m_ActivePlayer.Value.ID);
+        Services.WorldUIService.UpdateUI();
     }
 
     public bool IsPlayableCharacter(string id)

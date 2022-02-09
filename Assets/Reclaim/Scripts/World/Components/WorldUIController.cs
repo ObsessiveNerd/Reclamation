@@ -9,20 +9,10 @@ public class WorldUIController : GameService
 {
     static List<IUpdatableUI> UpdatableUI = new List<IUpdatableUI>();
 
-    public void UpdateUI(string id)
-    {
-        foreach (var ui in UpdatableUI)
-            ui?.UpdateUI(EntityQuery.GetEntity(id));
-
-        GameObject.FindObjectOfType<SpellSelectorMono>().Setup(m_ActivePlayer.Value);
-    }
-
     public void UpdateUI()
     {
         foreach (var ui in UpdatableUI)
-            ui?.UpdateUI(EntityQuery.GetEntity(Services.WorldDataQuery.GetActivePlayerId()));
-
-        GameObject.FindObjectOfType<SpellSelectorMono>().Setup(m_ActivePlayer.Value);
+            ui?.UpdateUI();
     }
 
     public void EntityTookDamage(IEntity entity, int damage)
@@ -35,7 +25,7 @@ public class WorldUIController : GameService
         Vector2 newPos = (Vector2)Camera.main.WorldToScreenPoint(mapObject.transform.position);
         newPos.y += (mapObject.GetComponent<SpriteRenderer>().sprite.textureRect.height);
 
-        GameObject go = GameObject.Instantiate(Resources.Load<GameObject>("UI/FadeText"));
+        GameObject go = GameObject.Instantiate(Resources.Load<GameObject>("Prefabs/UI/FadeText"));
         go.GetComponent<FadeTextMono>().Setup($"-{damage}", 1, entity, Color.red);
         go.transform.SetParent(Object.FindObjectOfType<Canvas>().transform);
     }
@@ -72,7 +62,7 @@ public class WorldUIController : GameService
                                             .With(EventParameters.Entity, item.ID);
             EntityQuery.GetEntity(target).FireEvent(addToInventory).Release();
 
-            Services.WorldUIService.UpdateUI(source.ID); 
+            Services.WorldUIService.UpdateUI();
             //GameObject.FindObjectOfType<CharacterManagerMono>().UpdateUI(source);
 
         }, m_Players.Select(player => player.ID).ToList());
@@ -92,35 +82,36 @@ public class WorldUIController : GameService
 
     public void OpenChestUI(IEntity chest, IEntity character)
     {
-        GameObject.FindObjectOfType<ChestMono>().Init(chest);
+        GameObject.FindObjectOfType<UIReferences>().OpenChest(chest);
+        UpdateUI();
     }
 
     public void OpenSpellExaminationUI(List<string> spellIds)
     {
-        GameObject.FindObjectOfType<SpellExaminationUI>().Setup(spellIds);
+        GameObject.FindObjectOfType<UIReferences>().OpenSpellExaminer(spellIds);
+        UpdateUI();
     }
 
     public void RegisterPlayableCharacter(string id)
     {
         GameObject.FindObjectOfType<PlayableCharacterSelector>().AddCharacterTab(id);
+        UpdateUI();
     }
 
-    public void OpenSpellUI(IEntity source)
+    public void OpenSpellUI()
     {
-        GameObject.FindObjectOfType<SpellSelectorMono>().Setup(source);
+        //GameObject.FindObjectOfType<SpellSelectorMono>().Setup();
     }
 
-    public void OpenInventory(IEntity source)
+    public void OpenInventory()
     {
-        GameObject.FindObjectOfType<CharacterManagerMono>().Setup(source);
-        GameObject.FindObjectOfType<CharacterManagerMono>().AddCharacter(source);
-
-        //foreach (var entity in m_Players)
-        //    GameObject.FindObjectOfType<CharacterManagerMono>().AddCharacter(entity);
+        GameObject.FindObjectOfType<UIReferences>().OpenCharacterManager();
+        UpdateUI();
     }
 
     public void OpenEnchantmentUI(IEntity source, IEntity enchantment)
     {
         GameObject.FindObjectOfType<EnchantmentManagerMono>().Setup(source, enchantment);
+        UpdateUI();
     }
 }

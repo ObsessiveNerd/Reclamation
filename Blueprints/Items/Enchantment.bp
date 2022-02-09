@@ -3,7 +3,7 @@
 	InteractOnTileOvertake
 	EntityTypeContainer:Type=Item
 	Item:Rarity=Mythic
-	GraphicContainer:SpritePath=Textures/Items/td_items_scroll
-	Portrait:SpritePath=Portraits/Items/addons/133_t
+	GraphicContainer:SpritePath=Textures/Sprites/Items/td_items_scroll
+	Portrait:SpritePath=Textures/Portraits/Items/addons/133_t
 	Enchantment:EnchantmentEntity=
 )

@@ -10,25 +10,6 @@ public class CharacterMono : MonoBehaviour
     public GameObject CharacterStats;
     public GameObject InfoView;
     public GameObject AbilitiesView;
-    public CharacterTab Tab;
-
-
-    public void Setup(IEntity source)
-    {
-        EquipmentView.GetComponent<EquipmentViewMono>().Setup(source);
-        CharacterStats.GetComponentInChildren<CharacterStatsMono>().Setup(source);
-        InfoView.GetComponentInChildren<PlayerInfoMono>().Setup(source);
-        AbilitiesView.GetComponentInChildren<AbilitiesManager>().Setup(source);
-        Tab.Setup(source);
-    }
-
-    public void Cleanup()
-    {
-        EquipmentView.GetComponent<EquipmentViewMono>().Close();
-        CharacterStats.GetComponentInChildren<CharacterStatsMono>().Close();
-        InfoView.GetComponentInChildren<PlayerInfoMono>().Close();
-        AbilitiesView.GetComponentInChildren<AbilitiesManager>().Close();
-    }
 
     public void ToggleSelected(string toggleName)
     {
@@ -59,5 +40,6 @@ public class CharacterMono : MonoBehaviour
                 AbilitiesView.SetActive(true);
                 break;
         }
+        Services.WorldUIService.UpdateUI();
     }
 }

@@ -1,5 +1,5 @@
 <Cauldron> (
-	GraphicContainer: Textures/Environment/td_world_cauldron1
+	GraphicContainer: Textures/Sprites/Environment/td_world_cauldron1
 	Position:PositionPoint=0,0
 	InteractOnTileOvertake
 	EntityTypeContainer:Type=Object

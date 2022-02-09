@@ -12,7 +12,7 @@ public class ItemMono : DragAndDrop, IPointerEnterHandler, IPointerExitHandler
 
     protected override void Start()
     {
-        m_Popup = Resources.Load<GameObject>("UI/ItemPopup");
+        m_Popup = Resources.Load<GameObject>("Prefabs/UI/ItemPopup");
         if (m_Popup == null)
             Debug.LogError("UI Item Popup could not be loaded.");
         base.Start();

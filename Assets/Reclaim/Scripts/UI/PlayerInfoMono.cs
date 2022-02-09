@@ -4,12 +4,13 @@ using System.Text;
 using TMPro;
 using UnityEngine;
 
-public class PlayerInfoMono : MonoBehaviour
+public class PlayerInfoMono : UpdatableUI
 {
     public TextMeshProUGUI Info;
 
-    public void Setup(IEntity source)
+    public override void UpdateUI()
     {
+        IEntity source = Services.PlayerManagerService.GetActivePlayer();
         StringBuilder sb = new StringBuilder();
 
         GameEvent getArmor = GameEventPool.Get(GameEventId.AddArmorValue)
@@ -25,12 +26,14 @@ public class PlayerInfoMono : MonoBehaviour
                                     .With(EventParameters.Resistances, new List<DamageType>());
         source.FireEvent(getResistances);
         List<DamageType> resistances = getResistances.GetValue<List<DamageType>>(EventParameters.Resistances);
-        if(resistances.Count > 0)
+        sb.AppendLine("Resistances:");
+        if (resistances.Count > 0)
         {
-            sb.AppendLine("Resistances:");
             foreach (var dt in resistances)
                 sb.AppendLine(dt.ToString());
         }
+        else
+            sb.AppendLine("None");
         getResistances.Release();
 
         sb.AppendLine("");
@@ -39,19 +42,16 @@ public class PlayerInfoMono : MonoBehaviour
                                     .With(EventParameters.Immunity, new List<DamageType>());
         source.FireEvent(getImmunities);
         List<DamageType> immunities = getImmunities.GetValue<List<DamageType>>(EventParameters.Immunity);
-        if(resistances.Count > 0)
+        sb.AppendLine("Immunity:");
+        if (resistances.Count > 0)
         {
-            sb.AppendLine("Immunity:");
             foreach (var dt in immunities)
                 sb.AppendLine(dt.ToString());
         }
+        else
+            sb.AppendLine("None");
         getImmunities.Release();
 
         Info.text = sb.ToString();
-    }
-
-    public void Close()
-    {
-
     }
 }

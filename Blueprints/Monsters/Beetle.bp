@@ -1,5 +1,5 @@
 <Beetle> (
-	GraphicContainer: Textures/Monsters/td_monsters_beetle_r1
+	GraphicContainer: Textures/Sprites/Monsters/td_monsters_beetle_r1
 	Defense
 	Faction:ID=None
 	Energy:EnergyRegineration=1,CurrentEnergy=0,HasHadTurnStarted=False

@@ -1,6 +1,6 @@
 <BronzeHelmet> (
-	GraphicContainer: Textures/Armor/td_items_leather_helm
-	Portrait: Portraits/Weapons/addons/062_t
+	GraphicContainer: Textures/Sprites/Armor/td_items_leather_helm
+	Portrait: Textures/Portraits/WeaponAndArmorIcons/WeaponAndArmorIcons_png/transparent/addons/062_t
 	Position:PositionPoint=0,0
 	InteractOnTileOvertake
 	EntityTypeContainer:Type=Item

@@ -84,12 +84,6 @@ public class SpellContainer : EntityComponent
         {
             Dictionary<string, string> info = gameEvent.GetValue<Dictionary<string, string>>(EventParameters.Info);
             info.Add($"{nameof(SpellContainer)}{Guid.NewGuid()}", "An object that contains arcane magics.  Use carefully.  Or don't.  I'm not your dad.");
-
-            //foreach (var spell in SpellNameToIdMap.Values)
-            //{
-            //    spell.FireEvent(gameEvent);
-            //    info.Add($"{nameof(SpellContainer)}{Guid.NewGuid()}", "\n");
-            //}
         }
 
         else if (gameEvent.ID == GameEventId.ItemEquipped)
@@ -97,11 +91,7 @@ public class SpellContainer : EntityComponent
             string sourceId = gameEvent.GetValue<string>(EventParameters.Owner);
             if (WorldUtility.IsActivePlayer(sourceId))
             {
-                //GameEvent openSpellUI = GameEventPool.Get(GameEventId.OpenSpellUI)
-                //                            .With(EventParameters.Entity, Self.ID)
-                //                            .With(EventParameters.SpellList, SpellNameToIdMap.Values.Select(s => s.ID).ToList());
-
-                Services.WorldUIService.OpenSpellUI(Self);
+                Services.WorldUIService.OpenSpellUI();
             }
         }
 

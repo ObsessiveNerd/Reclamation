@@ -12,7 +12,7 @@ public class ContextMenuMono : EscapeableMono
 
     public static GameObject CreateNewContextMenu()
     {
-        var contextMenu = Instantiate(Resources.Load<GameObject>("UI/ContextMenu"));
+        var contextMenu = Instantiate(Resources.Load<GameObject>("Prefabs/UI/ContextMenu"));
         contextMenu.transform.SetParent(GameObject.FindObjectOfType<Canvas>().transform, false);
         UIManager.Push(contextMenu.GetComponent<ContextMenuMono>());
         return contextMenu;
@@ -20,14 +20,14 @@ public class ContextMenuMono : EscapeableMono
 
     public void AddButton(ContextMenuButton cmb, IEntity source, Action afterClickCallback = null)
     {
-        GameObject instance = cmb.CreateButton(Resources.Load<GameObject>("UI/ContextMenuButton"));
+        GameObject instance = cmb.CreateButton(Resources.Load<GameObject>("Prefabs/UI/ContextMenuButton"));
         Button button = instance.GetComponent<Button>();
 
         //button.onClick.AddListener(() => OnEscape());
         button.onClick.AddListener(() => UIManager.ForcePop(this));
         button.onClick.AddListener(() =>
         {
-            Services.WorldUIService.UpdateUI(source.ID);
+            Services.WorldUIService.UpdateUI();
             //World.Instance.Self.FireEvent(GameEventPool.Get(GameEventId.UpdateUI).With(EventParameters.Entity, source.ID)).Release();
         });
         if (afterClickCallback != null)

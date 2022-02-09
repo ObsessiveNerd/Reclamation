@@ -12,7 +12,7 @@ public static class UIUtility
             throw new System.Exception("Cannot create inventory item with null parameters");
         }
 
-        GameObject spriteGoResource = Resources.Load<GameObject>("UI/InventoryItem");
+        GameObject spriteGoResource = Resources.Load<GameObject>("Prefabs/UI/InventoryItem");
 
         if (item == null)
             return null;
@@ -55,7 +55,7 @@ public static class UIUtility
             ClosePlayerInventory();
 
         m_Inventories = new List<GameObject>();
-        GameObject inventory = Resources.Load<GameObject>("UI/Inventory");
+        GameObject inventory = Resources.Load<GameObject>("Prefabs/UI/Inventory");
         foreach (string id in Services.WorldDataQuery.GetPlayableCharacters())
         {
             GameObject go = GameObject.Instantiate(inventory);

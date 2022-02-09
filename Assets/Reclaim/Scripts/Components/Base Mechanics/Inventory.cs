@@ -27,7 +27,7 @@ public class Inventory : EntityComponent
     {
         if (gameEvent.ID == GameEventId.OpenInventory)
         {
-            Services.WorldUIService.OpenInventory(Self);
+            Services.WorldUIService.OpenInventory();
         }
 
         if (gameEvent.ID == GameEventId.AddToInventory)

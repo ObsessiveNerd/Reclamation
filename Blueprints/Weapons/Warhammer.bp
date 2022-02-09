@@ -1,6 +1,6 @@
 <Warhammer> (
-	GraphicContainer:SpritePath=Textures/Weapons/td_items_weapon_hammer
-	Portrait:SpritePath=Portraits/Weapons/maces_and_hammers/iron_hammer_t
+	GraphicContainer:SpritePath=Textures/Sprites/Weapons/td_items_weapon_hammer
+	Portrait:SpritePath=Textures/Portraits/WeaponAndArmorIcons/WeaponAndArmorIcons_png/transparent/maces_and_hammers/iron_hammer_t
 	Position:PositionPoint=0
 	InteractOnTileOvertake
 	EntityTypeContainer:Type=Item

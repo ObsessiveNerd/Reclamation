@@ -1,6 +1,6 @@
 <Spellbook> (
-	GraphicContainer:SpritePath= Textures/Items/td_items_book_brown
-	Portrait:SpritePath= Portraits/Items/book_11_t
+	GraphicContainer:SpritePath= Textures/Sprites/Items/td_items_book_brown
+	Portrait:SpritePath= Textures/Portraits/Items/book_11_t
 	Position:PositionPoint=0
 	InteractOnTileOvertake
 	EntityTypeContainer:Type=Item

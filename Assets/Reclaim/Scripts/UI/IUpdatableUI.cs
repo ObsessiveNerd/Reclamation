@@ -4,19 +4,22 @@ using UnityEngine;
 
 public interface IUpdatableUI
 {
-    void UpdateUI(IEntity newSource);
+    void UpdateUI();
 }
 
-public class UpdatableUI : MonoBehaviour//, IUpdatableUI
+public class UpdatableUI : MonoBehaviour, IUpdatableUI
 {
-    void Start()
+    protected virtual void OnEnable()
     {
-        //Services.WorldUIService.RegisterUpdatableUI(this);
+        if (!Services.Ready)
+            Services.InitComplete += (sender, evnt) => Services.WorldUIService.RegisterUpdatableUI(this);
+        else
+            Services.WorldUIService.RegisterUpdatableUI(this);
     }
 
-    void OnDisable()
+    protected virtual void OnDisable()
     {
-        //Services.WorldUIService.UnregisterUpdatableUI(this);
+        Services.WorldUIService.UnregisterUpdatableUI(this);
     }
 
     public virtual void UpdateUI() { }

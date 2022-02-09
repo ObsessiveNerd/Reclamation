@@ -1,6 +1,6 @@
 <Short Bow> (
-	GraphicContainer:SpritePath= Textures/Weapons/td_items_weapon_bow
-	Portrait:SpritePath= Portraits/Weapons/bows_and_crossbows/bw_t_01
+	GraphicContainer:SpritePath= Textures/Sprites/Weapons/td_items_weapon_bow
+	Portrait:SpritePath= Textures/Portraits/WeaponAndArmorIcons/WeaponAndArmorIcons_png/transparent/bows_and_crossbows/bw_t_01
 	Position:PositionPoint=0
 	InteractOnTileOvertake
 	EntityTypeContainer:Type=Item

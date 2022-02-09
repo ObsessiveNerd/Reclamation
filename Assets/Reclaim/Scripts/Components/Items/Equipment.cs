@@ -43,7 +43,7 @@ public class Equipment : EntityComponent
                                 .With(EventParameters.Item, Self.ID);
 
                     source.FireEvent(unequip, true).Release();
-                    Services.WorldUIService.UpdateUI(Services.WorldDataQuery.GetActivePlayerId());
+                    Services.WorldUIService.UpdateUI();
                 });
                 gameEvent.GetValue<List<ContextMenuButton>>(EventParameters.InventoryContextActions).Add(button);
             }
@@ -64,7 +64,7 @@ public class Equipment : EntityComponent
                     remove.Release();
 
                     Services.EntityMapService.GetEntity(Services.WorldDataQuery.GetActivePlayerId()).FireEvent(equip, true).Release();
-                    Services.WorldUIService.UpdateUI(Services.WorldDataQuery.GetActivePlayerId());
+                    Services.WorldUIService.UpdateUI();
                 });
                 gameEvent.GetValue<List<ContextMenuButton>>(EventParameters.InventoryContextActions).Add(button);
             }

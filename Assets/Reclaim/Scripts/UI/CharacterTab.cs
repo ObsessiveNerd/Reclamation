@@ -4,7 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CharacterTab : MonoBehaviour
+public class CharacterTab : UpdatableUI
 {
     public Image m_Portrait;
     public TextMeshProUGUI m_PrettyName;
@@ -19,6 +19,7 @@ public class CharacterTab : MonoBehaviour
     public Slider m_ExpBar;
     public GameObject m_ActivePlayerIcon;
     public bool ShowActivePlayerIcon = true;
+    public bool TrackActivePlayer = false;
 
     private IEntity m_Entity;
     private string m_EId;
@@ -37,8 +38,11 @@ public class CharacterTab : MonoBehaviour
         firedEvent.Release();
     }
 
-    public void Update()
+    public override void UpdateUI()
     {
+        if (TrackActivePlayer)
+            m_Entity = Services.PlayerManagerService.GetActivePlayer();
+
         if (m_Entity == null)
             m_Entity = EntityQuery.GetEntity(m_EId);
 

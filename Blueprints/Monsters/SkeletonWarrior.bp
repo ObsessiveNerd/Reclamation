@@ -19,7 +19,7 @@
 	Move
 	Stats:Str=8,Agi=14,Con=10,Wis=12,Int=10,Cha=9,AttributePoints=0
 	Faction:ID=Undead
-	GraphicContainer:SpritePath=Textures/Monsters/td_monsters_skeleton_warrior_d1
+	GraphicContainer:SpritePath=Textures/Sprites/Monsters/td_monsters_skeleton_warrior_d1
 	EquipmentSlot:EquipmentId=ShortSword,BodyPartType=Arm
 	EquipmentSlot:EquipmentId=Shield,BodyPartType=Arm
 )

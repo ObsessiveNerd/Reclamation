@@ -1,6 +1,6 @@
 <Shield> (
-	GraphicContainer: Textures/Armor/td_items_shield_wood
-	Portrait: Portraits/Armor/shield_t_01
+	GraphicContainer: Textures/Sprites/Armor/td_items_shield_wood
+	Portrait: Textures/Portraits/WeaponAndArmorIcons/WeaponAndArmorIcons_png/transparent/shields/shield_t_01
 	Position:PositionPoint=0,0
 	InteractOnTileOvertake
 	EntityTypeContainer:Type=Item

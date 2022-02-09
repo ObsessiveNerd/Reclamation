@@ -4,21 +4,18 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class AbilitiesManager : MonoBehaviour
+public class AbilitiesManager : UpdatableUI
 {
     GameObject ActionBar;
     public Transform Content;
     public GameObject NoAbilitiesText;
 
-    IEntity m_Source;
-
-    public void Setup(IEntity source)
+    public override void UpdateUI()
     {
+        IEntity source = Services.PlayerManagerService.GetActivePlayer();
+
         Close();
-        ActionBar = FindObjectOfType<SpellSelectorMono>().gameObject;
-
-
-        m_Source = source;
+        ActionBar = FindObjectOfType<SpellSelectorMono>(true).gameObject;
 
         GameEvent getSpells = GameEventPool.Get(GameEventId.GetSpells)
                                 .With(EventParameters.SpellList, new HashSet<string>());
@@ -35,7 +32,7 @@ public class AbilitiesManager : MonoBehaviour
         {
             IEntity spell = EntityQuery.GetEntity(spellId);
 
-            GameObject spriteGoResource = Resources.Load<GameObject>("UI/SpellUI");
+            GameObject spriteGoResource = Resources.Load<GameObject>("Prefabs/UI/SpellUI");
             GameEvent getSpriteEvent = GameEventPool.Get(GameEventId.GetSprite)
                 .With(EventParameters.RenderSprite, null);
             Sprite sprite = spell.FireEvent(spell, getSpriteEvent).GetValue<Sprite>(EventParameters.RenderSprite);
@@ -56,29 +53,6 @@ public class AbilitiesManager : MonoBehaviour
     public void Close()
     {
         foreach (var ability in Content.GetComponentsInChildren<SpellAbilityUIMono>())
-        {
             Destroy(ability.gameObject);
-        }
     }
-
-    public void UpdateUI(IEntity source)
-    {
-        Close();
-        Setup(source);
-    }
-
-    //private void Update()
-    //{
-    //    if (m_Source == null)
-    //        return;
-
-    //    var abilities = Services.PlayerManagerService.GetPlayerActiveAbilities(m_Source.ID);
-    //    if (abilities.Count == 0)
-    //    {
-    //        ActionBar.SetActive(false);
-    //        return;
-    //    }
-    //    else
-    //        ActionBar.SetActive(true);
-    //}
 }

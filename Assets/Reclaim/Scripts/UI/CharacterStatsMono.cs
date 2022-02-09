@@ -5,15 +5,16 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CharacterStatsMono : MonoBehaviour//, IUpdatableUI
+public class CharacterStatsMono : UpdatableUI//, IUpdatableUI
 {
     //public TextMeshProUGUI Name;
     public TextMeshProUGUI AttributePoints;
     List<StatsUIMono> StatMonos;
 
-    public void Setup(IEntity source)
+    public override void UpdateUI()
     {
-        //Name.text = source.Name;
+        IEntity source = Services.PlayerManagerService.GetActivePlayer();
+
         StatMonos = GetComponentsInChildren<StatsUIMono>().ToList();
         GameEvent getAttributePoints = GameEventPool.Get(GameEventId.GetAttributePoints)
                                             .With(EventParameters.AttributePoints, 0);
@@ -27,7 +28,7 @@ public class CharacterStatsMono : MonoBehaviour//, IUpdatableUI
             {
                 statMono.Button.gameObject.SetActive(false);
                 statMono.Button.onClick.RemoveAllListeners();
-                statMono.UpdateUI(source);
+                statMono.SetData();
             }
         }
         else
@@ -47,29 +48,9 @@ public class CharacterStatsMono : MonoBehaviour//, IUpdatableUI
                     source.FireEvent(boostStat);
                     boostStat.Release();
                 });
-                statMono.Button.onClick.AddListener(() => UpdateUI(source));
-                statMono.UpdateUI(source);
+                statMono.Button.onClick.AddListener(() => UpdateUI());
+                statMono.SetData();
             }
         }
-
-
-        //WorldUtility.RegisterUI(this);
-    }
-
-    public void Cleanup()
-    {
-        //Name.text = "";
-    }
-
-    public void UpdateUI(IEntity newSource)
-    {
-        Cleanup();
-        Setup(newSource);
-    }
-
-    public void Close()
-    {
-        Cleanup();
-        //WorldUtility.UnRegisterUI(this);
     }
 }

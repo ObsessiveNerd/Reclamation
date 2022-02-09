@@ -3,21 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ChestMono : EscapeableMono, IUpdatableUI
+public class ChestMono : EscapeableMono
 {
-    public GameObject ChestUI;
     public Transform ChestContent;
-
     public Transform Inventories;
 
     List<GameObject> m_Inventories = new List<GameObject>();
 
-    //private InventoryManagerMono m_Inventory;
     private IEntity m_Chest;
-
     private List<GameObject> m_Items = new List<GameObject>();
 
-    public void Init(IEntity chest)
+    public void Setup(IEntity chest)
     {
         if (chest == null)
             return;
@@ -25,17 +21,13 @@ public class ChestMono : EscapeableMono, IUpdatableUI
         m_Chest = chest;
         m_Inventories = UIUtility.CreatePlayerInventories(Inventories);
 
-        ChestUI.SetActive(true);
-        WorldUtility.RegisterUI(this);
-        UIManager.Push(this);
-        UpdateUI();
+        OpenedThisFrame();
     }
 
-    public void UpdateUI()
+    public override void UpdateUI()
     {
         Cleanup();
 
-        //GameObject go = Resources.Load<GameObject>("UI/InventoryItem");
         GameEvent getItems = GameEventPool.Get(GameEventId.GetItems)
                                 .With(EventParameters.Items, new List<string>());
 
@@ -47,9 +39,6 @@ public class ChestMono : EscapeableMono, IUpdatableUI
             m_Items.Add(
                 UIUtility.CreateItemGameObject(m_Chest, Services.EntityMapService.GetEntity(itemId), ChestContent));
         }
-
-        //m_Inventory = ChestUI.GetComponentInChildren<InventoryManagerMono>();
-        //m_Inventory.Setup(newSource);
     }
 
     public void Cleanup()
@@ -63,9 +52,7 @@ public class ChestMono : EscapeableMono, IUpdatableUI
     {
         Cleanup();
         UIUtility.ClosePlayerInventory();
-
-        WorldUtility.UnRegisterUI(this);
-        ChestUI.SetActive(false);
+        gameObject.SetActive(false);
         m_Chest = null;
     }
 
@@ -86,13 +73,7 @@ public class ChestMono : EscapeableMono, IUpdatableUI
             activePlayer.FireEvent(addToInventory);
             addToInventory.Release();
 
-            Services.WorldUIService.UpdateUI(activePlayer.ID);
+            Services.WorldUIService.UpdateUI();
         }
-    }
-
-    public void UpdateUI(IEntity newSource)
-    {
-        Cleanup();
-        UpdateUI();
     }
 }

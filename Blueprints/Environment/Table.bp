@@ -1,5 +1,5 @@
 <Table> (
-	GraphicContainer: Textures/Environment/td_world_table
+	GraphicContainer: Textures/Sprites/Environment/td_world_table
 	Position:PositionPoint=0,0
 	InteractOnTileOvertake
 	EntityTypeContainer:Type=Object

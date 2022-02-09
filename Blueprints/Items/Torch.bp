@@ -1,6 +1,6 @@
 <Torch> (
-	GraphicContainer: Textures/Items/td_items_torch1
-	Portrait: Portraits/Items/torch_t_01
+	GraphicContainer: Textures/Sprites/Items/td_items_torch1
+	Portrait: Textures/Portraits/Items/torch_t_01
 	Position:PositionPoint=0,0
 	InteractOnTileOvertake
 	EntityTypeContainer:Type=Item

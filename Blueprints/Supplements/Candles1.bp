@@ -1,5 +1,5 @@
 <Candles1> (
-	GraphicContainer: Textures/Environment/td_world_candles_b1
+	GraphicContainer: Textures/Sprites/Environment/td_world_candles_b1
 	Position:PositionPoint=0,0
 	InteractOnTileOvertake
 	EntityTypeContainer:Type=Object

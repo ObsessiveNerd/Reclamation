@@ -1,5 +1,5 @@
 <StairsDown> (
-	GraphicContainer: Textures/Environment/td_world_wall_cave_stair_down
+	GraphicContainer: Textures/Sprites/Environment/td_world_wall_cave_stair_down
 	Position:PositionPoint=0,0
 	InteractOnTileOvertake
 	EntityTypeContainer:Type=Object

@@ -65,8 +65,7 @@ public class EnchantmentManagerMono : EscapeableMono
         ItemToEnchant.Cleanup();
 
         //UIManager.ForcePop(this);
-        Services.WorldUIService.OpenInventory(m_Source);
-        Services.WorldUIService.UpdateUI();
+        Services.WorldUIService.OpenInventory();
         ItemToEnchant.AcceptsDrop = true;
         NewAssetName.text = "Name...";
     }

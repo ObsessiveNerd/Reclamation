@@ -1,6 +1,6 @@
 <DwarfWarrior> (
-	GraphicContainer:SpritePath=Textures/Characters/td_monsters_dwarf_d2
-	Portrait:SpritePath=Portraits/Characters/Tex_Dwarf_warrior_male_bg
+	GraphicContainer:SpritePath=Textures/Sprites/Characters/td_monsters_dwarf_d2
+	Portrait:SpritePath=Textures/Sprites/Characters/td_monsters_dwarf_d2
 	Defense
 	Inventory:InventoryItems=[<Spellbook>&<BronzeHelmet>&<LongSword>&<Warhammer>&<ShortBow>&<Enchantment>]
 	Move

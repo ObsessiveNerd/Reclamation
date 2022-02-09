@@ -4,32 +4,14 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SpellSelectorMono : MonoBehaviour, IUpdatableUI
+public class SpellSelectorMono : UpdatableUI//, IUpdatableUI
 {
     public GameObject SpellObject;
     public GameObject SpellView;
 
-    void Start()
+    public override void UpdateUI()
     {
-        WorldUtility.RegisterUI(this);
-    }
-
-    void OnDisable()
-    {
-        WorldUtility.UnRegisterUI(this);
-    }
-
-    public void Setup(IEntity source)
-    {
-        if (source == null || !WorldUtility.IsActivePlayer(source.ID))
-            return;
-
-        //GameEvent updateUI = GameEventPool.Get(GameEventId.UpdateUI)
-        //                            .With(EventParameters.Entity, WorldUtility.GetActivePlayerId());
-        //World.Instance.Self.FireEvent(updateUI).Release();
-
-        //WorldUIController.UpdateUI(WorldUtility.GetActivePlayerId());
-
+        IEntity source = Services.PlayerManagerService.GetActivePlayer();
         Close();
         GameEvent getSpells = GameEventPool.Get(GameEventId.GetActiveAbilities)
                                     .With(EventParameters.Abilities, new List<IEntity>());
@@ -79,36 +61,13 @@ public class SpellSelectorMono : MonoBehaviour, IUpdatableUI
                 getSpellCost.Release();
                 getMana.Release();
 
-                //Button button = spriteGo.AddComponent<Button>();
-                //button.onClick.AddListener(() =>
-                //{
-                //    source.FireEvent(GameEventPool.Get(GameEventId.SpellSelected, new .With(EventParameters.Spell, spellId)));
-                //    //Close();
-                //});
                 index++;
             }
         }
-        //UIManager.Push(this);
     }
-
-    public void UpdateUI(IEntity newSource)
-    {
-        if (newSource == null || !WorldUtility.IsActivePlayer(newSource.ID))
-            return;
-
-        Debug.Log("Update Spellselector");
-        Close();
-        Setup(newSource);
-    }
-
-    //public override void OnEscape()
-    //{
-    //    Close();
-    //}
 
     void Close()
     {
-        //SpellObject.SetActive(false);
         foreach (Transform go in SpellView.GetComponentsInChildren<Transform>())
             if(SpellView.transform != go)
                 Destroy(go.gameObject);

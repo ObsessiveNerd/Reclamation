@@ -1,5 +1,5 @@
 <DragonHead> (
-	GraphicContainer:SpritePath= Textures/Armor/td_items_leather_helm
+	GraphicContainer:SpritePath= Textures/Sprites/Armor/td_items_leather_helm
 	Portrait:SpritePath= Portraits/Items/addons/71_t
 	Position:PositionPoint=0
 	InteractOnTileOvertake

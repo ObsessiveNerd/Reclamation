@@ -6,5 +6,5 @@
 	EnvironmentalObject
 	ItemContainer:IDToEntityMap=
 	SpawnRestrictor:Restrictions=AgainstWall
-	StorageGraphic:HasItemsGraphicPath=Textures/Environment/td_world_bookshelf_a,EmptyGraphicPath=Textures/Environment/td_world_bookshelf_b
+	StorageGraphic:HasItemsGraphicPath=Textures/Sprites/Environment/td_world_bookshelf_a,EmptyGraphicPath=Textures/Sprites/Environment/td_world_bookshelf_b
 )

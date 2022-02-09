@@ -1,6 +1,6 @@
 <DragonClaw> (
-	GraphicContainer:SpritePath= Textures/Armor/td_items_dragons_claw
-	Portrait:SpritePath= Portraits/Weapons/addons/085_t
+	GraphicContainer:SpritePath= Textures/Sprites/Armor/td_items_dragons_claw
+	Portrait:SpritePath= Textures/Portraits/WeaponAndArmorIcons/WeaponAndArmorIcons_png/transparent/addons/085_t
 	Position:PositionPoint=0
 	InteractOnTileOvertake
 	EntityTypeContainer:Type=Item

@@ -6,7 +6,7 @@ using TMPro;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class InventoryManagerMono : MonoBehaviour, IDropHandler, IUpdatableUI
+public class InventoryManagerMono : UpdatableUI, IDropHandler
 {
     public Action ItemDropped;
     public TextMeshProUGUI Name;
@@ -32,23 +32,6 @@ public class InventoryManagerMono : MonoBehaviour, IDropHandler, IUpdatableUI
     {
         if (source != null)
             Source = source;
-
-        Cleanup();
-
-        Name.text = Source.Name;
-
-        WorldUtility.RegisterUI(this);
-        GameEvent getCurrentInventory = GameEventPool.Get(GameEventId.GetCurrentInventory)
-                                            .With(EventParameters.Value, new List<IEntity>());
-
-        List<IEntity> inventory = Source.FireEvent(getCurrentInventory).GetValue<List<IEntity>>(EventParameters.Value);
-        getCurrentInventory.Release();
-
-        foreach (var item in inventory)
-        {
-            if(!m_Items.ContainsKey(item))
-                m_Items.Add(item, UIUtility.CreateItemGameObject(Source, item, InventoryView));
-        }
     }
 
     public void Cleanup()
@@ -60,9 +43,12 @@ public class InventoryManagerMono : MonoBehaviour, IDropHandler, IUpdatableUI
             //This is hacky and awful.  If we ever need to do this in another situation we'll have to refactor this whole thing
             //The proper thing would be for things like the enchanter to create a temporary inventory entity that has an inventory
             //Then we move the item to be enchanted into that inventory while we're enchanting that item
-            if (enchanter.ItemToEnchant.ItemMono != null &&
-                enchanter.ItemToEnchant.ItemMono.ItemObject == entity)
-                continue;
+            if (enchanter != null)
+            {
+                if (enchanter.ItemToEnchant.ItemMono != null &&
+                    enchanter.ItemToEnchant.ItemMono.ItemObject == entity)
+                    continue;
+            }
 
             Destroy(m_Items[entity]);
             keysToRemove.Add(entity);
@@ -72,12 +58,28 @@ public class InventoryManagerMono : MonoBehaviour, IDropHandler, IUpdatableUI
             m_Items.Remove(key);
     }
 
+    public override void UpdateUI()
+    {
+        Cleanup();
 
+        Name.text = Source.Name;
+
+        GameEvent getCurrentInventory = GameEventPool.Get(GameEventId.GetCurrentInventory)
+                                            .With(EventParameters.Value, new List<IEntity>());
+
+        List<IEntity> inventory = Source.FireEvent(getCurrentInventory).GetValue<List<IEntity>>(EventParameters.Value);
+        getCurrentInventory.Release();
+
+        foreach (var item in inventory)
+        {
+            if (!m_Items.ContainsKey(item))
+                m_Items.Add(item, UIUtility.CreateItemGameObject(Source, item, InventoryView));
+        }
+    }
 
     public void Close()
     {
         Cleanup();
-        WorldUtility.UnRegisterUI(this);
     }
 
     public void OnDrop(PointerEventData eventData)
@@ -119,9 +121,7 @@ public class InventoryManagerMono : MonoBehaviour, IDropHandler, IUpdatableUI
         //eventData.pointerDrag.GetComponent<InventoryItemMono>().Init(Source, item);
         //eventData.pointerDrag.GetComponent<DragAndDrop>().Set(InventoryView.position, InventoryView.transform);
 
-        Services.WorldUIService.UpdateUI(Source.ID);
-        if(source != Source)
-            Services.WorldUIService.UpdateUI(source.ID);
+        Services.WorldUIService.UpdateUI();
 
         if (!m_Items.ContainsKey(item))
         {

@@ -2,6 +2,6 @@
 	Position:PositionPoint=
 	InteractOnTileOvertake
 	EntityTypeContainer:Type=Object
-	GraphicContainer:SpritePath=Textures/Environment/td_world_torch1
+	GraphicContainer:SpritePath=Textures/Sprites/Environment/td_world_torch1
 	FOVModifier:Modifier=2
 )

@@ -1,6 +1,6 @@
 <Short Sword> (
-	GraphicContainer:SpritePath= Textures/Weapons/td_items_weapon_sword
-	Portrait:SpritePath= Portraits/Weapons/swords_t_01
+	GraphicContainer:SpritePath= Textures/Sprites/Weapons/td_items_weapon_sword
+	Portrait:SpritePath= Textures/Portraits/WeaponAndArmorIcons/WeaponAndArmorIcons_png/transparent/swords/swords_t_01
 	Position:PositionPoint=0
 	InteractOnTileOvertake
 	EntityTypeContainer:Type=Item

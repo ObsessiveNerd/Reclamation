@@ -1,5 +1,5 @@
 <Demon> (
-	GraphicContainer:SpritePath= Textures/Monsters/td_monsters_demon_d2
+	GraphicContainer:SpritePath= Textures/Sprites/Monsters/td_monsters_demon_d2
 	Defense
 	Position:PositionPoint=0
 	Move

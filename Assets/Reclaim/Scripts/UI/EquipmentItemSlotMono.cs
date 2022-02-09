@@ -54,7 +54,7 @@ public class EquipmentItemSlotMono : MonoBehaviour, IDropHandler
                 source.FireEvent(removeFromInventory).Release();
                 removeFromInventory.Release();
 
-                Services.WorldUIService.UpdateUI(source.ID);
+                Services.WorldUIService.UpdateUI();
             }
 
             GameEvent equip = GameEventPool.Get(GameEventId.Equip)
@@ -87,6 +87,6 @@ public class EquipmentItemSlotMono : MonoBehaviour, IDropHandler
         }
 
         eventData.pointerDrag.GetComponent<DragAndDrop>().Set(transform.position, transform);
-        Services.WorldUIService.UpdateUI(Source.ID);
+        Services.WorldUIService.UpdateUI();
     }
 }

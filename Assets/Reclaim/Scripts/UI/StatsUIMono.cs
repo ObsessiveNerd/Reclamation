@@ -14,8 +14,6 @@ public class StatsUIMono : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     public TextMeshProUGUI Text;
     public Button Button;
 
-    IEntity m_Source;
-
     public void OnPointerEnter(PointerEventData eventData)
     {
         m_PopupInstance = Instantiate(m_Popup);
@@ -28,20 +26,20 @@ public class StatsUIMono : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         Destroy(m_PopupInstance);
     }
 
-    void OnDisable()
+    protected void OnDisable()
     {
         Destroy(m_PopupInstance);
         m_PopupInstance = null;
     }
 
-    public void Setup(IEntity source)
+    public void SetData()
     {
+        IEntity source = Services.PlayerManagerService.GetActivePlayer();
+        
         if (Text == null)
             Text = GetComponent<TextMeshProUGUI>();
 
-        m_Popup = Resources.Load<GameObject>("UI/ItemPopup");
-        m_Source = source;
-
+        m_Popup = Resources.Load<GameObject>("Prefabs/UI/ItemPopup");
         GameEvent getStat = GameEventPool.Get(GameEventId.GetStatRaw)
                                 .With(EventParameters.StatType, ControlledStat)
                                 .With(EventParameters.Value, Stat.Str);
@@ -49,11 +47,6 @@ public class StatsUIMono : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         int value = source.FireEvent(getStat).GetValue<int>(EventParameters.Value);
         Text.text = $"{ControlledStat.ToString()}: {value}";
         getStat.Release();
-    }
-
-    public void UpdateUI(IEntity newSource)
-    {
-        Setup(newSource);
     }
 
     string GetFullStatName()

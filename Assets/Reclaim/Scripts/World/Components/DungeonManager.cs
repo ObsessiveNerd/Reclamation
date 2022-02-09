@@ -345,7 +345,7 @@ public class DungeonManager : GameService
         Tile t = new Tile(actor, new Point(x, y));
         actor.AddComponent(t);
         actor.AddComponent(new TileVisible(false));
-        actor.AddComponent(new GraphicContainer("Textures/Environment/td_world_floor_cobble_b-120"));
+        actor.AddComponent(new GraphicContainer("Textures/Sprites/Environment/td_world_floor_cobble_b-120"));
         actor.AddComponent(new Renderer(tile.GetComponent<SpriteRenderer>()));
         actor.AddComponent(new Position(new Point(x, y)));
         actor.CleanupComponents();

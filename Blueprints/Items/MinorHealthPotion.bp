@@ -1,6 +1,6 @@
 <Minor Health Potion> (
-	GraphicContainer: Textures/Items/td_items_potion_red
-	Portrait: Portraits/Items/17
+	GraphicContainer: Textures/Sprites/Items/td_items_potion_red
+	Portrait: Textures/Portraits/Items/17
 	Position:PositionPoint=0,0
 	InteractOnTileOvertake
 	EntityTypeContainer:Type=Item

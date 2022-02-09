@@ -11,7 +11,7 @@ public class LookController : InputControllerBase
 
     public override void Init(IEntity self)
     {
-        m_Popup = Resources.Load<GameObject>("UI/ItemPopup");
+        m_Popup = Resources.Load<GameObject>("Prefabs/UI/ItemPopup");
 
         base.Init(self);
 

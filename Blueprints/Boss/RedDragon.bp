@@ -1,5 +1,5 @@
 <RedDragon> (
-	GraphicContainer:SpritePath= Textures/Monsters/td_monsters_dragon_d1
+	GraphicContainer:SpritePath= Textures/Sprites/Monsters/td_monsters_dragon_d1
 	Defense
 	ManaRegen:RegenAmount=4,RegenSpeed=1
 	Inventory:InventoryItems=

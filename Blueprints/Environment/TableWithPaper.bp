@@ -1,5 +1,5 @@
 <TableWithPaper> (
-	GraphicContainer:SpritePath=Textures/Environment/td_world_table_middle_b
+	GraphicContainer:SpritePath=Textures/Sprites/Environment/td_world_table_middle_b
 	Position:PositionPoint=0
 	InteractOnTileOvertake
 	EntityTypeContainer:Type=Object
