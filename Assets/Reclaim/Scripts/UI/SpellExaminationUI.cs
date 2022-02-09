@@ -35,7 +35,7 @@ public class SpellExaminationUI : EscapeableMono//, IUpdatableUI
                 Image spriteRenderer = spriteGo.transform.Find("SpellImage").GetComponent<Image>();
                 spriteRenderer.sprite = sprite;
                 spriteGo.transform.SetParent(Content);
-                spriteGo.GetComponent<SpellAbilityUIMono>().Setup(spell);
+                spriteGo.GetComponent<SpellAbilityUIMono>().Setup(Services.PlayerManagerService.GetActivePlayer(), spell, false, false);
 
                 Button button = spriteGo.AddComponent<Button>();
                 button.onClick.AddListener(() =>

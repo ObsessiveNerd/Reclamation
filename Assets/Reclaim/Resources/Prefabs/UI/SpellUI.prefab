@@ -10,6 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 175686645463201750}
   - component: {fileID: 6722235546928994460}
+  - component: {fileID: 8643576553631186521}
+  - component: {fileID: 3641939731154536158}
   m_Layer: 5
   m_Name: SpellUI
   m_TagString: Untagged
@@ -24,7 +26,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 175686645463201751}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -35,8 +37,8 @@ RectTransform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.46274218, y: 0.4201278}
-  m_AnchorMax: {x: 0.53725785, y: 0.5798722}
+  m_AnchorMin: {x: 0.46274218, y: 0.43376386}
+  m_AnchorMax: {x: 0.53725785, y: 0.56623614}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -55,6 +57,46 @@ MonoBehaviour:
   BG: {fileID: 6027456179975625655}
   Frame: {fileID: 6748246785461532573}
   Image: {fileID: 175686646036566759}
+--- !u!114 &8643576553631186521
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 175686645463201751}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 23cfa24f4cf42e74f905cc0c7ad9f427, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_AspectMode: 1
+  m_AspectRatio: 1
+  settingsFallback:
+    AspectMode: 1
+    AspectRatio: 1
+    screenConfigName: 
+  customSettings:
+    items: []
+--- !u!114 &3641939731154536158
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 175686645463201751}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreLayout: 0
+  m_MinWidth: -1
+  m_MinHeight: -1
+  m_PreferredWidth: 85
+  m_PreferredHeight: -1
+  m_FlexibleWidth: 0
+  m_FlexibleHeight: -1
+  m_LayoutPriority: 1
 --- !u!1 &175686646036566757
 GameObject:
   m_ObjectHideFlags: 0
@@ -66,6 +108,7 @@ GameObject:
   - component: {fileID: 175686646036566756}
   - component: {fileID: 175686646036566758}
   - component: {fileID: 175686646036566759}
+  - component: {fileID: 2204057350130686370}
   m_Layer: 5
   m_Name: SpellImage
   m_TagString: Untagged
@@ -87,8 +130,8 @@ RectTransform:
   m_Father: {fileID: 175686645463201750}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.112350464, y: 0.115090966}
-  m_AnchorMax: {x: 0.88764954, y: 0.88490903}
+  m_AnchorMin: {x: 0.11235037, y: 0.112350345}
+  m_AnchorMax: {x: 0.88764966, y: 0.88764966}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -130,6 +173,26 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &2204057350130686370
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 175686646036566757}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 23cfa24f4cf42e74f905cc0c7ad9f427, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_AspectMode: 1
+  m_AspectRatio: 1
+  settingsFallback:
+    AspectMode: 1
+    AspectRatio: 1
+    screenConfigName: 
+  customSettings:
+    items: []
 --- !u!1 &175686646314641496
 GameObject:
   m_ObjectHideFlags: 0
@@ -141,6 +204,7 @@ GameObject:
   - component: {fileID: 175686646314641499}
   - component: {fileID: 175686646314641501}
   - component: {fileID: 175686646314641498}
+  - component: {fileID: 1097920704601157813}
   m_Layer: 5
   m_Name: Background
   m_TagString: Untagged
@@ -205,6 +269,26 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &1097920704601157813
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 175686646314641496}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 23cfa24f4cf42e74f905cc0c7ad9f427, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_AspectMode: 1
+  m_AspectRatio: 1
+  settingsFallback:
+    AspectMode: 1
+    AspectRatio: 1
+    screenConfigName: 
+  customSettings:
+    items: []
 --- !u!1 &1129195725947338165
 GameObject:
   m_ObjectHideFlags: 0
@@ -298,12 +382,12 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 72
+  m_fontSize: 37.5
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_fontSizeMin: 0
+  m_fontSizeMax: 200
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 256
@@ -365,6 +449,7 @@ GameObject:
   - component: {fileID: 5236449230918095575}
   - component: {fileID: 1801100645471033461}
   - component: {fileID: 499422211934571771}
+  - component: {fileID: 5902645250703072366}
   m_Layer: 5
   m_Name: NumberBG
   m_TagString: Untagged
@@ -429,6 +514,26 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &5902645250703072366
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6027456179975625655}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 23cfa24f4cf42e74f905cc0c7ad9f427, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_AspectMode: 1
+  m_AspectRatio: 1
+  settingsFallback:
+    AspectMode: 1
+    AspectRatio: 1
+    screenConfigName: 
+  customSettings:
+    items: []
 --- !u!1 &6748246785461532573
 GameObject:
   m_ObjectHideFlags: 0
@@ -440,7 +545,7 @@ GameObject:
   - component: {fileID: 996246699781531929}
   - component: {fileID: 3519624174387485136}
   - component: {fileID: 7454369214238931544}
-  - component: {fileID: 3965919633757292507}
+  - component: {fileID: 6235823891389988889}
   m_Layer: 5
   m_Name: NumberFrame
   m_TagString: Untagged
@@ -463,9 +568,9 @@ RectTransform:
   m_Father: {fileID: 175686645463201750}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.20842385, y: -0.244717}
-  m_AnchorMax: {x: 0.791577, y: 0.23887831}
-  m_AnchoredPosition: {x: -0.000061035, y: 0.020355}
+  m_AnchorMin: {x: 0.3535285, y: -0.1493913}
+  m_AnchorMax: {x: 0.6464724, y: 0.1435526}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3519624174387485136
@@ -506,7 +611,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &3965919633757292507
+--- !u!114 &6235823891389988889
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -515,8 +620,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 6748246785461532573}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 86710e43de46f6f4bac7c8e50813a599, type: 3}
+  m_Script: {fileID: 11500000, guid: 23cfa24f4cf42e74f905cc0c7ad9f427, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_AspectMode: 1
   m_AspectRatio: 1
+  settingsFallback:
+    AspectMode: 1
+    AspectRatio: 1
+    screenConfigName: 
+  customSettings:
+    items: []

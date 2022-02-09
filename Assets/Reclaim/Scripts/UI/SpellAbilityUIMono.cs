@@ -12,16 +12,24 @@ public class SpellAbilityUIMono : ItemMono, IPointerDownHandler
 
     protected override bool CanDrag => false;
 
+    bool m_CanSetActiveAbilities = true;
+
     IEntity m_Source;
     IEntity m_Spell;
 
-    public void Setup(/*IEntity source, */IEntity spell)
+    public void Setup(IEntity source, IEntity spell, bool canSetAsActiveAbility, bool showIndex)
     {
-        //m_Source = source;
+        m_CanSetActiveAbilities = canSetAsActiveAbility;
+        if (showIndex)
+            ShowIndex();
+        else
+            HideIndex();
+
+        m_Source = source;
         m_Spell = spell;
         GameEvent getActiveAbilities = GameEventPool.Get(GameEventId.GetActiveAbilities)
                                             .With(EventParameters.Abilities, new List<IEntity>());
-        Services.PlayerManagerService.GetActivePlayer().FireEvent(getActiveAbilities);
+        m_Source.FireEvent(getActiveAbilities);
         List<IEntity> activeAbilities = getActiveAbilities.GetValue<List<IEntity>>(EventParameters.Abilities);
         if (!activeAbilities.Contains(m_Spell))
             Image.color = Color.white;
@@ -32,17 +40,20 @@ public class SpellAbilityUIMono : ItemMono, IPointerDownHandler
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        if (eventData.clickCount == 2)
+        if (!m_CanSetActiveAbilities)
+            return;
+
+        if (eventData.clickCount == 1)
         {
             Debug.Log("Double clicked");
             GameEvent activeAbility = GameEventPool.Get(GameEventId.AddToActiveAbilities)
                                         .With(EventParameters.Entity, m_Spell.ID);
 
-            Services.PlayerManagerService.GetActivePlayer().FireEvent(activeAbility).Release();
+            m_Source.FireEvent(activeAbility).Release();
             GameEvent getSpells = GameEventPool.Get(GameEventId.GetActiveAbilities)
                                     .With(EventParameters.Abilities, new List<IEntity>());
 
-            var spellList = Services.PlayerManagerService.GetActivePlayer().FireEvent(getSpells).GetValue<List<IEntity>>(EventParameters.Abilities);
+            var spellList = m_Source.FireEvent(getSpells).GetValue<List<IEntity>>(EventParameters.Abilities);
             getSpells.Release();
 
             if (spellList.Count == 0)

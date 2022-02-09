@@ -45,7 +45,7 @@ public class AbilitiesManager : UpdatableUI
                 spriteGo.transform.SetParent(Content);
 
                 spriteGo.GetComponent<SpellAbilityUIMono>().HideIndex();
-                spriteGo.GetComponent<SpellAbilityUIMono>().Setup(spell);
+                spriteGo.GetComponent<SpellAbilityUIMono>().Setup(Services.PlayerManagerService.GetActivePlayer(), spell, true, false);
             }
         }
     }

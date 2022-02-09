@@ -11,8 +11,8 @@ public class SpellSelectorMono : UpdatableUI//, IUpdatableUI
 
     public override void UpdateUI()
     {
-        IEntity source = Services.PlayerManagerService.GetActivePlayer();
         Close();
+        IEntity source = Services.PlayerManagerService.GetActivePlayer();
         GameEvent getSpells = GameEventPool.Get(GameEventId.GetActiveAbilities)
                                     .With(EventParameters.Abilities, new List<IEntity>());
 
@@ -24,8 +24,6 @@ public class SpellSelectorMono : UpdatableUI//, IUpdatableUI
             SpellObject.SetActive(false);
             return;
         }
-        else
-            SpellObject.SetActive(true);
 
         int index = 1;
         foreach (IEntity spell in spellList)
@@ -64,6 +62,12 @@ public class SpellSelectorMono : UpdatableUI//, IUpdatableUI
                 index++;
             }
         }
+    }
+
+    protected override void OnDisable()
+    {
+        Close();
+        base.OnDisable();
     }
 
     void Close()
