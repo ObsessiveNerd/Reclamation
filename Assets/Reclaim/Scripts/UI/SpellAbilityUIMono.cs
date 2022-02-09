@@ -39,6 +39,19 @@ public class SpellAbilityUIMono : ItemMono, IPointerDownHandler
                                         .With(EventParameters.Entity, m_Spell.ID);
 
             Services.PlayerManagerService.GetActivePlayer().FireEvent(activeAbility).Release();
+            GameEvent getSpells = GameEventPool.Get(GameEventId.GetActiveAbilities)
+                                    .With(EventParameters.Abilities, new List<IEntity>());
+
+            var spellList = Services.PlayerManagerService.GetActivePlayer().FireEvent(getSpells).GetValue<List<IEntity>>(EventParameters.Abilities);
+            getSpells.Release();
+
+            if (spellList.Count == 0)
+            {
+                FindObjectOfType<SpellSelectorMono>(true).gameObject.SetActive(false);
+            }
+            else
+                FindObjectOfType<SpellSelectorMono>(true).gameObject.SetActive(true);
+
             Services.WorldUIService.UpdateUI();
         }
     }

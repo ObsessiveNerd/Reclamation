@@ -30,7 +30,7 @@ public class SpellSelectorMono : UpdatableUI//, IUpdatableUI
         int index = 1;
         foreach (IEntity spell in spellList)
         {
-            GameObject spriteGoResource = Resources.Load<GameObject>("UI/SpellUI");
+            GameObject spriteGoResource = Resources.Load<GameObject>("Prefabs/UI/SpellUI");
             GameEvent getSpriteEvent = GameEventPool.Get(GameEventId.GetSprite)
                 .With(EventParameters.RenderSprite, null);
             Sprite sprite = spell.FireEvent(spell, getSpriteEvent).GetValue<Sprite>(EventParameters.RenderSprite);
