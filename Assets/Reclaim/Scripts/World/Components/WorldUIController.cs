@@ -111,7 +111,7 @@ public class WorldUIController : GameService
 
     public void OpenEnchantmentUI(IEntity source, IEntity enchantment)
     {
-        GameObject.FindObjectOfType<EnchantmentManagerMono>().Setup(source, enchantment);
+        GameObject.FindObjectOfType<UIReferences>().OpenEnchanter(source, enchantment);
         UpdateUI();
     }
 }

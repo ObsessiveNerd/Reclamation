@@ -17,7 +17,6 @@ public class EnchantmentManagerMono : EscapeableMono
 
     public void Setup(IEntity source, IEntity enchantment)
     {
-        UIManager.Push(this);
         View.SetActive(true);
         m_Inventories = UIUtility.CreatePlayerInventories(Inventories);
         m_Enchantment = enchantment;
@@ -39,6 +38,7 @@ public class EnchantmentManagerMono : EscapeableMono
     public override void OnEscape()
     {
         Clear(false);
+        gameObject.SetActive(false);
     }
 
     void Clear(bool itemDroppedIntoInventory)

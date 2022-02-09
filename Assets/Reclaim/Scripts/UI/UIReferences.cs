@@ -36,4 +36,10 @@ public class UIReferences : MonoBehaviour
         Chest.SetActive(true);
         Chest.GetComponent<ChestMono>().Setup(chest);
     }
+
+    public void OpenEnchanter(IEntity source, IEntity enchantment)
+    {
+        EnchantmentManager.SetActive(true);
+        EnchantmentManager.GetComponent<EnchantmentManagerMono>().Setup(source, enchantment);
+    }
 }
