@@ -19,7 +19,7 @@ public class SpellcasterPlayerController : InputControllerBase
     public override void Init(IEntity self)
     {
         base.Init(self);
-        UIManager.Push(null);
+        UIManager.Push(this);
 
         GameEvent getSpells = GameEventPool.Get(GameEventId.GetActiveAbilities)
                                     .With(EventParameters.Abilities, new List<IEntity>());

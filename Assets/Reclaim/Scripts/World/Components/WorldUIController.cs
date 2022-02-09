@@ -11,7 +11,8 @@ public class WorldUIController : GameService
 
     public void UpdateUI()
     {
-        foreach (var ui in UpdatableUI)
+        List<IUpdatableUI> updateableUIs = new List<IUpdatableUI>(UpdatableUI);
+        foreach (var ui in updateableUIs)
             ui?.UpdateUI();
     }
 

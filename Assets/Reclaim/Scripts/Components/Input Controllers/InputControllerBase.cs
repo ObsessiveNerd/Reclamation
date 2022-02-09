@@ -2,12 +2,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class InputControllerBase : EntityComponent
+public abstract class InputControllerBase : EntityComponent, IEscapeableMono
 {
+    public bool? AlternativeEscapeKeyPressed => false;
+
     public override void Init(IEntity self)
     {
         base.Init(self);
         RegisteredEvents.Add(GameEventId.UpdateEntity);
+    }
+
+    public void OnEscape()
+    {
+        UIManager.ForcePop(this);
     }
 
     protected void EndSelection(Point tileSelection)
@@ -16,7 +23,6 @@ public abstract class InputControllerBase : EntityComponent
         Self.AddComponent(new PlayerInputController());
         Services.TileSelectionService.EndTileSelection(tileSelection);
         Services.WorldUpdateService.UpdateWorldView();
-        UIManager.ForcePop();
     }
 
     protected bool SpellSelected(out int spell)

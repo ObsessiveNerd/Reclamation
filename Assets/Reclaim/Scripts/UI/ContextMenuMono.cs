@@ -8,13 +8,11 @@ using UnityEngine.UI;
 public class ContextMenuMono : EscapeableMono
 {
     public Transform Content;
-    //List<GameObject> m_Buttons = new List<GameObject>();
 
     public static GameObject CreateNewContextMenu()
     {
         var contextMenu = Instantiate(Resources.Load<GameObject>("Prefabs/UI/ContextMenu"));
         contextMenu.transform.SetParent(GameObject.FindObjectOfType<Canvas>().transform, false);
-        UIManager.Push(contextMenu.GetComponent<ContextMenuMono>());
         return contextMenu;
     }
 
@@ -23,18 +21,13 @@ public class ContextMenuMono : EscapeableMono
         GameObject instance = cmb.CreateButton(Resources.Load<GameObject>("Prefabs/UI/ContextMenuButton"));
         Button button = instance.GetComponent<Button>();
 
-        //button.onClick.AddListener(() => OnEscape());
         button.onClick.AddListener(() => UIManager.ForcePop(this));
-        button.onClick.AddListener(() =>
-        {
-            Services.WorldUIService.UpdateUI();
-            //World.Instance.Self.FireEvent(GameEventPool.Get(GameEventId.UpdateUI).With(EventParameters.Entity, source.ID)).Release();
-        });
+        button.onClick.AddListener(() => Services.WorldUIService.UpdateUI());
+
         if (afterClickCallback != null)
             button.onClick.AddListener(() => afterClickCallback());
 
         instance.transform.SetParent(Content);
-        //m_Buttons.Add(instance);
     }
 
     public void SelectPlayer(Action<string> actionForSelectedPlayer, List<string> playerIds)
@@ -52,10 +45,6 @@ public class ContextMenuMono : EscapeableMono
 
     public override void OnEscape()
     {
-        //if(UIManager.GetTopStack() == this)
-            Destroy(gameObject);
-        //foreach (var button in m_Buttons)
-        //    Destroy(button);
-        //m_Buttons.Clear();
+        Destroy(gameObject);
     }
 }

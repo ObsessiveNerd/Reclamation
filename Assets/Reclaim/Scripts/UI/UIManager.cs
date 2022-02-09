@@ -5,7 +5,7 @@ using UnityEngine;
 public class UIManager : MonoBehaviour
 {
     static bool ExistsAlready = false;
-    static Stack<EscapeableMono> UIMonoBehaviors = new Stack<EscapeableMono>();
+    static Stack<IEscapeableMono> UIMonoBehaviors = new Stack<IEscapeableMono>();
     public static bool UIClear => UIMonoBehaviors.Count == 0;
 
     private void Start()
@@ -19,22 +19,22 @@ public class UIManager : MonoBehaviour
         ExistsAlready = true;
     }
 
-    public static void Push(EscapeableMono mono)
+    public static void Push(IEscapeableMono mono)
     {
         if (mono == null)
             Debug.LogWarning("pushing null to the UI manager stack.  Could cause issues");
         else
-            Debug.LogWarning($"Pusing {mono.name} to UI stack");
+            Debug.LogWarning($"Pusing {mono.GetType().Name} to UI stack");
 
-        if (!UIMonoBehaviors.Contains(mono))
+        if (mono == null || !UIMonoBehaviors.Contains(mono))
             UIMonoBehaviors.Push(mono);
     }
 
-    public static void ForcePop(EscapeableMono mono)
+    public static void ForcePop(IEscapeableMono mono)
     {
         if (UIMonoBehaviors.Count > 0 && UIMonoBehaviors.Peek() == mono)
         {
-            Debug.LogWarning($"{mono.name} popping from UI stack");
+            Debug.LogWarning($"{mono.GetType().Name} popping from UI stack");
             UIMonoBehaviors.Pop().OnEscape();
         }
     }
@@ -49,7 +49,7 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    public static EscapeableMono GetTopStack()
+    public static IEscapeableMono GetTopStack()
     {
         return UIMonoBehaviors.Peek();
     }
@@ -77,9 +77,12 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    bool m_EscapePressedThisFrame = false;
     void Update()
     {
-        if (EscapeForActiveUIPressed.HasValue && EscapeForActiveUIPressed.Value /*&& !UIClear*/)
+        if (m_EscapePressedThisFrame)
+            m_EscapePressedThisFrame = false;
+        else if (EscapeForActiveUIPressed.HasValue && EscapeForActiveUIPressed.Value /*&& !UIClear*/)
         {
             if (UIMonoBehaviors.Count == 0)
                 FindObjectOfType<InputBinder>().Open();
@@ -88,6 +91,8 @@ public class UIManager : MonoBehaviour
                 var escapeMono = UIMonoBehaviors.Pop();
                 escapeMono?.OnEscape();
             }
+            m_EscapePressedThisFrame = true;
         }
     }
+
 }

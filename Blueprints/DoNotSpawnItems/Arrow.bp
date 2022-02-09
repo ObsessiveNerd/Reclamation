@@ -4,5 +4,5 @@
 	Item:Rarity=Common
 	DealDamage:DamageType=Piercing,Dice=1d4
 	WeaponType:Type=Ranged
-	Ammo:TexturePath=Textures/Items/td_items_arrow
+	Ammo:TexturePath=Textures/Sprites/Items/td_items_arrow
 )

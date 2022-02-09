@@ -2,7 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EscapeableMono : UpdatableUI
+public interface IEscapeableMono
+{
+    void OnEscape();
+    bool? AlternativeEscapeKeyPressed { get; }
+}
+
+public class EscapeableMono : UpdatableUI, IEscapeableMono
 {
     protected bool m_OpenedThisFrame = false;
     

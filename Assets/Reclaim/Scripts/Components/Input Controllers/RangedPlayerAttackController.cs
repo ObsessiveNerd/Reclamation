@@ -37,7 +37,7 @@ public class RangedPlayerAttackController : InputControllerBase
         m_TileSelection = Services.WorldDataQuery.GetEntityLocation(startingTarget);
         Services.TileSelectionService.SelectTile(m_TileSelection);
         Services.WorldUpdateService.UpdateWorldView();
-        UIManager.Push(null);
+        UIManager.Push(this);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
@@ -82,6 +82,7 @@ public class RangedPlayerAttackController : InputControllerBase
                 FireEvent(Self, checkForEnergy);
                 gameEvent.Paramters[EventParameters.TakeTurn] = (bool)checkForEnergy.Paramters[EventParameters.TakeTurn];
                 checkForEnergy.Release();
+                getAmmo.Release();
             }
 
             if (Input.GetKeyDown(KeyCode.Escape))
