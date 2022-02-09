@@ -9,6 +9,7 @@ public class EscapeableMono : UpdatableUI
     protected override void OnEnable()
     {
         UIManager.Push(this);
+        transform.SetAsLastSibling();
         base.OnEnable();
     }
 
