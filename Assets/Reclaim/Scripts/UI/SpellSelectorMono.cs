@@ -38,7 +38,7 @@ public class SpellSelectorMono : UpdatableUI//, IUpdatableUI
                 GameObject spriteGo = Instantiate(spriteGoResource);
                 Image spriteRenderer = spriteGo.transform.Find("SpellImage").GetComponent<Image>();
                 spriteRenderer.sprite = sprite;
-                spriteGo.transform.SetParent(SpellView.transform);
+                spriteGo.transform.SetParent(SpellView.transform, false);
 
                 spriteGo.GetComponentInChildren<TextMeshProUGUI>().text = index.ToString();
 
