@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
-public class InputBinder : MonoBehaviour
+public class InputBinder : EscapeableMono
 {
     public GameObject UI;
 
@@ -46,11 +46,20 @@ public class InputBinder : MonoBehaviour
         }
     }
 
+    protected override void OnEnable() { }
+
     public void Open()
     {
-        UI.SetActive(!UI.activeInHierarchy);
+        UI.SetActive(true);
+        UIManager.Push(this);
     }
 
+    public override void OnEscape()
+    {
+        UI.SetActive(false);
+        UIManager.ForcePop(this);
+    }
+    
     private void Update()
     {
         if(m_RequestedAction != null && !string.IsNullOrEmpty(Input.inputString))
@@ -78,14 +87,16 @@ public class InputBinder : MonoBehaviour
     public void ResetToDefault()
     {
         m_Data = new InputKeyBindData(InputKeyBindData.InputDefaultType.FullKeyboard);
-        File.Delete(InputConfigPath);
+        if(File.Exists(InputConfigPath))
+            File.Delete(InputConfigPath);
         File.WriteAllText(InputConfigPath, JsonUtility.ToJson(m_Data));
     }
 
     public void ResetToLaptopDefaults()
     {
         m_Data = new InputKeyBindData(InputKeyBindData.InputDefaultType.Laptop);
-        File.Delete(InputConfigPath);
+        if(File.Exists(InputConfigPath))
+            File.Delete(InputConfigPath);
         File.WriteAllText(InputConfigPath, JsonUtility.ToJson(m_Data));
     }
 

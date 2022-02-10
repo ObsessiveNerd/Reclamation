@@ -41,7 +41,7 @@ public class WorldUIController : GameService
         Vector2 newPos = (Vector2)Camera.main.WorldToScreenPoint(mapObject.transform.position);
         newPos.y += (mapObject.GetComponent<SpriteRenderer>().sprite.textureRect.height);
 
-        GameObject go = GameObject.Instantiate(Resources.Load<GameObject>("UI/FadeText"));
+        GameObject go = GameObject.Instantiate(Resources.Load<GameObject>("Prefabs/UI/FadeText"));
         go.GetComponent<FadeTextMono>().Setup($"+{healing}", 1, entity, Color.green);
         go.transform.SetParent(GameObject.FindObjectOfType<Canvas>().transform);
     }

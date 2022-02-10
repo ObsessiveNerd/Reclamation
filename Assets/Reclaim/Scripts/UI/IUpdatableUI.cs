@@ -19,7 +19,10 @@ public class UpdatableUI : MonoBehaviour, IUpdatableUI
 
     protected virtual void OnDisable()
     {
-        Services.WorldUIService.UnregisterUpdatableUI(this);
+        if(!Services.Ready)
+            Services.InitComplete += (sender, evnt) => Services.WorldUIService.UnregisterUpdatableUI(this);
+        else
+            Services.WorldUIService.UnregisterUpdatableUI(this);
     }
 
     public virtual void UpdateUI() { }

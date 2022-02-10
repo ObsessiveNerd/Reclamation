@@ -67,8 +67,8 @@ public class CharacterCreationMono : MonoBehaviour
         string name = string.IsNullOrEmpty(InputField.text) ? EntityFactory.GetRandomCharacterName() : InputField.text;
 
         character.AddComponent(new Name(name));
-        character.AddComponent(new GraphicContainer("Textures/Characters/" + m_CharacterImages[currentIndex].name));
-        character.AddComponent(new Portrait("Textures/Characters/" + m_CharacterImages[currentIndex].name));
+        character.AddComponent(new GraphicContainer("Textures/Sprites/Characters/" + m_CharacterImages[currentIndex].name));
+        character.AddComponent(new Portrait("Textures/Sprites/Characters/" + m_CharacterImages[currentIndex].name));
         character.AddComponent(new Stats(m_CharacterArchitypes[currentClassIndex].Str,
             m_CharacterArchitypes[currentClassIndex].Agi,
             m_CharacterArchitypes[currentClassIndex].Con,

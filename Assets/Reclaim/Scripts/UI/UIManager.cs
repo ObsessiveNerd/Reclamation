@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class UIManager : MonoBehaviour
 {
@@ -85,7 +86,38 @@ public class UIManager : MonoBehaviour
         else if (EscapeForActiveUIPressed.HasValue && EscapeForActiveUIPressed.Value /*&& !UIClear*/)
         {
             if (UIMonoBehaviors.Count == 0)
-                FindObjectOfType<InputBinder>().Open();
+            {
+                var contextMenu = ContextMenuMono.CreateNewContextMenu().GetComponent<ContextMenuMono>();
+                if(Services.Ready)
+                {
+                    contextMenu.AddButton(new ContextMenuButton("Return to Main Menu", () =>
+                    {
+                        Services.SaveAndLoadService.Save();
+                        SceneManager.LoadSceneAsync("Reclaim/Scenes/Title");
+                    }), null, () => Destroy(contextMenu.gameObject));
+
+                    contextMenu.AddButton(new ContextMenuButton("Save & Exit", () =>
+                    {
+                        Services.SaveAndLoadService.Save();
+                        Application.Quit();
+                    }), null, () => Destroy(contextMenu.gameObject));
+                }
+                contextMenu.AddButton(new ContextMenuButton("Controls", () =>
+                    {
+                        ForcePop(contextMenu);
+                        FindObjectOfType<InputBinder>().Open();
+                    }), null, () => Destroy(contextMenu.gameObject));
+
+                contextMenu.AddButton(new ContextMenuButton("Sound", () =>
+                    {
+
+                    }), null, () => Destroy(contextMenu.gameObject));
+
+                 contextMenu.AddButton(new ContextMenuButton("Display", () =>
+                    {
+
+                    }), null, () => Destroy(contextMenu.gameObject));
+            }
             else
             {
                 var escapeMono = UIMonoBehaviors.Pop();

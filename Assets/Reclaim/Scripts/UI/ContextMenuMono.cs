@@ -22,12 +22,16 @@ public class ContextMenuMono : EscapeableMono
         Button button = instance.GetComponent<Button>();
 
         button.onClick.AddListener(() => UIManager.ForcePop(this));
-        button.onClick.AddListener(() => Services.WorldUIService.UpdateUI());
+        button.onClick.AddListener(() =>
+        {
+            if (Services.Ready)
+                Services.WorldUIService.UpdateUI();
+        });
 
         if (afterClickCallback != null)
             button.onClick.AddListener(() => afterClickCallback());
 
-        instance.transform.SetParent(Content);
+        instance.transform.SetParent(Content, false);
     }
 
     public void SelectPlayer(Action<string> actionForSelectedPlayer, List<string> playerIds)
