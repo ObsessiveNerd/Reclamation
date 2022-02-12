@@ -19,6 +19,9 @@ public class FullBuild
             Directory.Delete(finalBuildPath, true);
         Directory.CreateDirectory(finalBuildPath);
 
+        if (File.Exists(MetaData.MetaDataPath))
+            File.Delete(MetaData.MetaDataPath);
+
         BuildPipeline.BuildPlayer(new BuildPlayerOptions()
         {
             locationPathName = finalBuildPath + "Relamation.exe",
@@ -43,6 +46,9 @@ public class FullBuild
         if (Directory.Exists(finalBuildPath))
             Directory.Delete(finalBuildPath, true);
         Directory.CreateDirectory(finalBuildPath);
+
+        if (File.Exists(MetaData.MetaDataPath))
+            File.Delete(MetaData.MetaDataPath);
 
         BuildPipeline.BuildPlayer(new BuildPlayerOptions()
         {

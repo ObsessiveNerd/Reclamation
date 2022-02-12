@@ -22,9 +22,6 @@ public class InputBinder : EscapeableMono
     // Start is called before the first frame update
     void Start()
     {
-        if(UI == null)
-            UI = GameObject.Find("Keybinder");
-
         if (m_Data != null)
         {
             Destroy(gameObject);

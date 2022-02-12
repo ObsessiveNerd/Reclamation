@@ -110,12 +110,15 @@ public class UIManager : MonoBehaviour
 
                 contextMenu.AddButton(new ContextMenuButton("Sound", () =>
                     {
+                        ForcePop(contextMenu);
+                        FindObjectOfType<SoundSettings>().Open();
 
                     }), null, () => Destroy(contextMenu.gameObject));
 
                  contextMenu.AddButton(new ContextMenuButton("Display", () =>
                     {
-
+                        ForcePop(contextMenu);
+                        FindObjectOfType<DisplaySettings>().Open();
                     }), null, () => Destroy(contextMenu.gameObject));
             }
             else
