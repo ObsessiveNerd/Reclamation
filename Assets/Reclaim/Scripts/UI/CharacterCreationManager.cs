@@ -18,7 +18,6 @@ public class CharacterCreationManager : MonoBehaviour
 
     public void Play()
     {
-        World world = FindObjectOfType<World>();
         foreach(var cc in Characters)
         {
             string data = cc.CreateEntityData();
@@ -30,6 +29,8 @@ public class CharacterCreationManager : MonoBehaviour
 
         SceneManager.LoadSceneAsync("Reclaim/Scenes/Dungeon").completed += s =>
         {
+            World world = FindObjectOfType<World>();
+            world.StartWorld(PlayerPrefs.GetString("SaveDirectory"));
             Services.DungeonService.GenerateDungeon(true, Services.SaveAndLoadService.CurrentSaveName);
         };
     }

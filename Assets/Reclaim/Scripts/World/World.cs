@@ -14,10 +14,6 @@ public class World : MonoBehaviour
     public DungeonInitMode InitMode;
     public int MapColumns, MapRows;
 
-#if UNITY_EDITOR
-    public bool DebugMode;
-#endif
-
     public enum DungeonInitMode
     {
         None = 0,
@@ -27,20 +23,8 @@ public class World : MonoBehaviour
 
     private void Start()
     {
-        if (m_Instance == null)
-        {
-            //m_Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else if (m_Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-        else
-            return;
 #if UNITY_EDITOR
-        if(DebugMode)
+        if(!Services.Ready)
         {
             string loadpath = $"{GameSaveSystem.kSaveDataPath}/{Guid.NewGuid().ToString()}";
             if (m_Instance == null)
@@ -60,24 +44,10 @@ public class World : MonoBehaviour
             }
         }
 #endif
-
     }
 
     public void StartWorld(string loadPath = "")
     {
-        if (m_Instance == null)
-        {
-            m_Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else if (m_Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-        else
-            return;
-
         GameSaveSystem saveSystem = new GameSaveSystem(loadPath);
         Application.quitting += () => saveSystem.Save();
 

@@ -5,20 +5,8 @@ using UnityEngine.SceneManagement;
 
 public class UIManager : MonoBehaviour
 {
-    static bool ExistsAlready = false;
     static Stack<IEscapeableMono> UIMonoBehaviors = new Stack<IEscapeableMono>();
     public static bool UIClear => UIMonoBehaviors.Count == 0;
-
-    private void Start()
-    {
-        if (ExistsAlready)
-        {
-            Destroy(gameObject);
-            return;
-        }
-
-        ExistsAlready = true;
-    }
 
     public static void Push(IEscapeableMono mono)
     {
@@ -94,32 +82,29 @@ public class UIManager : MonoBehaviour
                     {
                         Services.SaveAndLoadService.Save();
                         SceneManager.LoadSceneAsync("Reclaim/Scenes/Title");
-                    }), null, () => Destroy(contextMenu.gameObject));
+                    }), null);
 
                     contextMenu.AddButton(new ContextMenuButton("Save & Exit", () =>
                     {
                         Services.SaveAndLoadService.Save();
                         Application.Quit();
-                    }), null, () => Destroy(contextMenu.gameObject));
+                    }), null);
                 }
                 contextMenu.AddButton(new ContextMenuButton("Controls", () =>
                     {
-                        ForcePop(contextMenu);
                         FindObjectOfType<InputBinder>().Open();
-                    }), null, () => Destroy(contextMenu.gameObject));
+                    }), null);
 
                 contextMenu.AddButton(new ContextMenuButton("Sound", () =>
                     {
-                        ForcePop(contextMenu);
                         FindObjectOfType<SoundSettings>().Open();
 
-                    }), null, () => Destroy(contextMenu.gameObject));
+                    }), null);
 
                  contextMenu.AddButton(new ContextMenuButton("Display", () =>
                     {
-                        ForcePop(contextMenu);
                         FindObjectOfType<DisplaySettings>().Open();
-                    }), null, () => Destroy(contextMenu.gameObject));
+                    }), null);
             }
             else
             {

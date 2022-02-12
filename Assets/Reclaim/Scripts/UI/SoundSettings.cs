@@ -26,6 +26,7 @@ public class SoundSettings : EscapeableMono
     {
         UISource.SetActive(true);
         UIManager.Push(this);
+        transform.SetAsLastSibling();
     }
 
     public override void OnEscape()
@@ -37,9 +38,12 @@ public class SoundSettings : EscapeableMono
 
     void SetVolume(float value)
     {
-        VolumePercentText.text = (int)(value * 100) + "%";
-        MasterVolume.volume = value;
-        MetaData.Data.Volume = value;
-        MetaData.Data.Save();
+        //if (MasterVolume != null)
+        {
+            VolumePercentText.text = (int)(value * 100) + "%";
+            MasterVolume.volume = value;
+            MetaData.Data.Volume = value;
+            MetaData.Data.Save();
+        }
     }
 }

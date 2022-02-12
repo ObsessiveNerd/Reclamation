@@ -49,6 +49,7 @@ public class InputBinder : EscapeableMono
     {
         UI.SetActive(true);
         UIManager.Push(this);
+        transform.SetAsLastSibling();
     }
 
     public override void OnEscape()

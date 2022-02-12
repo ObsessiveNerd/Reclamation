@@ -37,19 +37,8 @@ public class InventoryManagerMono : UpdatableUI, IDropHandler
     public void Cleanup()
     {
         List<IEntity> keysToRemove = new List<IEntity>();
-        var enchanter = FindObjectOfType<EnchantmentManagerMono>();
         foreach (IEntity entity in m_Items.Keys)
         {
-            //This is hacky and awful.  If we ever need to do this in another situation we'll have to refactor this whole thing
-            //The proper thing would be for things like the enchanter to create a temporary inventory entity that has an inventory
-            //Then we move the item to be enchanted into that inventory while we're enchanting that item
-            if (enchanter != null)
-            {
-                if (enchanter.ItemToEnchant.ItemMono != null &&
-                    enchanter.ItemToEnchant.ItemMono.ItemObject == entity)
-                    continue;
-            }
-
             Destroy(m_Items[entity]);
             keysToRemove.Add(entity);
         }
@@ -61,7 +50,6 @@ public class InventoryManagerMono : UpdatableUI, IDropHandler
     public override void UpdateUI()
     {
         Cleanup();
-
         Name.text = Source.Name;
 
         GameEvent getCurrentInventory = GameEventPool.Get(GameEventId.GetCurrentInventory)
@@ -118,11 +106,6 @@ public class InventoryManagerMono : UpdatableUI, IDropHandler
         Source.FireEvent(addToInventory);
         addToInventory.Release();
 
-        //eventData.pointerDrag.GetComponent<InventoryItemMono>().Init(Source, item);
-        //eventData.pointerDrag.GetComponent<DragAndDrop>().Set(InventoryView.position, InventoryView.transform);
-
-        Services.WorldUIService.UpdateUI();
-
         if (!m_Items.ContainsKey(item))
         {
             Debug.Log($"Item {item.Name} is getting added to inventory");
@@ -135,11 +118,6 @@ public class InventoryManagerMono : UpdatableUI, IDropHandler
         }
 
         ItemDropped?.Invoke();
-    }
-
-    public void UpdateUI(IEntity newSource)
-    {
-        Cleanup();
-        Setup(Source);
+        Services.WorldUIService.UpdateUI();
     }
 }

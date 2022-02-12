@@ -35,6 +35,7 @@ public class DisplaySettings : EscapeableMono
     {
         UISource.SetActive(true);
         UIManager.Push(this);
+        transform.SetAsLastSibling();
     }
 
     public override void OnEscape()

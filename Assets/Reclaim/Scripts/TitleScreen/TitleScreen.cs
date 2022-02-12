@@ -14,14 +14,14 @@ public class TitleScreen : EscapeableMono
     public GameObject GetNewSaveName;
     public GameObject Error;
 
+    protected override void OnEnable() { }
+
     public void StartNewGame()
     {
         UIManager.Push(this);
         GetNewSaveName.SetActive(true);
         GetNewSaveName.GetComponent<TMP_InputField>().onEndEdit.AddListener((val) =>
         {
-            //FindObjectOfType<World>().StartWorld(val);
-
             if(Directory.Exists($"{GameSaveSystem.kSaveDataPath}/{val}"))
             {
                 Error.SetActive(true);
@@ -32,10 +32,8 @@ public class TitleScreen : EscapeableMono
             else
             {
                 UIManager.ForcePop(this);
-                SceneManager.LoadSceneAsync("CharacterCreation").completed += (scene) =>
-                {
-                    FindObjectOfType<World>().StartWorld(val);
-                };
+                PlayerPrefs.SetString("SaveDirectory", $"{GameSaveSystem.kSaveDataPath}/{val}");
+                SceneManager.LoadSceneAsync("CharacterCreation");
             }
         });
     }

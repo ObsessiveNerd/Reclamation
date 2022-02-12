@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -15,6 +16,8 @@ public class EnchantmentManagerMono : EscapeableMono
     IEntity m_Enchantment;
     IEntity m_Source;
 
+    bool m_IsClearing = false;
+
     public void Setup(IEntity source, IEntity enchantment)
     {
         View.SetActive(true);
@@ -24,7 +27,7 @@ public class EnchantmentManagerMono : EscapeableMono
 
         ItemToEnchant.BeforeDrop -= NewItemDropped;
         ItemToEnchant.BeforeDrop += NewItemDropped;
-        
+
         ItemToEnchant.Dropped -= CreateEnchantment;
         ItemToEnchant.Dropped += CreateEnchantment;
 
@@ -33,26 +36,35 @@ public class EnchantmentManagerMono : EscapeableMono
 
         Result.PickedUp -= ResultClear;
         Result.PickedUp += ResultClear;
+        m_IsClearing = false;
     }
 
     public override void OnEscape()
     {
         Clear(false);
-        gameObject.SetActive(false);
+        gameObject.SetActive(false);  
     }
 
     void Clear(bool itemDroppedIntoInventory)
     {
-         foreach (GameObject go in m_Inventories)
+        if (m_IsClearing)
+            return;
+        m_IsClearing = true;
+
+        foreach (GameObject go in m_Inventories)
         {
             go.GetComponent<InventoryManagerMono>().Close();
             Destroy(go);
         }
 
         m_Inventories.Clear();
+
         View.SetActive(false);
 
-        if(!itemDroppedIntoInventory && Result.ItemMono != null && ItemToEnchant.ItemMono == null)
+        Result.Cleanup();
+        ItemToEnchant.Cleanup();
+
+        if (!itemDroppedIntoInventory && Result.ItemMono != null && ItemToEnchant.ItemMono == null)
         {
             //emergency save the item
             GameEvent addToInventory = GameEventPool.Get(GameEventId.AddToInventory)
@@ -61,10 +73,6 @@ public class EnchantmentManagerMono : EscapeableMono
             addToInventory.Release();
         }
 
-        Result.Cleanup();
-        ItemToEnchant.Cleanup();
-
-        //UIManager.ForcePop(this);
         Services.WorldUIService.OpenInventory();
         ItemToEnchant.AcceptsDrop = true;
         NewAssetName.text = "Name...";
@@ -72,13 +80,13 @@ public class EnchantmentManagerMono : EscapeableMono
 
     void OriginalItemClear()
     {
-        if(Result.ItemMono != null)
+        if (Result.ItemMono != null)
             Destroy(Result.ItemMono.gameObject);
     }
 
     void ResultClear()
     {
-        if(ItemToEnchant.ItemMono != null)
+        if (ItemToEnchant.ItemMono != null)
         {
             ItemToEnchant.AcceptsDrop = false;
             GameEvent removeFromInventory = GameEventPool.Get(GameEventId.RemoveFromInventory)
@@ -110,7 +118,7 @@ public class EnchantmentManagerMono : EscapeableMono
                 imm.ItemDropped += () =>
                 {
                     Clear(true);
-                    foreach(var im in FindObjectsOfType<InventoryManagerMono>())
+                    foreach (var im in FindObjectsOfType<InventoryManagerMono>())
                         im.ClearCallback();
                 };
             }
@@ -120,9 +128,9 @@ public class EnchantmentManagerMono : EscapeableMono
     }
     void NewItemDropped(InventoryItemMono itemMono)
     {
-        if(itemMono != null && Result.ItemMono != null)
+        if (itemMono != null && Result.ItemMono != null)
         {
-            foreach(var imm in FindObjectsOfType<InventoryManagerMono>())
+            foreach (var imm in FindObjectsOfType<InventoryManagerMono>())
             {
                 if (imm.Source == itemMono.Source)
                     itemMono.transform.SetParent(imm.InventoryView, false);
@@ -147,7 +155,7 @@ public class EnchantmentManagerMono : EscapeableMono
         List<string> enchantmentEntityIds = getEnchantments.GetValue<List<string>>(EventParameters.Enchantments);
         getEnchantments.Release();
 
-        foreach(string id in enchantmentEntityIds)
+        foreach (string id in enchantmentEntityIds)
         {
             IEntity e = Services.EntityMapService.GetEntity(id);
             foreach (var comp in e.GetComponents())
