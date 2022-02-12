@@ -13,7 +13,7 @@ public class Singleton : MonoBehaviour
         else
         { 
             Singletons.Add(gameObject.name);
-            DontDestroyOnLoad(gameObject);
+            DontDestroyOnLoad(transform.parent != null ? transform.parent.gameObject : gameObject);
         }
     }
 }

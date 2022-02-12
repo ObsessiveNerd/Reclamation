@@ -5,6 +5,11 @@ public static class DependencyInjection
 {
     public static IDictionary<Type, object> _instanceMap = new Dictionary<Type, object>();
 
+    public static void Clear()
+    {
+        _instanceMap.Clear();
+    }
+
     public static void Register<T>(T instance)
     {
         var type = typeof(T);

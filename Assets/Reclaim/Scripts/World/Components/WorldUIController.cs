@@ -101,7 +101,7 @@ public class WorldUIController : GameService
 
     public void OpenSpellUI()
     {
-        //GameObject.FindObjectOfType<SpellSelectorMono>().Setup();
+        GameObject.FindObjectOfType<UIReferences>().OpenSpellSelector();
     }
 
     public void OpenInventory()

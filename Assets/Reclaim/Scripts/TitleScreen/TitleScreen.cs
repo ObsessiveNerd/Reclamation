@@ -32,8 +32,10 @@ public class TitleScreen : EscapeableMono
             else
             {
                 UIManager.ForcePop(this);
-                PlayerPrefs.SetString("SaveDirectory", $"{GameSaveSystem.kSaveDataPath}/{val}");
-                SceneManager.LoadSceneAsync("CharacterCreation");
+                SceneManager.LoadSceneAsync("CharacterCreation").completed += (scene) =>
+                {
+                    FindObjectOfType<World>().StartWorld($"{GameSaveSystem.kSaveDataPath}/{val}");
+                };
             }
         });
     }

@@ -21,6 +21,25 @@ public abstract class GameService //: Component
     protected static int m_CurrentLevel = 1;
     protected static Dictionary<string, IEntity> m_EntityIdToEntityMap = new Dictionary<string, IEntity>();
 
+    public static void ClearServicesData()
+    {
+        foreach (var go in m_GameObjectMap.Values)
+            GameObject.Destroy(go);
+        m_Tiles.Clear();
+        m_TileEntity.Clear();
+        m_Seed = 0;
+        m_ChangedTiles.Clear();
+        m_EntityIdToEntityMap.Clear();
+        m_EntityToPreviousPointMap.Clear();
+        m_Players.Clear();
+        m_ActivePlayer = null;
+        m_ValidDungeonPoints.Clear();
+        m_GameObjectMap.Clear();
+        m_DungeonLevelMap.Clear();
+        m_CurrentLevel = 1;
+        m_EntityIdToEntityMap.Clear();
+    }
+
     public static int CurrentLevel
     {
         get

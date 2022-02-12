@@ -13,6 +13,12 @@ public class PlayerInputController : InputControllerBase
         //RegisteredEvents.Add(GameEventId.AlterSprite);
     }
 
+    public override void Start()
+    {
+        Services.WorldUIService.OpenSpellUI();
+        base.Start();
+    }
+
     public override void HandleEvent(GameEvent gameEvent)
     {
         bool energyUsed = false;

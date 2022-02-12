@@ -133,11 +133,15 @@ public class PlayerManager : GameService
 
         m_ActivePlayer.Value.CleanupComponents();
         m_ActivePlayer.Value.RemoveComponent(typeof(AIController));
-        if(hasUIController)
-            m_ActivePlayer.Value.AddComponent(new PlayerUIController());
-        else
-            m_ActivePlayer.Value.AddComponent(new PlayerInputController());
 
+        InputControllerBase inputController;
+        if (hasUIController)
+            inputController = new PlayerUIController();
+        else
+            inputController = new PlayerInputController();
+
+        m_ActivePlayer.Value.AddComponent(inputController);
+        inputController.Start();
         Services.PartyService.MakePartyLeader(m_ActivePlayer.Value);
 
         m_ActivePlayer.Value.CleanupComponents();

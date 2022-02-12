@@ -7,6 +7,12 @@ public static class Services
 {
     public static bool Ready { get; set; }
 
+    public static void Reset()
+    {
+        Ready = false;
+        InitComplete = Completed;
+    }
+
     public static void Complete()
     {
         InitComplete.Invoke(null, null);

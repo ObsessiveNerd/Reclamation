@@ -8,9 +8,8 @@ using Debug = System.Diagnostics.Debug;
 
 public class World : MonoBehaviour
 {
-    private static World m_Instance;
     public GameObject TilePrefab;
-    
+
     public DungeonInitMode InitMode;
     public int MapColumns, MapRows;
 
@@ -24,23 +23,20 @@ public class World : MonoBehaviour
     private void Start()
     {
 #if UNITY_EDITOR
-        if(!Services.Ready)
+        if (!Services.Ready)
         {
             string loadpath = $"{GameSaveSystem.kSaveDataPath}/{Guid.NewGuid().ToString()}";
-            if (m_Instance == null)
+            StartWorld(loadpath);
+            switch (InitMode)
             {
-                StartWorld(loadpath);
-                switch (InitMode)
-                {
-                    case DungeonInitMode.CreateNew:
-                        Services.DungeonService.GenerateDungeon(true, loadpath);
-                        break;
+                case DungeonInitMode.CreateNew:
+                    Services.DungeonService.GenerateDungeon(true, loadpath);
+                    break;
 
-                    case DungeonInitMode.LoadCurrentIfExists:
-                        bool value = Directory.Exists(loadpath);
-                        Services.DungeonService.GenerateDungeon(!value, loadpath);
-                        break;
-                }
+                case DungeonInitMode.LoadCurrentIfExists:
+                    bool value = Directory.Exists(loadpath);
+                    Services.DungeonService.GenerateDungeon(!value, loadpath);
+                    break;
             }
         }
 #endif
@@ -48,6 +44,13 @@ public class World : MonoBehaviour
 
     public void StartWorld(string loadPath = "")
     {
+        if (Services.Ready)
+        {
+            Services.Reset();
+            GameService.ClearServicesData();
+            DependencyInjection.Clear();
+        }
+
         GameSaveSystem saveSystem = new GameSaveSystem(loadPath);
         Application.quitting += () => saveSystem.Save();
 
@@ -72,28 +75,9 @@ public class World : MonoBehaviour
         Services.Complete();
     }
 
-    //public void InitWorld(int seed, int currentLevel = 1)
-    //{
-    //    Stopwatch sw = new Stopwatch();
-    //    sw.Start();
-    //    Seed = RecRandom.InitRecRandom(seed);
-
-    //    m_World.FireEvent(m_World, GameEventPool.Get(GameEventId.StartWorld).With(EventParameters.Seed, Seed.ToString())
-    //                                                                        .With(EventParameters.GameObject, TilePrefab)
-    //                                                                        .With(EventParameters.NewGame, false)
-    //                                                                        .With(EventParameters.Level, currentLevel)).Release();
-    //    sw.Stop();
-    //    UnityEngine.Debug.LogWarning($"Start World: {sw.Elapsed.Seconds}");
-    //}
-
     GameEvent m_ProgressTime = new GameEvent(GameEventId.ProgressTime);
     private void Update()
     {
-        //if (GameEventPool.m_InUse.Count > 0)
-        //{
-        //    UnityEngine.Debug.Log("Game events weren't released");
-        //}
-
         Services.WorldUpdateService.ProgressTime();
     }
 }

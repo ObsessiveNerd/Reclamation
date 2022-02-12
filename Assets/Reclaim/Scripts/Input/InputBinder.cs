@@ -22,14 +22,6 @@ public class InputBinder : EscapeableMono
     // Start is called before the first frame update
     void Start()
     {
-        if (m_Data != null)
-        {
-            Destroy(gameObject);
-            return;
-        }
-        else
-            DontDestroyOnLoad(gameObject);
-
         Directory.CreateDirectory(Path.GetDirectoryName(InputConfigPath));
         if(!File.Exists(InputConfigPath))
         {

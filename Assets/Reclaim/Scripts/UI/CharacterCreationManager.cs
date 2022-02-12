@@ -29,8 +29,8 @@ public class CharacterCreationManager : MonoBehaviour
 
         SceneManager.LoadSceneAsync("Reclaim/Scenes/Dungeon").completed += s =>
         {
-            World world = FindObjectOfType<World>();
-            world.StartWorld(PlayerPrefs.GetString("SaveDirectory"));
+            //World world = FindObjectOfType<World>();
+            //world.StartWorld(PlayerPrefs.GetString("SaveDirectory"));
             Services.DungeonService.GenerateDungeon(true, Services.SaveAndLoadService.CurrentSaveName);
         };
     }

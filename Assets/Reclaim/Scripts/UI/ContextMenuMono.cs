@@ -12,7 +12,7 @@ public class ContextMenuMono : EscapeableMono
     public static GameObject CreateNewContextMenu()
     {
         var contextMenu = Instantiate(Resources.Load<GameObject>("Prefabs/UI/ContextMenu"));
-        contextMenu.transform.SetParent(GameObject.FindObjectOfType<Canvas>().transform, false);
+        contextMenu.transform.SetParent(GameObject.Find("Canvas").transform, false);
         return contextMenu;
     }
 
