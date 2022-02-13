@@ -5173,10 +5173,6 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1297275814}
     - target: {fileID: 1756822205, guid: 831065378b9e979428539671b14ac1fb, type: 3}
-      propertyPath: MasterVolume
-      value: 
-      objectReference: {fileID: 1297275814}
-    - target: {fileID: 1756822205, guid: 831065378b9e979428539671b14ac1fb, type: 3}
       propertyPath: SoundEffectsVolume
       value: 
       objectReference: {fileID: 503817860}
