@@ -115,8 +115,11 @@ public class PlayerInputController : InputControllerBase
 
             else if (SpellSelected(out int spellIndex))
             {
-                Self.RemoveComponent(this);
-                Self.AddComponent(new SpellcasterPlayerController(spellIndex));
+                if (!Self.HasComponent(typeof(SpellcasterPlayerController)))
+                {
+                    Self.RemoveComponent(this);
+                    Self.AddComponent(new SpellcasterPlayerController(spellIndex));
+                }
             }
 
             else if (InputBinder.PerformRequestedAction(RequestedAction.PickupItem))

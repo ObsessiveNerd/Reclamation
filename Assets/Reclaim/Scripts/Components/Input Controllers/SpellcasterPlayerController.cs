@@ -28,6 +28,7 @@ public class SpellcasterPlayerController : InputControllerBase
         var spellList = eventResult.GetValue<List<IEntity>>(EventParameters.Abilities);
         if(spellList.Count == 0)
         {
+            UIManager.ForcePop(this);
             Self.RemoveComponent(this);
             Self.AddComponent(new PlayerInputController());
             getSpells.Release();
@@ -134,6 +135,7 @@ public class SpellcasterPlayerController : InputControllerBase
                 //GameEvent depleteMana = GameEventPool.Get(GameEventId.DepleteMana).With(EventParameters.Mana, m_ManaCost);
                 //FireEvent(Self, depleteMana).Release();
 
+                UIManager.ForcePop(this);
                 Self.RemoveComponent(this);
                 Self.AddComponent(new PlayerInputController());
             }

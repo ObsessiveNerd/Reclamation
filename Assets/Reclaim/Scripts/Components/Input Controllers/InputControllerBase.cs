@@ -23,6 +23,7 @@ public abstract class InputControllerBase : EntityComponent, IEscapeableMono
         Self.AddComponent(new PlayerInputController());
         Services.TileSelectionService.EndTileSelection(tileSelection);
         Services.WorldUpdateService.UpdateWorldView();
+        UIManager.ForcePop(this);
     }
 
     protected bool SpellSelected(out int spell)
