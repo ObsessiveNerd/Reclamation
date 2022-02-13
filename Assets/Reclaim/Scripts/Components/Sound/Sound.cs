@@ -52,10 +52,7 @@ public class Sound : EntityComponent
         {
             string key = gameEvent.GetValue<string>(EventParameters.Key);
             if(key == Key)
-            {
-                var clip = Resources.Load<AudioClip>(SoundPath.Path);
-                GameObject.FindObjectOfType<AudioSource>()?.PlayOneShot(clip);
-            }
+                Services.Music.PlaySoundClip(SoundPath.Path);
         }
     }
 }

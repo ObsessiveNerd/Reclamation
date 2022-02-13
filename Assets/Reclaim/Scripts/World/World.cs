@@ -71,6 +71,7 @@ public class World : MonoBehaviour
         DependencyInjection.Register(new CameraController());
         DependencyInjection.Register(new StateManager());
         DependencyInjection.Register(new PartyController());
+        DependencyInjection.Register(new MusicService());
 
         Services.Complete();
     }

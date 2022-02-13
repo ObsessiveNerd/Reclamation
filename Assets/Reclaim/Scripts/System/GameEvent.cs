@@ -3,6 +3,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public static class SoundKeys
+{
+    public const string AttackHit = nameof(AttackHit);
+    public const string AttackMiss = nameof(AttackMiss);
+    public const string Heal = nameof(Heal);
+    public const string TakeDamage = nameof(TakeDamage);
+    public const string BowAttack = nameof(BowAttack);
+    public const string Cast = nameof(Cast);
+    public const string Quaff = nameof(Quaff);
+}
+
 public static class GameEventId
 {
     //AI

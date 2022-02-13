@@ -32,6 +32,11 @@ public class Defense : EntityComponent
                     RecLog.Log($"{Self.Name} was hit!");
                 else
                 {
+                    GameEvent playSound = GameEventPool.Get(GameEventId.Playsound)
+                                            .With(EventParameters.Key, SoundKeys.AttackMiss);
+                    gameEvent.GetValue<IEntity>(EventParameters.Attack).FireEvent(playSound);
+                    playSound.Release();
+
                     RecLog.Log($"Attack missed because armor was {kBaseAC + armorBonus}!");
                     gameEvent.ContinueProcessing = false;
                 }

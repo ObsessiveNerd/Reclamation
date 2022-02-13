@@ -39,6 +39,12 @@ public class Health : EntityComponent
                 RecLog.Log($"{Self.Name} took {damage.DamageAmount} damage of type {damage.DamageType}");
                 CurrentHealth -= damage.DamageAmount;
 
+                GameEvent playTakeDamageClip = GameEventPool.Get(GameEventId.Playsound)
+                                                .With(EventParameters.Key, SoundKeys.AttackHit);
+                var weapon = gameEvent.GetValue<IEntity>(EventParameters.Attack);
+                weapon.FireEvent(playTakeDamageClip);
+                playTakeDamageClip.Release();
+
                 Services.WorldUIService.EntityTookDamage(Self, damage.DamageAmount);
 
                 if (CurrentHealth <= 0)

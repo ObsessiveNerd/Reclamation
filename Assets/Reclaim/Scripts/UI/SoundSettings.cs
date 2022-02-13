@@ -6,17 +6,27 @@ using UnityEngine.UI;
 
 public class SoundSettings : EscapeableMono
 {
-    public TextMeshProUGUI VolumePercentText;
-    public Slider VolumeSlider;
-    public AudioSource MasterVolume;
+    public TextMeshProUGUI MasterVolumePercentText;
+    public TextMeshProUGUI SoundEffectsVolumePercentText;
+    
+    public Slider MasterVolumeSlider;
+    public Slider SoundEffectsVolumeSlider;
+    
+    public AudioSource MusicVolume;
+    public AudioSource SoundEffectsVolume;
+
     public GameObject UISource;
 
     void Start()
     {
-        VolumeSlider.onValueChanged.AddListener(SetVolume);
+        MasterVolumeSlider.onValueChanged.AddListener(SetVolume);
+        SoundEffectsVolumeSlider.onValueChanged.AddListener(SetSoundEffectsVolume);
 
         if (MetaData.Data != null)
-            VolumeSlider.value = MetaData.Data.Volume;
+        { 
+            MasterVolumeSlider.value = MetaData.Data.Volume;
+            SoundEffectsVolumeSlider.value = MetaData.Data.SoundEffectsVolume;
+        }
     }
 
     protected override void OnEnable() { }
@@ -40,9 +50,20 @@ public class SoundSettings : EscapeableMono
     {
         //if (MasterVolume != null)
         {
-            VolumePercentText.text = (int)(value * 100) + "%";
-            MasterVolume.volume = value;
+            MasterVolumePercentText.text = (int)(value * 100) + "%";
+            MusicVolume.volume = value;
             MetaData.Data.Volume = value;
+            MetaData.Data.Save();
+        }
+    }
+
+     void SetSoundEffectsVolume(float value)
+    {
+        //if (MasterVolume != null)
+        {
+            SoundEffectsVolumePercentText.text = (int)(value * 100) + "%";
+            SoundEffectsVolume.volume = value;
+            MetaData.Data.SoundEffectsVolume = value;
             MetaData.Data.Save();
         }
     }
