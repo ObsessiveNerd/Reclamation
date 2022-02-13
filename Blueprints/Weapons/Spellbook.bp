@@ -11,4 +11,6 @@
 	WeaponType:Type=Melee
 	Value:Amount=100
 	DealDamage:DamageType=Blunt,Dice=1d4
+	Name:PrettyName=Spellbook
+	Sound:SoundPath=Sounds/GORE_SPLATS/GORE_Splat_L_Ground_02_mono,Key=AttackHit
 )

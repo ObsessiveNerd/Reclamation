@@ -11,4 +11,5 @@
 	Value:Amount=10
 	Sound:SoundPath=Sounds/Melee/Swords/SWORD_Hit_Metal_Armor_RR5_mono,Key=AttackHit
 	Sound:SoundPath=Sounds/Classic/WHOOSH_Quick_Darker_mono,Key=AttackMiss
+	Name:PrettyName=Longsword
 )

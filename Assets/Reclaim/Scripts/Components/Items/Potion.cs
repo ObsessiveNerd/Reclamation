@@ -36,6 +36,11 @@ public class Potion : EntityComponent
                 GameEvent remove = GameEventPool.Get(GameEventId.RemoveFromInventory)
                                         .With(EventParameters.Item, Self.ID);
                 source.FireEvent(remove).Release();
+
+                GameEvent playSound = GameEventPool.Get(GameEventId.Playsound)
+                                        .With(EventParameters.SoundSource, source)
+                                        .With(EventParameters.Key, SoundKey.Quaff);
+                Self.FireEvent(playSound).Release();
             });
 
             gameEvent.GetValue<List<ContextMenuButton>>(EventParameters.InventoryContextActions).Add(button);

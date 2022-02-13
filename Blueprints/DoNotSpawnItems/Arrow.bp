@@ -5,4 +5,5 @@
 	DealDamage:DamageType=Piercing,Dice=1d4
 	WeaponType:Type=Ranged
 	Ammo:TexturePath=Textures/Sprites/Items/td_items_arrow
+	Sound:SoundPath=Sounds/Bow_Arrow/BOW_Release_Arrow_Large_mono,Key=RangedAttack
 )

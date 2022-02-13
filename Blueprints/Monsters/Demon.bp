@@ -9,7 +9,7 @@
 	AIController
 	AIFOVHandler
 	InteractsWithWorld
-	Stats:Str=10,Agi=12,Con=10,Wis=9,Int=7,Cha=8,AttributePoints=0,PrimaryStatType=Str
+	Stats:Str=10,Agi=12,Con=10,Wis=9,Int=7,Cha=8,PrimaryStatType=Str,AttributePoints=0
 	Faction:ID=Demons
 	FOV:FOVRange=2
 	Aggression
@@ -23,4 +23,5 @@
 	Health:MaxHealth=15,CurrentHealth=15
 	EquipmentSlot:EquipmentId=NaturalClaws,BodyPartType=Arm
 	EquipmentSlot:EquipmentId=NaturalClaws,BodyPartType=Arm
+	Sound:SoundPath=Sounds/MONSTERS_CREATURES/MONSTER_Groan_Hurt_mono,Key=Died
 )

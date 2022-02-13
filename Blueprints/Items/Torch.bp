@@ -1,7 +1,7 @@
 <Torch> (
-	GraphicContainer: Textures/Sprites/Items/td_items_torch1
-	Portrait: Textures/Portraits/Items/torch_t_01
-	Position:PositionPoint=0,0
+	GraphicContainer:SpritePath= Textures/Sprites/Items/td_items_torch1
+	Portrait:SpritePath= Textures/Portraits/Items/torch_t_01
+	Position:PositionPoint=0
 	InteractOnTileOvertake
 	EntityTypeContainer:Type=Item
 	Item:Rarity=Common
@@ -9,11 +9,11 @@
 	ActiveWhileEquiped
 	Equipment:PreferredBodyPartWhenEquipped=Arm
 	Value:Amount=5
-	Sound:SoundPath=Sounds/FOLEY/VARIOUS/FOLEY_Light_Match_mono.wav,Key=Activate
-	Sound:SoundPath=Sounds/Melee/Hammer/HAMMER_Hit_Wood_Shield_Break_Much_Debris_stereo.wav,Key=AttackHit
-	Sound:SoundPath=Sounds/Air/WHOOSH_Air_Very_Fast_RR7_mono.wav,Key=AttackMiss
+	Sound:SoundPath=Sounds/FOLEY/VARIOUS/FOLEY_Light_Match_mono,Key=Activate
+	Sound:SoundPath=Sounds/Melee/Hammer/HAMMER_Hit_Wood_Shield_Break_Much_Debris_stereo,Key=AttackHit
+	Sound:SoundPath=Sounds/Air/WHOOSH_Air_Very_Fast_RR7_mono,Key=AttackMiss
 	DestroyAfterTurns:CurrentTurnCount=0,DestroyAfterTurnCount=30,Active=False
-	WeaponType:TypeWeapon=Melee
+	WeaponType:Type=Melee
 	DealDamage:DamageType=Blunt,Dice=1d4
 	DealDamage:DamageType=Fire,Dice=1d2
 )

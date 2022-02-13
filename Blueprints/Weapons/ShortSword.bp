@@ -9,6 +9,7 @@
 	DealDamage:DamageType=Slashing,Dice=1d6
 	Equipment:PreferredBodyPartWhenEquipped=Arm
 	Value:Amount=10
-	Sound:SoundPath=Sounds/Melee/Swords/SWORD_Swing_Stab_Body_Gore_stereo.wav,Key=AttackHit
-	Sound:SoundPath=Sounds/Melee/Swords/SWORD_Hit_Sword_RR6_mono.wav,Key=AttackMiss
+	Sound:SoundPath=Sounds/Melee/Swords/SWORD_Whoosh_Hit_Sword_Hard_RR5_mono,Key=AttackHit
+	Sound:SoundPath=Sounds/Air/WHOOSH_Air_Blade_RR1_mono,Key=AttackMiss
+	Name:PrettyName=Shortsword
 )

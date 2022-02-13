@@ -5,9 +5,9 @@ using UnityEngine;
 
 public class Heal : EntityComponent
 {
-    public int HealAmount;
+    public Dice HealAmount;
 
-    public Heal(int healAmount)
+    public Heal(Dice healAmount)
     {
         HealAmount = healAmount;
     }
@@ -25,7 +25,7 @@ public class Heal : EntityComponent
         {
             IEntity target = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameters.Entity));
             GameEvent e = GameEventPool.Get(GameEventId.RestoreHealth)
-                                .With(EventParameters.Healing, HealAmount);
+                                .With(EventParameters.Healing, HealAmount.Roll());
             target.FireEvent(e).Release();
         }
         else if (gameEvent.ID == GameEventId.GetInfo)
@@ -42,8 +42,8 @@ public class DTO_Heal : IDataTransferComponent
 
     public void CreateComponent(string data)
     {
-        var value = int.Parse(data.Split('=')[1]);
-        Component = new Heal(value);
+        Dice dice = new Dice(data.Split('=')[1]);
+        Component = new Heal(dice);
     }
 
     public string CreateSerializableData(IComponent component)

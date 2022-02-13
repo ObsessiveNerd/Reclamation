@@ -3,15 +3,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class SoundKeys
+public static class SoundKey
 {
     public const string AttackHit = nameof(AttackHit);
     public const string AttackMiss = nameof(AttackMiss);
     public const string Heal = nameof(Heal);
     public const string TakeDamage = nameof(TakeDamage);
-    public const string BowAttack = nameof(BowAttack);
+    public const string RangedAttack = nameof(RangedAttack);
     public const string Cast = nameof(Cast);
     public const string Quaff = nameof(Quaff);
+    public const string Activate = nameof(Activate);
+    public const string Died = nameof(Died);
 }
 
 public static class GameEventId
@@ -318,6 +320,7 @@ public static class EventParameters
     public const string Attack = nameof(Attack);
     public const string Color = nameof(Color);
     public const string Damage = nameof(Damage);
+    public const string SoundSource = nameof(SoundSource);
     public const string DamageSource = nameof(DamageSource);
     public const string DamageList = nameof(DamageList);
     public const string Healing = nameof(Healing);

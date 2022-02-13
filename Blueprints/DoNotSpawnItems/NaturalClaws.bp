@@ -3,7 +3,9 @@
 	InteractOnTileOvertake
 	EntityTypeContainer:Type=Item
 	Item:Rarity=Common
-	WeaponType:TypeWeapon=Melee
+	WeaponType:Type=Melee
 	DealDamage:DamageType=Slashing,Dice=1d8
 	DestroyOnDrop
+	Sound:SoundPath=Sounds/GORE_SPLATS/GORE_Stab_Splat_Only_Bubbles_mono,Key=AttackHit
+	Sound:SoundPath=Sounds/Air/WHOOSH_Air_Blade_RR1_mono,Key=AttackMiss
 )

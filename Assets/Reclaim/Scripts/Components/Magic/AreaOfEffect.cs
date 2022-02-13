@@ -91,7 +91,7 @@ public class AreaOfEffect : EntityComponent
         m_VisibleTiles.Add(p);
 
         foreach (var point in visibleTiles)
-            Services.TileSelectionService.SelectTile(point);
+                Services.TileSelectionService.SelectTile(point);
     }
 }
 

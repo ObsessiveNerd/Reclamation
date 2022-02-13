@@ -3,40 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class SoundKey
-{
-    public static string WeaponAttack = nameof(WeaponAttack);
-    public static string Cast = nameof(Cast);
-    public static string AttackHit = nameof(AttackHit);
-    public static string AttackMiss = nameof(AttackMiss);
-    public static string Activate = nameof(Activate);
-}
-
-[Serializable]
-public class SoundPath
-{
-    [SerializeField]
-    public string Path;
-
-    public SoundPath(string path)
-    {
-        Path = path;
-    }
-
-    public override string ToString()
-    {
-        return Path;
-    }
-}
-
 public class Sound : EntityComponent
 {
-    public SoundPath SoundPath;
+    public string SoundPath;
     public string Key;
 
     public Sound(string path, string key)
     {
-        SoundPath = new SoundPath(path);
+        SoundPath = path;
         Key = key;
     }
 
@@ -52,7 +26,7 @@ public class Sound : EntityComponent
         {
             string key = gameEvent.GetValue<string>(EventParameters.Key);
             if(key == Key)
-                Services.Music.PlaySoundClip(SoundPath.Path);
+                Services.Music.PlaySoundClip(gameEvent.GetValue<IEntity>(EventParameters.SoundSource), SoundPath);
         }
     }
 }
@@ -89,6 +63,6 @@ public class DTO_Sound : IDataTransferComponent
     public string CreateSerializableData(IComponent component)
     {
         Sound s = (Sound)component;
-        return $"{nameof(Sound)}: {nameof(s.Key)}={s.Key}, {nameof(s.SoundPath)}={s.SoundPath.Path}";
+        return $"{nameof(Sound)}: {nameof(s.Key)}={s.Key}, {nameof(s.SoundPath)}={s.SoundPath}";
     }
 }

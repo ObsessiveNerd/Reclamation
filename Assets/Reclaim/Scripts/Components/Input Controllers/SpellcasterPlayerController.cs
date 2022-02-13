@@ -67,13 +67,6 @@ public class SpellcasterPlayerController : InputControllerBase
 
         if (startingTarget != null)
         {
-            //GameEvent isVisible = GameEventPool.Get(GameEventId.EntityVisibilityState)
-            //                            .With(EventParameters.Entity, startingTarget.ID)
-            //                            .With(EventParameters.Value, false);
-
-            //Here we can check isVisible to see if the target is invisible or something
-            //FireEvent(startingTarget, isVisible);
-
             GameEvent isInFOV = GameEventPool.Get(GameEventId.IsInFOV)
                                     .With(EventParameters.Entity, startingTarget.ID)
                                     .With(EventParameters.Value, false);
@@ -110,8 +103,9 @@ public class SpellcasterPlayerController : InputControllerBase
             if (desiredDirection != MoveDirection.None)
             {
                 GameEvent moveSelection = GameEventPool.Get(GameEventId.SelectNewTileInDirection).With(EventParameters.InputDirection, desiredDirection)
-                                                                                                    .With(EventParameters.TilePosition, m_TileSelection);
-                moveSelection.Paramters[EventParameters.TilePosition] = Services.TileSelectionService.SelectTileInNewDirection(m_TileSelection, desiredDirection);
+                                                                                                    .With(EventParameters.TilePosition, 
+                                                                                                    Services.TileSelectionService.GetTilePointInDirection(m_TileSelection, desiredDirection));
+                Services.TileSelectionService.SelectTileInNewDirection(m_TileSelection, desiredDirection);
                 FireEvent(m_Attack, moveSelection);
                 m_TileSelection = (Point)moveSelection.Paramters[EventParameters.TilePosition];
                 Services.WorldUpdateService.UpdateWorldView();

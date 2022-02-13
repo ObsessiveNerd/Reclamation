@@ -1,9 +1,10 @@
 <RingOfFire> (
-	GraphicContainer:SpritePath= Textures/Portraits/spellbookmegapack/SpellBookPage06/SpellBook06_18
+	GraphicContainer:SpritePath=Textures/Portraits/spellbookmegapack/SpellBookPage06/SpellBook06_57
 	Spell:ManaCost=4,SpellFailed=DamageHalved,SpellType=AgiSpell
 	DealDamage:DamageType=Fire,Dice=1d12
 	Range
-	Sound:SoundPath=Sounds/MAGIC_SPELLS/MAGIC_SPELL_Flame_01_mono.wav,Key=Cast
+	Sound:SoundPath=Sounds/MAGIC_SPELLS/MAGIC_SPELL_Flame_01_mono,Key=Cast
 	Ammo:TexturePath=Textures/Sprites/Effects/tiny_dungeon_fx_fireball
 	AreaOfEffect:Range=3,AOEType=Circle
+	Name:PrettyName=Fireball
 )

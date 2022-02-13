@@ -152,17 +152,12 @@ public class ContentCreationWindow : EditorWindow
 
                         component.FieldToValue[fieldInfo.Name] = values[EditorGUILayout.Popup(index, values.ToArray())];
                     }
-                    else if(fieldInfo.FieldType == typeof(SoundPath))
-                    {
-                        component.FieldToValue[fieldInfo.Name] = AssetDatabase.GetAssetPath(EditorGUILayout.ObjectField("Sound",
-                            AssetDatabase.LoadAssetAtPath<AudioClip>($"Assets/Resources/{component.FieldToValue[fieldInfo.Name]}"), typeof(AudioClip), false)).Replace("Assets/Resources/", "");
-                    }
                     else
                     {
                         component.FieldToValue[fieldInfo.Name] = EditorGUILayout.TextField(component.FieldToValue[fieldInfo.Name]);
                         var obj = EditorGUILayout.ObjectField("", null, typeof(UnityEngine.Object), false);
                         if (obj != null)
-                            component.FieldToValue[fieldInfo.Name] = AssetDatabase.GetAssetPath(obj).Replace("Assets/Resources/", "").Split('.')[0];
+                            component.FieldToValue[fieldInfo.Name] = AssetDatabase.GetAssetPath(obj).Replace("Assets/Reclaim/Resources/", "").Split('.')[0];
                     }
 
                     EditorGUILayout.EndHorizontal();

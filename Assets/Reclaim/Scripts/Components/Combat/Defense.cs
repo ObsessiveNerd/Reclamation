@@ -33,7 +33,8 @@ public class Defense : EntityComponent
                 else
                 {
                     GameEvent playSound = GameEventPool.Get(GameEventId.Playsound)
-                                            .With(EventParameters.Key, SoundKeys.AttackMiss);
+                                            .With(EventParameters.SoundSource, Self)
+                                            .With(EventParameters.Key, SoundKey.AttackMiss);
                     gameEvent.GetValue<IEntity>(EventParameters.Attack).FireEvent(playSound);
                     playSound.Release();
 

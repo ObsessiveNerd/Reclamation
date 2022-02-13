@@ -142,6 +142,11 @@ public static class CombatUtility
                     .With(EventParameters.Entity, WorldUtility.GetGameObject(source).transform.position)
                     .With(EventParameters.Target, WorldUtility.GetGameObject(target).transform.position);
             weapon.FireEvent(fireRangedWeapon).Release();
+
+            GameEvent playSound = GameEventPool.Get(GameEventId.Playsound)
+                                    .With(EventParameters.SoundSource, source)
+                                    .With(EventParameters.Key, SoundKey.RangedAttack);
+            weapon.FireEvent(playSound).Release();
         }
 
         getStatModForDamage.Release();
@@ -162,6 +167,11 @@ public static class CombatUtility
             .With(EventParameters.Attack, weapon)
             .With(EventParameters.DamageSource, source.ID)
             .With(amAttacking.Paramters);
+
+        GameEvent playSound = GameEventPool.Get(GameEventId.Playsound)
+                                .With(EventParameters.SoundSource, source)
+                                .With(EventParameters.Key, SoundKey.Cast);
+        weapon.FireEvent(playSound).Release();
 
         target.FireEvent(castSpell);
 

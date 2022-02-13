@@ -26,4 +26,5 @@
 	Desire:Greed=0
 	Health:MaxHealth=30,CurrentHealth=-1
 	Mana:MaxMana=5,CurrentMana=-1
+	Sound:SoundPath=Sounds/HUMAN/Body/BODY_Cough_Short_mono,Key=Died
 )

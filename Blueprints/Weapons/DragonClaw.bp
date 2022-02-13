@@ -9,6 +9,7 @@
 	DealDamage:DamageType=Slashing,Dice=1d12
 	Equipment:PreferredBodyPartWhenEquipped=Arm
 	Value:Amount=50
-	Sound:SoundPath=Sounds/Melee/Swords/SWORD_Hit_Sword_Hard_RR5_mono.wav,Key=AttackHit
-	Sound:SoundPath=Sounds/Melee/Swords/SWORD_Whoosh_Hit_Sword_Hard_RR7_mono.wav,Key=AttackMiss
+	Sound:SoundPath=Sounds/GORE_SPLATS/GORE_Blade_Chop_mono,Key=AttackHit
+	Sound:SoundPath=Sounds/Air/WHOOSH_Air_Blade_RR1_mono,Key=AttackMiss
+	Name:PrettyName=Claws
 )

@@ -40,7 +40,8 @@ public class Health : EntityComponent
                 CurrentHealth -= damage.DamageAmount;
 
                 GameEvent playTakeDamageClip = GameEventPool.Get(GameEventId.Playsound)
-                                                .With(EventParameters.Key, SoundKeys.AttackHit);
+                                                .With(EventParameters.SoundSource, Self)
+                                                .With(EventParameters.Key, SoundKey.AttackHit);
                 var weapon = gameEvent.GetValue<IEntity>(EventParameters.Attack);
                 weapon.FireEvent(playTakeDamageClip);
                 playTakeDamageClip.Release();
@@ -49,9 +50,10 @@ public class Health : EntityComponent
 
                 if (CurrentHealth <= 0)
                 {
-                    GameEvent swapActivePlayer = GameEventPool.Get(GameEventId.RotateActiveCharacter)
-                                                    .With(EventParameters.UpdateWorldView, true);
-                    FireEvent(Self, swapActivePlayer).Release();
+                    GameEvent playDeathSound = GameEventPool.Get(GameEventId.Playsound)
+                                                .With(EventParameters.SoundSource, Self)
+                                                .With(EventParameters.Key, SoundKey.Died);
+                    FireEvent(Self, playDeathSound).Release();
 
                     FireEvent(Self, GameEventPool.Get(GameEventId.Died)
                         .With(EventParameters.DamageSource, gameEvent.GetValue<string>(EventParameters.DamageSource))).Release();

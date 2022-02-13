@@ -9,7 +9,8 @@
 	Equipment:PreferredBodyPartWhenEquipped=Arm
 	TwoHanded
 	Value:Amount=20
-	Sound:SoundPath=Sounds/Bow_Arrow/BOW_Release_Arrow_Large_mono.wav,Key=BowAttack
+	Sound:SoundPath=Sounds/GORE_SPLATS/GORE_Stab_Splat_Only_Bubbles_mono,Key=RangedAttack
 	DealDamage:DamageType=Blunt,Dice=1d4
 	Bow:ArrowEntityName=Arrow
+	Name:PrettyName=Short Bow
 )

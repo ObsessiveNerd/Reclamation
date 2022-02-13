@@ -10,7 +10,7 @@
 	Inventory:InventoryItems=
 	RegisterWithTimeSystem
 	EntityTypeContainer:Type=Creature
-	Stats:Str=10,Agi=12,Con=10,Wis=9,Int=7,Cha=8,AttributePoints=0,PrimaryStatType=Str
+	Stats:Str=10,Agi=12,Con=10,Wis=9,Int=7,Cha=8,PrimaryStatType=Str,AttributePoints=0
 	Energy:EnergyRegineration=1,CurrentEnergy=0,HasHadTurnStarted=False
 	FOV:FOVRange=2
 	BlocksNonHostileMovement
@@ -27,4 +27,5 @@
 	EquipmentSlot:EquipmentId=,BodyPartType=Torso
 	EquipmentSlot:EquipmentId=,BodyPartType=Leg
 	EquipmentSlot:EquipmentId=,BodyPartType=Leg
+	Sound:SoundPath=Sounds/DOORS_GATES_DRAWERS/DOOR_Metal_Hatch_Open_Creak_stereo,Key=Died
 )
