@@ -11,7 +11,7 @@ public interface IEntity
     void AddComponent(IComponent component);
     void RemoveComponent(IComponent component);
     void RemoveComponent(Type component);
-    bool HasComponent(Type component);
+    bool HasComponent(Type component, bool includeComponentsToBeAdded = false);
     List<IComponent> GetComponents();
     T GetComponent<T>() where T : IComponent;
     void CleanupComponents();

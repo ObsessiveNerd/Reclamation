@@ -33,12 +33,6 @@ public class Actor : IEntity
         }
     }
 
-    //public Action<IEntity> Destroyed
-    //{
-    //    get;
-    //    set;
-    //}
-
     public Actor(string name)
     {
         Name = name;
@@ -47,7 +41,6 @@ public class Actor : IEntity
 
         Services.EntityMapService.RegisterEntity(this);
         Services.EntityMapService.AddEntity(this);
-        //EntityMap.IDToNameMap[ID] = Name;
     }
 
     public Actor(string name, string id)
@@ -60,14 +53,7 @@ public class Actor : IEntity
         m_Components = new PriorityQueue<IComponent>(new ComponentComparer());
         Services.EntityMapService.RegisterEntity(this);
         Services.EntityMapService.AddEntity(this);
-        
-        //EntityMap.IDToNameMap[ID] = Name;
     }
-
-    //public virtual void OnDestroy(IEntity entity)
-    //{
-
-    //}
 
     public void Start()
     {
@@ -149,9 +135,16 @@ public class Actor : IEntity
         }
     }
 
-    public bool HasComponent(Type component)
+    public bool HasComponent(Type component, bool includeComponentsToBeAdded = false)
     {
-        return m_Components.Values.Any(c => component.IsAssignableFrom(c.GetType()));
+        bool componentIsAttached = m_Components.Values.Any(c => component.IsAssignableFrom(c.GetType()));
+        if(includeComponentsToBeAdded)
+        { 
+            bool componentWillBeAdded = m_AddQueue.Any(c => component.IsAssignableFrom(c.GetType()));
+            return componentIsAttached || componentWillBeAdded;        
+        }
+
+        return componentIsAttached;
     }
 
     public void CleanupComponents()

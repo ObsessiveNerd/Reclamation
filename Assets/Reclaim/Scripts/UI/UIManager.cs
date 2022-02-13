@@ -7,6 +7,7 @@ public class UIManager : MonoBehaviour
 {
     static Stack<IEscapeableMono> UIMonoBehaviors = new Stack<IEscapeableMono>();
     public static bool UIClear => UIMonoBehaviors.Count == 0;
+    static bool m_EscapePressedThisFrame = false;
 
     public static void Push(IEscapeableMono mono)
     {
@@ -25,6 +26,7 @@ public class UIManager : MonoBehaviour
         {
             Debug.LogWarning($"{mono.GetType().Name} popping from UI stack");
             UIMonoBehaviors.Pop().OnEscape();
+            m_EscapePressedThisFrame = true;
         }
     }
 
@@ -35,6 +37,7 @@ public class UIManager : MonoBehaviour
             var behavior = UIMonoBehaviors.Pop();
             Debug.LogWarning($"{behavior} is being popped from UI stack.");
             behavior?.OnEscape();
+            m_EscapePressedThisFrame = true;
         }
     }
 
@@ -66,12 +69,12 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    bool m_EscapePressedThisFrame = false;
     void Update()
     {
         if (m_EscapePressedThisFrame)
-            m_EscapePressedThisFrame = false;
-        else if (EscapeForActiveUIPressed.HasValue && EscapeForActiveUIPressed.Value /*&& !UIClear*/)
+            return;
+
+        if (EscapeForActiveUIPressed.HasValue && EscapeForActiveUIPressed.Value /*&& !UIClear*/)
         {
             if (UIMonoBehaviors.Count == 0)
             {
@@ -115,4 +118,8 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    private void LateUpdate()
+    {
+        m_EscapePressedThisFrame = false;
+    }
 }

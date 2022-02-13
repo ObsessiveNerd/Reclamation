@@ -86,7 +86,7 @@ public class PlayerInputController : InputControllerBase
                 Self.FireEvent(takeDamage).Release();
             }
 
-            else if (Input.GetKeyDown(KeyCode.Question))
+            else if (Input.GetKeyDown(KeyCode.Period))
             {
                 GameEvent gainMana = GameEventPool.Get(GameEventId.RestoreMana)
                     .With(EventParameters.Mana, 10);
@@ -115,7 +115,7 @@ public class PlayerInputController : InputControllerBase
 
             else if (SpellSelected(out int spellIndex))
             {
-                if (!Self.HasComponent(typeof(SpellcasterPlayerController)))
+                if (!Self.HasComponent(typeof(SpellcasterPlayerController), true))
                 {
                     Self.RemoveComponent(this);
                     Self.AddComponent(new SpellcasterPlayerController(spellIndex));
