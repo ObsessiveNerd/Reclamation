@@ -5099,6 +5099,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 6241948252624630896, guid: 111d7f65e2b1f5f468dafe018551f1fd,
+        type: 3}
+      propertyPath: MapRows
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 6241948252624630896, guid: 111d7f65e2b1f5f468dafe018551f1fd,
+        type: 3}
+      propertyPath: MapColumns
+      value: 15
+      objectReference: {fileID: 0}
     - target: {fileID: 6241948252624630897, guid: 111d7f65e2b1f5f468dafe018551f1fd,
         type: 3}
       propertyPath: m_RootOrder

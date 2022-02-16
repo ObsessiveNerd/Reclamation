@@ -16,7 +16,7 @@ public class PlayerInputController : InputControllerBase
     public override void Start()
     {
         Services.WorldUIService.OpenSpellUI();
-        base.Start();
+        Services.WorldUIService.UpdateUI();
     }
 
     public override void HandleEvent(GameEvent gameEvent)

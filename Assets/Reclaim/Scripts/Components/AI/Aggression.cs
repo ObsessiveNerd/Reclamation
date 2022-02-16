@@ -68,8 +68,8 @@ public class Aggression : EntityComponent
         foreach(var id in list)
         {
             var weapon = EntityQuery.GetEntity(id);
-            AttackType attackType = CombatUtility.GetWeaponType(weapon);
-            if(attackType == AttackType.Ranged)
+            List<AttackType> attackTypes = CombatUtility.GetWeaponTypeList(weapon);
+            if(attackTypes.Contains(AttackType.Ranged))
             {
                 var target = WorldUtility.GetEntityAtPosition(m_TargetLocation);
                 CombatUtility.Attack(Self, target, EntityQuery.GetEntity(id), AttackType.Ranged);

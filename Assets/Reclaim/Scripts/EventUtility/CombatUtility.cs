@@ -55,7 +55,6 @@ public static class CombatUtility
 
         RecLog.Log($"{source.Name} is performing a {attackType} attack with {weapon.Name}");
 
-
         if (TypeWeaponUsesMana(attackType))
         {
             GameEvent getMana = GameEventPool.Get(GameEventId.GetMana)
@@ -78,6 +77,18 @@ public static class CombatUtility
             source.FireEvent(depleteMana);
 
         }
+
+        if (attackType == AttackType.Ranged)
+        {
+            GameEvent getAmmo = GameEventPool.Get(GameEventId.GetAmmo)
+                    .With(EventParameters.Value, null);
+
+            IEntity ammo = weapon.FireEvent(getAmmo).GetValue<IEntity>(EventParameters.Value);
+            if (ammo != null)
+                weapon = ammo;
+            getAmmo.Release();
+        }
+
 
         GameEvent rollToHitEvent = GameEventPool.Get(GameEventId.RollToHit)
                 .With(EventParameters.RollToHit, 0)
@@ -115,7 +126,7 @@ public static class CombatUtility
         if (addStatBasedDamage)
         {
             statBasedDamage = source.FireEvent(getStatModForDamage).GetValue<int>(EventParameters.Value);
-            damageList.First(d => d.DamageType == DamageType.Blunt || d.DamageType == DamageType.Slashing || d.DamageType == DamageType.Piercing).DamageAmount += statBasedDamage;
+            if(damageList.GetMeleeDamageType(out int meleeIndex)) damageList[meleeIndex].DamageAmount += statBasedDamage;
         }
 
         GameEvent attack = GameEventPool.Get(GameEventId.TakeDamage)
@@ -338,13 +349,13 @@ public static class CombatUtility
         return spells.Select(id => Services.EntityMapService.GetEntity(id)).ToList();
     }
 
-    public static AttackType GetWeaponType(IEntity weapon)
+    public static List<AttackType> GetWeaponTypeList(IEntity weapon)
     {
         var typedEvent = GameEventPool.Get(GameEventId.GetWeaponType)
-            .With(EventParameters.WeaponType, AttackType.None);
+            .With(EventParameters.WeaponType, new List<AttackType>());
 
         weapon.FireEvent(weapon, typedEvent);
-        var retValue = typedEvent.GetValue<AttackType>(EventParameters.WeaponType);
+        var retValue = typedEvent.GetValue<List<AttackType>>(EventParameters.WeaponType);
         typedEvent.Release();
         return retValue;
     }

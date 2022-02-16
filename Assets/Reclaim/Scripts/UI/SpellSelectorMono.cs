@@ -13,6 +13,9 @@ public class SpellSelectorMono : UpdatableUI//, IUpdatableUI
     {
         Close();
         IEntity source = Services.PlayerManagerService.GetActivePlayer();
+        if (source == null)
+            return;
+
         GameEvent getSpells = GameEventPool.Get(GameEventId.GetActiveAbilities)
                                     .With(EventParameters.Abilities, new List<IEntity>());
 

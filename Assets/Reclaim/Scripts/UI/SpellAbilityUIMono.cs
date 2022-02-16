@@ -43,6 +43,20 @@ public class SpellAbilityUIMono : ItemMono, IPointerDownHandler
         if (!m_CanSetActiveAbilities)
             return;
 
+        if(m_Source == null)
+        {
+            string spellName = m_Spell == null ? "Null spell" : m_Spell.Name;
+            Debug.LogError($"{spellName} has a null source.  Unable to add/remove from abilities");
+            return;
+        }
+
+        if (m_Spell == null)
+        {
+            Debug.LogError("A spell in SpellAbilityMono was null.");
+            return;
+        }
+
+
         if (eventData.clickCount == 1)
         {
             Debug.Log("Double clicked");

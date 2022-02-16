@@ -152,7 +152,7 @@ public class EquipmentSlot : EntityComponent
                 CombatUtility.Attack(Self,
                     EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Target]),
                     equipmentEntity,
-                    CombatUtility.GetWeaponType(equipmentEntity));
+                    AttackType.Melee);
             }
         }
 

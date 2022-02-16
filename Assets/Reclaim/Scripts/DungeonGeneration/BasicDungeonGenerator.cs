@@ -292,7 +292,6 @@ public class Room
 
                 case SpawnRestrictionTags.CenterRoom:
                     return GetMiddleOfTheRoom();
-                    break;
             }
         }
         return new Point(x, y);
@@ -541,7 +540,7 @@ public class BasicDungeonGenerator : IDungeonGenerator
 
     void SpawnEnemies()
     {
-        for (int i = 0; i < RecRandom.Instance.GetRandomValue(15, 35); i++)
+        for (int i = 0; i < RecRandom.Instance.GetRandomValue(2, 9); i++)
         {
             Room randomRoom = Rooms[RecRandom.Instance.GetRandomValue(1, Rooms.Count)];
             IEntity enemy = EntityFactory.CreateEntity(EntityFactory.GetRandomMonsterBPName());

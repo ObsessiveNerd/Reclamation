@@ -16,6 +16,8 @@ public static class GameEventPool
         }
     }
 
+    public static List<GameEvent> InUse => m_InUse;
+
     public static GameEvent Get(string id)
     {
         if (m_Pool.Count > 0)

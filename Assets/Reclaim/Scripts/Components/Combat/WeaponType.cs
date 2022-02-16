@@ -33,15 +33,12 @@ public class WeaponType : EntityComponent
         Type = type;
         RegisteredEvents.Add(GameEventId.GetWeapon);
         RegisteredEvents.Add(GameEventId.GetWeaponType);
-        RegisteredEvents.Add(GameEventId.GetWeaponTypes);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
     {
         if (gameEvent.ID == GameEventId.GetWeaponType)
-            gameEvent.Paramters[EventParameters.WeaponType] = Type;
-        else if (gameEvent.ID == GameEventId.GetWeaponTypes)
-            gameEvent.GetValue<List<AttackType>>(EventParameters.WeaponTypeList).Add(Type);
+            gameEvent.GetValue<List<AttackType>>(EventParameters.WeaponType).Add(Type);
         else if (gameEvent.ID == GameEventId.GetWeapon)
             gameEvent.GetValue<List<string>>(EventParameters.Weapon).Add(Self.ID);
     }

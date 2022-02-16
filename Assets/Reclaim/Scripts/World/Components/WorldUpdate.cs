@@ -25,7 +25,11 @@ public class WorldUpdate : GameService
         {
             m_TimeProgression.Update();
             if (GameEventPool.GameEventsInUse)
-                Debug.LogError("GameEvents were unreleased");
+            {
+                foreach (var ge in GameEventPool.InUse)
+                    Debug.LogWarning($"{ge.ID} is still in use after frame end.  It will be released.");
+
+            }
         }
     }
 }

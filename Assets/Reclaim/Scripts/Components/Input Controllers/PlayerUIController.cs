@@ -10,9 +10,10 @@ public class PlayerUIController : InputControllerBase
         {
             if (UIManager.UIClear)
             {
-                //FireEvent(World.Instance.Self, GameEventPool.Get(GameEventId.CloseUI));
+                var controller = new PlayerInputController();
                 Self.RemoveComponent(this);
-                Self.AddComponent(new PlayerInputController());
+                Self.AddComponent(controller);
+                controller.Start();
             }
             else if (Input.GetKeyDown(KeyCode.Tab))
             {

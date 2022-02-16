@@ -1,5 +1,6 @@
 ﻿public enum DamageType
 {
+    None,
     Slashing,
     Piercing,
     Blunt,
