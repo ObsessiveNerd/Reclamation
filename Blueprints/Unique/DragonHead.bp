@@ -8,5 +8,5 @@
 	Equipment:PreferredBodyPartWhenEquipped=Head
 	DealDamage:DamageType=Fire,Dice=1d10
 	SpellContainer:MaxSpell=5,RandomSpells=False,SpecificSpell=RingOfFire
-	WeaponType:TypeWeapon=Wand
+	WeaponType:TypeWeapon=MagicalContainer
 )

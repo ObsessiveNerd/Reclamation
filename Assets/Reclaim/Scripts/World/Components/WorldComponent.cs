@@ -63,7 +63,15 @@ public abstract class GameService //: Component
     {
         m_TimeProgression = new TimeProgression();
         m_Tiles.Clear();
-        m_EntityToPointMap.Clear();
+
+        var tempMap = new Dictionary<IEntity, Point>(m_EntityToPointMap);
+        foreach(var e in tempMap.Keys)
+        {
+            if (!e.HasComponent(typeof(Tile)))
+                m_EntityToPointMap.Remove(e);
+        }
+
+        m_EntityToPreviousPointMap.Clear();
         m_Players.Clear();
         m_ActivePlayer = null;
         m_ValidDungeonPoints.Clear();

@@ -255,7 +255,7 @@ public class DungeonManager : GameService
         {
             if (m_Players.Contains(entity))
                 continue;
-            if (!m_EntityToPointMap.ContainsKey(entity))
+            if (!m_EntityToPointMap.ContainsKey(entity) || entity.HasComponent(typeof(Tile)))
                 continue;
 
             m_EntityToPointMap.Remove(entity);

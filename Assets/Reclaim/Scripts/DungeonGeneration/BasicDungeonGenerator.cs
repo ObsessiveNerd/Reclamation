@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -265,6 +265,9 @@ public class Room
                 case SpawnRestrictionTags.AgainstWall:
 
                     var tempList = m_MyWalls; //.Except(m_Hallways).ToList();
+                    if (tempList.Count == 0)
+                        return Point.InvalidPoint;
+
                     int randomWallIndex = RecRandom.Instance.GetRandomValue(0, tempList.Count - 1);
                     Point wall = tempList.ToArray()[randomWallIndex];
                     Point center = GetMiddleOfTheRoom();
