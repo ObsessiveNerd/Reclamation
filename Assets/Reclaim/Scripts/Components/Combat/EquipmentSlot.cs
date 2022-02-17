@@ -113,7 +113,7 @@ public class EquipmentSlot : EntityComponent
             EquipmentId = (string)gameEvent.Paramters[EventParameters.Equipment];
 
             GameEvent playOnEquipSound = GameEventPool.Get(GameEventId.Playsound)
-                                        .With(EventParameters.SoundSource, Self)
+                                        .With(EventParameters.SoundSource, Self.ID)
                                         .With(EventParameters.Key, SoundKey.Activate);
             entity.FireEvent(playOnEquipSound).Release();
         }

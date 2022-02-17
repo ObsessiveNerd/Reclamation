@@ -26,7 +26,8 @@ public class Sound : EntityComponent
         {
             string key = gameEvent.GetValue<string>(EventParameters.Key);
             if(key == Key)
-                Services.Music.PlaySoundClip(gameEvent.GetValue<IEntity>(EventParameters.SoundSource), SoundPath);
+                Services.Music.PlaySoundClip(Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameters.SoundSource)), 
+                    SoundPath);
         }
     }
 }
