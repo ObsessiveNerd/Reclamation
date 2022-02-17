@@ -13,6 +13,7 @@
 	FOV:FOVRange=5
 	EntityTypeContainer:Type=Creature
 	RegisterWithTimeSystem
+	Weighted:Weight=500.0
 	Inventory:InventoryItems=
 	Aggression
 	Faction:ID=Goblins

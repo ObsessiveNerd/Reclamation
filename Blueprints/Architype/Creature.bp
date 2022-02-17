@@ -11,6 +11,7 @@ Creature<Architype>(
 	Fear
 	Wander
 	CombatRating
+	Weighted:Weight=500.0
 	BlocksNonHostileMovement
 	Health:0
 	Body:Head=1[<BronzeHelmet>], Torso=1[], Arm=2[<ShortSword>], Leg=2[]

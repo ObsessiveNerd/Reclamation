@@ -10,6 +10,7 @@
 	FOV:FOVRange=5
 	Aggression
 	EntityTypeContainer:Type=Creature
+	Weighted:Weight=500.0
 	HealthRegen:RegenAmount=1,RegenSpeed=5
 	AIFOVHandler
 	ManaRegen:RegenAmount=1,RegenSpeed=15

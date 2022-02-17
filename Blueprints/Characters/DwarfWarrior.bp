@@ -15,6 +15,7 @@
 	EquipmentSlot:EquipmentId=ShortSword,BodyPartType=Arm
 	ActiveAbilities:ActiveAbilitiesList=
 	FOV:FOVRange=5
+	Weighted:Weight=500.0
 	EquipmentSlot:EquipmentId=,BodyPartType=Leg
 	Aggression
 	EntityTypeContainer:Type=Creature
