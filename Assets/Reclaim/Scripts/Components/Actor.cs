@@ -46,9 +46,7 @@ public class Actor : IEntity
     public Actor(string name, string id)
     {
         Name = name;
-        ID = string.IsNullOrEmpty(id) ? IDManager.GetNewID().ToString() : id;
-        if(!string.IsNullOrEmpty(id))
-            IDManager.SetId(int.Parse(id));
+        ID = string.IsNullOrEmpty(id) ? IDManager.GetNewID() : id;
 
         m_Components = new PriorityQueue<IComponent>(new ComponentComparer());
         Services.EntityMapService.RegisterEntity(this);

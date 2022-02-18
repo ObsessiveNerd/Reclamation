@@ -25,6 +25,9 @@ public class GameSaveSystem : GameService
     public string CurrentSaveName;
     string m_LoadPath;
     SaveData m_Data;
+
+    public string LoadPath => m_LoadPath;
+
     public string CurrentSavePath
     {
         get
@@ -52,6 +55,36 @@ public class GameSaveSystem : GameService
     {
         if(!string.IsNullOrEmpty(CurrentSaveName))
             Save(CurrentSaveName);
+    }
+
+    public void UpdateSaveFromNetwork(NetworkDungeonData data)
+    {
+        Directory.CreateDirectory(LoadPath);
+        File.WriteAllText(CurrentSavePath, data.SaveFile);
+        for(int i = 0; i < data.LevelDatas.Count; i++)
+        {
+            string levelDir =$"{m_LoadPath}/{i + 1}";
+            Directory.CreateDirectory(levelDir);
+            File.WriteAllText($"{levelDir}/data.dat", data.LevelDatas[i]);
+        }
+
+        foreach(var bp in data.TempBlueprints)
+        {
+            string name = EntityFactory.GetEntityNameFromBlueprintFormatting(bp);
+            EntityFactory.CreateTemporaryBlueprint(name.Split(',')[1], bp);
+        }
+    }
+
+    public void MoveSaveData(string newPath)
+    {
+        newPath = $"{kSaveDataPath}/{newPath}";
+        if (Directory.Exists(LoadPath))
+        {
+            Directory.CreateDirectory(newPath);
+            Directory.Move(LoadPath, newPath);
+        }
+        m_LoadPath = newPath;
+        CurrentSaveName = Path.GetFileName(newPath);
     }
 
     public void CleanCurrentSave()
@@ -136,16 +169,16 @@ public class GameSaveSystem : GameService
 
     public static void LogEvent(string targetId, GameEvent gameEvent)
     {
-        //string path = $"{kSaveDataPath}/{World.Instance.Seed}/tmp_event_log.txt";
-        //Directory.CreateDirectory(Path.GetDirectoryName(path));
-        //File.AppendAllText(path, JsonUtility.ToJson(new GameEventSerializable(targetId, gameEvent)));
-        //File.AppendAllText(path, "\n");
+        Debug.LogWarning($"Attempting to log game event {gameEvent.ID} but log event hasn't been implemented");
     }
 
-    public void Load(string path)
+    public void Load(string path, bool overrideCurrentSaveName = true)
     {
         SaveData data = JsonUtility.FromJson<SaveData>(File.ReadAllText(path));
-        CurrentSaveName = data.SaveName;
+        if (overrideCurrentSaveName)
+            CurrentSaveName = data.SaveName;
+        else
+            data.SaveName = CurrentSaveName;
         Services.DungeonService.GenerateDungeon(data.CurrentDungeonLevel, false);
     }
 }

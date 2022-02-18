@@ -42,4 +42,6 @@ public static class Services
     public static StateManager StateManagerService { get { return DependencyInjection.GetInstance<StateManager>(); } }
     public static PartyController PartyService { get { return DependencyInjection.GetInstance<PartyController>(); } }
     public static MusicService Music { get { return DependencyInjection.GetInstance<MusicService>(); } }
+    public static EntityNetworkManager NetworkService { get { return DependencyInjection.GetInstance<EntityNetworkManager>(); } }
+
 }

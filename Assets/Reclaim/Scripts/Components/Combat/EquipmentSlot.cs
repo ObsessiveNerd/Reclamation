@@ -38,6 +38,8 @@ public class EquipmentSlot : EntityComponent
         if (entity == null)
         {
             entity = EntityFactory.CreateEntity(EquipmentId);
+            if (entity == null)
+                Debug.LogError(EquipmentId);
             Services.EntityMapService.AddEntity(entity);
 
             //GameEvent register = GameEventPool.Get(GameEventId.RegisterEntity)

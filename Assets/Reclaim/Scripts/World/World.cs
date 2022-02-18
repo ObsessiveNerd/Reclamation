@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using SocketIO;
 using UnityEngine;
 using Debug = System.Diagnostics.Debug;
 
@@ -17,12 +18,13 @@ public class World : MonoBehaviour
     {
         None = 0,
         CreateNew,
-        LoadCurrentIfExists
+        LoadCurrentIfExists,
+        NetworkedGame
     }
 
     private void Start()
     {
-#if UNITY_EDITOR
+//#if UNITY_EDITOR
         if (!Services.Ready)
         {
             string loadpath = $"{GameSaveSystem.kSaveDataPath}/{Guid.NewGuid().ToString()}";
@@ -37,9 +39,12 @@ public class World : MonoBehaviour
                     bool value = Directory.Exists(loadpath);
                     Services.DungeonService.GenerateDungeon(!value, loadpath);
                     break;
+                case DungeonInitMode.NetworkedGame:
+                    //Services.NetworkService.
+                    break;
             }
         }
-#endif
+//#endif
     }
 
     public void StartWorld(string loadPath = "")
@@ -72,6 +77,7 @@ public class World : MonoBehaviour
         DependencyInjection.Register(new StateManager());
         DependencyInjection.Register(new PartyController());
         DependencyInjection.Register(new MusicService());
+        DependencyInjection.Register(new EntityNetworkManager(FindObjectOfType<SocketIOComponent>()));
 
         Services.Complete();
     }
@@ -79,6 +85,7 @@ public class World : MonoBehaviour
     GameEvent m_ProgressTime = new GameEvent(GameEventId.ProgressTime);
     private void Update()
     {
-        Services.WorldUpdateService.ProgressTime();
+        if(Services.Ready)
+            Services.WorldUpdateService.ProgressTime();
     }
 }

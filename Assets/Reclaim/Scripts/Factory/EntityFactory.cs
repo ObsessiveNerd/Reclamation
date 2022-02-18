@@ -136,10 +136,10 @@ public static class EntityFactory
                         m_Blueprints.Add(bpName, bpPath);
 
                     //CreateEntity(bpName);
-                    if(int.TryParse(bpName, out int res))
-                        IDManager.SetId(res);
-                    else if(int.TryParse(ParseEntityIdFromName(bpName), out int res2))
-                        IDManager.SetId(res2);
+                    //if(int.TryParse(bpName, out int res))
+                    //    IDManager.SetId(res);
+                    //else if(int.TryParse(ParseEntityIdFromName(bpName), out int res2))
+                    //    IDManager.SetId(res2);
                 }
                 m_LoadedTempBlueprints = true;
             }
@@ -427,7 +427,7 @@ public static class EntityFactory
     {
         int start = bpFormatting.IndexOf('<') + 1;
         int length = bpFormatting.IndexOf('>') - start;
-        if(length > start)
+        if(length >= start)
             return bpFormatting.Substring(start, length);
         return bpFormatting;
     }

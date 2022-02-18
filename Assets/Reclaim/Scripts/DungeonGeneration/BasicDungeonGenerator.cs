@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -20,6 +20,13 @@ public class Room
 
     private HashSet<Point> m_MyWalls = new HashSet<Point>();
 
+    //public static void CleanStaticData()
+    //{
+    //    m_Walls.Clear();
+    //    m_RoomTiles.Clear();
+    //    m_RoomTiles.Clear();
+    //    m_Doors.Clear();
+    //}
 
     void AddWallPoint(Point p)
     {
@@ -416,7 +423,7 @@ public class BasicDungeonGenerator : IDungeonGenerator
     public virtual DungeonGenerationResult GenerateDungeon(DungeonMetaData metaData)
     {
         m_Result = new DungeonGenerationResult();
-
+        
         m_DMD = metaData;
         SplitPartition(m_Root);
 
@@ -436,7 +443,7 @@ public class BasicDungeonGenerator : IDungeonGenerator
 
         using (new DiagnosticsTimer("spawning"))
         {
-            SpawnEnemies();
+            //SpawnEnemies();
             SpawnItems();
             SpawnStairs();
         }
@@ -538,6 +545,7 @@ public class BasicDungeonGenerator : IDungeonGenerator
     public void Clean()
     {
         Rooms.Clear();
+        //Room.CleanStaticData();
         m_LeafNodes.Clear();
     }
 

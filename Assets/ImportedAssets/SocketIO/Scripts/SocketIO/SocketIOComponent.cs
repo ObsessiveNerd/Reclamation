@@ -415,12 +415,14 @@ namespace SocketIO
 				try{
 					handler(ev);
 				} catch(Exception ex){
-                    Debug.Log(ex.Message);
+
+                    Debug.Log(ex);
                     Debug.Log(ev.name);
-					#if SOCKET_IO_DEBUG
+
+#if SOCKET_IO_DEBUG
 					debugMethod.Invoke(ex.ToString());
-					#endif
-				}
+#endif
+                }
 			}
 		}
 

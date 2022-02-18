@@ -385,6 +385,42 @@ public static class EventParameters
     public const string Enchantments = nameof(Enchantments);
 }
 
+[Serializable]
+public class GameEventSerializable
+{
+    [SerializeField]
+    public string TargetEntityId;
+    [SerializeField]
+    public string Id;
+    [SerializeField]
+    public List<string> ParameterKeys;
+    [SerializeField]
+    public List<string> ParameterValues;
+
+    public GameEventSerializable(string targetId, GameEvent ge)
+    {
+        TargetEntityId = targetId;
+        Id = ge.ID;
+        ParameterKeys = new List<string>();
+        ParameterValues = new List<string>();
+        foreach(var key in ge.Paramters.Keys)
+        {
+            ParameterKeys.Add(key);
+            ParameterValues.Add(ge.Paramters[key].ToString());
+        }
+    }
+
+    public GameEvent CreateGameEvent()
+    {
+        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        for(int i = 0; i < ParameterKeys.Count; i++)
+            parameters.Add(ParameterKeys[i], ParameterValues[i]);
+        GameEvent ge = GameEventPool.Get(Id)
+                        .With(parameters);
+        return ge;
+    }
+}
+
 public class GameEvent
 {
     public bool Locked = false;

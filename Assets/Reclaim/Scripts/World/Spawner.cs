@@ -18,7 +18,6 @@ public static class Spawner
 
         foreach (var comp in e.GetComponents())
             comp.Start();
-
         e.FireEvent(GameEventPool.Get(GameEventId.InitFOV)).Release();
     }
 
