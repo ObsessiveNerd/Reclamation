@@ -31,9 +31,9 @@ public class EntityMovement : GameService
 
     public void SetEntityPosition(IEntity entity, Point newPoint)
     {
-        if (!m_EntityToPointMap.ContainsKey(entity))
+        if (!m_EntityToPointMap.ContainsKey(entity.ID))
             return;
-        Point currentPoint = m_EntityToPointMap[entity];
+        Point currentPoint = m_EntityToPointMap[entity.ID];
         GameEvent getEntityType = GameEventPool.Get(GameEventId.GetEntityType)
                                     .With(EventParameters.EntityType, EntityType.None);
 
@@ -46,7 +46,7 @@ public class EntityMovement : GameService
         m_Tiles[currentPoint].Despawn(removeEntityFromTile);
         removeEntityFromTile.Release();
 
-        m_EntityToPointMap[entity] = newPoint;
+        m_EntityToPointMap[entity.ID] = newPoint;
         GameEvent addEntityToTile = GameEventPool.Get(GameEventId.Spawn)
                                         .With(EventParameters.Entity, entity.ID)
                                         .With(EventParameters.EntityType, entityType);
@@ -57,13 +57,16 @@ public class EntityMovement : GameService
 
     public void Move(IEntity entity, MoveDirection moveDirection)
     {
-        if (!m_EntityToPointMap.ContainsKey(entity))
+        if (!m_EntityToPointMap.ContainsKey(entity.ID))
             return;
-        Point currentPoint = m_EntityToPointMap[entity];
+        Point currentPoint = m_EntityToPointMap[entity.ID];
         Point newPoint = GetTilePointInDirection(currentPoint, moveDirection);
 
         if (m_Tiles.ContainsKey(newPoint))
         {
+            m_ChangedTiles.Add(m_Tiles[currentPoint]);
+            m_ChangedTiles.Add(m_Tiles[newPoint]);
+
             var pointEvent = FireEvent(entity, GameEventPool.Get(GameEventId.SetPoint).With(EventParameters.TilePosition, newPoint));
             SetEntityPosition(entity, newPoint);
             pointEvent.Release();

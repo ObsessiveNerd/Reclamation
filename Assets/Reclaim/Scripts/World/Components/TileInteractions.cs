@@ -21,7 +21,7 @@ public class TileInteractions : GameService
         GameEvent pickup = GameEventPool.Get(GameEventId.Pickup)
                             .With(EventParameters.Entity, pickupEntity.ID);
 
-        Point p = m_EntityToPointMap[pickupEntity];
+        Point p = m_EntityToPointMap[pickupEntity.ID];
         m_Tiles[p].Pickup(pickup);
 
         pickup.Release();
@@ -50,10 +50,10 @@ public class TileInteractions : GameService
         EntityType entityType = getEntityType.GetValue<EntityType>(EventParameters.EntityType);
         getEntityType.Release();
 
-        if (!m_EntityToPointMap.ContainsKey(droppingEntity))
+        if (!m_EntityToPointMap.ContainsKey(droppingEntity.ID))
             return;
 
-        Point p = m_EntityToPointMap[droppingEntity];
+        Point p = m_EntityToPointMap[droppingEntity.ID];
         Services.SpawnerService.Spawn(entity, p);
     }
 

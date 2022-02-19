@@ -5,12 +5,12 @@ using UnityEngine;
 
 public class WorldFov : GameService
 {
-    Dictionary<IEntity, List<Point>> m_PlayerToVisibleTiles = new Dictionary<IEntity, List<Point>>();
+    Dictionary<string, List<Point>> m_PlayerToVisibleTiles = new Dictionary<string, List<Point>>();
 
     public void UnRegisterPlayer(IEntity player)
     {
-        if (m_PlayerToVisibleTiles.ContainsKey(player))
-            m_PlayerToVisibleTiles.Remove(player);
+        if (m_PlayerToVisibleTiles.ContainsKey(player.ID))
+            m_PlayerToVisibleTiles.Remove(player.ID);
     }
 
     public void CleanFoVData()
@@ -20,11 +20,11 @@ public class WorldFov : GameService
 
     public void FoVRecalculated(IEntity source, List<Point> newVisibleTiles)
     {
-        if (!m_PlayerToVisibleTiles.ContainsKey(source))
-            m_PlayerToVisibleTiles.Add(source, newVisibleTiles);
+        if (!m_PlayerToVisibleTiles.ContainsKey(source.ID))
+            m_PlayerToVisibleTiles.Add(source.ID, newVisibleTiles);
 
-        List<Point> oldVisibleTiles = m_PlayerToVisibleTiles[source];
-        m_PlayerToVisibleTiles[source] = newVisibleTiles;
+        List<Point> oldVisibleTiles = m_PlayerToVisibleTiles[source.ID];
+        m_PlayerToVisibleTiles[source.ID] = newVisibleTiles;
         UpdateTiles(oldVisibleTiles);
     }
 
@@ -43,12 +43,18 @@ public class WorldFov : GameService
             allVisibleTiles.AddRange(m_PlayerToVisibleTiles[key]);
 
         foreach(Point tile in allVisibleTiles)
+        {
+            if(!m_TileEntity.ContainsKey(tile)) continue;
+
                 FireEvent(m_TileEntity[tile], GameEventPool.Get(GameEventId.SetVisibility)
                     .With(EventParameters.TileInSight, true)).Release();
+        }
 
         foreach (Point tile in oldTiles)
-            if(!allVisibleTiles.Contains(tile))
+        { 
+            if(!allVisibleTiles.Contains(tile) && m_TileEntity.ContainsKey(tile))
                 FireEvent(m_TileEntity[tile], GameEventPool.Get(GameEventId.SetVisibility)
                     .With(EventParameters.TileInSight, false)).Release();
+        }
     }
 }

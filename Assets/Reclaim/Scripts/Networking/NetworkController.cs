@@ -4,15 +4,17 @@ using UnityEngine;
 
 public class NetworkController : InputControllerBase
 {
+    public override int Priority => 10;
     public override void Init(IEntity self)
     {
         base.Init(self);
-
+        RegisteredEvents.Add(GameEventId.GetEnergy);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
     {
-
+        if(gameEvent.ID == GameEventId.GetEnergy)
+            gameEvent.Paramters[EventParameters.Value] = 1f;
     }
 }
 

@@ -17,12 +17,12 @@ io.on('connection', function(socket){
             data.isHost = false;
         
         data.NetworkId = thisClientId;
+		players.push(data);
         socket.emit('getNetworkId', data);
 	});
 	
     socket.on('spawnPlayer', function(data){
         console.log('spawning player');
-        players.push(data);
 		data.NetworkId = thisClientId;
 		socket.emit('spawnPlayer', data);
 		socket.broadcast.emit('spawnPlayer', data);
@@ -46,8 +46,33 @@ io.on('connection', function(socket){
 		socket.emit('syncCharacter', data);
 	});
 	
+	socket.on('gameEvent', function(data){
+		console.log('processing game event');
+		socket.broadcast.emit('gameEvent', data);
+	});
+	
 	socket.on('syncWorld', function(data){
 		socket.broadcast.emit('syncWorld', data);
+	});
+	
+	socket.on('requestDungeonLevel', function(data){
+		socket.broadcast.emit('requestDungeonLevel', data);
+	});
+	
+	socket.on('syncDungeonFromClient', function(data){
+		socket.broadcast.emit('syncDungeonFromClient', data);
+	});
+	
+	socket.on('serverRecievedDungeonSync', function(data){
+		socket.broadcast.emit('serverRecievedDungeonSync', data);
+	});
+	
+	socket.on('dungeonSyncComplete', function(){
+		socket.broadcast.emit('dungeonSyncComplete');
+	});
+	
+	socket.on('despawn', function(data){
+		socket.broadcast.emit('despawn', data);
 	});
 	
 	socket.emit('ready');

@@ -107,9 +107,28 @@ public class DungeonManager : GameService
                 Services.SaveAndLoadService.Save();
                 CleanTiles();
                 m_CurrentLevel--;
-                LoadOrCreateDungeon();
-                MovePlayersToCurrentFloor(false);
-                Services.CameraService.UpdateCamera();
+                if(Services.NetworkService.IsConnected)
+                {
+                    Services.WorldUpdateService.StopTime = true;
+                    Services.NetworkService.DungeonLevelSynced += () =>
+                    {
+                        LoadOrCreateDungeon();
+                        Services.NetworkService.LocalPlayerSpawned += () =>
+                        {
+                            Services.WorldUpdateService.UpdateWorldView();
+                            Services.CameraService.UpdateCamera();
+                            Services.WorldUpdateService.StopTime = false;
+                        };
+                        MovePlayersToCurrentFloor(false);
+                    };
+                    Services.NetworkService.RequestDungeonLevelFromServer(m_CurrentLevel);
+                }
+                else
+                {
+                    LoadOrCreateDungeon();
+                    MovePlayersToCurrentFloor(false);
+                    Services.CameraService.UpdateCamera();
+                }
             });
     }
 
@@ -121,12 +140,31 @@ public class DungeonManager : GameService
                 Services.SaveAndLoadService.Save();
                 CleanTiles();
                 m_CurrentLevel++;
-                LoadOrCreateDungeon();
-                MovePlayersToCurrentFloor(true);
-                Services.CameraService.UpdateCamera();
+
+                if(Services.NetworkService.IsConnected)
+                {
+                    Services.NetworkService.DungeonLevelSynced += () =>
+                    {
+                        Services.WorldUpdateService.StopTime = true;
+                        LoadOrCreateDungeon();
+                        Services.NetworkService.LocalPlayerSpawned += () =>
+                        {
+                            Services.WorldUpdateService.UpdateWorldView();
+                            Services.CameraService.UpdateCamera();
+                            Services.WorldUpdateService.StopTime = false;
+                        };
+                        MovePlayersToCurrentFloor(true);
+                    };
+                    Services.NetworkService.RequestDungeonLevelFromServer(m_CurrentLevel);
+                }
+                else
+                {
+                    LoadOrCreateDungeon();
+                    MovePlayersToCurrentFloor(true);
+                    Services.CameraService.UpdateCamera();
+                }
             });
     }
-
     public int GetCurrentLevel()
     {
         return m_CurrentLevel;
@@ -161,17 +199,22 @@ public class DungeonManager : GameService
         foreach (var player in m_Players)
         {
             m_PlayerBlueprintCache.Add(player.ID);
+            Services.FOVService.UnRegisterPlayer(player);
             Spawner.Despawn(player);
+            Services.NetworkService.DespawnEntity(player);
         }
     }
 
     void LoadOrCreateDungeon()
     {
-        if (!m_DungeonLevelMap.ContainsKey(m_CurrentLevel))
+        if (!m_DungeonLevelMap.ContainsKey(m_CurrentLevel) || Services.NetworkService.IsConnected)
         {
             DungeonGenerationResult loadedLevel = Services.SaveAndLoadService.LoadLevel(m_CurrentLevel);
             if (loadedLevel != null)
-                m_DungeonLevelMap.Add(m_CurrentLevel, loadedLevel);
+                if (m_DungeonLevelMap.ContainsKey(m_CurrentLevel))
+                    m_DungeonLevelMap[m_CurrentLevel] = loadedLevel;
+                else
+                    m_DungeonLevelMap.Add(m_CurrentLevel, loadedLevel);
         }
 
         if (m_DungeonLevelMap.ContainsKey(m_CurrentLevel))
@@ -206,7 +249,15 @@ public class DungeonManager : GameService
                                             .With(EventParameters.Value, Point.InvalidPoint);
                     Point p = FireEvent(entity, getPoint).GetValue<Point>(EventParameters.Value);
                     if (p != Point.InvalidPoint)
+                    {
+                        if (Services.NetworkService.IsConnected)
+                        {
+                            if (entity.HasComponent(typeof(PlayerInputController)))
+                                Services.NetworkService.ConvertToNetworkedPlayer(entity);
+                        }
+                         
                         Spawner.Spawn(entity, p);
+                    }
                     getPoint.Release();
                 }
             }
@@ -241,16 +292,16 @@ public class DungeonManager : GameService
             tile.CleanTile();
             //FireEvent(tile, GameEventPool.Get(GameEventId.CleanTile));
 
-        List<IEntity> entities = new List<IEntity>(m_EntityToPointMap.Keys);
+        List<string> entities = new List<string>(m_EntityToPointMap.Keys);
         foreach (var entity in entities)
         {
-            if (m_Players.Contains(entity))
+            if (m_Players.Contains(m_EntityIdToEntityMap[entity]))
                 continue;
-            if (!m_EntityToPointMap.ContainsKey(entity) || entity.HasComponent(typeof(Tile)))
+            if (!m_EntityToPointMap.ContainsKey(entity) || m_EntityIdToEntityMap[entity].HasComponent(typeof(Tile)))
                 continue;
 
             m_EntityToPointMap.Remove(entity);
-            m_TimeProgression.RemoveEntity(entity);
+            m_TimeProgression.RemoveEntity(m_EntityIdToEntityMap[entity]);
         }
         DungeonGenerator.Clean();
         Services.FOVService.CleanFoVData();
@@ -262,15 +313,30 @@ public class DungeonManager : GameService
         {
             var entity = EntityQuery.GetEntity(player);
 
-            if (movingDown)
-                Spawner.Spawn(entity, DungeonGenerator.Rooms[0].GetValidPoint(null));
-            else
-                Spawner.Spawn(entity, DungeonGenerator.Rooms[m_DungeonLevelMap[m_CurrentLevel].StairsDownRoomIndex].GetValidPoint(null));
+            if (Services.NetworkService.IsConnected)
+            {
+                Point requestedPoint = new Point(0, 0);
+                if (movingDown)
+                    requestedPoint = DungeonGenerator.Rooms[0].GetValidPoint(null);
+                else
+                    requestedPoint = DungeonGenerator.Rooms[m_DungeonLevelMap[m_CurrentLevel].StairsDownRoomIndex].GetValidPoint(null);
+                entity.GetComponent<Position>().PositionPoint = requestedPoint;
 
-            FireEvent(entity, GameEventPool.Get(GameEventId.RegisterPlayableCharacter)).Release();
-            FireEvent(entity, GameEventPool.Get(GameEventId.InitFOV)).Release();
+                Services.NetworkService.SpawnPlayer(entity);
+            }
+            else
+            {
+                if (movingDown)
+                    Spawner.Spawn(entity, DungeonGenerator.Rooms[0].GetValidPoint(null));
+                else
+                    Spawner.Spawn(entity, DungeonGenerator.Rooms[m_DungeonLevelMap[m_CurrentLevel].StairsDownRoomIndex].GetValidPoint(null));
+
+                FireEvent(entity, GameEventPool.Get(GameEventId.RegisterPlayableCharacter)).Release();
+                FireEvent(entity, GameEventPool.Get(GameEventId.InitFOV)).Release();
+            }
         }
-        Services.WorldUpdateService.UpdateWorldView();
+        if(!Services.NetworkService.IsConnected)
+            Services.WorldUpdateService.UpdateWorldView();
         m_PlayerBlueprintCache.Clear();
     }
 
@@ -307,6 +373,6 @@ public class DungeonManager : GameService
 
         m_Tiles.Add(new Point(x, y), t);
         m_TileEntity.Add(new Point(x, y), actor);
-        m_EntityToPointMap.Add(actor, new Point(x, y));
+        m_EntityToPointMap.Add(actor.ID, new Point(x, y));
     }
 }

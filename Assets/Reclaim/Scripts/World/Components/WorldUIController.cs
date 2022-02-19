@@ -18,10 +18,10 @@ public class WorldUIController : GameService
 
     public void EntityTookDamage(IEntity entity, int damage)
     {
-        if (!m_EntityToPointMap.ContainsKey(entity))
+        if (!m_EntityToPointMap.ContainsKey(entity.ID))
             return;
 
-        Point p = m_EntityToPointMap[entity];
+        Point p = m_EntityToPointMap[entity.ID];
         GameObject mapObject = m_GameObjectMap[p];
         Vector2 newPos = (Vector2)Camera.main.WorldToScreenPoint(mapObject.transform.position);
         newPos.y += (mapObject.GetComponent<SpriteRenderer>().sprite.textureRect.height);
@@ -33,10 +33,10 @@ public class WorldUIController : GameService
 
     public void EntityHealedDamage(IEntity entity, int healing)
     {
-        if (!m_EntityToPointMap.ContainsKey(entity))
+        if (!m_EntityToPointMap.ContainsKey(entity.ID))
             return;
 
-        Point p = m_EntityToPointMap[entity];
+        Point p = m_EntityToPointMap[entity.ID];
         GameObject mapObject = m_GameObjectMap[p];
         Vector2 newPos = (Vector2)Camera.main.WorldToScreenPoint(mapObject.transform.position);
         newPos.y += (mapObject.GetComponent<SpriteRenderer>().sprite.textureRect.height);
@@ -96,6 +96,12 @@ public class WorldUIController : GameService
     public void RegisterPlayableCharacter(string id)
     {
         GameObject.FindObjectOfType<PlayableCharacterSelector>().AddCharacterTab(id);
+        UpdateUI();
+    }
+
+    public void UnRegisterPlayableCharacter(string id)
+    {
+        GameObject.FindObjectOfType<PlayableCharacterSelector>().RemoveCharacterTab(id);
         UpdateUI();
     }
 

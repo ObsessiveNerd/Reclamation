@@ -8,7 +8,6 @@ using UnityEngine;
 
 public class EntityNetworkManager : GameService
 {
-    static string ProcessGameEvent = "processGameEvent";
     static string EnterWorld = "enterWorld";
     static string Spawn = "spawnPlayer";
     static string GetNetworkId = "getNetworkId";
@@ -16,6 +15,14 @@ public class EntityNetworkManager : GameService
     static string SyncWorldRequest = "syncWorldRequest";
     static string SyncWorld = "syncWorld";
     static string SyncCharacter = "syncCharacter";
+    static string NetworkGameEvent = "gameEvent";
+    static string Disconnect = "playerDisconnect";
+    static string Despawn = "despawn";
+
+    static string RequestDungeonLevel = "requestDungeonLevel";
+    static string SyncDungeonFromClient = "syncDungeonFromClient";
+    static string ServerRecievedDungeonSync = "serverRecievedDungeonSync";
+    static string DungeonSyncComplete = "dungeonSyncComplete";
 
     static SocketIOComponent socket;
 
@@ -23,9 +30,11 @@ public class EntityNetworkManager : GameService
     public bool IsHost;
     public bool IsConnected;
 
-    Dictionary<string, string> m_NetworkdIdToPlayerIdMap = new Dictionary<string, string>();
+    Dictionary<string, IEntity> m_NetworkIdToEntityMap = new Dictionary<string, IEntity>();
 
-    Action SyncWorldCompleted;
+    public Action SyncWorldCompleted;
+    public Action DungeonLevelSynced;
+    public Action LocalPlayerSpawned;
 
     public EntityNetworkManager(SocketIOComponent sock)
     {
@@ -39,11 +48,166 @@ public class EntityNetworkManager : GameService
         //socket.On(EnterWorld, OnEnterWorld);
         socket.On(GetNetworkId, OnGetNetworkId);
         socket.On(Spawn, OnSpawnPlayer);
-        socket.On(ProcessGameEvent, OnProcessGameEvent);
         socket.On(Ready, OnReady);
         socket.On(SyncWorldRequest, SyncWorldRequested);
         socket.On(SyncWorld, SyncWorldData);
         socket.On(SyncCharacter, OnSyncCharacterData);
+        socket.On(NetworkGameEvent, OnGameEvent);
+        socket.On(Disconnect, OnDisconnect);
+        socket.On(Despawn, OnDespawn);
+        
+        
+        socket.On(RequestDungeonLevel, OnDungeonLevelRequested);
+        socket.On(SyncDungeonFromClient, OnSyncDungeonLevel);
+        socket.On(ServerRecievedDungeonSync, OnRecievedDungeonLevel);
+        socket.On(DungeonSyncComplete, OnDungeonLevelSyncComplete);
+    }
+
+    string GetNetworkIdFromSocketEvent(SocketIOEvent e)
+    {
+        return e.data["NetworkId"].ToString().Trim(new char[] { '\\', '\"' });
+    }
+
+    void OnDisconnect(SocketIOEvent e)
+    {
+        string disconnectedPlayer = GetNetworkIdFromSocketEvent(e);
+        IEntity entity = m_NetworkIdToEntityMap[disconnectedPlayer];
+        Spawner.Despawn(entity);
+        Services.WorldUIService.UnRegisterPlayableCharacter(entity.ID);
+        m_NetworkIdToEntityMap.Remove(disconnectedPlayer);
+        Services.WorldUpdateService.UpdateWorldView();
+    }
+
+    public void DespawnEntity(IEntity deSpawn)
+    {
+        socket.Emit(Despawn, CreateJSONObject(deSpawn.ID));
+    }
+
+    void OnDespawn(SocketIOEvent e)
+    {
+        string id = e.data["ID"].ToString();
+        Spawner.Despawn(Services.EntityMapService.GetEntity(id));
+        Services.WorldUpdateService.UpdateWorldView();
+    }
+
+    //A client has requested level data from the server
+    void OnDungeonLevelRequested(SocketIOEvent e)
+    {
+        if(IsHost)
+        {
+            //The server puts out a request to all clients
+            socket.Emit(SyncDungeonFromClient, e.data);
+        }
+    }
+
+    //For a non-host client to send its dungeon level data to the server
+    void OnSyncDungeonLevel(SocketIOEvent e)
+    {
+        if (!IsHost)
+        {
+            //Services.SaveAndLoadService.Save();
+            string dungeonLevel = e.data["DungeonLevel"].ToString();
+            string levelDataFilePath = $"{Services.SaveAndLoadService.LoadPath}/{dungeonLevel}/data.dat";
+            List<string> levelData = new List<string>();
+            if (File.Exists(levelDataFilePath))
+                levelData.Add(File.ReadAllText(levelDataFilePath));
+            //Send a sync back to the server with the data
+            NetworkDungeonData ndd = new NetworkDungeonData(null, levelData, new List<string>());
+
+            socket.Emit(ServerRecievedDungeonSync, CreateJSONObject(ndd));
+        }
+    }
+
+    int m_RequestsReceived = 0;
+    void OnRecievedDungeonLevel(SocketIOEvent e)
+    {
+        if(IsHost)
+        {
+            var ndd = JsonUtility.FromJson<NetworkDungeonData>(e.data.ToString());
+            Services.SaveAndLoadService.UpdateSaveFromNetwork(ndd);
+            EntityFactory.ReloadTempBlueprints();
+
+            m_RequestsReceived++;
+            if(m_RequestsReceived == m_NetworkIdToEntityMap.Count)
+            {
+                m_RequestsReceived = 0;
+                socket.Emit(DungeonSyncComplete);
+                OnDungeonLevelSyncComplete(null);
+            }
+        }
+    }
+
+    /// <summary>
+    /// For use when trying to load a specifc level
+    /// </summary>
+    /// <param name="level"></param>
+    public void RequestDungeonLevelFromServer(int level)
+    {
+        //Services.SaveAndLoadService.Save();
+        var obj = JSONObject.Create();
+        obj["DungeonLevel"] = JSONObject.Create(level);
+        if(!IsHost)
+            socket.Emit(RequestDungeonLevel, obj);
+        else
+        {
+            if (m_NetworkIdToEntityMap.Count > 0)
+                socket.Emit(SyncDungeonFromClient, obj);
+            else
+                OnDungeonLevelSyncComplete(null);
+        }
+    }
+
+    void OnDungeonLevelSyncComplete(SocketIOEvent e)
+    {
+        //Services.SaveAndLoadService.Save();
+        if (!IsHost)
+        {
+            SyncWorldCompleted += () =>
+            {
+                DungeonLevelSynced?.Invoke();
+                DungeonLevelSynced = null;
+            };
+            SyncWorldWithHost();
+        }
+        else
+        {
+            DungeonLevelSynced?.Invoke();
+            DungeonLevelSynced = null;
+        }
+    }
+
+    void OnGameEvent(SocketIOEvent e)
+    {
+        var dungeonLevel = int.Parse(e.data["DungeonLevel"].ToString());
+        if (dungeonLevel != Services.DungeonService.GetCurrentLevel())
+            return;
+        GameEventSerializable ges = JsonUtility.FromJson<GameEventSerializable>(e.data["Event"].ToString());
+        GameEvent ge = ges.CreateGameEvent();
+
+        if (ge.ID == GameEventId.Despawn)
+        {
+            if (Point.TryParse(ges.TargetEntityId, out Point result))
+            {
+                EntityType eType = (EntityType)Enum.Parse(typeof(EntityType), ge.GetValue<string>(EventParameters.EntityType));
+                ge.Paramters[EventParameters.EntityType] = eType;
+                IEntity source = Services.EntityMapService.GetEntity(ge.GetValue<string>(EventParameters.Entity));
+                Services.FOVService.FoVRecalculated(source, new List<Point>());
+                m_Tiles[result].Despawn(ge);
+            }
+            else
+            {
+                ge.Release();
+                return;
+            }
+        }
+        else
+        {
+            IEntity entity = Services.EntityMapService.GetEntity(ges.TargetEntityId);
+
+            entity.FireEvent(ge);
+            ge.Release();
+        }
+        Services.WorldUpdateService.UpdateWorldView();
     }
 
     void OnSyncCharacterData(SocketIOEvent e)
@@ -72,13 +236,19 @@ public class EntityNetworkManager : GameService
                 networkEntity.RemoveComponent(typeof(RegisterPlayableCharacter));
                 networkEntity.RemoveComponent(typeof(RegisterWithTimeSystem));
                 Services.WorldUIService.RegisterPlayableCharacter(networkEntity.ID);
+                m_NetworkIdToEntityMap.Add(networkEntity.GetComponent<NetworkId>().ID, networkEntity);
             }
 
             networkEntity.CleanupComponents();
             Spawner.Spawn(networkEntity, networkEntity.GetComponent<Position>().PositionPoint);
-
-            networkEntity.FireEvent(GameEventPool.Get(GameEventId.InitFOV)).Release();
+            //networkEntity.FireEvent(GameEventPool.Get(GameEventId.InitFOV)).Release();
+            
             Services.WorldUpdateService.UpdateWorldView();
+            if(networkEntity.GetComponent<NetworkId>().ID == NetworkId)
+            {
+                LocalPlayerSpawned?.Invoke();
+                LocalPlayerSpawned = null;
+            }
         }
     }
 
@@ -86,47 +256,33 @@ public class EntityNetworkManager : GameService
     {
         if (!IsHost)
         {
-            Services.SaveAndLoadService.MoveSaveData(Hash128.Compute(socket.url).ToString());
+            //Services.SaveAndLoadService.MoveSaveData(Hash128.Compute(socket.url).ToString());
 
             var ndd = JsonUtility.FromJson<NetworkDungeonData>(e.data.ToString());
             Services.SaveAndLoadService.UpdateSaveFromNetwork(ndd);
             EntityFactory.ReloadTempBlueprints();
-            Services.SaveAndLoadService.Load(Services.SaveAndLoadService.CurrentSavePath, false);
-
-            List<IEntity> remotePlayers = new List<IEntity>();
-            foreach (var player in m_Players)
-            {
-                if (player.GetComponent<NetworkId>().ID != NetworkId)
-                {
-                    player.RemoveComponent(typeof(InputControllerBase));
-                    player.RemoveComponent(typeof(RegisterPlayableCharacter));
-                    player.RemoveComponent(typeof(RegisterWithTimeSystem));
-                    player.AddComponent(new NetworkController());
-                    player.CleanupComponents();
-                    Services.WorldUIService.RegisterPlayableCharacter(player.ID);
-                    remotePlayers.Add(player);
-                }
-            }
-
-            foreach (var rp in remotePlayers)
-            {
-                m_TimeProgression.RemoveEntity(rp);
-                m_Players.Remove(rp);
-                if (m_ActivePlayer.Value == rp)
-                    m_ActivePlayer = null;
-            }
 
             Services.WorldUpdateService.StopTime = false;
             SyncWorldCompleted?.Invoke();
         }
     }
 
+    public void EmitEvent(GameEventSerializable sge)
+    {
+        var obj = JSONObject.Create();
+
+        obj["DungeonLevel"] = JSONObject.Create(Services.DungeonService.GetCurrentLevel());
+        obj["Event"] = JSONObject.Create(JsonUtility.ToJson(sge));
+
+        socket.Emit(NetworkGameEvent, obj);
+    }
+
     void SyncWorldRequested(SocketIOEvent e)
     {
         if (IsHost)
         {
-            Services.SaveAndLoadService.Save();
             Services.WorldUpdateService.StopTime = true;
+            //Services.SaveAndLoadService.Save();
 
             var newConnectionNDD = JsonUtility.FromJson<NetworkDungeonData>(e.data.ToString());
             foreach (var bp in newConnectionNDD.TempBlueprints)
@@ -162,9 +318,12 @@ public class EntityNetworkManager : GameService
 
     void OnReady(SocketIOEvent e)
     {
-        Debug.Log("Ready called");
-        socket.Emit(EnterWorld, CreateJSONObject(new NetworkIdData()));
-        IsConnected = true;
+        if (!IsConnected)
+        {
+            Debug.Log("Ready called");
+            socket.Emit(EnterWorld, CreateJSONObject(new NetworkIdData()));
+            IsConnected = true;
+        }
     }
 
     void OnSpawnPlayer(SocketIOEvent e)
@@ -177,7 +336,7 @@ public class EntityNetworkManager : GameService
             .Replace("\\n", "\n")
             .Replace("\\r", "\r");
 
-            Services.SaveAndLoadService.Save();
+            //Services.SaveAndLoadService.Save();
 
             var newConnectionNED = JsonUtility.FromJson<NetworkEntityData>(e.data.ToString());
             foreach (var bp in newConnectionNED.Blueprints)
@@ -198,8 +357,6 @@ public class EntityNetworkManager : GameService
             getPosition.Release();
 
             networkEntity.GetComponent<Position>().PositionPoint = p == new Point(0, 0) ? Services.DungeonService.DungeonGenerator.Rooms[0].GetValidPoint() : p;
-
-            //Spawner.Spawn(networkEntity, p == new Point(0, 0) ? Services.DungeonService.DungeonGenerator.Rooms[0].GetValidPoint() : p);
             networkEntity.CleanupComponents();
 
             var serializedData = networkEntity.Serialize();
@@ -233,14 +390,43 @@ public class EntityNetworkManager : GameService
         }
         else
         {
-            SyncWorldWithHost();
             SyncWorldCompleted += SpawnPlayers;
-            
+            SyncWorldWithHost();
         }
+    }
+
+    public void ConvertToNetworkedPlayer(IEntity player)
+    {
+        player.RemoveComponent(typeof(InputControllerBase));
+        player.RemoveComponent(typeof(RegisterPlayableCharacter));
+        player.RemoveComponent(typeof(RegisterWithTimeSystem));
+        player.AddComponent(new NetworkController());
+        player.CleanupComponents();
     }
 
     void SpawnPlayers()
     {
+        Services.SaveAndLoadService.Load(Services.SaveAndLoadService.CurrentSavePath, false);
+
+        List<IEntity> remotePlayers = new List<IEntity>();
+        foreach (var player in m_Players)
+        {
+            if (player.GetComponent<NetworkId>().ID != NetworkId)
+            {
+                ConvertToNetworkedPlayer(player);
+                Services.WorldUIService.RegisterPlayableCharacter(player.ID);
+                remotePlayers.Add(player);
+            }
+        }
+
+        foreach (var rp in remotePlayers)
+        {
+            m_TimeProgression.RemoveEntity(rp);
+            m_Players.Remove(rp);
+            if (m_ActivePlayer.Value == rp)
+                m_ActivePlayer = null;
+        }
+
         foreach (var player in Services.PlayerManagerService.GetPlayerEntitiesToSpawn())
             SpawnPlayer(player);
 
@@ -249,7 +435,9 @@ public class EntityNetworkManager : GameService
 
     public void SpawnPlayer(IEntity e)
     {
-        e.AddComponent(new NetworkId(NetworkId));
+        if(!e.HasComponent(typeof(NetworkId)))
+            e.AddComponent(new NetworkId(NetworkId));
+        
         string data = e.Serialize();
         List<string> bluePrints = new List<string>();
 
@@ -276,17 +464,6 @@ public class EntityNetworkManager : GameService
         }
 
         socket.Emit(SyncWorldRequest, CreateJSONObject(new NetworkDungeonData(null, null, bluePrints)));
-    }
-
-    void OnProcessGameEvent(SocketIOEvent e)
-    {
-        Debug.Log(e.data);
-    }
-
-    public void BroadcastGameEvent(GameEventSerializable serializableGameEvent)
-    {
-        var obj = CreateJSONObject(serializableGameEvent);
-        socket.BroadcastMessage(ProcessGameEvent, obj);
     }
 
     JSONObject CreateJSONObject(object obj)

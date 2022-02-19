@@ -177,4 +177,21 @@ public class Actor : IEntity
         sb.AppendLine(")");
         return sb.ToString();
     }
+
+    public override bool Equals(object obj)
+    {
+        if (obj is IEntity)
+            return (obj as IEntity).ID == ID;
+        return false;
+    }
+
+    public static bool operator ==(Actor lhs, Actor rhs)
+    {
+        return lhs.Equals(rhs);
+    }
+
+    public static bool operator !=(Actor lhs, Actor rhs)
+    {
+        return !lhs.Equals(rhs);
+    }
 }

@@ -18,7 +18,7 @@ public class CameraController : GameService
 
     public void UpdateCamera()
     {
-        if (m_ActivePlayer != null)
-            SetCameraPosition(m_EntityToPointMap[m_ActivePlayer.Value]);
+        if (m_ActivePlayer != null && m_ActivePlayer.Value != null && m_EntityToPointMap.ContainsKey(m_ActivePlayer.Value.ID))
+            SetCameraPosition(m_EntityToPointMap[m_ActivePlayer.Value.ID]);
     }
 }

@@ -73,8 +73,8 @@ public class PlayerManager : GameService
         {
             try
             {
-                Point p = m_EntityToPointMap.ContainsKey(m_ActivePlayer.Value) ? m_EntityToPointMap[m_ActivePlayer.Value] 
-                    : m_EntityToPreviousPointMap[m_ActivePlayer.Value];
+                Point p = m_EntityToPointMap.ContainsKey(m_ActivePlayer.Value.ID) ? m_EntityToPointMap[m_ActivePlayer.Value.ID] 
+                    : m_EntityToPreviousPointMap[m_ActivePlayer.Value.ID];
 
                 Services.CameraService.SetCameraPosition(p);
                 Services.PartyService.MakePartyLeader(m_ActivePlayer.Value);
@@ -193,6 +193,6 @@ public class PlayerManager : GameService
         m_ActivePlayer.Value.CleanupComponents();
         m_TimeProgression.SetActiveEntity(m_ActivePlayer.Value);
 
-        Services.CameraService.SetCameraPosition(m_EntityToPointMap[m_ActivePlayer.Value]);
+        Services.CameraService.SetCameraPosition(m_EntityToPointMap[m_ActivePlayer.Value.ID]);
     }
 }

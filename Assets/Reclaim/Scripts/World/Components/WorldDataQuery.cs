@@ -21,7 +21,7 @@ public class WorldDataQuery : GameService
 
     public Point GetEntityLocation(IEntity entity)
     {
-        if (m_EntityToPointMap.TryGetValue(entity, out Point result))
+        if (m_EntityToPointMap.TryGetValue(entity.ID, out Point result))
             return result;
         return Point.InvalidPoint;
     }
@@ -48,7 +48,7 @@ public class WorldDataQuery : GameService
     public IEntity GetClosestEnemy(IEntity source)
     {
         IEntity closestEnemy = null;
-        Point sourcePoint = m_EntityToPointMap[source];
+        Point sourcePoint = m_EntityToPointMap[source.ID];
         foreach (var tile  in m_Tiles.Values)
         {
             IEntity e = tile.CreatureSlot;
@@ -61,7 +61,7 @@ public class WorldDataQuery : GameService
                     closestEnemy = e;
                 else
                 {
-                    if (Point.Distance(m_EntityToPointMap[e], sourcePoint) < Point.Distance(m_EntityToPointMap[closestEnemy], sourcePoint))
+                    if (Point.Distance(m_EntityToPointMap[e.ID], sourcePoint) < Point.Distance(m_EntityToPointMap[closestEnemy.ID], sourcePoint))
                     {
                         closestEnemy = e;
                     }
@@ -94,6 +94,6 @@ public class WorldDataQuery : GameService
 
     public List<IEntity> GetEntities()
     {
-        return m_EntityToPointMap.Keys.ToList();
+        return m_EntityToPointMap.Keys.Select(e => m_EntityIdToEntityMap[e]).ToList();
     }
 }

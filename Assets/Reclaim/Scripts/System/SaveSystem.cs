@@ -60,8 +60,15 @@ public class GameSaveSystem : GameService
     public void UpdateSaveFromNetwork(NetworkDungeonData data)
     {
         Directory.CreateDirectory(LoadPath);
-        File.WriteAllText(CurrentSavePath, data.SaveFile);
-        for(int i = 0; i < data.LevelDatas.Count; i++)
+
+        if(!string.IsNullOrEmpty(data.SaveFile))
+        {
+            var save = JsonUtility.FromJson<SaveData>(data.SaveFile);
+            RecRandom.InitRecRandom(save.Seed);
+            File.WriteAllText(CurrentSavePath, data.SaveFile);
+        }
+
+        for (int i = 0; i < data.LevelDatas.Count; i++)
         {
             string levelDir =$"{m_LoadPath}/{i + 1}";
             Directory.CreateDirectory(levelDir);
@@ -78,6 +85,9 @@ public class GameSaveSystem : GameService
     public void MoveSaveData(string newPath)
     {
         newPath = $"{kSaveDataPath}/{newPath}";
+        if (LoadPath == newPath)
+            return;
+
         if (Directory.Exists(LoadPath))
         {
             Directory.CreateDirectory(newPath);
@@ -169,7 +179,9 @@ public class GameSaveSystem : GameService
 
     public static void LogEvent(string targetId, GameEvent gameEvent)
     {
-        Debug.LogWarning($"Attempting to log game event {gameEvent.ID} but log event hasn't been implemented");
+        GameEventSerializable ges = new GameEventSerializable(targetId, gameEvent);
+        if(Services.NetworkService.IsConnected)
+            Services.NetworkService.EmitEvent(ges);
     }
 
     public void Load(string path, bool overrideCurrentSaveName = true)
