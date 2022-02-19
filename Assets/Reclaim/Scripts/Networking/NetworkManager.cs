@@ -95,6 +95,8 @@ public class EntityNetworkManager : GameService
     {
         if(IsHost)
         {
+            //if (e.data["DungeonLevel"].ToString() == m_CurrentLevel.ToString())
+            //    Services.SaveAndLoadService.Save();
             //The server puts out a request to all clients
             socket.Emit(SyncDungeonFromClient, e.data);
         }
@@ -103,16 +105,25 @@ public class EntityNetworkManager : GameService
     //For a non-host client to send its dungeon level data to the server
     void OnSyncDungeonLevel(SocketIOEvent e)
     {
+        if(m_ActivePlayer.Value.GetComponent<NetworkId>().ID != NetworkId)
+                Services.SaveAndLoadService.Save();
+
         if (!IsHost)
         {
-            Services.SaveAndLoadService.Save();
             string dungeonLevel = e.data["DungeonLevel"].ToString();
             string levelDataFilePath = $"{Services.SaveAndLoadService.LoadPath}/{dungeonLevel}/data.dat";
             List<string> levelData = new List<string>();
+            List<string> dungeonLevels = new List<string>();
+            List<string> dateTimes = new List<string>();
             if (File.Exists(levelDataFilePath))
+            {
+                dungeonLevels.Add(dungeonLevel);
+                dateTimes.Add(File.GetLastWriteTime(levelDataFilePath).ToString());
                 levelData.Add(File.ReadAllText(levelDataFilePath));
+            }
+
             //Send a sync back to the server with the data
-            NetworkDungeonData ndd = new NetworkDungeonData(null, levelData, new List<string>());
+            NetworkDungeonData ndd = new NetworkDungeonData(null, levelData, dungeonLevels, dateTimes ,new List<string>());
 
             socket.Emit(ServerRecievedDungeonSync, CreateJSONObject(ndd));
         }
@@ -126,12 +137,23 @@ public class EntityNetworkManager : GameService
             var ndd = JsonUtility.FromJson<NetworkDungeonData>(e.data.ToString());
             Services.SaveAndLoadService.UpdateSaveFromNetwork(ndd);
             EntityFactory.ReloadTempBlueprints();
-            Services.SaveAndLoadService.Save();
             m_RequestsReceived++;
             if(m_RequestsReceived == m_NetworkIdToEntityMap.Count)
             {
                 m_RequestsReceived = 0;
-                socket.Emit(DungeonSyncComplete);
+
+                List<string> levelData = new List<string>();
+                List<string> writeTimes = new List<string>();
+                foreach(var dl in ndd.LevelsToUpdate)
+                {
+                    string saveData = $"{Services.SaveAndLoadService.LoadPath}/{dl}/data.dat";
+                    levelData.Add(File.ReadAllText(saveData));
+                    writeTimes.Add(File.GetLastWriteTime(saveData).ToString());
+                }
+
+                NetworkDungeonData newNDD = new NetworkDungeonData(null, levelData, ndd.LevelsToUpdate, writeTimes, ndd.TempBlueprints);
+
+                socket.Emit(DungeonSyncComplete, CreateJSONObject(newNDD));
                 OnDungeonLevelSyncComplete(null);
             }
         }
@@ -150,6 +172,7 @@ public class EntityNetworkManager : GameService
             socket.Emit(RequestDungeonLevel, obj);
         else
         {
+            //Services.SaveAndLoadService.Save();
             if (m_NetworkIdToEntityMap.Count > 0)
                 socket.Emit(SyncDungeonFromClient, obj);
             else
@@ -162,14 +185,11 @@ public class EntityNetworkManager : GameService
         //Services.SaveAndLoadService.Save();
         if (!IsHost)
         {
-            SyncWorldCompleted += () =>
-            {
-                DungeonLevelSynced?.Invoke();
-                DungeonLevelSynced = null;
-            };
-            SyncWorldWithHost();
+            var ndd = JsonUtility.FromJson<NetworkDungeonData>(e.data.ToString());
+            Services.SaveAndLoadService.UpdateSaveFromNetwork(ndd);
         }
-        else
+
+        //else
         {
             DungeonLevelSynced?.Invoke();
             DungeonLevelSynced = null;
@@ -233,7 +253,9 @@ public class EntityNetworkManager : GameService
 
             if (networkEntity.GetComponent<NetworkId>().ID != NetworkId)
             {
-                networkEntity.AddComponent(new NetworkController());
+                if(!networkEntity.HasComponent(typeof(NetworkController)))
+                    networkEntity.AddComponent(new NetworkController());
+                
                 networkEntity.RemoveComponent(typeof(RegisterPlayableCharacter));
                 networkEntity.RemoveComponent(typeof(RegisterWithTimeSystem));
                 Services.WorldUIService.RegisterPlayableCharacter(networkEntity.ID);
@@ -298,12 +320,16 @@ public class EntityNetworkManager : GameService
             string saveFile = File.ReadAllText(Services.SaveAndLoadService.CurrentSavePath);
             List<string> levelDatas = new List<string>();
             List<string> bluePrints = new List<string>();
+            List<string> levelsToUpdate = new List<string>();
+            List<string> dateTimes = new List<string>();
 
             int i = 1;
             while (Directory.Exists($"{savePath}/{i}"))
             {
                 string path = $"{savePath}/{i}/data.dat";
                 levelDatas.Add(File.ReadAllText(path));
+                levelsToUpdate.Add(i.ToString());
+                dateTimes.Add(File.GetLastWriteTime(path).ToString());
                 i++;
             }
 
@@ -313,7 +339,7 @@ public class EntityNetworkManager : GameService
                     bluePrints.Add(File.ReadAllText(bp));
             }
 
-            NetworkDungeonData ndd = new NetworkDungeonData(saveFile, levelDatas, bluePrints);
+            NetworkDungeonData ndd = new NetworkDungeonData(saveFile, levelDatas, levelsToUpdate, dateTimes, bluePrints);
             socket.Emit(SyncWorld, CreateJSONObject(ndd));
             Services.WorldUpdateService.StopTime = false;
         }
@@ -457,17 +483,32 @@ public class EntityNetworkManager : GameService
     public void SyncWorldWithHost()
     {
         Services.WorldUpdateService.StopTime = true;
-
-        List<string> bluePrints = new List<string>();
+        Services.SaveAndLoadService.Save();
 
         string savePath = Services.SaveAndLoadService.LoadPath;
+
+        List<string> bluePrints = new List<string>();
+        List<string> levelDatas = new List<string>();
+        List<string> levelsToUpdate = new List<string>();
+        List<string> dateTimes = new List<string>();
+
+        int i = 1;
+        while (Directory.Exists($"{savePath}/{i}"))
+        {
+            string path = $"{savePath}/{i}/data.dat";
+            levelDatas.Add(File.ReadAllText(path));
+            levelsToUpdate.Add(i.ToString());
+            dateTimes.Add(File.GetLastWriteTime(path).ToString());
+            i++;
+        }
+
         if (Directory.Exists($"{savePath}/Blueprints"))
         {
             foreach (var bp in Directory.EnumerateFiles($"{savePath}/Blueprints"))
                 bluePrints.Add(File.ReadAllText(bp));
         }
 
-        socket.Emit(SyncWorldRequest, CreateJSONObject(new NetworkDungeonData(null, null, bluePrints)));
+        socket.Emit(SyncWorldRequest, CreateJSONObject(new NetworkDungeonData(null, levelDatas, levelsToUpdate, dateTimes, bluePrints)));
     }
 
     JSONObject CreateJSONObject(object obj)

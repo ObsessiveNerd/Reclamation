@@ -67,8 +67,8 @@ io.on('connection', function(socket){
 		socket.broadcast.emit('serverRecievedDungeonSync', data);
 	});
 	
-	socket.on('dungeonSyncComplete', function(){
-		socket.broadcast.emit('dungeonSyncComplete');
+	socket.on('dungeonSyncComplete', function(data){
+		socket.broadcast.emit('dungeonSyncComplete', data);
 	});
 	
 	socket.on('despawn', function(data){

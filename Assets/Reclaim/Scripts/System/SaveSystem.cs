@@ -70,8 +70,17 @@ public class GameSaveSystem : GameService
 
         for (int i = 0; i < data.LevelDatas.Count; i++)
         {
-            string levelDir =$"{m_LoadPath}/{i + 1}";
+            string levelDir =$"{m_LoadPath}/{data.LevelsToUpdate[i]}";
             Directory.CreateDirectory(levelDir);
+            if(File.Exists($"{levelDir}/data.dat"))
+            {
+                var remoteDateModified = DateTime.Parse(data.FileDateModified[i]);
+
+                //Local file is newer, so don't overwrite
+                if (File.GetLastWriteTime($"{levelDir}/data.dat") >= remoteDateModified)
+                    continue;
+            }
+
             File.WriteAllText($"{levelDir}/data.dat", data.LevelDatas[i]);
         }
 

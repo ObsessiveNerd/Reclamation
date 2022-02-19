@@ -109,9 +109,9 @@ public class DungeonManager : GameService
                 m_CurrentLevel--;
                 if(Services.NetworkService.IsConnected)
                 {
-                    Services.WorldUpdateService.StopTime = true;
                     Services.NetworkService.DungeonLevelSynced += () =>
                     {
+                        Services.WorldUpdateService.StopTime = true;
                         LoadOrCreateDungeon();
                         Services.NetworkService.LocalPlayerSpawned += () =>
                         {
