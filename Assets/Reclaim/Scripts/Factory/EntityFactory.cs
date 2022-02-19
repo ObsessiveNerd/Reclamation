@@ -186,7 +186,7 @@ public static class EntityFactory
 
     public static IEntity GetEntity(string blueprintName /*string path, string entityID = ""*/)
     {
-        if(m_Blueprints.Count == 0)
+        if(!s_InitializingBluePrints)
             InitBlueprints();
 
         InitTempBlueprints();

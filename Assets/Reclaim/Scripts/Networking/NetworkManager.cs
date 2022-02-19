@@ -80,14 +80,14 @@ public class EntityNetworkManager : GameService
 
     public void DespawnEntity(IEntity deSpawn)
     {
-        socket.Emit(Despawn, CreateJSONObject(deSpawn.ID));
+        //socket.Emit(Despawn, CreateJSONObject(deSpawn.ID));
     }
 
     void OnDespawn(SocketIOEvent e)
     {
-        string id = e.data["ID"].ToString();
-        Spawner.Despawn(Services.EntityMapService.GetEntity(id));
-        Services.WorldUpdateService.UpdateWorldView();
+        //string id = e.data["ID"].ToString();
+        //Spawner.Despawn(Services.EntityMapService.GetEntity(id));
+        //Services.WorldUpdateService.UpdateWorldView();
     }
 
     //A client has requested level data from the server
@@ -105,7 +105,7 @@ public class EntityNetworkManager : GameService
     {
         if (!IsHost)
         {
-            //Services.SaveAndLoadService.Save();
+            Services.SaveAndLoadService.Save();
             string dungeonLevel = e.data["DungeonLevel"].ToString();
             string levelDataFilePath = $"{Services.SaveAndLoadService.LoadPath}/{dungeonLevel}/data.dat";
             List<string> levelData = new List<string>();
@@ -126,7 +126,7 @@ public class EntityNetworkManager : GameService
             var ndd = JsonUtility.FromJson<NetworkDungeonData>(e.data.ToString());
             Services.SaveAndLoadService.UpdateSaveFromNetwork(ndd);
             EntityFactory.ReloadTempBlueprints();
-
+            Services.SaveAndLoadService.Save();
             m_RequestsReceived++;
             if(m_RequestsReceived == m_NetworkIdToEntityMap.Count)
             {
@@ -203,7 +203,6 @@ public class EntityNetworkManager : GameService
         else
         {
             IEntity entity = Services.EntityMapService.GetEntity(ges.TargetEntityId);
-
             entity.FireEvent(ge);
             ge.Release();
         }
@@ -212,7 +211,6 @@ public class EntityNetworkManager : GameService
 
     void OnSyncCharacterData(SocketIOEvent e)
     {
-        //if(!IsHost)
         {
             string data = e.data["EntityData"].ToString()
             .Trim(new char[] { '\\', '\"' })
@@ -221,6 +219,9 @@ public class EntityNetworkManager : GameService
             .Replace("\\r", "\r");
 
             var newConnectionNDD = JsonUtility.FromJson<NetworkEntityData>(e.data.ToString());
+            if (newConnectionNDD.CurrentLevel != m_CurrentLevel)
+                return;
+
             foreach (var bp in newConnectionNDD.Blueprints)
             {
                 string name = EntityFactory.GetEntityNameFromBlueprintFormatting(bp);
@@ -236,7 +237,9 @@ public class EntityNetworkManager : GameService
                 networkEntity.RemoveComponent(typeof(RegisterPlayableCharacter));
                 networkEntity.RemoveComponent(typeof(RegisterWithTimeSystem));
                 Services.WorldUIService.RegisterPlayableCharacter(networkEntity.ID);
-                m_NetworkIdToEntityMap.Add(networkEntity.GetComponent<NetworkId>().ID, networkEntity);
+
+                if (!m_NetworkIdToEntityMap.ContainsKey(networkEntity.GetComponent<NetworkId>().ID))
+                    m_NetworkIdToEntityMap.Add(networkEntity.GetComponent<NetworkId>().ID, networkEntity);
             }
 
             networkEntity.CleanupComponents();
@@ -282,7 +285,7 @@ public class EntityNetworkManager : GameService
         if (IsHost)
         {
             Services.WorldUpdateService.StopTime = true;
-            //Services.SaveAndLoadService.Save();
+            Services.SaveAndLoadService.Save();
 
             var newConnectionNDD = JsonUtility.FromJson<NetworkDungeonData>(e.data.ToString());
             foreach (var bp in newConnectionNDD.TempBlueprints)
@@ -369,7 +372,7 @@ public class EntityNetworkManager : GameService
             }
             newConnectionNED.Blueprints = newConnectionNED.Blueprints.Distinct().ToList();
 
-            socket.Emit(SyncCharacter, CreateJSONObject(new NetworkEntityData(serializedData, newConnectionNED.Blueprints)));
+            socket.Emit(SyncCharacter, CreateJSONObject(new NetworkEntityData(serializedData, newConnectionNED.Blueprints, newConnectionNED.CurrentLevel)));
 
             Services.WorldUpdateService.StopTime = false;
         }
@@ -447,7 +450,8 @@ public class EntityNetworkManager : GameService
             foreach (var bp in Directory.EnumerateFiles($"{savePath}/Blueprints"))
                 bluePrints.Add(File.ReadAllText(bp));
         }
-        socket.Emit(Spawn, CreateJSONObject(new NetworkEntityData(data, bluePrints)));
+
+        socket.Emit(Spawn, CreateJSONObject(new NetworkEntityData(data, bluePrints, m_CurrentLevel)));
     }
 
     public void SyncWorldWithHost()

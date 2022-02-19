@@ -60,7 +60,7 @@ public abstract class GameService //: Component
             return m_EntityToPreviousPointMap[e.ID];
         }
 
-        Debug.LogError($"Could not find posiiton for {e.InternalName}");
+        //Debug.LogError($"Could not find posiiton for {e.InternalName}");
         return new Point(-1, -1);
     }
 

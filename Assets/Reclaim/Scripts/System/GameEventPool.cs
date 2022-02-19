@@ -18,6 +18,13 @@ public static class GameEventPool
 
     public static List<GameEvent> InUse => m_InUse;
 
+    public static void ReleaseAll()
+    {
+        List<GameEvent> events = new List<GameEvent>(m_InUse);
+        foreach(var e in events)
+            e.Release();
+    }
+
     public static GameEvent Get(string id)
     {
         if (m_Pool.Count > 0)

@@ -27,6 +27,8 @@ public class Move : EntityComponent
                 direction = (MoveDirection)gameEvent.Paramters[EventParameters.InputDirection];
 
             Point startPosition = Services.EntityMapService.GetPointWhereEntityIs(Self);
+            if (startPosition == Point.InvalidPoint)
+                return;
 
             GameEvent beforeMoving = GameEventPool.Get(GameEventId.BeforeMoving)
                 .With(EventParameters.Entity, Self.ID)

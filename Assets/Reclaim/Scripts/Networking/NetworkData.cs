@@ -6,11 +6,13 @@ public struct NetworkEntityData
 {
     public string EntityData;
     public List<string> Blueprints;
+    public int CurrentLevel;
 
-    public NetworkEntityData(string entityData, List<string> blueprints)
+    public NetworkEntityData(string entityData, List<string> blueprints, int currentLevel)
     {
         EntityData = entityData;
         Blueprints = blueprints;
+        CurrentLevel = currentLevel;
     }
 }
 

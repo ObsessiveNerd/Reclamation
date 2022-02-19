@@ -253,7 +253,10 @@ public class DungeonManager : GameService
                         if (Services.NetworkService.IsConnected)
                         {
                             if (entity.HasComponent(typeof(PlayerInputController)))
+                            { 
                                 Services.NetworkService.ConvertToNetworkedPlayer(entity);
+                                Services.WorldUIService.RegisterPlayableCharacter(entity.ID);
+                            }
                         }
                          
                         Spawner.Spawn(entity, p);
