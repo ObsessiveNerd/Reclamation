@@ -47,9 +47,12 @@ public class EntityNetworkManager : GameService
 
     public EntityNetworkManager(SocketIOComponent sock)
     {
-        socket = sock;
-        socket.SetupSocket();
-        OnConnect();
+        if (sock != null)
+        {
+            socket = sock;
+            socket.SetupSocket();
+            OnConnect();
+        }
     }
 
     void OnConnect()

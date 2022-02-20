@@ -443,7 +443,10 @@ public class BasicDungeonGenerator : IDungeonGenerator
 
         using (new DiagnosticsTimer("spawning"))
         {
-            //SpawnEnemies();
+            //TODO: this will eventually need to work
+            if(!Services.NetworkService.IsConnected)
+                SpawnEnemies();
+            
             SpawnItems();
             SpawnStairs();
         }

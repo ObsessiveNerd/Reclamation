@@ -24,30 +24,32 @@ public class World : MonoBehaviour
 
     private void Start()
     {
-//#if UNITY_EDITOR
+#if UNITY_EDITOR
         if (!Services.Ready)
         {
             string loadpath = $"{GameSaveSystem.kSaveDataPath}/{Guid.NewGuid().ToString()}";
-            StartWorld(loadpath);
             switch (InitMode)
             {
                 case DungeonInitMode.CreateNew:
+                    StartWorld(loadpath, false);
                     Services.DungeonService.GenerateDungeon(true, loadpath);
                     break;
 
                 case DungeonInitMode.LoadCurrentIfExists:
+                    StartWorld(loadpath, false);
+
                     bool value = Directory.Exists(loadpath);
                     Services.DungeonService.GenerateDungeon(!value, loadpath);
                     break;
                 case DungeonInitMode.NetworkedGame:
-                    //Services.NetworkService.
+                    StartWorld(loadpath, true);
                     break;
             }
         }
-//#endif
+#endif
     }
 
-    public void StartWorld(string loadPath = "")
+    public void StartWorld(string loadPath, bool networkedGame)
     {
         if (Services.Ready)
         {
@@ -77,7 +79,9 @@ public class World : MonoBehaviour
         DependencyInjection.Register(new StateManager());
         DependencyInjection.Register(new PartyController());
         DependencyInjection.Register(new MusicService());
-        DependencyInjection.Register(new EntityNetworkManager(FindObjectOfType<SocketIOComponent>()));
+
+        var socket = FindObjectOfType<SocketIOComponent>();
+        DependencyInjection.Register(new EntityNetworkManager(socket));
 
         Services.Complete();
     }

@@ -14,17 +14,6 @@ public class GameEndMono : MonoBehaviour
         EndState.SetActive(true);
     }
 
-    public void RestartNewGame()
-    {
-        string cachedSaveName = Services.SaveAndLoadService.CurrentSaveName;
-        Services.SaveAndLoadService.CleanCurrentSave();
-        SceneManager.LoadSceneAsync("Dungeon").completed += (scene) =>
-                {
-                    FindObjectOfType<World>().StartWorld(cachedSaveName);
-                    Services.DungeonService.GenerateDungeon(true, cachedSaveName);
-                };
-    }
-
     public void MainMenu()
     {
         SceneManager.LoadScene("Title");

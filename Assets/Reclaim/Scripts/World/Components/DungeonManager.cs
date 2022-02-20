@@ -75,6 +75,18 @@ public class DungeonManager : GameService
         {
             using (new DiagnosticsTimer("Start World"))
                 GenerateDungeon(1, true);
+
+            if (!Services.NetworkService.IsConnected)
+            {
+                foreach (var player in Services.PlayerManagerService.GetPlayerEntitiesToSpawn())
+                {
+                    Services.PlayerManagerService.ConvertToPlayableEntity(player);
+                    Spawner.Spawn(player, Services.DungeonService.DungeonGenerator.Rooms[0].GetValidPoint(null));
+                    player.CleanupComponents();
+
+                    player.FireEvent(GameEventPool.Get(GameEventId.InitFOV)).Release();
+                }
+            }
             using (new DiagnosticsTimer("Update world view"))
                 Services.WorldUpdateService.UpdateWorldView();
         }
@@ -96,6 +108,7 @@ public class DungeonManager : GameService
         LoadOrCreateDungeon();
 
         Services.SaveAndLoadService.Save();
+        Services.CameraService.UpdateCamera();
         m_TimeProgression.Resume();
     }
 
@@ -201,7 +214,6 @@ public class DungeonManager : GameService
             m_PlayerBlueprintCache.Add(player.ID);
             Services.FOVService.UnRegisterPlayer(player);
             Spawner.Despawn(player);
-            Services.NetworkService.DespawnEntity(player);
         }
     }
 

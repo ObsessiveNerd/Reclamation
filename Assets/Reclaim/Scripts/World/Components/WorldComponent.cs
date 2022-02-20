@@ -72,7 +72,7 @@ public abstract class GameService //: Component
         var tempMap = new Dictionary<string, Point>(m_EntityToPointMap);
         foreach(var e in tempMap.Keys)
         {
-            if (!Services.EntityMapService.GetEntity(e).HasComponent(typeof(Tile)))
+            if (Services.EntityMapService.GetEntity(e) != null && !Services.EntityMapService.GetEntity(e).HasComponent(typeof(Tile)))
                 m_EntityToPointMap.Remove(e);
         }
 

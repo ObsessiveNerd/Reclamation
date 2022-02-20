@@ -103,7 +103,7 @@ public class PlayerManager : GameService
         {
             string charactersPath = GameSaveSystem.kSaveDataPath + "/" + Services.SaveAndLoadService.CurrentSaveName + "/Blueprints/Characters";
 //#if UNITY_EDITOR
-            if (!Directory.Exists(charactersPath))
+            if (!Directory.Exists(charactersPath) && m_Players.Count == 0)
             {
                 for (int i = 0; i < 1; i++)
                 {
@@ -134,7 +134,7 @@ public class PlayerManager : GameService
             }
             return result;
         }
-        
+
         //{
         //    foreach (var player in m_Players)
         //        FireEvent(player, GameEventPool.Get(GameEventId.InitFOV)).Release();
