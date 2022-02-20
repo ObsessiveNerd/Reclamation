@@ -8,6 +8,7 @@
 	BlocksNonHostileMovement
 	CombatRating
 	Wander
+	Weighted:Weight=500.0
 	Fear
 	Aggression
 	InteractsWithWorld

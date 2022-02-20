@@ -38,6 +38,8 @@ public class EquipmentSlot : EntityComponent
         if (entity == null)
         {
             entity = EntityFactory.CreateEntity(EquipmentId);
+            if (entity == null)
+                Debug.LogError(EquipmentId);
             Services.EntityMapService.AddEntity(entity);
 
             //GameEvent register = GameEventPool.Get(GameEventId.RegisterEntity)
@@ -113,7 +115,7 @@ public class EquipmentSlot : EntityComponent
             EquipmentId = (string)gameEvent.Paramters[EventParameters.Equipment];
 
             GameEvent playOnEquipSound = GameEventPool.Get(GameEventId.Playsound)
-                                        .With(EventParameters.SoundSource, Self)
+                                        .With(EventParameters.SoundSource, Self.ID)
                                         .With(EventParameters.Key, SoundKey.Activate);
             entity.FireEvent(playOnEquipSound).Release();
         }

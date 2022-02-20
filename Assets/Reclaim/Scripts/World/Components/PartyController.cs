@@ -78,7 +78,9 @@ public class PartyController : GameService
     public void MakePartyLeader(IEntity entity)
     {
         GameEvent getFaction = GameEventPool.Get(GameEventId.GetFaction).With(EventParameters.Value, null);
-        FactionId factionId = FireEvent(entity, getFaction).GetValue<Faction>(EventParameters.Value).ID;
+        FireEvent(entity, getFaction);
+        Faction f = getFaction.GetValue<Faction>(EventParameters.Value);
+        FactionId factionId = f.ID;
         getFaction.Release();
 
         if (!m_FactionParties.ContainsKey(factionId))

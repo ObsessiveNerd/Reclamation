@@ -18,8 +18,8 @@ public class WorldSpawner : GameService
         FireEvent(entity, GameEventPool.Get(GameEventId.SetPoint).With(EventParameters.TilePosition, spawnPoint)).Release();
         m_Tiles[spawnPoint].Spawn(entity);
 
+        m_EntityToPointMap[entity.ID] = spawnPoint;
         Services.WorldUpdateService.UpdateWorldView();
-        m_EntityToPointMap[entity] = spawnPoint;
 
         //Todo: we'll need to make sure we find which player is closest before picking their time system
         FireEvent(entity, GameEventPool.Get(GameEventId.RegisterPlayableCharacter)).Release();
@@ -35,16 +35,20 @@ public class WorldSpawner : GameService
         EntityType entityType = entity.FireEvent(getType).GetValue<EntityType>(EventParameters.EntityType);
         getType.Release();
 
-        if (!m_EntityToPointMap.ContainsKey(entity))
+        if (!m_EntityToPointMap.ContainsKey(entity.ID))
             return;
 
-        Point currentPoint = m_EntityToPointMap[entity];
+        Point currentPoint = m_EntityToPointMap[entity.ID];
         GameEvent despawn = GameEventPool.Get(GameEventId.Despawn).With(EventParameters.Entity, entity.ID)
                                                                .With(EventParameters.EntityType, entityType);
 
         m_Tiles[currentPoint].Despawn(despawn);
-        m_EntityToPointMap.Remove(entity);
-        m_EntityToPreviousPointMap[entity] = currentPoint;
+
+        if (Services.NetworkService.IsConnected)
+            Services.NetworkService.EmitEvent(new GameEventSerializable(currentPoint.ToString(), despawn));
+
+        m_EntityToPointMap.Remove(entity.ID);
+        m_EntityToPreviousPointMap[entity.ID] = currentPoint;
         m_TimeProgression.RemoveEntity(entity);
         despawn.Release();
     }

@@ -66,7 +66,7 @@ public class RangedPlayerAttackController : InputControllerBase
                 GameEvent getAmmo = GameEventPool.Get(GameEventId.GetAmmo)
                     .With(EventParameters.Value, null);
 
-                IEntity attack = FireEvent(m_Attack, getAmmo).GetValue<IEntity>(EventParameters.Value);
+                IEntity attack = EntityQuery.GetEntity(FireEvent(m_Attack, getAmmo).GetValue<string>(EventParameters.Value));
 
                 CombatUtility.Attack(Self, target, attack, AttackType.Ranged);
 

@@ -20,7 +20,7 @@ public class Bow : EntityComponent
     public override void HandleEvent(GameEvent gameEvent)
     {
         if (gameEvent.ID == GameEventId.GetAmmo)
-            gameEvent.Paramters[EventParameters.Value] = EntityFactory.CreateEntity(ArrowEntityName);
+            gameEvent.Paramters[EventParameters.Value] = EntityFactory.CreateEntity(ArrowEntityName).ID;
     }
 }
 

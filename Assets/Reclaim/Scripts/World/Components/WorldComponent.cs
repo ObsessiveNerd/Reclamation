@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public abstract class GameService //: Component
@@ -11,8 +12,8 @@ public abstract class GameService //: Component
     protected static int m_Seed;
     protected static List<Tile> m_ChangedTiles = new List<Tile>();
 
-    protected static Dictionary<IEntity, Point> m_EntityToPointMap = new Dictionary<IEntity, Point>();
-    protected static Dictionary<IEntity, Point> m_EntityToPreviousPointMap = new Dictionary<IEntity, Point>();
+    protected static Dictionary<string, Point> m_EntityToPointMap = new Dictionary<string, Point>();
+    protected static Dictionary<string, Point> m_EntityToPreviousPointMap = new Dictionary<string, Point>();
     protected static LinkedList<IEntity> m_Players = new LinkedList<IEntity>();
     protected static LinkedListNode<IEntity> m_ActivePlayer;
     protected static HashSet<Point> m_ValidDungeonPoints = new HashSet<Point>();
@@ -50,12 +51,16 @@ public abstract class GameService //: Component
 
     public Point GetPointWhereEntityIs(IEntity e)
     {
-        if (m_EntityToPointMap.ContainsKey(e))
-            return m_EntityToPointMap[e];
-        if (m_EntityToPreviousPointMap.ContainsKey(e))
-            return m_EntityToPreviousPointMap[e];
+        if (m_EntityToPointMap.ContainsKey(e.ID))
+        {
+            return m_EntityToPointMap[e.ID];
+        }
+        if (m_EntityToPreviousPointMap.ContainsKey(e.ID))
+        {
+            return m_EntityToPreviousPointMap[e.ID];
+        }
 
-        Debug.LogError($"Could not find posiiton for {e.InternalName}");
+        //Debug.LogError($"Could not find posiiton for {e.InternalName}");
         return new Point(-1, -1);
     }
 
@@ -63,7 +68,15 @@ public abstract class GameService //: Component
     {
         m_TimeProgression = new TimeProgression();
         m_Tiles.Clear();
-        m_EntityToPointMap.Clear();
+
+        var tempMap = new Dictionary<string, Point>(m_EntityToPointMap);
+        foreach(var e in tempMap.Keys)
+        {
+            if (Services.EntityMapService.GetEntity(e) != null && !Services.EntityMapService.GetEntity(e).HasComponent(typeof(Tile)))
+                m_EntityToPointMap.Remove(e);
+        }
+
+        m_EntityToPreviousPointMap.Clear();
         m_Players.Clear();
         m_ActivePlayer = null;
         m_ValidDungeonPoints.Clear();

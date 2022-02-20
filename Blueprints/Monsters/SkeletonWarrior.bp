@@ -8,6 +8,7 @@
 	InteractOnTileOvertake
 	Position:PositionPoint=
 	Aggression
+	Weighted:Weight=500.0
 	Fear
 	Wander
 	CombatRating

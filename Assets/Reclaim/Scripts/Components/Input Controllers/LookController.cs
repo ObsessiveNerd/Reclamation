@@ -41,7 +41,10 @@ public class LookController : InputControllerBase
 
                 string info = Services.TileInteractionService.ShowTileInfo(m_TileSelection);
                 m_PopupInstance.GetComponent<InfoMono>().SetData(WorldUtility.GetEntityAtPosition(m_TileSelection).Name, info);
-                m_PopupInstance.GetComponent<InfoMono>().SourcePos = Camera.main.WorldToScreenPoint(WorldUtility.GetGameObject(WorldUtility.GetEntityAtPosition(m_TileSelection)).transform.position);
+
+                var entity = WorldUtility.GetEntityAtPosition(m_TileSelection);
+                var go = WorldUtility.GetGameObject(entity);
+                m_PopupInstance.GetComponent<InfoMono>().SourcePos = Camera.main.WorldToScreenPoint(go.transform.position);
                 Services.WorldUpdateService.UpdateWorldView();
             }
 

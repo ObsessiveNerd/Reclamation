@@ -9,7 +9,8 @@ public enum AttackType
     Melee,
     Ranged,
     RangedSpell,
-    Finesse
+    Finesse,
+    MagicalContainer
     
 }
 

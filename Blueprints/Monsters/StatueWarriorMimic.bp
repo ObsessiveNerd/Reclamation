@@ -6,6 +6,7 @@
 	AIFOVHandler
 	InteractsWithWorld
 	InteractOnTileOvertake
+	Weighted:Weight=100.0
 	Position:PositionPoint=
 	Aggression
 	CombatRating

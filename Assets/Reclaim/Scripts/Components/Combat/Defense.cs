@@ -33,9 +33,9 @@ public class Defense : EntityComponent
                 else
                 {
                     GameEvent playSound = GameEventPool.Get(GameEventId.Playsound)
-                                            .With(EventParameters.SoundSource, Self)
+                                            .With(EventParameters.SoundSource, Self.ID)
                                             .With(EventParameters.Key, SoundKey.AttackMiss);
-                    gameEvent.GetValue<IEntity>(EventParameters.Attack).FireEvent(playSound);
+                    EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameters.Attack)).FireEvent(playSound);
                     playSound.Release();
 
                     RecLog.Log($"Attack missed because armor was {kBaseAC + armorBonus}!");
@@ -44,7 +44,7 @@ public class Defense : EntityComponent
             }
             else
             {
-                IEntity weapon = gameEvent.GetValue<IEntity>(EventParameters.Attack);
+                IEntity weapon = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameters.Attack));
                 IEntity damageSource = Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameters.DamageSource));
                 GameEvent getSpellSaveDC = GameEventPool.Get(GameEventId.GetSpellSaveDC)
                     .With(EventParameters.SpellType, CombatUtility.GetSpellType(weapon))

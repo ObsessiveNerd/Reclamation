@@ -12,6 +12,12 @@ public class EntityMap : GameService
         AddEntityToNameMap(e);
     }
 
+    public void UpdateEntity(IEntity e)
+    {
+        if (m_EntityIdToEntityMap.ContainsKey(e.ID))
+            m_EntityIdToEntityMap[e.ID] = e;
+    }
+
     public void AddEntityToNameMap(IEntity e)
     {
         IDToNameMap[e.ID] = e.Name;

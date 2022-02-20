@@ -28,7 +28,8 @@ public class WorldUpdate : GameService
             {
                 foreach (var ge in GameEventPool.InUse)
                     Debug.LogWarning($"{ge.ID} is still in use after frame end.  It will be released.");
-
+                
+                GameEventPool.ReleaseAll();
             }
         }
     }

@@ -5106,6 +5106,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6241948252624630896, guid: 111d7f65e2b1f5f468dafe018551f1fd,
         type: 3}
+      propertyPath: InitMode
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6241948252624630896, guid: 111d7f65e2b1f5f468dafe018551f1fd,
+        type: 3}
       propertyPath: MapColumns
       value: 15
       objectReference: {fileID: 0}

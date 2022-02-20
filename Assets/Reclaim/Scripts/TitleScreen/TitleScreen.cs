@@ -1,6 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using SocketIO;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -13,8 +15,23 @@ public class TitleScreen : EscapeableMono
     public GameObject Content;
     public GameObject GetNewSaveName;
     public GameObject Error;
+    public GameObject IpAddress;
 
-    protected override void OnEnable() { }
+    Action<string> OnNewGame;
+
+    protected override void OnEnable() 
+    {
+        OnNewGame = BaseOnNewGame;
+    }
+
+    void BaseOnNewGame(string val)
+    {
+        UIManager.ForcePop(this);
+        SceneManager.LoadSceneAsync("CharacterCreation").completed += (scene) =>
+            {
+                FindObjectOfType<World>().StartWorld($"{GameSaveSystem.kSaveDataPath}/{val}", false);
+            };
+    }
 
     public void StartNewGame()
     {
@@ -31,11 +48,7 @@ public class TitleScreen : EscapeableMono
             }
             else
             {
-                UIManager.ForcePop(this);
-                SceneManager.LoadSceneAsync("CharacterCreation").completed += (scene) =>
-                {
-                    FindObjectOfType<World>().StartWorld($"{GameSaveSystem.kSaveDataPath}/{val}");
-                };
+                OnNewGame?.Invoke(val);   
             }
         });
     }
@@ -56,7 +69,7 @@ public class TitleScreen : EscapeableMono
                             UIManager.ForcePop(this);
                             SceneManager.LoadSceneAsync("Reclaim/Scenes/Dungeon").completed += (scene) =>
                               {
-                                  FindObjectOfType<World>().StartWorld(directory);
+                                  FindObjectOfType<World>().StartWorld(directory, false);
                                   Services.DungeonService.GenerateDungeon(false, directory);
                               };
                         }), null, () => Destroy(contextMenu.gameObject));
@@ -71,6 +84,45 @@ public class TitleScreen : EscapeableMono
         LoadGames.SetActive(true);
     }
 
+    public void Multiplayer()
+    {
+        var contextMenu = ContextMenuMono.CreateNewContextMenu().GetComponent<ContextMenuMono>();
+        contextMenu.AddButton(new ContextMenuButton("Host", () =>
+                {
+                    OnNewGame = (val) =>
+                    {
+                        UIManager.ForcePop(this);
+                        //TODO, we need to make CC save characters that you can pick
+                        SceneManager.LoadSceneAsync("Dungeon").completed += (scene) =>
+                            {
+                                Instantiate(Resources.Load<GameObject>("Prefabs/NetworkManager"));
+                                //FindObjectOfType<SocketIOComponent>().url = $"ws://{val}/socket.io/?EIO=4&transport=websocket";
+                                FindObjectOfType<World>().StartWorld($"{GameSaveSystem.kSaveDataPath}/{val}", true);
+                            };
+                    };
+                    StartNewGame();
+                }), null, () => Destroy(contextMenu.gameObject));
+
+        contextMenu.AddButton(new ContextMenuButton("Join", () =>
+        {
+            IpAddress.SetActive(true);
+            IpAddress.GetComponent<TMP_InputField>().onEndEdit.AddListener((val) =>
+            {
+                if (!val.Contains(":"))
+                    return;
+
+                UIManager.ForcePop(this);
+                //TODO, we need to make CC save characters that you can pick
+                SceneManager.LoadSceneAsync("Dungeon").completed += (scene) =>
+                    {
+                        Instantiate(Resources.Load<GameObject>("Prefabs/NetworkManager"));
+                        FindObjectOfType<SocketIOComponent>().url = $"ws://{val}/socket.io/?EIO=4&transport=websocket";
+                        FindObjectOfType<World>().StartWorld($"{GameSaveSystem.kSaveDataPath}/{Hash128.Compute(val)}", true);
+                    };
+            });
+        }), null, () => Destroy(contextMenu.gameObject));
+    }
+
     public void Exit()
     {
         Application.Quit();
@@ -83,6 +135,7 @@ public class TitleScreen : EscapeableMono
         GetNewSaveName?.SetActive(false);
         Error?.SetActive(false);
         LoadGames?.SetActive(false);
+        IpAddress?.SetActive(false);
         if (Content?.transform.childCount > 0)
         {
             foreach (var tran in Content.transform.GetComponentsInChildren<Transform>())
@@ -92,6 +145,9 @@ public class TitleScreen : EscapeableMono
                 Destroy(tran.gameObject);
             }
         }
+        GetNewSaveName.GetComponent<TMP_InputField>().onEndEdit.RemoveAllListeners();
+        IpAddress.GetComponent<TMP_InputField>().onEndEdit.RemoveAllListeners();
+        OnNewGame = BaseOnNewGame;
     }
 
     public override bool? AlternativeEscapeKeyPressed

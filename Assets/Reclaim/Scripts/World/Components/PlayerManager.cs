@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using UnityEngine;
 
@@ -72,8 +73,8 @@ public class PlayerManager : GameService
         {
             try
             {
-                Point p = m_EntityToPointMap.ContainsKey(m_ActivePlayer.Value) ? m_EntityToPointMap[m_ActivePlayer.Value] 
-                    : m_EntityToPreviousPointMap[m_ActivePlayer.Value];
+                Point p = m_EntityToPointMap.ContainsKey(m_ActivePlayer.Value.ID) ? m_EntityToPointMap[m_ActivePlayer.Value.ID] 
+                    : m_EntityToPreviousPointMap[m_ActivePlayer.Value.ID];
 
                 Services.CameraService.SetCameraPosition(p);
                 Services.PartyService.MakePartyLeader(m_ActivePlayer.Value);
@@ -94,6 +95,51 @@ public class PlayerManager : GameService
             m_TimeProgression.Stop();
             Services.StateManagerService.GameOver(false);
         }
+    }
+
+    public List<IEntity> GetPlayerEntitiesToSpawn()
+    {
+        List<IEntity> result = new List<IEntity>();
+        {
+            string charactersPath = GameSaveSystem.kSaveDataPath + "/" + Services.SaveAndLoadService.CurrentSaveName + "/Blueprints/Characters";
+//#if UNITY_EDITOR
+            if (!Directory.Exists(charactersPath) && m_Players.Count == 0)
+            {
+                for (int i = 0; i < 1; i++)
+                {
+                    IEntity player = EntityFactory.CreateEntity("DwarfWarrior");
+                    result.Add(player);
+                    //Spawner.Spawn(player, DungeonGenerator.Rooms[0].GetValidPoint(null));
+                    //player.CleanupComponents();
+                    //FireEvent(player, GameEventPool.Get(GameEventId.InitFOV)).Release();
+                }
+            }
+
+            else
+//#endif
+            {
+                foreach (var bp in Directory.EnumerateFiles(charactersPath, "*.bp"))
+                {
+                    IEntity player = EntityFactory.CreateEntity(Path.GetFileNameWithoutExtension(bp));
+                    result.Add(player);
+
+                    //Services.PlayerManagerService.ConvertToPlayableEntity(player);
+                    //Spawner.Spawn(player, Services.DungeonService.DungeonGenerator.Rooms[0].GetValidPoint(null));
+
+                    //player.CleanupComponents();
+
+                    //FireEvent(player, GameEventPool.Get(GameEventId.InitFOV)).Release();
+                }
+                Directory.Delete(charactersPath, true);
+            }
+            return result;
+        }
+
+        //{
+        //    foreach (var player in m_Players)
+        //        FireEvent(player, GameEventPool.Get(GameEventId.InitFOV)).Release();
+        //    Services.CameraService.UpdateCamera();
+        //}
     }
 
     public void ConvertToPlayableEntity(IEntity entity)
@@ -147,6 +193,6 @@ public class PlayerManager : GameService
         m_ActivePlayer.Value.CleanupComponents();
         m_TimeProgression.SetActiveEntity(m_ActivePlayer.Value);
 
-        Services.CameraService.SetCameraPosition(m_EntityToPointMap[m_ActivePlayer.Value]);
+        Services.CameraService.SetCameraPosition(m_EntityToPointMap[m_ActivePlayer.Value.ID]);
     }
 }

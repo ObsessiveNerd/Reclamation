@@ -25,7 +25,7 @@ public class FullBuild
         BuildPipeline.BuildPlayer(new BuildPlayerOptions()
         {
             locationPathName = finalBuildPath + "Relamation.exe",
-            scenes = EditorBuildSettings.scenes.Select(s => s.path).ToArray(),
+            scenes = EditorBuildSettings.scenes.Where(s => s.enabled).Select(s => s.path).ToArray(),
             target = EditorUserBuildSettings.activeBuildTarget,
             targetGroup = EditorUserBuildSettings.selectedBuildTargetGroup,
             options = BuildOptions.AutoRunPlayer
@@ -53,7 +53,7 @@ public class FullBuild
         BuildPipeline.BuildPlayer(new BuildPlayerOptions()
         {
             locationPathName = finalBuildPath + "Relamation.exe",
-            scenes = EditorBuildSettings.scenes.Select(s => s.path).ToArray(),
+            scenes = EditorBuildSettings.scenes.Where(s => s.enabled).Select(s => s.path).ToArray(),
             target = EditorUserBuildSettings.activeBuildTarget,
             targetGroup = EditorUserBuildSettings.selectedBuildTargetGroup,
             options = BuildOptions.AutoRunPlayer | BuildOptions.Development

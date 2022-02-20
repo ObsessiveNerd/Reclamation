@@ -20,6 +20,13 @@ public class Room
 
     private HashSet<Point> m_MyWalls = new HashSet<Point>();
 
+    //public static void CleanStaticData()
+    //{
+    //    m_Walls.Clear();
+    //    m_RoomTiles.Clear();
+    //    m_RoomTiles.Clear();
+    //    m_Doors.Clear();
+    //}
 
     void AddWallPoint(Point p)
     {
@@ -265,6 +272,9 @@ public class Room
                 case SpawnRestrictionTags.AgainstWall:
 
                     var tempList = m_MyWalls; //.Except(m_Hallways).ToList();
+                    if (tempList.Count == 0)
+                        return Point.InvalidPoint;
+
                     int randomWallIndex = RecRandom.Instance.GetRandomValue(0, tempList.Count - 1);
                     Point wall = tempList.ToArray()[randomWallIndex];
                     Point center = GetMiddleOfTheRoom();
@@ -413,7 +423,7 @@ public class BasicDungeonGenerator : IDungeonGenerator
     public virtual DungeonGenerationResult GenerateDungeon(DungeonMetaData metaData)
     {
         m_Result = new DungeonGenerationResult();
-
+        
         m_DMD = metaData;
         SplitPartition(m_Root);
 
@@ -433,7 +443,10 @@ public class BasicDungeonGenerator : IDungeonGenerator
 
         using (new DiagnosticsTimer("spawning"))
         {
-            SpawnEnemies();
+            //TODO: this will eventually need to work
+            if(!Services.NetworkService.IsConnected)
+                SpawnEnemies();
+            
             SpawnItems();
             SpawnStairs();
         }
@@ -535,6 +548,7 @@ public class BasicDungeonGenerator : IDungeonGenerator
     public void Clean()
     {
         Rooms.Clear();
+        //Room.CleanStaticData();
         m_LeafNodes.Clear();
     }
 

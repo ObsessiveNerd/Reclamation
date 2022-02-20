@@ -9,6 +9,7 @@
 	Faction:ID=Goblins
 	Aggression
 	Inventory:InventoryItems=
+	Weighted:Weight=500.0
 	RegisterWithTimeSystem
 	EntityTypeContainer:Type=Creature
 	Stats:Str=10,Agi=12,Con=10,Wis=9,Int=7,Cha=8,PrimaryStatType=Str,AttributePoints=0

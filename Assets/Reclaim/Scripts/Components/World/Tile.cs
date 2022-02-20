@@ -37,6 +37,29 @@ public struct Point
         m_y = _y;
     }
 
+    public static Point Parse(string point)
+    {
+        var x = point.Split(',')[0];
+        var y = point.Split(',')[1];
+
+        return new Point(int.Parse(x), int.Parse(y));
+    }
+
+    public static bool TryParse(string point, out Point result)
+    {
+        try
+        {
+            Point p = Parse(point);
+            result = p;
+            return true;
+        }
+        catch(Exception e)
+        {
+            result = Point.InvalidPoint;
+            return false;
+        }
+    }
+
     public static Point operator+(Point lhs, Point rhs)
     {
         return new Point(lhs.x + rhs.x, lhs.y + rhs.y);
@@ -260,7 +283,7 @@ public class Tile : EntityComponent
     public void Despawn(GameEvent gameEvent)
     {
         IEntity entity = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Entity]);
-        EntityType entityType = (EntityType)gameEvent.Paramters[EventParameters.EntityType];
+        EntityType entityType = gameEvent.GetValue<EntityType>(EventParameters.EntityType);
         switch (entityType)
         {
             case EntityType.Creature:

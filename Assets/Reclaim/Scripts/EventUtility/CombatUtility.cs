@@ -83,7 +83,7 @@ public static class CombatUtility
             GameEvent getAmmo = GameEventPool.Get(GameEventId.GetAmmo)
                     .With(EventParameters.Value, null);
 
-            IEntity ammo = weapon.FireEvent(getAmmo).GetValue<IEntity>(EventParameters.Value);
+            IEntity ammo = EntityQuery.GetEntity(weapon.FireEvent(getAmmo).GetValue<string>(EventParameters.Value));
             if (ammo != null)
                 weapon = ammo;
             getAmmo.Release();
@@ -131,7 +131,7 @@ public static class CombatUtility
 
         GameEvent attack = GameEventPool.Get(GameEventId.TakeDamage)
                 .With(checkWeaponAttack.Paramters)
-                .With(EventParameters.Attack, weapon)
+                .With(EventParameters.Attack, weapon.ID)
                 .With(EventParameters.WeaponType, attackType)
                 .With(EventParameters.RollToHit, rollToHit)
                 .With(EventParameters.Crit, rollToHitEvent.Paramters[EventParameters.Crit]);
@@ -155,7 +155,7 @@ public static class CombatUtility
             weapon.FireEvent(fireRangedWeapon).Release();
 
             GameEvent playSound = GameEventPool.Get(GameEventId.Playsound)
-                                    .With(EventParameters.SoundSource, source)
+                                    .With(EventParameters.SoundSource, source.ID)
                                     .With(EventParameters.Key, SoundKey.RangedAttack);
             weapon.FireEvent(playSound).Release();
         }
@@ -175,12 +175,12 @@ public static class CombatUtility
         weapon.FireEvent(amAttacking);
 
         GameEvent castSpell = GameEventPool.Get(GameEventId.TakeDamage)
-            .With(EventParameters.Attack, weapon)
+            .With(EventParameters.Attack, weapon.ID)
             .With(EventParameters.DamageSource, source.ID)
             .With(amAttacking.Paramters);
 
         GameEvent playSound = GameEventPool.Get(GameEventId.Playsound)
-                                .With(EventParameters.SoundSource, source)
+                                .With(EventParameters.SoundSource, source.ID)
                                 .With(EventParameters.Key, SoundKey.Cast);
         weapon.FireEvent(playSound).Release();
 

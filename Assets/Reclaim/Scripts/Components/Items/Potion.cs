@@ -38,7 +38,7 @@ public class Potion : EntityComponent
                 source.FireEvent(remove).Release();
 
                 GameEvent playSound = GameEventPool.Get(GameEventId.Playsound)
-                                        .With(EventParameters.SoundSource, source)
+                                        .With(EventParameters.SoundSource, source.ID)
                                         .With(EventParameters.Key, SoundKey.Quaff);
                 Self.FireEvent(playSound).Release();
             });

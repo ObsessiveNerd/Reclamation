@@ -22,18 +22,18 @@ public class MusicService : GameService
             if (m_ActivePlayer.Value == null)
                 return;
 
-            Point activePlayerPoint = m_EntityToPointMap[m_ActivePlayer.Value];
+            Point activePlayerPoint = m_EntityToPointMap[m_ActivePlayer.Value.ID];
             Point sourcePoint = Point.InvalidPoint;
 
-            if (!m_EntityToPointMap.ContainsKey(soundOrigin))
+            if (!m_EntityToPointMap.ContainsKey(soundOrigin.ID))
             {
-                if (m_EntityToPreviousPointMap.ContainsKey(soundOrigin))
-                    sourcePoint = m_EntityToPreviousPointMap[soundOrigin];
+                if (m_EntityToPreviousPointMap.ContainsKey(soundOrigin.ID))
+                    sourcePoint = m_EntityToPreviousPointMap[soundOrigin.ID];
                 Debug.LogError($"{soundOrigin.Name} is not something on the map so we don't know the audio source.");
                 return;
             }
             else
-               sourcePoint = m_EntityToPointMap[soundOrigin];
+               sourcePoint = m_EntityToPointMap[soundOrigin.ID];
 
             float distance = Point.Distance(activePlayerPoint, sourcePoint);
             float volume = 1.0f;

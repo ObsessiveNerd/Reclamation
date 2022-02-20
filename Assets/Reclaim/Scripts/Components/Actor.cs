@@ -46,9 +46,7 @@ public class Actor : IEntity
     public Actor(string name, string id)
     {
         Name = name;
-        ID = string.IsNullOrEmpty(id) ? IDManager.GetNewID().ToString() : id;
-        if(!string.IsNullOrEmpty(id))
-            IDManager.SetId(int.Parse(id));
+        ID = string.IsNullOrEmpty(id) ? IDManager.GetNewID() : id;
 
         m_Components = new PriorityQueue<IComponent>(new ComponentComparer());
         Services.EntityMapService.RegisterEntity(this);
@@ -178,5 +176,22 @@ public class Actor : IEntity
 
         sb.AppendLine(")");
         return sb.ToString();
+    }
+
+    public override bool Equals(object obj)
+    {
+        if (obj is IEntity)
+            return (obj as IEntity).ID == ID;
+        return false;
+    }
+
+    public static bool operator ==(Actor lhs, Actor rhs)
+    {
+        return lhs.Equals(rhs);
+    }
+
+    public static bool operator !=(Actor lhs, Actor rhs)
+    {
+        return !lhs.Equals(rhs);
     }
 }
