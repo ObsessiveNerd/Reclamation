@@ -54,7 +54,6 @@ public class EntityNetworkManager : GameService
 
     void OnConnect()
     {
-        //socket.On(EnterWorld, OnEnterWorld);
         socket.On(GetNetworkId, OnGetNetworkId);
         socket.On(Spawn, OnSpawnPlayer);
         socket.On(Ready, OnReady);
@@ -104,12 +103,7 @@ public class EntityNetworkManager : GameService
     {
         if(IsHost)
         {
-            //string requestingId = JsonUtility.FromJson<NetworkIdContainer>(e.data["RequestingClientId"].ToString()).Id;
-            //if (e.data["DungeonLevel"].ToString() == m_CurrentLevel.ToString() &&
-            //    requestingId != NetworkId)
-            
             Services.SaveAndLoadService.Save();
-
             //The server puts out a request to all clients
             socket.Emit(SyncDungeonFromClient, e.data);
         }
@@ -145,7 +139,6 @@ public class EntityNetworkManager : GameService
 
             //Send a sync back to the server with the data
             NetworkDungeonData ndd = new NetworkDungeonData(null, levelData, dungeonLevels, dateTimes, GetAllLocalTempBlueprints());
-
             socket.Emit(ServerRecievedDungeonSync, CreateJSONObject(ndd));
         }
     }
@@ -194,7 +187,6 @@ public class EntityNetworkManager : GameService
     /// <param name="level"></param>
     public void RequestDungeonLevelFromServer(int level)
     {
-        //Services.SaveAndLoadService.Save();
         var obj = JSONObject.Create();
         
         obj["DungeonLevel"] = JSONObject.Create(level);
@@ -214,18 +206,14 @@ public class EntityNetworkManager : GameService
 
     void OnDungeonLevelSyncComplete(SocketIOEvent e)
     {
-        //Services.SaveAndLoadService.Save();
         if (!IsHost)
         {
             var ndd = JsonUtility.FromJson<NetworkDungeonData>(e.data.ToString());
             Services.SaveAndLoadService.UpdateSaveFromNetwork(ndd);
         }
 
-        //else
-        {
-            DungeonLevelSynced?.Invoke();
-            DungeonLevelSynced = null;
-        }
+        DungeonLevelSynced?.Invoke();
+        DungeonLevelSynced = null;
     }
 
     void OnGameEvent(SocketIOEvent e)
@@ -298,7 +286,6 @@ public class EntityNetworkManager : GameService
 
             networkEntity.CleanupComponents();
             Spawner.Spawn(networkEntity, networkEntity.GetComponent<Position>().PositionPoint);
-            //networkEntity.FireEvent(GameEventPool.Get(GameEventId.InitFOV)).Release();
             
             Services.WorldUpdateService.UpdateWorldView();
             if(networkEntity.GetComponent<NetworkId>().ID == NetworkId)
@@ -313,8 +300,6 @@ public class EntityNetworkManager : GameService
     {
         if (!IsHost)
         {
-            //Services.SaveAndLoadService.MoveSaveData(Hash128.Compute(socket.url).ToString());
-
             var ndd = JsonUtility.FromJson<NetworkDungeonData>(e.data.ToString());
             Services.SaveAndLoadService.UpdateSaveFromNetwork(ndd);
             EntityFactory.ReloadTempBlueprints();
@@ -408,8 +393,6 @@ public class EntityNetworkManager : GameService
             .Replace("\\t", "\t")
             .Replace("\\n", "\n")
             .Replace("\\r", "\r");
-
-            //Services.SaveAndLoadService.Save();
 
             var newConnectionNED = JsonUtility.FromJson<NetworkEntityData>(e.data.ToString());
             foreach (var bp in newConnectionNED.Blueprints)
