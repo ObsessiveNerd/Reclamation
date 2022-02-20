@@ -70,6 +70,9 @@ public class GameSaveSystem : GameService
 
         for (int i = 0; i < data.LevelDatas.Count; i++)
         {
+            if (string.IsNullOrEmpty(data.LevelDatas[i]))
+                continue;
+
             string levelDir =$"{m_LoadPath}/{data.LevelsToUpdate[i]}";
             Directory.CreateDirectory(levelDir);
             if(File.Exists($"{levelDir}/data.dat"))
@@ -119,11 +122,8 @@ public class GameSaveSystem : GameService
         if(m_Data == null)
             m_Data = new SaveData(m_Seed);
 
-        GameEvent getCurrentLevel = GameEventPool.Get(GameEventId.GetCurrentLevel)
-                                        .With(EventParameters.Level, -1);
         m_Data.CurrentDungeonLevel = m_CurrentLevel;
         m_Data.SaveName = CurrentSaveName = saveName;
-        getCurrentLevel.Release();
 
         SaveCurrentLevel();
         Directory.CreateDirectory($"{kSaveDataPath}/{saveName}");

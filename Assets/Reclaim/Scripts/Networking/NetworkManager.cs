@@ -6,6 +6,15 @@ using System.Linq;
 using SocketIO;
 using UnityEngine;
 
+public struct NetworkIdContainer
+{
+    public string Id;
+    public NetworkIdContainer(string id)
+    {
+        Id = id;
+    }
+}
+
 public class EntityNetworkManager : GameService
 {
     static string EnterWorld = "enterWorld";
@@ -95,8 +104,12 @@ public class EntityNetworkManager : GameService
     {
         if(IsHost)
         {
-            //if (e.data["DungeonLevel"].ToString() == m_CurrentLevel.ToString())
-            //    Services.SaveAndLoadService.Save();
+            //string requestingId = JsonUtility.FromJson<NetworkIdContainer>(e.data["RequestingClientId"].ToString()).Id;
+            //if (e.data["DungeonLevel"].ToString() == m_CurrentLevel.ToString() &&
+            //    requestingId != NetworkId)
+            
+            Services.SaveAndLoadService.Save();
+
             //The server puts out a request to all clients
             socket.Emit(SyncDungeonFromClient, e.data);
         }
@@ -105,7 +118,9 @@ public class EntityNetworkManager : GameService
     //For a non-host client to send its dungeon level data to the server
     void OnSyncDungeonLevel(SocketIOEvent e)
     {
-        if(m_ActivePlayer.Value.GetComponent<NetworkId>().ID != NetworkId)
+        string requestingId = JsonUtility.FromJson<NetworkIdContainer>(e.data["RequestingClientId"].ToString()).Id;
+
+        if(requestingId != NetworkId)
                 Services.SaveAndLoadService.Save();
 
         if (!IsHost)
@@ -121,9 +136,15 @@ public class EntityNetworkManager : GameService
                 dateTimes.Add(File.GetLastWriteTime(levelDataFilePath).ToString());
                 levelData.Add(File.ReadAllText(levelDataFilePath));
             }
+            else
+            {
+                levelData.Add(string.Empty);
+                dateTimes.Add(string.Empty);
+                dungeonLevels.Add(dungeonLevel);
+            }
 
             //Send a sync back to the server with the data
-            NetworkDungeonData ndd = new NetworkDungeonData(null, levelData, dungeonLevels, dateTimes ,new List<string>());
+            NetworkDungeonData ndd = new NetworkDungeonData(null, levelData, dungeonLevels, dateTimes, GetAllLocalTempBlueprints());
 
             socket.Emit(ServerRecievedDungeonSync, CreateJSONObject(ndd));
         }
@@ -147,11 +168,19 @@ public class EntityNetworkManager : GameService
                 foreach(var dl in ndd.LevelsToUpdate)
                 {
                     string saveData = $"{Services.SaveAndLoadService.LoadPath}/{dl}/data.dat";
-                    levelData.Add(File.ReadAllText(saveData));
-                    writeTimes.Add(File.GetLastWriteTime(saveData).ToString());
+                    if (File.Exists(saveData))
+                    {
+                        levelData.Add(File.ReadAllText(saveData));
+                        writeTimes.Add(File.GetLastWriteTime(saveData).ToString());
+                    }
+                    else
+                    {
+                        levelData.Add(string.Empty);
+                        writeTimes.Add(string.Empty);
+                    }
                 }
 
-                NetworkDungeonData newNDD = new NetworkDungeonData(null, levelData, ndd.LevelsToUpdate, writeTimes, ndd.TempBlueprints);
+                NetworkDungeonData newNDD = new NetworkDungeonData(null, levelData, ndd.LevelsToUpdate, writeTimes, GetAllLocalTempBlueprints());
 
                 socket.Emit(DungeonSyncComplete, CreateJSONObject(newNDD));
                 OnDungeonLevelSyncComplete(null);
@@ -167,7 +196,10 @@ public class EntityNetworkManager : GameService
     {
         //Services.SaveAndLoadService.Save();
         var obj = JSONObject.Create();
+        
         obj["DungeonLevel"] = JSONObject.Create(level);
+        obj["RequestingClientId"] = CreateJSONObject(new NetworkIdContainer(NetworkId));
+
         if(!IsHost)
             socket.Emit(RequestDungeonLevel, obj);
         else
@@ -343,6 +375,18 @@ public class EntityNetworkManager : GameService
             socket.Emit(SyncWorld, CreateJSONObject(ndd));
             Services.WorldUpdateService.StopTime = false;
         }
+    }
+
+    List<string> GetAllLocalTempBlueprints()
+    {
+        string savePath = Services.SaveAndLoadService.LoadPath;
+        List<string> bluePrints = new List<string>();
+        if (Directory.Exists($"{savePath}/Blueprints"))
+        {
+            foreach (var bp in Directory.EnumerateFiles($"{savePath}/Blueprints"))
+                bluePrints.Add(File.ReadAllText(bp));
+        }
+        return bluePrints;
     }
 
     void OnReady(SocketIOEvent e)

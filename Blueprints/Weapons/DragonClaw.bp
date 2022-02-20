@@ -11,5 +11,4 @@
 	Value:Amount=50
 	Sound:SoundPath=Sounds/GORE_SPLATS/GORE_Blade_Chop_mono,Key=AttackHit
 	Sound:SoundPath=Sounds/Air/WHOOSH_Air_Blade_RR1_mono,Key=AttackMiss
-	Name:PrettyName=Claws
 )
