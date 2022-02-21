@@ -178,7 +178,7 @@ public class EquipmentSlot : EntityComponent
 
         else if(gameEvent.ID == GameEventId.CheckItemEquiped)
         {
-            if (gameEvent.GetValue<string>(EventParameters.Item) == EquipmentId)
+            if (!string.IsNullOrEmpty(EquipmentId) && gameEvent.GetValue<string>(EventParameters.Item) == EquipmentId)
                 gameEvent.Paramters[EventParameters.Value] = true;
         }
 
@@ -249,8 +249,11 @@ public class DTO_EquipmentSlot : IDataTransferComponent
     public string CreateSerializableData(IComponent component)
     {
         EquipmentSlot es = (EquipmentSlot)component;
-        //string id = string.IsNullOrEmpty(es.EquipmentInstanceId) ? es.EquipmentId : es.EquipmentInstanceId;
         string id = es.EquipmentId;
+        if(!Guid.TryParse(id, out Guid result))
+            es.Start();
+
+        id = es.EquipmentId;
         if(!string.IsNullOrEmpty(id))
             EntityFactory.CreateTemporaryBlueprint(id, EntityQuery.GetEntity(id).Serialize());
         return $"{nameof(EquipmentSlot)}: {nameof(es.BodyPartType)}={es.BodyPartType}, {nameof(es.EquipmentId)}={id}";
