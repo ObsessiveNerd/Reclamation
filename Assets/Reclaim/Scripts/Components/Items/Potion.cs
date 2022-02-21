@@ -19,7 +19,7 @@ public class Potion : EntityComponent
 
             GameEvent builder = GameEventPool.Get(GameEventId.ApplyEffectToTarget)
                                     .With(EventParameters.Entity, target.ID);
-            FireEvent(Self, builder).Release();
+            FireEvent(Self, builder, true).Release();
         }
 
         else if(gameEvent.ID == GameEventId.GetContextMenuActions)

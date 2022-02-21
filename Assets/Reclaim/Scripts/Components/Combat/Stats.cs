@@ -13,6 +13,7 @@ public enum Stat
     Cha
 }
 
+[Serializable]
 public class Stats : EntityComponent
 {
     public override int Priority => 3;
@@ -134,7 +135,7 @@ public class Stats : EntityComponent
             GameEvent statBoosted = GameEventPool.Get(GameEventId.StatBoosted)
                 .With(EventParameters.Stats, this);
 
-            FireEvent(Self, statBoosted).Release();
+            FireEvent(Self, statBoosted, true).Release();
 
             AttributePoints = Mathf.Max(0, AttributePoints - 1);
         }
@@ -281,6 +282,11 @@ public class Stats : EntityComponent
     public int CalculateModifier(int value)
     {
         return (value - 10) / 2;
+    }
+
+    public override string ToString()
+    {
+        return JsonUtility.ToJson(this);
     }
 }
 

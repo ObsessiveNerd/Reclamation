@@ -53,10 +53,10 @@ public class Health : EntityComponent
                     GameEvent playDeathSound = GameEventPool.Get(GameEventId.Playsound)
                                                 .With(EventParameters.SoundSource, Self.ID)
                                                 .With(EventParameters.Key, SoundKey.Died);
-                    FireEvent(Self, playDeathSound).Release();
+                    FireEvent(Self, playDeathSound, true).Release();
 
                     FireEvent(Self, GameEventPool.Get(GameEventId.Died)
-                        .With(EventParameters.DamageSource, gameEvent.GetValue<string>(EventParameters.DamageSource))).Release();
+                        .With(EventParameters.DamageSource, gameEvent.GetValue<string>(EventParameters.DamageSource)), true).Release();
                     Spawner.Despawn(Self);
                     RecLog.Log("...and died");
                     break;

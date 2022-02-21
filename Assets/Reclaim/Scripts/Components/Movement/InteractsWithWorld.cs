@@ -21,12 +21,12 @@ public class InteractsWithWorld : EntityComponent
                 case Demeanor.Friendly:
                 case Demeanor.None:
                 case Demeanor.Neutral:
-                    FireEvent(target, GameEventPool.Get(GameEventId.Interact).With(EventParameters.Entity, Self.ID)).Release();
+                    FireEvent(target, GameEventPool.Get(GameEventId.Interact).With(EventParameters.Entity, Self.ID), true).Release();
                     break;
                 case Demeanor.Hostile:
                     FireEvent(Self, GameEventPool.Get(GameEventId.PerformAttack)
                             .With(EventParameters.Target, target.ID)
-                            .With(EventParameters.Melee, true)).Release();
+                            .With(EventParameters.Melee, true), true).Release();
                     break;
             }
         }

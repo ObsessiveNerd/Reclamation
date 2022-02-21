@@ -86,7 +86,7 @@ public class Body : EntityComponent
     {
         if(gameEvent.ID == GameEventId.Equip)
         {
-            BodyPart bp = (BodyPart)gameEvent.Paramters[EventParameters.EntityType];
+            BodyPart bp = gameEvent.GetValue<BodyPart>(EventParameters.EntityType); //(BodyPart)gameEvent.Paramters[EventParameters.EntityType];
 
             GameEvent getBpCount = GameEventPool.Get(GameEventId.GetMultiBodyPartUse)
                 .With(EventParameters.Value, 1);
@@ -124,7 +124,7 @@ public class Body : EntityComponent
                     GameEvent unequip = GameEventPool.Get(GameEventId.Unequip)
                                             .With(EventParameters.Entity, Self.ID)
                                             .With(EventParameters.Item, GetEquipmentIdForBodyPart(target[bp][i]));
-                    FireEvent(Self, unequip).Release();
+                    FireEvent(Self, unequip, true).Release();
                 }
 
                 if (!HasEquipment(target[bp][i]))
@@ -135,9 +135,11 @@ public class Body : EntityComponent
                                                 .With(EventParameters.Equipment, gameEvent.GetValue<string>(EventParameters.Equipment))
                                                 .With(EventParameters.Owner, Self?.ID);
 
+                    //target[bp][i].Self.FireEvent(itemEquiped, true);
                     target[bp][i].HandleEvent(itemEquiped);
+
                     FireEvent(Self, GameEventPool.Get(GameEventId.RemoveFromInventory)
-                            .With(EventParameters.Item, gameEvent.Paramters[EventParameters.Equipment])).Release();
+                            .With(EventParameters.Item, gameEvent.Paramters[EventParameters.Equipment]), true).Release();
                     itemEquiped.Release();
                 }
 

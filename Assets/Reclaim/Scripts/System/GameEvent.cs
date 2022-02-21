@@ -435,9 +435,6 @@ public class GameEvent
     {
         m_ID = id;
         ContinueProcessing = true;
-        //string i = string.IsNullOrEmpty(m_ID) ? "NO ID" : m_ID;
-        //Debug.Log($"New gameevent was created with id {i}");
-        //GameEventPool.m_InUse.Add(this);
     }
 
     public GameEvent SetId(string id)
@@ -450,6 +447,9 @@ public class GameEvent
 
     public GameEvent With(string id, object value)
     {
+        if (value is Enum)
+            value = (int)value;
+
         if (m_Parameters.ContainsKey(id))
             m_Parameters[id] = value;
         else
@@ -459,8 +459,8 @@ public class GameEvent
 
     public GameEvent With(Dictionary<string, object> values)
     {
-        foreach(var key in values.Keys)
-            m_Parameters[key] = values[key];
+        foreach (var key in values.Keys)
+            With(key, values[key]);
         return this;
     }
 
@@ -475,6 +475,10 @@ public class GameEvent
         {
             if (value == null)
                 return default(T);
+            if (typeof(T).IsEnum)
+                return (T)Enum.Parse(typeof(T), value.ToString());
+            if (value is string && typeof(T) != typeof(string))
+                return JsonUtility.FromJson<T>(value as string);
             return (T)value;
         }
         return default(T);

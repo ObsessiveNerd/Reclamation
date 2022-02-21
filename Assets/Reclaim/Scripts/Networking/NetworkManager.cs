@@ -49,9 +49,12 @@ public class EntityNetworkManager : GameService
     {
         if (sock != null)
         {
-            socket = sock;
-            socket.SetupSocket();
-            OnConnect();
+            Services.InitComplete += (sender, args) =>
+            {
+                socket = sock;
+                socket.SetupSocket();
+                OnConnect();
+            };
         }
     }
 

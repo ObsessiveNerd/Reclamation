@@ -29,7 +29,7 @@ public class HealthRegen : EntityComponent
             {
                 GameEvent regenHealth = GameEventPool.Get(GameEventId.RegenHealth)
                                             .With(EventParameters.Healing, RegenAmount);
-                FireEvent(Self, regenHealth).Release();
+                FireEvent(Self, regenHealth, true).Release();
                 currentTurns = 0;
             }
         }
