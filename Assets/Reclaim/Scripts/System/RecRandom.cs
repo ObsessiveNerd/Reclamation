@@ -28,6 +28,11 @@ public class RecRandom
         return UnityEngine.Random.Range(low, high);
     }
 
+    public int GetRandomPercent()
+    {
+        return GetRandomValue(0, 100);
+    }
+
     public float GetRandomValue(float low, float high)
     {
         return UnityEngine.Random.Range(low, high);

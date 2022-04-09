@@ -1,7 +1,8 @@
 StairsUp: false
 StairsDown: true
-ContainsBoss: false
+ContainsBoss: true
 AverageMosterCR: 5
 MonsterTypes:
 SpecialItems:
-TileType:tile2
+TileType:Textures/Sprites/Environment/td_world_floor_dirt_
+WallType:Textures/Sprites/Environment/td_world_wall_cave_v_

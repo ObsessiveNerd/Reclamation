@@ -4,7 +4,7 @@
 	Defense
 	Inventory:InventoryItems=[<Spellbook>&<BronzeHelmet>&<LongSword>&<Warhammer>&<ShortBow>&<Enchantment>]
 	Move
-	Stats:Str=10,Agi=9,Con=13,Wis=11,Int=12,Cha=10,PrimaryStatType=Str,AttributePoints=0
+	Stats:Str=20,Agi=20,Con=20,Wis=20,Int=20,Cha=20,PrimaryStatType=Str,AttributePoints=0
 	Faction:ID=DwarvenExpedition
 	Energy:EnergyRegineration=1,CurrentEnergy=0,HasHadTurnStarted=False
 	PackTactics:PartyLeaderId=
@@ -22,7 +22,7 @@
 	HealthRegen:RegenAmount=1,RegenSpeed=5
 	EquipmentSlot:EquipmentId=,BodyPartType=Leg
 	AIFOVHandler
-	ManaRegen:RegenAmount=1,RegenSpeed=15
+	ManaRegen:RegenAmount=1,RegenSpeed=5
 	RegisterWithTimeSystem
 	Body
 	EquipmentSlot:EquipmentId=,BodyPartType=Head
@@ -35,7 +35,7 @@
 	InteractOnTileOvertake
 	EquipmentSlot:EquipmentId=,BodyPartType=Torso
 	Desire:Greed=0
-	Health:MaxHealth=30,CurrentHealth=30
+	Health:MaxHealth=200,CurrentHealth=200
 	Mana:MaxMana=5,CurrentMana=5
 	Sound:SoundPath=Sounds/HUMAN/Body/BODY_Cough_Short_mono,Key=Died
 )

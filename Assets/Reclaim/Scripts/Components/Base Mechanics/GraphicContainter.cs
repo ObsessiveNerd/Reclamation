@@ -15,13 +15,23 @@ public class GraphicContainer : EntityComponent
         Sprite sprite = Resources.Load<Sprite>(SpritePath);
         m_Sprite = sprite;
         RegisteredEvents.Add(GameEventId.GetSprite);
+        RegisteredEvents.Add(GameEventId.SetSprite);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
     {
         if(m_Sprite == null)
             Debug.Log("Sprite null");
-        gameEvent.Paramters[EventParameters.RenderSprite] = m_Sprite;
+
+        if (gameEvent.ID == GameEventId.GetSprite)
+            gameEvent.Paramters[EventParameters.RenderSprite] = m_Sprite;
+
+        else if (gameEvent.ID == GameEventId.SetSprite)
+        {
+            string path = gameEvent.GetValue<string>(EventParameters.Path);
+            SpritePath = path;
+            m_Sprite = Resources.Load<Sprite>(path);
+        }
     }
 }
 

@@ -12,6 +12,7 @@ public class DungeonMetaData
     public bool SpawnEnemies;
     public bool SpawnBoss;
     public string TileType;
+    public string WallType;
 
     public DungeonMetaData(string dataPath)
     {
@@ -43,6 +44,9 @@ public class DungeonMetaData
                         case LevelMetaData.TileType:
                             TileType = keyValue[1];
                             break;
+                        case LevelMetaData.WallType:
+                            WallType = keyValue[1];
+                            break;
                     }
                 }
             }
@@ -52,6 +56,33 @@ public class DungeonMetaData
             StairsUp = true;
             StairsDown = true;
         }
+    }
+
+    public string GetRandomLetter()
+    {
+        var number = RecRandom.Instance.GetRandomValue(0, 5);
+        string value = "a";
+        switch(number)
+        {
+            case 0:
+                break;
+            case 1:
+                value = "b";
+                break;
+            case 2:
+                value = "c";
+                break;
+            case 3:
+                value = "d";
+                break;
+            //case 4:
+            //    value = "e";
+            //    break;
+            //case 5:
+            //    value = "f";
+            //    break;
+        }
+        return value;
     }
 }
 
@@ -285,11 +316,29 @@ public class DungeonManager : GameService
                     GameEventPool.Get(GameEventId.SetHasBeenVisited)
                         .With(EventParameters.HasBeenVisited, dungeonLevel.TileHasBeenVisited[i])).Release();
             }
+
+            DungeonMetaData dmd = new DungeonMetaData($"{LevelMetaData.MetadataPath}/{m_CurrentLevel}.lvl");
+            foreach(var tile in m_TileEntity.Values)
+            {
+                GameEvent setSprite = GameEventPool.Get(GameEventId.SetSprite)
+                                        .With(EventParameters.Path, dmd.TileType);
+                FireEvent(tile, setSprite);
+                setSprite.Release();
+            }
         }
         else
         {
             DungeonMetaData dmd = new DungeonMetaData($"{LevelMetaData.MetadataPath}/{m_CurrentLevel}.lvl");
             DungeonGenerationResult dr = DungeonGenerator.GenerateDungeon(dmd);
+
+            foreach(var tile in m_TileEntity.Values)
+            {
+                GameEvent setSprite = GameEventPool.Get(GameEventId.SetSprite)
+                                        .With(EventParameters.Path, dmd.TileType + dmd.GetRandomLetter());
+                FireEvent(tile, setSprite);
+                setSprite.Release();
+            }
+
             using (new DiagnosticsTimer("Setting visited status"))
             {
                 foreach (var point in m_Tiles.Keys)
@@ -301,7 +350,6 @@ public class DungeonManager : GameService
             m_DungeonLevelMap.Add(m_CurrentLevel, dr);
         }
     }
-
 
     void CleanTiles()
     {

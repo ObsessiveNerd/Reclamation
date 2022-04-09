@@ -3,7 +3,7 @@
 	Defense
 	Level:CurrentLevel=2,CurrentExp=0
 	Move
-	PackTactics:PartyLeaderId=10
+	PackTactics:PartyLeaderId=
 	AIFOVHandler
 	Body
 	Faction:ID=Goblins
@@ -13,7 +13,7 @@
 	RegisterWithTimeSystem
 	EntityTypeContainer:Type=Creature
 	Stats:Str=10,Agi=12,Con=10,Wis=9,Int=7,Cha=8,PrimaryStatType=Str,AttributePoints=0
-	Energy:EnergyRegineration=1,CurrentEnergy=0,HasHadTurnStarted=False
+	Energy:EnergyRegineration=0.7,CurrentEnergy=0,HasHadTurnStarted=False
 	FOV:FOVRange=5
 	BlocksNonHostileMovement
 	CombatRating
@@ -24,7 +24,7 @@
 	InteractOnTileOvertake
 	InteractsWithWorld
 	Info:InfoMessage="It's a nasty little goblin.  Its slimy green skin reeks with the pungent odor of dirt and mold."
-	Health:MaxHealth=10,CurrentHealth=10
+	Health:MaxHealth=8,CurrentHealth=8
 	EquipmentSlot:EquipmentId=ShortSword,BodyPartType=Arm
 	EquipmentSlot:EquipmentId=,BodyPartType=Arm
 	EquipmentSlot:EquipmentId=,BodyPartType=Head

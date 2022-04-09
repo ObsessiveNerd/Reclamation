@@ -19,4 +19,5 @@ public static class LevelMetaData
     public const string MonsterTypes = nameof(MonsterTypes);
     public const string SpecialItems = nameof(SpecialItems);
     public const string TileType = nameof(TileType);
+    public const string WallType = nameof(WallType);
 }

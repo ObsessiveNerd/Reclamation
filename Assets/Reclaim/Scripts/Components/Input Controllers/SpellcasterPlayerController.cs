@@ -81,12 +81,10 @@ public class SpellcasterPlayerController : InputControllerBase
             startingTarget = Self;
 
         m_TileSelection = Services.WorldDataQuery.GetEntityLocation(startingTarget);
-        GameEvent selectTile = GameEventPool.Get(GameEventId.SelectTile)
-            .With(EventParameters.TilePosition, m_TileSelection);
-        m_Attack.FireEvent(selectTile);
+        
         Services.TileSelectionService.SelectTile(m_TileSelection);
         Services.WorldUpdateService.UpdateWorldView();
-        selectTile.Release();
+        
     }
 
     public override void HandleEvent(GameEvent gameEvent)

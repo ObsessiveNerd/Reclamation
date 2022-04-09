@@ -7,6 +7,6 @@
 	Item:Rarity=Mythic
 	Equipment:PreferredBodyPartWhenEquipped=Head
 	DealDamage:DamageType=Fire,Dice=1d10
-	SpellContainer:MaxSpell=5,RandomSpells=False,SpecificSpell=RingOfFire
-	WeaponType:TypeWeapon=MagicalContainer
+	SpellContainer:MaxSpell=5,RandomSpells=False,SpecificSpell=Fireball
+	WeaponType:Type=Melee
 )

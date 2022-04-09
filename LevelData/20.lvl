@@ -1,0 +1,8 @@
+StairsUp: true
+StairsDown: false
+ContainsBoss: true
+AverageMosterCR: 5
+MonsterTypes:
+SpecialItems:
+TileType:Textures/Sprites/Environment/td_world_floor_mossy_
+WallType:Textures/Sprites/Environment/td_world_wall_sewer_v_

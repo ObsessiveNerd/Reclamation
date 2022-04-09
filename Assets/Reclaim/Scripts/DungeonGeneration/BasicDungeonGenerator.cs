@@ -65,10 +65,20 @@ public class Room
         m_Size = size;
     }
 
-    public void SpawnWalls()
+    public void SpawnWalls(DungeonMetaData metaData)
     {
         foreach(var p in m_Walls)
-            Spawner.Spawn(EntityFactory.CreateEntity("Wall"), p);
+        {
+            var e = EntityFactory.CreateEntity("Wall");
+            if(!string.IsNullOrEmpty(metaData.WallType))
+            {
+                GameEvent setSprite = GameEventPool.Get(GameEventId.SetSprite)
+                                        .With(EventParameters.Path, metaData.WallType + metaData.GetRandomLetter());
+                e.FireEvent(setSprite);
+                setSprite.Release();
+            }
+            Spawner.Spawn(e, p);
+        }
     }
 
     Point GetMiddleOfTheRoom()
@@ -438,7 +448,7 @@ public class BasicDungeonGenerator : IDungeonGenerator
             }
 
             CreateDoors(Rooms[0]);
-            SpawnWalls(Rooms[0]);
+            SpawnWalls(Rooms[0], metaData);
         }
 
         using (new DiagnosticsTimer("spawning"))
@@ -509,9 +519,9 @@ public class BasicDungeonGenerator : IDungeonGenerator
         }
     }
 
-    void SpawnWalls(Room room)
+    void SpawnWalls(Room room, DungeonMetaData metaData)
     {
-        room.SpawnWalls();
+        room.SpawnWalls(metaData);
     }
 
     void CreateWalls(Room room)

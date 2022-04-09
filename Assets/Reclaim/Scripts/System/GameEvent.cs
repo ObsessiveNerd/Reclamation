@@ -147,6 +147,7 @@ public static class GameEventId
     public const string UpdateRenderer = nameof(UpdateRenderer);
     public const string GetRenderSprite = nameof(GetRenderSprite);
     public const string GetSprite = nameof(GetSprite);
+    public const string SetSprite = nameof(SetSprite);
     public const string AlterSprite = nameof(AlterSprite);
 
     //Tiles

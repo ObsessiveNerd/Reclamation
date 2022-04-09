@@ -81,7 +81,7 @@ public class Aggression : EntityComponent
                 else
                     return PathfindingUtility.GetDirectionAwayFrom(m_CurrentLocation, m_TargetLocation);
             }
-            else if(weapon.HasComponent(typeof(SpellContainer)))
+            else if(weapon.HasComponent(typeof(SpellContainer)) && RecRandom.Instance.GetRandomPercent() < 20)
             {
                 var target = WorldUtility.GetEntityAtPosition(m_TargetLocation);
 

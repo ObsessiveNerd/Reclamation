@@ -1,0 +1,8 @@
+StairsUp: true
+StairsDown: true
+ContainsBoss: true
+AverageMosterCR: 5
+MonsterTypes:
+SpecialItems:
+TileType:Textures/Sprites/Environment/td_world_floor_cobble_
+WallType:Textures/Sprites/Environment/td_world_wall_crypt_v_
