@@ -32,7 +32,7 @@ public class Item : EntityComponent
         {
             IEntity entity = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Entity]);
             FireEvent(entity, GameEventPool.Get(GameEventId.AddToInventory)
-                .With(EventParameters.Entity, Self.ID)).Release();
+                .With(EventParameters.Entity, Self.ID), true).Release();
         }
 
         if (gameEvent.ID == GameEventId.Drop)
@@ -44,9 +44,9 @@ public class Item : EntityComponent
                                 .With(EventParameters.Entity, droppingEntity.ID)
                                 .With(EventParameters.Item, Self.ID);
 
-            FireEvent(droppingEntity, unequip);
+            FireEvent(droppingEntity, unequip, true);
             FireEvent(droppingEntity, GameEventPool.Get(GameEventId.RemoveFromInventory)
-                .With(EventParameters.Item, Self.ID)).Release();
+                .With(EventParameters.Item, Self.ID), true).Release();
             unequip.Release();
 
         }

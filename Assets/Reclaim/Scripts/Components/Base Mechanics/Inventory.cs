@@ -61,7 +61,7 @@ public class Inventory : EntityComponent
         {
             List<IEntity> items = new List<IEntity>(InventoryItems);
             foreach (IEntity item in items)
-                FireEvent(item, gameEvent);
+                FireEvent(item, gameEvent, true);
         }
 
         if(gameEvent.ID == GameEventId.GetCurrentInventory)

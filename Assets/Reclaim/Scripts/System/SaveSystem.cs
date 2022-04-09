@@ -180,6 +180,9 @@ public class GameSaveSystem : GameService
             serializeTile.Release();
         }
 
+        if (!Services.DungeonService.IsReady)
+            return;
+
         foreach (Room room in Services.DungeonService.DungeonGenerator.Rooms)
             level.RoomData.Add(room);
 

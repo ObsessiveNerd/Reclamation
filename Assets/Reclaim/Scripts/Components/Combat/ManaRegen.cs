@@ -29,7 +29,7 @@ public class ManaRegen : EntityComponent
             {
                 GameEvent regenMana = GameEventPool.Get(GameEventId.RestoreMana)
                                             .With(EventParameters.Mana, RegenAmount);
-                FireEvent(Self, regenMana).Release();
+                FireEvent(Self, regenMana, true).Release();
                 currentTurns = 0;
             }
         }

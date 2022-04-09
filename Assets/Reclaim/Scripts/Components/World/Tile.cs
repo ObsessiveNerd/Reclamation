@@ -53,7 +53,7 @@ public struct Point
             result = p;
             return true;
         }
-        catch(Exception e)
+        catch
         {
             result = Point.InvalidPoint;
             return false;
@@ -265,7 +265,7 @@ public class Tile : EntityComponent
             foreach (var item in Items)
             {
                 var pickupEvent = FireEvent(entity, GameEventPool.Get(GameEventId.AddToInventory)
-                    .With(EventParameters.Entity, item.ID));
+                    .With(EventParameters.Entity, item.ID), true);
                 itemsPickedup.Add(item);
                 pickupEvent.Release();
             }
@@ -275,7 +275,7 @@ public class Tile : EntityComponent
         }
         if (ObjectSlot != null)
         {
-            FireEvent(ObjectSlot, gameEvent);
+            FireEvent(ObjectSlot, gameEvent, true);
         }
         Services.TileInteractionService.TileChanged(this);
     }

@@ -33,7 +33,7 @@ public class FOV : EntityComponent
             //FOVRange = (int)checkEquipment.Paramters[EventParameters.FOVRange];
             FireEvent(Self, GameEventPool.Get(GameEventId.FOVRecalculated)
                 .With(EventParameters.Entity, Self.ID)
-                .With(EventParameters.VisibleTiles, m_Fov.GetVisibleTiles(Self, FOVRange))).Release();
+                .With(EventParameters.VisibleTiles, m_Fov.GetVisibleTiles(Self, FOVRange)), true).Release();
             FOVRange = baseRange;
 
             beforeFOVCalculated.Release();

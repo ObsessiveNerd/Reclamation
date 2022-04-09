@@ -6,6 +6,7 @@
 	EntityTypeContainer:Type=Item
 	Item:Rarity=Uncommon
 	WeaponType:Type=Melee
+	WeaponType:Type=Ranged
 	Equipment:PreferredBodyPartWhenEquipped=Arm
 	TwoHanded
 	Value:Amount=20

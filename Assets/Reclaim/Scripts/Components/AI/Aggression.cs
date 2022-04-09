@@ -63,7 +63,7 @@ public class Aggression : EntityComponent
     {
         GameEvent getWeapon = GameEventPool.Get(GameEventId.GetWeapon)
                                 .With(EventParameters.Weapon, new List<string>());
-        var list = FireEvent(Self, getWeapon).GetValue<List<string>>(EventParameters.Weapon);
+        var list = FireEvent(Self, getWeapon, true).GetValue<List<string>>(EventParameters.Weapon);
         getWeapon.Release();
         foreach(var id in list)
         {
@@ -110,7 +110,7 @@ public class Aggression : EntityComponent
     {
         Point randomPoint = PathfindingUtility.GetRandomValidPoint();
         var path = PathfindingUtility.GetPath(m_CurrentLocation, randomPoint);
-        FireEvent(Self, GameEventPool.Get(GameEventId.BreakRank));
+        FireEvent(Self, GameEventPool.Get(GameEventId.BreakRank), true);
         if(path.Count >= 1)
             return PathfindingUtility.GetDirectionTo(m_CurrentLocation, path[0]);
         return PathfindingUtility.GetDirectionTo(m_CurrentLocation, m_CurrentLocation);

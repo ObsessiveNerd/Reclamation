@@ -18,7 +18,7 @@ public class PlayerFOVHandler : EntityComponent
     {
         if (gameEvent.ID == GameEventId.FOVRecalculated)
         {
-            m_VisiblePoints = (List<Point>)gameEvent.Paramters[EventParameters.VisibleTiles];
+            m_VisiblePoints = gameEvent.GetValue<List<Point>>(EventParameters.VisibleTiles); //(List<Point>)gameEvent.Paramters[EventParameters.VisibleTiles];
             Services.FOVService.FoVRecalculated(Self, m_VisiblePoints);
         }
 

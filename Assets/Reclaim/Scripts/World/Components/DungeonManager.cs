@@ -60,6 +60,7 @@ public class DungeonManager : GameService
     GameObject m_TilePrefab;
     public IDungeonGenerator DungeonGenerator;
     int m_Vertical, m_Horizontal;
+    public bool IsReady = false;
 
     public DungeonManager(int seed, GameObject tilePrefab, int rows, int columns)
     {
@@ -99,9 +100,9 @@ public class DungeonManager : GameService
     public void GenerateDungeon(int level, bool newGame)
     {
         Debug.Log("Start world called");
+
         Clean();
         CreateTiles(m_Horizontal, m_Vertical);
-
         m_CurrentLevel = level;
         DungeonGenerator = new BasicDungeonGenerator(m_Horizontal, m_Vertical);
 
@@ -110,6 +111,7 @@ public class DungeonManager : GameService
         Services.SaveAndLoadService.Save();
         Services.CameraService.UpdateCamera();
         m_TimeProgression.Resume();
+        IsReady = true;
     }
 
     public void MoveUp()
