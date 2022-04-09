@@ -1,4 +1,4 @@
-<RingOfFire> (
+<Fireball> (
 	GraphicContainer:SpritePath=Textures/Portraits/spellbookmegapack/SpellBookPage06/SpellBook06_57
 	Spell:ManaCost=4,SpellFailed=DamageHalved,SpellType=AgiSpell
 	DealDamage:DamageType=Fire,Dice=1d12

@@ -53,7 +53,7 @@ public struct Point
             result = p;
             return true;
         }
-        catch(Exception e)
+        catch
         {
             result = Point.InvalidPoint;
             return false;

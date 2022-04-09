@@ -121,10 +121,14 @@ public class Body : EntityComponent
 
                 if (unequipThroughIteration && GetEquipmentIdForBodyPart(target[bp][i]) != gameEvent.GetValue<string>(EventParameters.Equipment))
                 {
-                    GameEvent unequip = GameEventPool.Get(GameEventId.Unequip)
-                                            .With(EventParameters.Entity, Self.ID)
-                                            .With(EventParameters.Item, GetEquipmentIdForBodyPart(target[bp][i]));
-                    FireEvent(Self, unequip, true).Release();
+                    var equipmentId = GetEquipmentIdForBodyPart(target[bp][i]);
+                    if(!string.IsNullOrEmpty(equipmentId))
+                    {
+                        GameEvent unequip = GameEventPool.Get(GameEventId.Unequip)
+                                                .With(EventParameters.Entity, Self.ID)
+                                                .With(EventParameters.Item, equipmentId);
+                        FireEvent(Self, unequip, true).Release();
+                    }
                 }
 
                 if (!HasEquipment(target[bp][i]))

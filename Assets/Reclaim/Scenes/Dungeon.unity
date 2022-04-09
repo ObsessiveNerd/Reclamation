@@ -5102,17 +5102,17 @@ PrefabInstance:
     - target: {fileID: 6241948252624630896, guid: 111d7f65e2b1f5f468dafe018551f1fd,
         type: 3}
       propertyPath: MapRows
-      value: 15
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 6241948252624630896, guid: 111d7f65e2b1f5f468dafe018551f1fd,
         type: 3}
       propertyPath: InitMode
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6241948252624630896, guid: 111d7f65e2b1f5f468dafe018551f1fd,
         type: 3}
       propertyPath: MapColumns
-      value: 15
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 6241948252624630897, guid: 111d7f65e2b1f5f468dafe018551f1fd,
         type: 3}

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using UnityEngine;
 
 public class Actor : IEntity
 {
@@ -193,5 +194,10 @@ public class Actor : IEntity
     public static bool operator !=(Actor lhs, Actor rhs)
     {
         return !lhs.Equals(rhs);
+    }
+
+    public override int GetHashCode()
+    {
+        return Hash128.Compute(ID).GetHashCode();
     }
 }
