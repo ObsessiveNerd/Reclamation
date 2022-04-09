@@ -105,7 +105,7 @@ public class PlayerManager : GameService
 //#if UNITY_EDITOR
             if (!Directory.Exists(charactersPath) && m_Players.Count == 0)
             {
-                for (int i = 0; i < 1; i++)
+                for (int i = 0; i < 4; i++)
                 {
                     IEntity player = EntityFactory.CreateEntity("DwarfWarrior");
                     result.Add(player);

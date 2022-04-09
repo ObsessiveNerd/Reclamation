@@ -34,6 +34,28 @@ public class ContextMenuMono : EscapeableMono
         instance.transform.SetParent(Content, false);
     }
 
+    public void GetAmountToGive(Action<IEntity, IEntity, int> actionForSelectedPlayer, IEntity source, IEntity item)
+    {
+        GameObject instance = Instantiate(Resources.Load<GameObject>("Prefabs/UI/TextInputField"));
+        instance.GetComponent<TextFieldMono>().Init("Amount to give...");
+        instance.transform.SetParent(GameObject.Find("Canvas").transform, false);
+        instance.SetActive(true);
+
+        instance.GetComponent<TMP_InputField>().onEndEdit.AddListener((arg) =>
+        {
+            if(int.TryParse(arg, out int result))
+            {
+                actionForSelectedPlayer.Invoke(source, item, result);
+            }
+            else
+            {
+                actionForSelectedPlayer.Invoke(source, item, 1);
+            }
+
+            Destroy(instance);
+        });
+    }
+
     public void SelectPlayer(Action<string> actionForSelectedPlayer, List<string> playerIds)
     {
         foreach (string id in playerIds)

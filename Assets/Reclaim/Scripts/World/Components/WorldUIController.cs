@@ -48,23 +48,51 @@ public class WorldUIController : GameService
 
     public void PromptToGiveItem(IEntity source, IEntity item)
     {
-        ContextMenuMono.CreateNewContextMenu().GetComponent<ContextMenuMono>().SelectPlayer((target) =>
+        var contextMenu = ContextMenuMono.CreateNewContextMenu();
+        contextMenu.GetComponent<ContextMenuMono>().SelectPlayer((target) =>
         {
-            GameEvent unEquip = GameEventPool.Get(GameEventId.Unequip)
-                                        .With(EventParameters.Entity, source.ID)
-                                        .With(EventParameters.Item, item.ID);
-            source.FireEvent(unEquip).Release();
+            if(item.HasComponent(typeof(Stackable)))
+            {
+                contextMenu.GetComponent<ContextMenuMono>().GetAmountToGive((s, i, amount) =>
+                {
+                    for(int a = 0; a < amount; a++)
+                    {
+                        var actualItem = source.GetComponent<Inventory>().InventoryItems.FirstOrDefault(it => it.Name == i.Name);
+                        if (actualItem == null)
+                            break;
 
-            GameEvent removeFromInventory = GameEventPool.Get(GameEventId.RemoveFromInventory)
-                                                .With(EventParameters.Item, item.ID);
-            source.FireEvent(removeFromInventory).Release();
+                        GameEvent unEquip = GameEventPool.Get(GameEventId.Unequip)
+                                            .With(EventParameters.Entity, s.ID)
+                                            .With(EventParameters.Item, actualItem.ID);
+                        s.FireEvent(unEquip).Release();
 
-            GameEvent addToInventory = GameEventPool.Get(GameEventId.AddToInventory)
-                                            .With(EventParameters.Entity, item.ID);
-            EntityQuery.GetEntity(target).FireEvent(addToInventory).Release();
+                        GameEvent removeFromInventory = GameEventPool.Get(GameEventId.RemoveFromInventory)
+                                                            .With(EventParameters.Item, actualItem.ID);
+                        s.FireEvent(removeFromInventory).Release();
 
-            Services.WorldUIService.UpdateUI();
-            //GameObject.FindObjectOfType<CharacterManagerMono>().UpdateUI(source);
+                        GameEvent addToInventory = GameEventPool.Get(GameEventId.AddToInventory)
+                                                        .With(EventParameters.Entity, actualItem.ID);
+                        EntityQuery.GetEntity(target).FireEvent(addToInventory).Release();
+                    }
+                    Services.WorldUIService.UpdateUI();
+                }, source, item);
+            }
+            else
+            {
+                GameEvent unEquip = GameEventPool.Get(GameEventId.Unequip)
+                                            .With(EventParameters.Entity, source.ID)
+                                            .With(EventParameters.Item, item.ID);
+                source.FireEvent(unEquip).Release();
+
+                GameEvent removeFromInventory = GameEventPool.Get(GameEventId.RemoveFromInventory)
+                                                    .With(EventParameters.Item, item.ID);
+                source.FireEvent(removeFromInventory).Release();
+
+                GameEvent addToInventory = GameEventPool.Get(GameEventId.AddToInventory)
+                                                .With(EventParameters.Entity, item.ID);
+                EntityQuery.GetEntity(target).FireEvent(addToInventory).Release();
+                Services.WorldUIService.UpdateUI();
+            }
 
         }, m_Players.Select(player => player.ID).ToList());
     }

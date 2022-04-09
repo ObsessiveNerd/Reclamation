@@ -10,4 +10,5 @@
 	Value:Amount=30
 	Sound:SoundPath=Sounds/FOLEY/VARIOUS/FOLEY_Lid_Removal_Bottle_mono,Key=Quaff
 	Name:PrettyName=Minor Health Potion
+	Stackable
 )

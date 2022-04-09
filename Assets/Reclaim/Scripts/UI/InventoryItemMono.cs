@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -9,10 +11,22 @@ public class InventoryItemMono : ItemMono, IPointerClickHandler
     public IEntity Source { get; set; }
     public IEntity ItemObject { get; set; }
 
+    public GameObject StackableView;
+    public TextMeshProUGUI ItemNumberText;
+
     public void Init(IEntity source, IEntity thisObject)
     {
         Source = source;
         ItemObject = thisObject;
+
+        if (ItemObject.HasComponent(typeof(Stackable)))
+        {
+            StackableView.SetActive(true);
+            var count = Source.GetComponent<Inventory>().InventoryItems.Where(item => item.Name == ItemObject.Name).Count();
+            ItemNumberText.text = $"x{count}";
+        }
+        else
+            StackableView.SetActive(false);
     }
 
     public void OnPointerClick(PointerEventData eventData)

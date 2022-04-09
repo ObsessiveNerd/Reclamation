@@ -14,7 +14,7 @@ public class EquipmentViewMono : UpdatableUI//, IUpdatableUI
     public GameObject LeftArm;
     public GameObject RightArm;
     public GameObject LeftLeg;
-    public GameObject RightLeg;
+    //public GameObject RightLeg;
     public GameObject Back;
     public GameObject Necklace;
     public GameObject Ring1;
@@ -31,7 +31,7 @@ public class EquipmentViewMono : UpdatableUI//, IUpdatableUI
                 LeftArm,
                 RightArm,
                 LeftArm,
-                RightLeg,
+                //RightLeg,
                 Back,
                 Necklace,
                 Ring1,
@@ -98,7 +98,7 @@ public class EquipmentViewMono : UpdatableUI//, IUpdatableUI
         SetEquipment(source, firedEvent.GetValue<List<EntityComponent>>(EventParameters.Head), new List<GameObject>() { Head });
         SetEquipment(source, firedEvent.GetValue<List<EntityComponent>>(EventParameters.Torso), new List<GameObject>() { Torso });
         SetEquipment(source, firedEvent.GetValue<List<EntityComponent>>(EventParameters.Arms), new List<GameObject>() { LeftArm, RightArm });
-        SetEquipment(source, firedEvent.GetValue<List<EntityComponent>>(EventParameters.Legs), new List<GameObject>() { LeftLeg, RightLeg });
+        SetEquipment(source, firedEvent.GetValue<List<EntityComponent>>(EventParameters.Legs), new List<GameObject>() { LeftLeg/*, RightLeg */});
         SetEquipment(source, firedEvent.GetValue<List<EntityComponent>>(EventParameters.Legs), new List<GameObject>() { Ring1, Ring2 });
         SetEquipment(source, firedEvent.GetValue<List<EntityComponent>>(EventParameters.Legs), new List<GameObject>() { Necklace });
         SetEquipment(source, firedEvent.GetValue<List<EntityComponent>>(EventParameters.Legs), new List<GameObject>() { Back });

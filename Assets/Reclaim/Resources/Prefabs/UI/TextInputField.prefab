@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 7196644978949101360}
   - component: {fileID: 7196644978949101375}
   - component: {fileID: 7196644978949101374}
+  - component: {fileID: -5501004999568326519}
   m_Layer: 5
   m_Name: TextInputField
   m_TagString: Untagged
@@ -175,6 +176,19 @@ MonoBehaviour:
   m_isRichTextEditingAllowed: 0
   m_LineLimit: 0
   m_InputValidator: {fileID: 0}
+--- !u!114 &-5501004999568326519
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7196644978949101372}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee083d19b97da2b4ebb037594591c4d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Placeholder: {fileID: 7196644979713780418}
 --- !u!1 &7196644979154155380
 GameObject:
   m_ObjectHideFlags: 0

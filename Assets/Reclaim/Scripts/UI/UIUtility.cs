@@ -29,7 +29,7 @@ public static class UIUtility
             Image spriteRenderer = spriteGo.GetComponent<Image>();
             spriteRenderer.sprite = sprite;
             spriteGo.transform.SetParent(parent);
-            spriteGo.AddComponent<InventoryItemMono>().Init(source, item);
+            spriteGo.GetComponent<InventoryItemMono>().Init(source, item);
             return spriteGo;
         }
 

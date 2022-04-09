@@ -5,21 +5,14 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using System.Linq;
 
 public class InventoryManagerMono : UpdatableUI, IDropHandler
 {
     public Action ItemDropped;
     public TextMeshProUGUI Name;
-    Transform m_InventoryView;
-    public Transform InventoryView
-    {
-        get
-        {
-            if (m_InventoryView == null)
-                m_InventoryView = transform.Find("InventoryView").transform;
-            return m_InventoryView;
-        }
-    }
+    public Transform InventoryView;
+    
     public IEntity Source;
     Dictionary<IEntity, GameObject> m_Items = new Dictionary<IEntity,GameObject>();
 
@@ -61,7 +54,15 @@ public class InventoryManagerMono : UpdatableUI, IDropHandler
         foreach (var item in inventory)
         {
             if (!m_Items.ContainsKey(item))
-                m_Items.Add(item, UIUtility.CreateItemGameObject(Source, item, InventoryView));
+            {
+                if(item.HasComponent(typeof(Stackable)))
+                {
+                    if(!m_Items.Keys.Any(k => k.Name == item.Name))
+                       m_Items.Add(item, UIUtility.CreateItemGameObject(Source, item, InventoryView));
+                }
+                else
+                    m_Items.Add(item, UIUtility.CreateItemGameObject(Source, item, InventoryView));
+            }
         }
     }
 
@@ -72,6 +73,9 @@ public class InventoryManagerMono : UpdatableUI, IDropHandler
 
     public void OnDrop(PointerEventData eventData)
     {
+        if (eventData.pointerDrag == null || eventData.pointerDrag.GetComponent<InventoryItemMono>() == null)
+            return;
+
         IEntity source = eventData.pointerDrag.GetComponent<InventoryItemMono>().Source;
         IEntity item = eventData.pointerDrag.GetComponent<InventoryItemMono>().ItemObject;
 
