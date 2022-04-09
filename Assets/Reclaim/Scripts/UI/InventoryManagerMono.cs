@@ -76,6 +76,7 @@ public class InventoryManagerMono : UpdatableUI, IDropHandler
         if (eventData.pointerDrag == null || eventData.pointerDrag.GetComponent<InventoryItemMono>() == null)
             return;
 
+        eventData.pointerDrag.GetComponent<InventoryItemMono>().AllowConxtMenuOptions = true;
         IEntity source = eventData.pointerDrag.GetComponent<InventoryItemMono>().Source;
         IEntity item = eventData.pointerDrag.GetComponent<InventoryItemMono>().ItemObject;
 

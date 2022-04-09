@@ -164,6 +164,7 @@ public class EnchantmentManagerMono : EscapeableMono
 
         newObject.CleanupComponents();
         Result.ItemMono = UIUtility.CreateItemGameObject(source, newObject, Result.transform).GetComponent<InventoryItemMono>();
+        Result.ItemMono.AllowConxtMenuOptions = false;
         NewAssetName.text = ItemToEnchant.ItemMono.ItemObject.Name;
     }
 }

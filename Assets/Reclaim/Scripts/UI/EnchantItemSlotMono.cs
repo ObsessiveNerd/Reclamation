@@ -31,6 +31,7 @@ public class EnchantItemSlotMono : MonoBehaviour, IDropHandler
             BeforeDrop?.Invoke(ItemMono);
             eventData.pointerDrag.GetComponent<DragAndDrop>().Set(transform.position, transform);
             ItemMono = eventData.pointerDrag.GetComponent<InventoryItemMono>();
+            ItemMono.AllowConxtMenuOptions = false;
             Dropped?.Invoke(ItemMono);
         }
     }

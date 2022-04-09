@@ -13,6 +13,7 @@ public class InventoryItemMono : ItemMono, IPointerClickHandler
 
     public GameObject StackableView;
     public TextMeshProUGUI ItemNumberText;
+    public bool AllowConxtMenuOptions = true;
 
     public void Init(IEntity source, IEntity thisObject)
     {
@@ -32,7 +33,7 @@ public class InventoryItemMono : ItemMono, IPointerClickHandler
     public void OnPointerClick(PointerEventData eventData)
     {
         Debug.Log("Click");
-        if (eventData.button == PointerEventData.InputButton.Left)
+        if (eventData.button == PointerEventData.InputButton.Left && AllowConxtMenuOptions)
         {
             if (Source == null || ItemObject == null)
                 return;
@@ -51,7 +52,7 @@ public class InventoryItemMono : ItemMono, IPointerClickHandler
         var result = ItemObject.FireEvent(getContextMenuActions).GetValue<List<ContextMenuButton>>(EventParameters.InventoryContextActions );
         getContextMenuActions.Release();
 
-        var contextMenu = ContextMenuMono.CreateNewContextMenu(); //FindObjectOfType<ContextMenuMono>();
+        var contextMenu = ContextMenuMono.CreateNewContextMenu();
         var cmm = contextMenu.GetComponent<ContextMenuMono>();
 
         foreach (var action in result)
