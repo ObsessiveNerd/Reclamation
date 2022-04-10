@@ -28,6 +28,11 @@ public class Room
     //    m_Doors.Clear();
     //}
 
+    public bool ContainsPoint(Point p)
+    {
+        return m_RoomTiles.Contains(p) || m_Hallways.Contains(p);
+    }
+
     void AddWallPoint(Point p)
     {
         if (m_RoomTiles.Contains(p) || m_Hallways.Contains(p))

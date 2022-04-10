@@ -1,7 +1,7 @@
 StairsUp: false
 StairsDown: true
-ContainsBoss: false
-AverageMosterCR: 5
+ContainsBoss: true
+AverageMosterCR: 1
 MonsterTypes:
 SpecialItems:
 TileType:Textures/Sprites/Environment/td_world_floor_dirt_

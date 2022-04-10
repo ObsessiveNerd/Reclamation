@@ -43,6 +43,7 @@ public static class GameEventId
 
     //Factions
     public const string GetFaction = nameof(GetFaction);
+    public const string SetFaction = nameof(SetFaction);
 
     //Inventory
     public const string OpenInventory = nameof(OpenInventory);
@@ -293,6 +294,7 @@ public static class GameEventId
 public static class EventParameters
 {
     public const string InputDirection = nameof(InputDirection);
+    public const string Faction = nameof(Faction);
     public const string TakeTurn = nameof(TakeTurn);
     public const string UpdateWorldView = nameof(UpdateWorldView);
     public const string CleanupComponents = nameof(CleanupComponents);

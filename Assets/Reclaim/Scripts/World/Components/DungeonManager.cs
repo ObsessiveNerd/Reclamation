@@ -232,6 +232,22 @@ public class DungeonManager : GameService
         }
     }
 
+    public Point GetRandomValidPointInSameRoom(Point startPoint)
+    {
+        if (DungeonGenerator == null)
+            return new Point(1, 1);
+        else
+        {
+            foreach(var room in DungeonGenerator.Rooms)
+            {
+                if (room.ContainsPoint(startPoint))
+                    return room.GetValidPoint();
+            }
+        }
+
+        return Point.InvalidPoint;
+    }
+
     public void AddValidPoint(HashSet<Point> validPoints)
     {
         foreach (Point p in validPoints)

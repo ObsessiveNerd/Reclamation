@@ -1,7 +1,7 @@
 StairsUp: true
 StairsDown: true
 ContainsBoss: false
-AverageMosterCR: 5
+AverageMosterCR: 4
 MonsterTypes:
 SpecialItems:
 TileType:Textures/Sprites/Environment/td_world_floor_mossy_

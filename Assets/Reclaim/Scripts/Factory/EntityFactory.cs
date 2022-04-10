@@ -179,7 +179,7 @@ public static class EntityFactory
 
     public static string GetRandomMonsterBPName()
     {
-        var list = BlueprintTypeMap[kMonstersPath];
+        var list = BlueprintTypeMap[Path.Combine(kMonstersPath, GameService.CurrentLevel.ToString())];
         return list[RecRandom.Instance.GetRandomValue(0, list.Count)];
     }
 

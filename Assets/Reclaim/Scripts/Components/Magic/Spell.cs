@@ -30,12 +30,9 @@ public class Spell : EntityComponent
         RegisteredEvents.Add(GameEventId.ManaCost);
         RegisteredEvents.Add(GameEventId.GetInfo);
         RegisteredEvents.Add(GameEventId.SaveFailed);
-        RegisteredEvents.Add(GameEventId.CastSpellEffect);
         RegisteredEvents.Add(GameEventId.GetSpellType);
         RegisteredEvents.Add(GameEventId.GetContextMenuActions);
     }
-
-    protected virtual void CastSpellEffect(GameEvent gameEvent){ }
 
     public override void HandleEvent(GameEvent gameEvent)
     {
@@ -52,11 +49,6 @@ public class Spell : EntityComponent
         {
             Dictionary<string, string> info = gameEvent.GetValue<Dictionary<string, string>>(EventParameters.Info);
             info.Add($"{nameof(Spell)}{Guid.NewGuid()}", $"Mana cost: {ManaCost}");
-        }
-
-        else if (gameEvent.ID == GameEventId.CastSpellEffect)
-        {
-            CastSpellEffect(gameEvent);
         }
 
         else if (gameEvent.ID == GameEventId.SaveFailed)

@@ -25,11 +25,16 @@ public class Faction : EntityComponent
     {
         ID = (FactionId)Enum.Parse(typeof(FactionId), faction);
         RegisteredEvents.Add(GameEventId.GetFaction);
+        RegisteredEvents.Add(GameEventId.SetFaction);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
     {
-        gameEvent.Paramters[EventParameters.Value] = this;
+        if (gameEvent.ID == GameEventId.GetFaction)
+            gameEvent.Paramters[EventParameters.Value] = this;
+
+        else if (gameEvent.ID == GameEventId.SetFaction)
+            ID = gameEvent.GetValue<FactionId>(EventParameters.Faction);
     }
 }
 

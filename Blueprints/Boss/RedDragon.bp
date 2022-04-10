@@ -21,7 +21,7 @@
 	Position:PositionPoint=0
 	InteractOnTileOvertake
 	InteractsWithWorld
-	Stats:Str=35,Agi=20,Con=50,Wis=25,Int=25,Cha=50,PrimaryStatType=Str,AttributePoints=0
+	Stats:Str=20,Agi=15,Con=35,Wis=25,Int=25,Cha=50,PrimaryStatType=Str,AttributePoints=0
 	Level:CurrentLevel=5,CurrentExp=0
 	Health:MaxHealth=1000,CurrentHealth=0
 	Mana:MaxMana=1000,CurrentMana=0

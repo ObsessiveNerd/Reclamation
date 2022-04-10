@@ -1,0 +1,33 @@
+<SkeletonMage> (
+	GraphicContainer:SpritePath=Textures/Sprites/Monsters/td_monsters_skeleton_mage_d1
+	Defense
+	Energy:EnergyRegineration=1,CurrentEnergy=0,HasHadTurnStarted=False
+	InteractsWithWorld
+	InteractOnTileOvertake
+	Position:PositionPoint=0
+	Fear
+	Wander
+	AIController
+	CombatRating
+	BlocksNonHostileMovement
+	FOV:FOVRange=5
+	EntityTypeContainer:Type=Creature
+	RegisterWithTimeSystem
+	Weighted:Weight=500.0
+	Inventory:InventoryItems=
+	Aggression
+	Faction:ID=Undead
+	Body
+	AIFOVHandler
+	PackTactics:PartyLeaderId=
+	Move
+	Level:CurrentLevel=17,CurrentExp=0
+	Stats:Str=8,Agi=10,Con=18,Wis=9,Int=22,Cha=8,PrimaryStatType=Int,AttributePoints=0
+	Info:InfoMessage="It's a nasty little goblin.  Its slimy green skin reeks with the pungent odor of dirt and mold."
+	Health:MaxHealth=10,CurrentHealth=10
+	Mana:MaxMana=10,CurrentMana=10
+	ManaRegen:RegenAmount=3,RegenSpeed=5
+	EquipmentSlot:EquipmentId=Spellbook,BodyPartType=Arm
+	EquipmentSlot:EquipmentId=,BodyPartType=Arm
+	Sound:SoundPath=Sounds/MONSTERS_CREATURES/ORCH_Ugh_01_mono,Key=Died
+)
