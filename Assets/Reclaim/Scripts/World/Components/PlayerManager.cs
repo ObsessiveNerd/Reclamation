@@ -25,6 +25,11 @@ public class PlayerManager : GameService
         return activeAbilities.Distinct().ToList();
     }
 
+    public List<IEntity> GetAllPlayers()
+    {
+        return m_Players.ToList();
+    }
+
     public IEntity GetActivePlayer()
     {
         return m_ActivePlayer?.Value;

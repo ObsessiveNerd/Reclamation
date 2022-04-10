@@ -7,6 +7,19 @@ using UnityEngine;
 
 public static class EntityFactory
 {
+     private static List<string> s_BossEntities = new List<string>();
+    public static List<string> BossEntities
+    {
+        get
+        {
+            if (s_BossEntities == null)
+                s_BossEntities = new List<string>();
+            if (m_Blueprints.Count == 0)
+                InitBlueprints();
+            return s_BossEntities;
+        }
+    }
+
     private static List<string> s_EnvironmentEntities = new List<string>();
     public static List<string> EnvironmentEntities
     {
@@ -104,6 +117,9 @@ public static class EntityFactory
 
             if (bpPath.StartsWith(kEnvironmentPath))
                 s_EnvironmentEntities.Add(bpName);
+
+            if (bpPath.StartsWith(kBossesPath))
+                s_BossEntities.Add(bpName);
         }
     }
 
@@ -165,6 +181,11 @@ public static class EntityFactory
     {
         var list = BlueprintTypeMap[kMonstersPath];
         return list[RecRandom.Instance.GetRandomValue(0, list.Count)];
+    }
+
+    public static string GetRandomBossBPName()
+    {
+        return BossEntities[RecRandom.Instance.GetRandomValue(0, s_BossEntities.Count)];
     }
 
     public static string GetRandomItemBPName(int rarity)

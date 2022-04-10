@@ -55,6 +55,16 @@ public class PlayerInputController : InputControllerBase
                 Self.FireEvent(e);
             }
 
+            else if(Input.GetKeyDown(KeyCode.RightControl))
+            {
+                Services.StateManagerService.GameOver(true);
+            }
+
+            else if(Input.GetKeyDown(KeyCode.RightAlt))
+            {
+                Services.StateManagerService.GameOver(false);
+            }
+
 #endif
             else if (InputBinder.PerformRequestedAction(RequestedAction.FireRangedWeapon))
             {

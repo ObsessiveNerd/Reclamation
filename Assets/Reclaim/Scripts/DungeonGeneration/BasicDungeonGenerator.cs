@@ -430,7 +430,7 @@ public class BasicDungeonGenerator : IDungeonGenerator
         }
     }
 
-    public virtual DungeonGenerationResult GenerateDungeon(DungeonMetaData metaData)
+    public virtual DungeonGenerationResult GenerateDungeon(DungeonMetaData metaData, bool finalLevel = false)
     {
         m_Result = new DungeonGenerationResult();
         
@@ -461,12 +461,13 @@ public class BasicDungeonGenerator : IDungeonGenerator
             SpawnStairs();
         }
 
-        //TODO
         if (metaData.SpawnBoss)
         {
             Room randomRoom = Rooms[RecRandom.Instance.GetRandomValue(1, Rooms.Count)];
-            IEntity goblin = EntityFactory.CreateEntity("RedDragon");
-            Spawner.Spawn(goblin, randomRoom.GetValidPoint());
+            IEntity boss = EntityFactory.CreateEntity(EntityFactory.GetRandomBossBPName());
+            if (finalLevel)
+                boss.AddComponent(new WinGameOnDeath());
+            Spawner.Spawn(boss, randomRoom.GetValidPoint());
         }
 
         return m_Result;

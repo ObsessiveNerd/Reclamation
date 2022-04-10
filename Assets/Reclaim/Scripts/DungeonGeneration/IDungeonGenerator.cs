@@ -25,7 +25,7 @@ public class DungeonGenerationResult
 
 public interface IDungeonGenerator
 {
-    DungeonGenerationResult GenerateDungeon(DungeonMetaData metaData);
+    DungeonGenerationResult GenerateDungeon(DungeonMetaData metaData, bool finalLevel);
     void Clean();
     List<Room> Rooms { get; }
 }
