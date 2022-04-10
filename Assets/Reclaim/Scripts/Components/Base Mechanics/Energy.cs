@@ -49,6 +49,7 @@ public class Energy : EntityComponent
                 break;
             case GameEventId.SkipTurn:
                 CurrentEnergy = 0;
+                HasHadTurnStarted = true;
                 break;
             case GameEventId.GetEnergy:
                 gameEvent.Paramters[EventParameters.Value] = CurrentEnergy;

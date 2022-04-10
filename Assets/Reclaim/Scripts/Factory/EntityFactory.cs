@@ -177,15 +177,16 @@ public static class EntityFactory
         return line;
     }
 
-    public static string GetRandomMonsterBPName()
+    public static string GetRandomMonsterBPName(DungeonMetaData dmd)
     {
-        var list = BlueprintTypeMap[Path.Combine(kMonstersPath, GameService.CurrentLevel.ToString())];
+        var list = BlueprintTypeMap[Path.Combine(kMonstersPath, dmd.AverageMosterCR.ToString())];
         return list[RecRandom.Instance.GetRandomValue(0, list.Count)];
     }
 
-    public static string GetRandomBossBPName()
+    public static string GetBossNameForArea(DungeonMetaData dmd)
     {
-        return BossEntities[RecRandom.Instance.GetRandomValue(0, s_BossEntities.Count)];
+         var list = BlueprintTypeMap[Path.Combine(kBossesPath, dmd.AverageMosterCR.ToString())];
+        return list[RecRandom.Instance.GetRandomValue(0, list.Count)];
     }
 
     public static string GetRandomItemBPName(int rarity)

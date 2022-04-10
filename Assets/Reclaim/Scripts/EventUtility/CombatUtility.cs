@@ -185,10 +185,10 @@ public static class CombatUtility
             .With(amAttacking.Paramters);
 
         GameEvent spellCast = GameEventPool.Get(GameEventId.CastSpellEffect)
-                                .With(EventParameters.Entity, source.ID);
+                                .With(EventParameters.Entity, source.ID)
+                                .With(EventParameters.Target, target.ID);
         weapon.FireEvent(spellCast);
         spellCast.Release();
-        castSpell.Release();
 
         GameEvent playSound = GameEventPool.Get(GameEventId.Playsound)
                                 .With(EventParameters.SoundSource, source.ID)

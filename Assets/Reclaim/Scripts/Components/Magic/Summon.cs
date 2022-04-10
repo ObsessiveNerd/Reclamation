@@ -24,6 +24,10 @@ public class Summon : EntityComponent
         if(gameEvent.ID == GameEventId.CastSpellEffect)
         {
             IEntity spellSource = Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameters.Entity));
+            IEntity spellTarget = Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameters.Target));
+
+            var validPoints = Services.DungeonService.GetValidPointsAround(Services.EntityMapService.GetPointWhereEntityIs(spellTarget), 1);
+
             for(int i = 0; i < Amount; i++)
             {
                 IEntity e = EntityFactory.CreateEntity(SummonName);
@@ -35,8 +39,27 @@ public class Summon : EntityComponent
                     e.FireEvent(setFaction);
                 }
 
-                var point = Services.DungeonService.GetRandomValidPointInSameRoom(Services.EntityMapService.GetPointWhereEntityIs(spellSource));
+                if (!e.HasComponent(typeof(PackTactics)))
+                    e.AddComponent(new PackTactics(spellSource.ID));
+                else
+                    e.GetComponent<PackTactics>().PartyLeaderId = spellSource.ID;
+
+                e.AddComponent(new DestroyAfterTurns(0, 8, true));
+
+                GameEvent skipTurn = GameEventPool.Get(GameEventId.SkipTurn);
+                var point = validPoints[0];
+
+                GameEvent fireRangedWeapon = GameEventPool.Get(GameEventId.FireRangedAttack)
+                    .With(EventParameters.Entity, WorldUtility.GetGameObject(spellSource).transform.position)
+                    .With(EventParameters.Target, WorldUtility.GetGameObject(Services.WorldDataQuery.GetEntityOnTile(point)).transform.position);
+                Self.FireEvent(fireRangedWeapon).Release();
+                fireRangedWeapon.Release();
+
                 Spawner.Spawn(e, point);
+                
+                e.FireEvent(skipTurn);
+                skipTurn.Release();
+                validPoints.RemoveAt(0);
             }
         }
     }

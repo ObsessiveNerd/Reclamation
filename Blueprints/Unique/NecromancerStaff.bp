@@ -1,0 +1,14 @@
+<NecromancerStaff> (
+	GraphicContainer:SpritePath=Textures/Sprites/Weapons/td_items_weapon_staff
+	Portrait:SpritePath=Textures/Portraits/WeaponAndArmorIcons/WeaponAndArmorIcons_png/sets/cultist/transparent/staff_cl_t_01
+	Position:PositionPoint=0
+	InteractOnTileOvertake
+	EntityTypeContainer:Type=Item
+	Item:Rarity=Mythic
+	Equipment:PreferredBodyPartWhenEquipped=Arm
+	DealDamage:DamageType=Dark,Dice=1d6
+	SpellContainer:MaxSpell=5,RandomSpells=False,SpecificSpell=SummonSkeletonWarriors
+	WeaponType:Type=Melee
+	Name:PrettyName=Necromancer Staff
+	TwoHanded
+)

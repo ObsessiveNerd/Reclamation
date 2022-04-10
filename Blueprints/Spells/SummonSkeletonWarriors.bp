@@ -5,4 +5,5 @@
 	Sound:SoundPath=Sounds/MAGIC_SPELLS/MAGIC_SPELL_Dark_Pulse_Echo_Subtle_stereo,Key=Cast
 	Name:PrettyName=Summon Skeleton Warriors
 	Summon:SummonName=SkeletonWarrior,Amount=2
+	Ammo:TexturePath=Textures/Sprites/Environment/td_world_magic_c
 )

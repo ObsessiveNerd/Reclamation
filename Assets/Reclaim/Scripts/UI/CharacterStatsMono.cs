@@ -47,6 +47,7 @@ public class CharacterStatsMono : UpdatableUI//, IUpdatableUI
                                                 .With(EventParameters.StatBoostAmount, 1);
                     source.FireEvent(boostStat);
                     boostStat.Release();
+                    Services.WorldUIService.UpdateUI();
                 });
                 statMono.Button.onClick.AddListener(() => UpdateUI());
                 statMono.SetData();

@@ -6,14 +6,14 @@ public class RangedAttackMono : MonoBehaviour
 {
     Vector2 startPos;
     float distance;
-    float speed = 1.0f;
+    float speed = 2.0f;
     bool isSetup = false;
 
     public void Setup(Vector2 destination)
     {
         startPos = transform.position;
         distance = Vector2.Distance(startPos, destination);
-        GetComponent<Rigidbody2D>().velocity = (destination - (Vector2)transform.position)* speed;
+        GetComponent<Rigidbody2D>().velocity = (destination - (Vector2)transform.position) * speed;
         isSetup = true;
     }
 

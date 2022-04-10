@@ -13,6 +13,7 @@ public class DungeonMetaData
     public bool SpawnBoss;
     public string TileType;
     public string WallType;
+    public int AverageMosterCR;
 
     public DungeonMetaData(string dataPath)
     {
@@ -46,6 +47,9 @@ public class DungeonMetaData
                             break;
                         case LevelMetaData.WallType:
                             WallType = keyValue[1];
+                            break;
+                        case LevelMetaData.AverageMosterCR:
+                            AverageMosterCR = int.Parse(keyValue[1]);
                             break;
                     }
                 }
@@ -230,6 +234,20 @@ public class DungeonManager : GameService
             int roomIndex = RecRandom.Instance.GetRandomValue(0, DungeonGenerator.Rooms.Count - 1);
             return DungeonGenerator.Rooms[roomIndex].GetValidPoint(null);
         }
+    }
+
+    public List<Point> GetValidPointsAround(Point startPoint, int range)
+    {
+        if (DungeonGenerator != null)
+        {
+            foreach(var room in DungeonGenerator.Rooms)
+            {
+                if (room.ContainsPoint(startPoint))
+                    return room.GetValidPointsAround(startPoint, range);
+            }
+        }
+
+        return new List<Point>();
     }
 
     public Point GetRandomValidPointInSameRoom(Point startPoint)

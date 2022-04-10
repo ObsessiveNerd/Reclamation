@@ -23,7 +23,12 @@ public class InventoryItemMono : ItemMono, IPointerClickHandler
         if (ItemObject.HasComponent(typeof(Stackable)))
         {
             StackableView.SetActive(true);
-            var count = Source.GetComponent<Inventory>().InventoryItems.Where(item => item.Name == ItemObject.Name).Count();
+            var count = 1;
+            if (Source.HasComponent(typeof(Inventory)))
+                count = Source.GetComponent<Inventory>().InventoryItems.Where(item => item.Name == ItemObject.Name).Count();
+            else if (Source.HasComponent(typeof(ItemContainer)))
+                count = Source.GetComponent<ItemContainer>().IDToEntityMap.Values.Where(e => e.Name == ItemObject.Name).Count();
+
             ItemNumberText.text = $"x{count}";
         }
         else

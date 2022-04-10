@@ -263,6 +263,29 @@ public class Room
         
     }
 
+    public List<Point> GetValidPointsAround(Point p, int range)
+    {
+        List<Point> points = new List<Point>();
+
+        int x = p.x - range;
+        int y = p.y - range;
+
+        while(x < p.x + range)
+        {
+            while(y < p.y + range)
+            {
+                Point pointToCheck = new Point(x, y);
+                if (m_RoomTiles.Contains(pointToCheck) || m_Hallways.Contains(pointToCheck))
+                    points.Add(pointToCheck);
+                y++;
+            }
+            y = p.y - range;
+            x++;
+        }
+
+        return points;
+    }
+
     public Point GetValidPoint(HashSet<string> restrictions = null)
     {
         int x = -1;
@@ -460,7 +483,7 @@ public class BasicDungeonGenerator : IDungeonGenerator
         {
             //TODO: this will eventually need to work
             if(!Services.NetworkService.IsConnected)
-                SpawnEnemies();
+                SpawnEnemies(metaData);
             
             SpawnItems();
             SpawnStairs();
@@ -469,7 +492,7 @@ public class BasicDungeonGenerator : IDungeonGenerator
         if (metaData.SpawnBoss)
         {
             Room randomRoom = Rooms[RecRandom.Instance.GetRandomValue(1, Rooms.Count)];
-            IEntity boss = EntityFactory.CreateEntity(EntityFactory.GetRandomBossBPName());
+            IEntity boss = EntityFactory.CreateEntity(EntityFactory.GetBossNameForArea(metaData));
             if (finalLevel)
                 boss.AddComponent(new WinGameOnDeath());
             Spawner.Spawn(boss, randomRoom.GetValidPoint());
@@ -568,12 +591,12 @@ public class BasicDungeonGenerator : IDungeonGenerator
         m_LeafNodes.Clear();
     }
 
-    void SpawnEnemies()
+    void SpawnEnemies(DungeonMetaData dmd)
     {
         for (int i = 0; i < RecRandom.Instance.GetRandomValue(2, 9); i++)
         {
             Room randomRoom = Rooms[RecRandom.Instance.GetRandomValue(1, Rooms.Count)];
-            IEntity enemy = EntityFactory.CreateEntity(EntityFactory.GetRandomMonsterBPName());
+            IEntity enemy = EntityFactory.CreateEntity(EntityFactory.GetRandomMonsterBPName(dmd));
             Spawner.Spawn(enemy, randomRoom.GetValidPoint());
         }
     }
