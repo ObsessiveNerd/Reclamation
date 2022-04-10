@@ -72,6 +72,33 @@ public class WorldDataQuery : GameService
         return closestEnemy;
     }
 
+    public IEntity GetClosestAlly(IEntity source)
+    {
+        IEntity ally = source;
+        Point sourcePoint = m_EntityToPointMap[source.ID];
+        foreach (var tile  in m_Tiles.Values)
+        {
+            IEntity e = tile.CreatureSlot;
+            if (e == null) continue;
+
+            Demeanor demeanor = Factions.GetDemeanorForTarget(source, e);
+            if (demeanor == Demeanor.Friendly)
+            {
+                if (ally == null)
+                    ally = e;
+                else
+                {
+                    if (Point.Distance(m_EntityToPointMap[e.ID], sourcePoint) < Point.Distance(m_EntityToPointMap[ally.ID], sourcePoint))
+                    {
+                        ally = e;
+                    }
+                }
+            }
+        }
+
+        return ally;
+    }
+
     public List<string> GetPlayableCharacters()
     {
         return m_Players.Select(e => e.ID).ToList();

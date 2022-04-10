@@ -89,7 +89,17 @@ public class Aggression : EntityComponent
                 var spell = spells[RecRandom.Instance.GetRandomValue(0, spells.Count)];
 
                 if (spell.HasComponent(typeof(Heal)))
-                    target = Self;
+                {
+                    GameEvent getVisiblePoints = GameEventPool.Get(GameEventId.GetVisibleTiles)
+                                            .With(EventParameters.VisibleTiles, new List<Point>());
+                    List<Point> visiblePoints = FireEvent(Self, getVisiblePoints).GetValue<List<Point>>(EventParameters.VisibleTiles);
+                    getVisiblePoints.Release();
+
+                    target = Services.WorldDataQuery.GetClosestAlly(Self);
+                    var pos = Services.WorldDataQuery.GetPointWhereEntityIs(target);
+                    if (!visiblePoints.Contains(pos))
+                        target = Self;
+                }
 
                 CombatUtility.CastSpell(Self, target, spell);
                 
