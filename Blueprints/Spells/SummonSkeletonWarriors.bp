@@ -3,7 +3,8 @@
 	Spell:ManaCost=4,SpellFailed=None,SpellType=None
 	Range
 	Sound:SoundPath=Sounds/MAGIC_SPELLS/MAGIC_SPELL_Dark_Pulse_Echo_Subtle_stereo,Key=Cast
-	Name:PrettyName=Summon Skeleton Warriors
+	Name:PrettyName="Summon Skeleton Warriors"
 	Summon:SummonName=SkeletonWarrior,Amount=2
 	Ammo:TexturePath=Textures/Sprites/Environment/td_world_magic_c
+	Info:InfoMessage="Summon 2 undead skeletan warriors to fight by your side for a time."
 )

@@ -175,9 +175,15 @@ public static class CombatUtility
 
     static void CastSpellAtTarget(IEntity weapon, IEntity source, IEntity target)
     {
+        string targetId = target.ID;
+
         GameEvent amAttacking = GameEventPool.Get(GameEventId.AmAttacking)
+            .With(EventParameters.Entity, source.ID)
+            .With(EventParameters.Target, targetId)
             .With(EventParameters.DamageList, new List<Damage>());
         weapon.FireEvent(amAttacking);
+
+        target = Services.EntityMapService.GetEntity(amAttacking.GetValue<string>(EventParameters.Target));
 
         GameEvent castSpell = GameEventPool.Get(GameEventId.TakeDamage)
             .With(EventParameters.Attack, weapon.ID)

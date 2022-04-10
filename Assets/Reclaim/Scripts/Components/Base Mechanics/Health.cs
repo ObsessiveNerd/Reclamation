@@ -27,6 +27,7 @@ public class Health : EntityComponent
 
     public override void Start()
     {
+        base.Start();
         CurrentHealth = CurrentHealth > 0 ? CurrentHealth : MaxHealth;
     }
 

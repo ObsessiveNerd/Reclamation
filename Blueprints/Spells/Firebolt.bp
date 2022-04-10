@@ -6,4 +6,5 @@
 	WeaponType:Type=RangedSpell
 	Sound:SoundPath=Sounds/MAGIC_SPELLS/MAGIC_SPELL_Flame_01_mono,Key=Cast
 	Ammo:TexturePath=Textures/Sprites/Effects/tiny_dungeon_fx_fireball
+	Info:InfoMessage="Fire a small bolt of flame toward a single target."
 )

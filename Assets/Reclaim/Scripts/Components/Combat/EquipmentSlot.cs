@@ -28,6 +28,7 @@ public class EquipmentSlot : EntityComponent
 
     public override void Start()
     {
+        base.Start();
          if (string.IsNullOrEmpty(EquipmentId))
             return;
 

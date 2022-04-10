@@ -48,6 +48,7 @@ public class Stats : EntityComponent
 
     public override void Start()
     {
+        base.Start();
         GameEvent init = GameEventPool.Get(GameEventId.BoostStat)
                             .With(EventParameters.Stats, this);
         Self.FireEvent(init);

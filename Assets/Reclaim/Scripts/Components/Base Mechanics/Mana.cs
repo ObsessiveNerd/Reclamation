@@ -27,6 +27,7 @@ public class Mana : EntityComponent
 
     public override void Start()
     {
+        base.Start();
         CurrentMana = CurrentMana > 0 ? CurrentMana : MaxMana;
     }
 

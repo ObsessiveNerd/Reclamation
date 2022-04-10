@@ -16,6 +16,7 @@ public class PackTactics : EntityComponent
 
     public override void Start()
     {
+        base.Start();
         Services.PartyService.LookingForGroup(Self);
     }
 

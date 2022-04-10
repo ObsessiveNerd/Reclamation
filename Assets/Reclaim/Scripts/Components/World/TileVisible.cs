@@ -26,6 +26,7 @@ public class TileVisible : EntityComponent
 
     public override void Start()
     {
+        base.Start();
         m_Tile = Self.GetComponent<Tile>();
         //FireEvent(Self, GameEventPool.Get(GameEventId.VisibilityUpdated, new .With(EventParameters.Value, HasBeenVisited)));
         GameEvent ge = GameEventPool.Get(GameEventId.VisibilityUpdated).With(EventParameters.Value, HasBeenVisited);

@@ -87,6 +87,10 @@ public class Aggression : EntityComponent
 
                 var spells = CombatUtility.GetSpells(EntityQuery.GetEntity(id));
                 var spell = spells[RecRandom.Instance.GetRandomValue(0, spells.Count)];
+
+                if (spell.HasComponent(typeof(Heal)))
+                    target = Self;
+
                 CombatUtility.CastSpell(Self, target, spell);
                 
                 int howToMove = RecRandom.Instance.GetRandomValue(0, 100);

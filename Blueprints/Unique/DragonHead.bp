@@ -9,4 +9,5 @@
 	DealDamage:DamageType=Fire,Dice=1d10
 	SpellContainer:MaxSpell=5,RandomSpells=False,SpecificSpell=Fireball
 	WeaponType:Type=Melee
+	Name:PrettyName="Dragon Head"
 )

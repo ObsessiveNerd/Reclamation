@@ -97,6 +97,12 @@ public class SpellcasterPlayerController : InputControllerBase
                 return;
             }
 
+            if(m_Attack.HasComponent(typeof(SelfTargetingSpell)))
+            { 
+                ConfirmSpellCast(gameEvent);
+                return;
+            }
+
             MoveDirection desiredDirection = InputUtility.GetMoveDirection();
 
             if (desiredDirection != MoveDirection.None)
@@ -113,25 +119,7 @@ public class SpellcasterPlayerController : InputControllerBase
 
             if(Input.GetKeyDown(KeyCode.Return) || SpellSelected(out int spell) && spell == m_SpellIndex)
             {
-                //AttackType weaponType = CombatUtility.GetWeaponType(m_Attack);
-                IEntity target = WorldUtility.GetEntityAtPosition(m_TileSelection);
-
-                CombatUtility.CastSpell(Self, target, m_Attack);
-                //CombatUtility.Attack(Self, target, m_Attack, weaponType);
-
-                EndSelection(m_TileSelection);
-
-                GameEvent eb = GameEventPool.Get(GameEventId.EndSelection)
-                                    .With(EventParameters.TilePosition, m_TileSelection);
-                m_Attack.FireEvent(eb).Release();
-
-                GameEvent checkForEnergy = GameEventPool.Get(GameEventId.HasEnoughEnergyToTakeATurn).With(EventParameters.TakeTurn, false);
-                FireEvent(Self, checkForEnergy);
-                gameEvent.Paramters[EventParameters.TakeTurn] = (bool)checkForEnergy.Paramters[EventParameters.TakeTurn];
-                checkForEnergy.Release();
-
-                //GameEvent depleteMana = GameEventPool.Get(GameEventId.DepleteMana).With(EventParameters.Mana, m_ManaCost);
-                //FireEvent(Self, depleteMana).Release();
+                ConfirmSpellCast(gameEvent);
             }
 
             if (Input.GetKeyDown(KeyCode.Escape))
@@ -142,5 +130,28 @@ public class SpellcasterPlayerController : InputControllerBase
                 EndSelection(m_TileSelection);
             }
         }
+    }
+
+    void ConfirmSpellCast(GameEvent gameEvent)
+    {
+        //AttackType weaponType = CombatUtility.GetWeaponType(m_Attack);
+        IEntity target = WorldUtility.GetEntityAtPosition(m_TileSelection);
+
+        CombatUtility.CastSpell(Self, target, m_Attack);
+        //CombatUtility.Attack(Self, target, m_Attack, weaponType);
+
+        EndSelection(m_TileSelection);
+
+        GameEvent eb = GameEventPool.Get(GameEventId.EndSelection)
+                                    .With(EventParameters.TilePosition, m_TileSelection);
+        m_Attack.FireEvent(eb).Release();
+
+        GameEvent checkForEnergy = GameEventPool.Get(GameEventId.HasEnoughEnergyToTakeATurn).With(EventParameters.TakeTurn, false);
+        FireEvent(Self, checkForEnergy);
+        gameEvent.Paramters[EventParameters.TakeTurn] = (bool)checkForEnergy.Paramters[EventParameters.TakeTurn];
+        checkForEnergy.Release();
+
+        //GameEvent depleteMana = GameEventPool.Get(GameEventId.DepleteMana).With(EventParameters.Mana, m_ManaCost);
+        //FireEvent(Self, depleteMana).Release();
     }
 }

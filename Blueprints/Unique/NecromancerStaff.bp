@@ -9,6 +9,6 @@
 	DealDamage:DamageType=Dark,Dice=1d6
 	SpellContainer:MaxSpell=5,RandomSpells=False,SpecificSpell=SummonSkeletonWarriors
 	WeaponType:Type=Melee
-	Name:PrettyName=Necromancer Staff
+	Name:PrettyName="Necromancer Staff"
 	TwoHanded
 )

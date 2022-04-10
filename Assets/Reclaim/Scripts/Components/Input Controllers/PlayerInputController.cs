@@ -15,6 +15,7 @@ public class PlayerInputController : InputControllerBase
 
     public override void Start()
     {
+        base.Start();
         Services.WorldUIService.OpenSpellUI();
         Services.WorldUIService.UpdateUI();
     }

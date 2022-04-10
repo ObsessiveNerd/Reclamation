@@ -4,6 +4,8 @@
 	DealDamage:DamageType=Ice,Dice=1d4
 	Range
 	WeaponType:Type=RangedSpell
+	Name:PrettyName="Ice Ray"
 	Sound:SoundPath=Sounds/MAGIC_SPELLS/MAGIC_SPELL_Flame_03_mono,Key=Cast
 	Ammo:TexturePath=Textures/Sprites/Effects/tiny_dungeon_fx_iceball
+	Info:InfoMessage="Sends a ray of freezing ice toward a single target."
 )

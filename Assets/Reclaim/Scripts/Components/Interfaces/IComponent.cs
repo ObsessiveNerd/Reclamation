@@ -16,6 +16,8 @@ public interface IComponent
 
 public class EntityComponent : IComponent
 {
+    //public string ComponentID;
+
     public virtual void Init(IEntity self)
     {
         m_Self = self;
@@ -26,7 +28,11 @@ public class EntityComponent : IComponent
     //Priority right now is from 1 to 10
     public virtual int Priority { get { return 5; } }
 
-    public virtual void Start() { }
+    public virtual void Start() 
+    {
+        //if (string.IsNullOrEmpty(ComponentID))
+        //    ComponentID = IDManager.GetNewID();
+    }
 
     IEntity m_Self;
     public IEntity Self { get { return m_Self; } }

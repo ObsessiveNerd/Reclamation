@@ -31,21 +31,27 @@ public class Spell : EntityComponent
         RegisteredEvents.Add(GameEventId.GetInfo);
         RegisteredEvents.Add(GameEventId.SaveFailed);
         RegisteredEvents.Add(GameEventId.GetSpellType);
+        RegisteredEvents.Add(GameEventId.CastSpellEffect);
         RegisteredEvents.Add(GameEventId.GetContextMenuActions);
     }
+
+    public virtual void CastSpellEffect(GameEvent ge) { }
 
     public override void HandleEvent(GameEvent gameEvent)
     {
         if (gameEvent.ID == GameEventId.GetSpells)
             gameEvent.GetValue<HashSet<string>>(EventParameters.SpellList).Add(Self.ID);
 
-        else if(gameEvent.ID == GameEventId.GetSpellType)
+        else if (gameEvent.ID == GameEventId.GetSpellType)
             gameEvent.Paramters[EventParameters.SpellType] = SpellType;
 
         else if (gameEvent.ID == GameEventId.ManaCost)
             gameEvent.Paramters[EventParameters.Value] = ManaCost;
 
-        else if(gameEvent.ID == GameEventId.GetInfo)
+        else if (gameEvent.ID == GameEventId.CastSpellEffect)
+            CastSpellEffect(gameEvent);
+
+        else if (gameEvent.ID == GameEventId.GetInfo)
         {
             Dictionary<string, string> info = gameEvent.GetValue<Dictionary<string, string>>(EventParameters.Info);
             info.Add($"{nameof(Spell)}{Guid.NewGuid()}", $"Mana cost: {ManaCost}");

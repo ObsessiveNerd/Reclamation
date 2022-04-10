@@ -18,8 +18,10 @@ public class Wander : EntityComponent
 
     public override void Start()
     {
+        base.Start();
         m_Destination = PathfindingUtility.GetRandomValidPoint();
         m_CurrentPath = new List<Point>();
+        
     }
 
     public override void HandleEvent(GameEvent gameEvent)

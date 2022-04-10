@@ -3951,6 +3951,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: SpellExamination
       objectReference: {fileID: 0}
+    - target: {fileID: 996817972139651232, guid: b8d171ad0d3075f40923198af73d57e2,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 996817972139651233, guid: b8d171ad0d3075f40923198af73d57e2,
         type: 3}
       propertyPath: m_Pivot.x

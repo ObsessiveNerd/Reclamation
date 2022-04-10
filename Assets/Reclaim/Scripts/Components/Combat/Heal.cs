@@ -16,6 +16,7 @@ public class Heal : EntityComponent
     {
         base.Init(self);
         RegisteredEvents.Add(GameEventId.ApplyEffectToTarget);
+        RegisteredEvents.Add(GameEventId.CastSpellEffect);
         RegisteredEvents.Add(GameEventId.GetInfo);
     }
 
@@ -24,6 +25,13 @@ public class Heal : EntityComponent
         if (gameEvent.ID == GameEventId.ApplyEffectToTarget)
         {
             IEntity target = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameters.Entity));
+            GameEvent e = GameEventPool.Get(GameEventId.RestoreHealth)
+                                .With(EventParameters.Healing, HealAmount.Roll());
+            target.FireEvent(e).Release();
+        }
+        else if (gameEvent.ID == GameEventId.CastSpellEffect)
+        {
+            IEntity target = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameters.Target));
             GameEvent e = GameEventPool.Get(GameEventId.RestoreHealth)
                                 .With(EventParameters.Healing, HealAmount.Roll());
             target.FireEvent(e).Release();

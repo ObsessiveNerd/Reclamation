@@ -21,6 +21,12 @@ public class Renderer : EntityComponent
             GameEvent checkForAlteredSprite = FireEvent(Self, GameEventPool.Get(GameEventId.AlterSprite)
                     .With(EventParameters.Renderer, Image)
                     .With(EventParameters.RenderSprite, gameEvent.Paramters[EventParameters.RenderSprite]));
+
+            Point pos = Self.GetComponent<Position>().PositionPoint;
+            IEntity target = Services.WorldDataQuery.GetEntityOnTile(pos);
+
+            target.FireEvent(checkForAlteredSprite);
+
             Image.sprite = (Sprite)checkForAlteredSprite.Paramters[EventParameters.RenderSprite];
             checkForAlteredSprite.Release();
         }

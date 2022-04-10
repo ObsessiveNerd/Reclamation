@@ -1,0 +1,18 @@
+<CaptainsBrutalCleaver> (
+	GraphicContainer:SpritePath=Textures/Sprites/Weapons/td_items_weapon_sword
+	Portrait:SpritePath=Textures/Portraits/WeaponAndArmorIcons/WeaponAndArmorIcons_png/transparent/swords/swords_t_03
+	Position:PositionPoint=0
+	InteractOnTileOvertake
+	EntityTypeContainer:Type=Item
+	Item:Rarity=Mythic
+	WeaponType:Type=Melee
+	DealDamage:DamageType=Slashing,Dice=1d8
+	Equipment:PreferredBodyPartWhenEquipped=Arm
+	Value:Amount=500
+	Sound:SoundPath=Sounds/Melee/Swords/SWORD_Hit_Metal_Armor_RR5_mono,Key=AttackHit
+	Sound:SoundPath=Sounds/Classic/WHOOSH_Quick_Darker_mono,Key=AttackMiss
+	Name:PrettyName="Captains Brutal Cleaver"
+	DealDamage:DamageType=Electric,Dice=1d4
+	SpellContainer:MaxSpell=1,RandomSpells=False,SpecificSpell=BecomeEnraged
+	Cyan
+)

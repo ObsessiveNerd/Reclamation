@@ -7,4 +7,5 @@
 	Ammo:TexturePath=Textures/Sprites/Effects/tiny_dungeon_fx_fireball
 	AreaOfEffect:Range=3,AOEType=Circle
 	Name:PrettyName=Fireball
+	Info:InfoMessage="Cast a large fireball on a selected area"
 )

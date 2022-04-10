@@ -45,32 +45,35 @@ public class Defense : EntityComponent
             else
             {
                 IEntity weapon = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameters.Attack));
-                IEntity damageSource = Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameters.DamageSource));
-                GameEvent getSpellSaveDC = GameEventPool.Get(GameEventId.GetSpellSaveDC)
+                if(!weapon.HasComponent(typeof(SelfTargetingSpell)))
+                {
+                    IEntity damageSource = Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameters.DamageSource));
+                    GameEvent getSpellSaveDC = GameEventPool.Get(GameEventId.GetSpellSaveDC)
                     .With(EventParameters.SpellType, CombatUtility.GetSpellType(weapon))
                     .With(EventParameters.Value, -1);
-                int saveDC = damageSource.FireEvent(getSpellSaveDC).GetValue<int>(EventParameters.Value);
-                getSpellSaveDC.Release();
+                    int saveDC = damageSource.FireEvent(getSpellSaveDC).GetValue<int>(EventParameters.Value);
+                    getSpellSaveDC.Release();
 
-                GameEvent save = GameEventPool.Get(GameEventId.SavingThrow)
+                    GameEvent save = GameEventPool.Get(GameEventId.SavingThrow)
                     .With(EventParameters.Value, 0)
                     .With(EventParameters.WeaponType, weaponType);
-                FireEvent(Self, save);
-                int saveThrow = save.GetValue<int>(EventParameters.Value);
-                save.Release();
+                    FireEvent(Self, save);
+                    int saveThrow = save.GetValue<int>(EventParameters.Value);
+                    save.Release();
 
-                Debug.Log($"{weapon.Name} Spell was cast, Save DC was {saveDC} and save was {saveThrow}");
+                    Debug.Log($"{weapon.Name} Spell was cast, Save DC was {saveDC} and save was {saveThrow}");
 
-                if (saveThrow < saveDC)
-                {
-                    GameEvent saveFailed = GameEventPool.Get(GameEventId.SaveFailed)
+                    if (saveThrow < saveDC)
+                    {
+                        GameEvent saveFailed = GameEventPool.Get(GameEventId.SaveFailed)
                         .With(EventParameters.SpellContinues, true)
                         .With(EventParameters.DamageList, gameEvent.Paramters[EventParameters.DamageList]);
-                    FireEvent(weapon, saveFailed);
-                    if (!saveFailed.GetValue<bool>(EventParameters.SpellContinues))
-                        gameEvent.ContinueProcessing = false;
-                    
-                    saveFailed.Release();
+                        FireEvent(weapon, saveFailed);
+                        if (!saveFailed.GetValue<bool>(EventParameters.SpellContinues))
+                            gameEvent.ContinueProcessing = false;
+
+                        saveFailed.Release();
+                    }
                 }
             }
         }
