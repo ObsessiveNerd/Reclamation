@@ -88,6 +88,7 @@ public class Aggression : EntityComponent
                 var spells = CombatUtility.GetSpells(EntityQuery.GetEntity(id));
                 var spell = spells[RecRandom.Instance.GetRandomValue(0, spells.Count)];
 
+                //TODO: we're really getting lazy with all this direct component referencing
                 if (spell.HasComponent(typeof(Heal)))
                 {
                     GameEvent getVisiblePoints = GameEventPool.Get(GameEventId.GetVisibleTiles)
