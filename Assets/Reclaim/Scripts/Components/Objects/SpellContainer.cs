@@ -18,7 +18,8 @@ public class SpellContainer : EntityComponent
         {
             if (RandomSpells && m_SpellNameToIdMap.Count == 0)
             {
-                for (int i = 0; i < RecRandom.Instance.GetRandomValue(1, MaxSpell); i++)
+                int spellAmount = RecRandom.Instance.GetRandomValue(1, MaxSpell);
+                for (int i = 0; i < spellAmount; i++)
                 {
                     string bp = EntityFactory.GetRandomSpellBPName(0);
                     if (!m_SpellNameToIdMap.ContainsKey(bp))
@@ -41,8 +42,9 @@ public class SpellContainer : EntityComponent
             m_SpellNameToIdMap.Add(spell.Name, spell);
     }
 
-    public SpellContainer(string data, string specSpec)
+    public SpellContainer(string data, string specSpec, int maxSpell)
     {
+        MaxSpell = maxSpell;
         var spellArray = EntityFactory.GetEntitiesFromArray(data);
         foreach(var spell in spellArray)
             m_SpellNameToIdMap.Add(spell.Name, spell);
@@ -115,6 +117,7 @@ public class DTO_SpellContainer : IDataTransferComponent
     {
         string dataToPass = "";
         string specSpell = "";
+        int maxSpell = 5;
         if (!string.IsNullOrEmpty(data))
         {
             string[] kvp = data.Split(',');
@@ -127,10 +130,12 @@ public class DTO_SpellContainer : IDataTransferComponent
                     dataToPass = value;
                 if (key == "SpecificSpell")
                     specSpell = value;
+                if (key == "MaxSpell")
+                    maxSpell = int.Parse(value);
             }
         }
 
-        Component = new SpellContainer(dataToPass, specSpell);
+        Component = new SpellContainer(dataToPass, specSpell, maxSpell);
     }
 
     public string CreateSerializableData(IComponent component)

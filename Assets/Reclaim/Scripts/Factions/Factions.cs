@@ -85,18 +85,18 @@ public static class Factions
     static int[,] FactionRelation = new int[,]
     {
                                 //None  //DE     LE    Gob    BE    Drag  Dem    WR   Kob    WF   CRPT   UD    
-        /*None*/                { 1,     3,       3,    1,    3,    3,    3,    3,    3,    3,    3,    3},
+        /*None*/                { 1,     3,       3,    1,    1,    1,    1,    1,    1,    1,    1,    1},
         /*DwarvenExpedition*/   { 3,     2,       2,    3,    3,    3,    3,    3,    3,    3,    3,    3},
         /*LostExpedition*/      { 3,     2,       2,    3,    3,    3,    3,    3,    3,    3,    3,    3},
-        /*Goblins*/             { 3,     3,       3,    2,    2,    1,    1,    1,    1,    1,    1,    1},
-        /*Beasts*/              { 3,     3,       3,    2,    2,    1,    1,    1,    1,    1,    1,    1},
-        /*Dragons*/             { 3,     3,       3,    1,    1,    1,    1,    1,    1,    1,    1,    1},
-        /*Demons*/              { 3,     3,       3,    1,    1,    1,    2,    1,    1,    1,    1,    1},
-        /*Wraiths*/             { 3,     3,       3,    1,    1,    1,    1,    2,    1,    1,    1,    1},
-        /*Kobolds*/             { 3,     3,       3,    1,    1,    1,    1,    1,    2,    1,    1,    1},
-        /*Wolves*/              { 3,     3,       3,    1,    1,    1,    1,    1,    1,    2,    1,    1},
-        /*Corrupted*/           { 3,     3,       3,    1,    1,    1,    1,    1,    1,    1,    2,    2},
-        /*Undead*/              { 3,     3,       3,    1,    1,    1,    1,    1,    1,    1,    2,    2}
+        /*Goblins*/             { 1,     3,       3,    2,    2,    1,    1,    1,    1,    1,    1,    1},
+        /*Beasts*/              { 1,     3,       3,    2,    2,    1,    1,    1,    1,    1,    1,    1},
+        /*Dragons*/             { 1,     3,       3,    1,    1,    1,    1,    1,    1,    1,    1,    1},
+        /*Demons*/              { 1,     3,       3,    1,    1,    1,    2,    1,    1,    1,    1,    1},
+        /*Wraiths*/             { 1,     3,       3,    1,    1,    1,    1,    2,    1,    1,    1,    1},
+        /*Kobolds*/             { 1,     3,       3,    1,    1,    1,    1,    1,    2,    1,    1,    1},
+        /*Wolves*/              { 1,     3,       3,    1,    1,    1,    1,    1,    1,    2,    1,    1},
+        /*Corrupted*/           { 1,     3,       3,    1,    1,    1,    1,    1,    1,    1,    2,    2},
+        /*Undead*/              { 1,     3,       3,    1,    1,    1,    1,    1,    1,    1,    2,    2}
     };
 
     public static Demeanor GetDemeanorForTarget(IEntity source, IEntity target)

@@ -154,11 +154,13 @@ public static class CombatUtility
 
         if (attackType != AttackType.Melee && attackType != AttackType.Finesse)
         {
-            GameEvent fireRangedWeapon = GameEventPool.Get(GameEventId.FireRangedAttack)
+            if(!weapon.HasComponent(typeof(Summon)))
+            {
+                GameEvent fireRangedWeapon = GameEventPool.Get(GameEventId.FireRangedAttack)
                     .With(EventParameters.Entity, WorldUtility.GetGameObject(source).transform.position)
                     .With(EventParameters.Target, WorldUtility.GetGameObject(target).transform.position);
-            weapon.FireEvent(fireRangedWeapon).Release();
-
+                weapon.FireEvent(fireRangedWeapon).Release();
+            }
             GameEvent playSound = GameEventPool.Get(GameEventId.Playsound)
                                     .With(EventParameters.SoundSource, source.ID)
                                     .With(EventParameters.Key, SoundKey.RangedAttack);
@@ -203,11 +205,13 @@ public static class CombatUtility
 
         target.FireEvent(castSpell);
 
-        GameEvent fireRangedWeapon = GameEventPool.Get(GameEventId.FireRangedAttack)
+        if(!weapon.HasComponent(typeof(Summon)))
+        {
+            GameEvent fireRangedWeapon = GameEventPool.Get(GameEventId.FireRangedAttack)
             .With(EventParameters.Entity, WorldUtility.GetGameObject(source).transform.position)
             .With(EventParameters.Target, WorldUtility.GetGameObject(target).transform.position);
-        weapon.FireEvent(fireRangedWeapon).Release();
-
+            weapon.FireEvent(fireRangedWeapon).Release();
+        }
         amAttacking.Release();
         castSpell.Release();
     }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public enum AreaOfEffectType
@@ -14,13 +15,15 @@ public class AreaOfEffect : EntityComponent
 {
     public int Range;
     public AreaOfEffectType AOEType;
+    public int RandomAffectCount = 0;
 
     List<Point> m_VisibleTiles = new List<Point>();
 
-    public AreaOfEffect(int range, AreaOfEffectType aoeType)
+    public AreaOfEffect(int range, AreaOfEffectType aoeType, int randomEffectCount)
     {
         Range = range;
         AOEType = aoeType;
+        RandomAffectCount = randomEffectCount;
     }
 
     public override void Init(IEntity self)
@@ -38,7 +41,18 @@ public class AreaOfEffect : EntityComponent
         {
             Action<IEntity> effect = gameEvent.GetValue<Action<IEntity>>(EventParameters.Effect);
 
-            foreach(var visibleTile in m_VisibleTiles)
+            var tilesToAffect = new List<Point>();
+            if (RandomAffectCount > 0 && m_VisibleTiles.Count > 0)
+            {
+                for (int i = 0; i < RandomAffectCount; i++)
+                    tilesToAffect.Add(m_VisibleTiles[RecRandom.Instance.GetRandomValue(0, m_VisibleTiles.Count)]);
+
+                tilesToAffect = tilesToAffect.Distinct().ToList();
+            }
+            else
+                tilesToAffect = m_VisibleTiles;
+
+            foreach(var visibleTile in tilesToAffect)
                 effect.Invoke(WorldUtility.GetEntityAtPosition(visibleTile));
 
             GameEvent endSelection = GameEventPool.Get(GameEventId.EndSelection)
@@ -103,6 +117,8 @@ public class DTO_AreaOfEffect : IDataTransferComponent
     {
         var kvp = data.Split(',');
         int range = 0;
+        int randomAffectArea = 0;
+
         AreaOfEffectType aoeType = AreaOfEffectType.None;
 
         foreach(var s in kvp)
@@ -114,13 +130,15 @@ public class DTO_AreaOfEffect : IDataTransferComponent
                 range = int.Parse(value);
             if (key == "AOEType")
                 aoeType = (AreaOfEffectType)Enum.Parse(typeof(AreaOfEffectType), value);
+            if (key == "RandomAffectCount")
+                randomAffectArea = int.Parse(value);
         }
-        Component = new AreaOfEffect(range, aoeType);
+        Component = new AreaOfEffect(range, aoeType, randomAffectArea);
     }
 
     public string CreateSerializableData(IComponent component)
     {
         AreaOfEffect aoe = (AreaOfEffect)component;
-        return $"{nameof(AreaOfEffect)}: {nameof(aoe.Range)}={aoe.Range}, {nameof(aoe.AOEType)}={aoe.AOEType}";
+        return $"{nameof(AreaOfEffect)}: {nameof(aoe.Range)}={aoe.Range}, {nameof(aoe.AOEType)}={aoe.AOEType}, {nameof(aoe.RandomAffectCount)}={aoe.RandomAffectCount}";
     }
 }

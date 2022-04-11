@@ -11,4 +11,5 @@
 	WeaponType:Type=Melee
 	Name:PrettyName="Necromancer Staff"
 	TwoHanded
+	Purple
 )

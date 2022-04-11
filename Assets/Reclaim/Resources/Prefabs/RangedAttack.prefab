@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 8426452886613471151}
   - component: {fileID: 2567777825470483556}
   - component: {fileID: 217535100770195468}
-  - component: {fileID: 5962739576944933916}
   m_Layer: 0
   m_Name: RangedAttack
   m_TagString: Untagged
@@ -105,15 +104,3 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &5962739576944933916
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6901715319108000600}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1b29bba8c51ca7a45b41bfb693dc8c57, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 

@@ -42,14 +42,21 @@ public class FadeTextMono : MonoBehaviour
         if(go == null)
             Destroy(gameObject);
 
-        Vector2 newPos = (Vector2)Camera.main.WorldToScreenPoint(go.transform.position);
-        newPos.y += (go.GetComponent<SpriteRenderer>().sprite.textureRect.height);
-        newPos.y += (Time.time - m_StartTime) * 2;
-        transform.position = newPos;
+        try
+        {
+            Vector2 newPos = (Vector2)Camera.main.WorldToScreenPoint(go.transform.position);
+            newPos.y += (go.GetComponent<SpriteRenderer>().sprite.textureRect.height);
+            newPos.y += (Time.time - m_StartTime) * 2;
+            transform.position = newPos;
 
-        if (m_DeltaTime > m_Lifetime)
-            Destroy(gameObject);
-        else
-            m_DeltaTime += Time.deltaTime;
+            if (m_DeltaTime > m_Lifetime)
+                Destroy(gameObject);
+            else
+                m_DeltaTime += Time.deltaTime;
+        }
+        catch
+        {
+            //Do nothing
+        }
     }
 }

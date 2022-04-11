@@ -19,7 +19,7 @@ public class MusicService : GameService
             if (m_Settings == null)
                 m_Settings = GameObject.FindObjectOfType<SoundSettings>();
 
-            if (m_ActivePlayer.Value == null)
+            if (m_ActivePlayer == null || m_ActivePlayer.Value == null)
                 return;
 
             Point activePlayerPoint = m_EntityToPointMap[m_ActivePlayer.Value.ID];

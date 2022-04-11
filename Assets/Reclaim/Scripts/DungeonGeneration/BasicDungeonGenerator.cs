@@ -20,13 +20,13 @@ public class Room
 
     private HashSet<Point> m_MyWalls = new HashSet<Point>();
 
-    //public static void CleanStaticData()
-    //{
-    //    m_Walls.Clear();
-    //    m_RoomTiles.Clear();
-    //    m_RoomTiles.Clear();
-    //    m_Doors.Clear();
-    //}
+    public static void CleanStaticData()
+    {
+        m_Walls.Clear();
+        m_RoomTiles.Clear();
+        m_Hallways.Clear();
+        m_Doors.Clear();
+    }
 
     public bool ContainsPoint(Point p)
     {
@@ -587,7 +587,7 @@ public class BasicDungeonGenerator : IDungeonGenerator
     public void Clean()
     {
         Rooms.Clear();
-        //Room.CleanStaticData();
+        Room.CleanStaticData();
         m_LeafNodes.Clear();
     }
 

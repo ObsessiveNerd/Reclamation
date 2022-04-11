@@ -1,0 +1,11 @@
+<CallTheLightning> (
+	GraphicContainer:SpritePath=Textures/Portraits/spellbookmegapack/SpellBookPage06/SpellBook06_33
+	Spell:ManaCost=4,SpellFailed=DamageHalved,SpellType=AgiSpell
+	DealDamage:DamageType=Electric,Dice=1d15
+	Range
+	Sound:SoundPath=Sounds/MAGIC_SPELLS/MAGIC_SPELL_Flame_01_mono,Key=Cast
+	AreaOfEffect:Range=2,AOEType=Circle,RandomAffectCount=6
+	Name:PrettyName="Call the Lightning"
+	Info:InfoMessage="Call down lightning onto a specified area."
+	SpawnEffect:TexturePath=Textures/Sprites/Effects/tiny_dungeon_fx_lightning_1
+)

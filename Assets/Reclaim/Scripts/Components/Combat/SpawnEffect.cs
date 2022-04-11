@@ -2,13 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Ammo : EntityComponent
+public class SpawnEffect : EntityComponent
 {
     public string TexturePath;
 
     Sprite Texture;
 
-    public Ammo(string path)
+    public SpawnEffect(string path)
     {
         TexturePath = path;
         Texture = Resources.Load<Sprite>(path);
@@ -24,25 +24,25 @@ public class Ammo : EntityComponent
         if(gameEvent.ID == GameEventId.FireRangedAttack)
         {
             GameObject go = Resources.Load<GameObject>("Prefabs/RangedAttack");
-            var instance = GameObject.Instantiate(go, gameEvent.GetValue<Vector3>(EventParameters.Entity), Quaternion.identity);
+            var instance = GameObject.Instantiate(go, gameEvent.GetValue<Vector3>(EventParameters.Target), Quaternion.identity);
             instance.GetComponent<SpriteRenderer>().sprite = Texture;
-            instance.AddComponent<RangedAttackMono>().Setup(gameEvent.GetValue<Vector3>(EventParameters.Target));
+            instance.AddComponent<SpawnEffectMono>().Setup(gameEvent.GetValue<Vector3>(EventParameters.Target), 2f); 
         }
     }
 }
 
-public class DTO_Ammo : IDataTransferComponent
+public class DTO_SpawnEffect : IDataTransferComponent
 {
     public IComponent Component { get; set; }
 
     public void CreateComponent(string data)
     {
-        Component = new Ammo(data.Split('=')[1]);
+        Component = new SpawnEffect(data.Split('=')[1]);
     }
 
     public string CreateSerializableData(IComponent component)
     {
-        Ammo a = (Ammo)component;
-        return $"{nameof(Ammo)}: {nameof(a.TexturePath)}={a.TexturePath}";
+        SpawnEffect a = (SpawnEffect)component;
+        return $"{nameof(SpawnEffect)}: {nameof(a.TexturePath)}={a.TexturePath}";
     }
 }
