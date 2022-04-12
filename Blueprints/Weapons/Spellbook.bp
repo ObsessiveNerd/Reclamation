@@ -5,7 +5,7 @@
 	InteractOnTileOvertake
 	EntityTypeContainer:Type=Item
 	Item:Rarity=Epic
-	SpellContainer:MaxSpell=10,RandomSpells=True,SpecificSpell=
+	SpellContainer:MaxSpell=20,RandomSpells=True,SpecificSpell=
 	Equipment:PreferredBodyPartWhenEquipped=Arm
 	TwoHanded
 	WeaponType:Type=Melee

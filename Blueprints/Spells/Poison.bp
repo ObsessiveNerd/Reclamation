@@ -1,0 +1,11 @@
+<Poison> (
+	GraphicContainer:SpritePath=Textures/Portraits/spellbookmegapack/SpellBookPage09/SpellBookPage09_15
+	Spell:ManaCost=3,SpellFailed=SpellStops,SpellType=ConSpell
+	Range
+	WeaponType:Type=RangedSpell
+	Sound:SoundPath=Sounds/MAGIC_SPELLS/MAGIC_SPELL_Flame_01_mono,Key=Cast
+	Ammo:TexturePath=Textures/Sprites/Effects/tiny_dungeon_fx_acidimpact_2
+	Info:InfoMessage="Attempt to poison a single target."
+	ApplyStatusEffect:StatusEffectType=Poison,DestroyAfterTurns=10
+	ApplyDamageOverTime:Amount=1d4,RemoveAfterTurns=10
+)

@@ -11,5 +11,6 @@
     Earth,
     Light,
     Arcane,
-    Wind
+    Wind,
+    Poison
 }

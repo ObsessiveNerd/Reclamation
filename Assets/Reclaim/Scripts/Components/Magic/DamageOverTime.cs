@@ -3,45 +3,26 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum StatusEffects
-{
-    None = 0,
-    Rage,
-    Poison
-}
-
-public class StatusEffect : EntityComponent
+public class DamageOverTime : EntityComponent
 {
     public int CurrentTurnCount;
     public int DestroyAfterTurnCount;
+    public string DiceNotation;
 
-    public StatusEffects StatusEffectType;
+    Dice m_Dice;
 
-    IComponent m_StatusComponent;
-
-    public StatusEffect(StatusEffects type, int currentTurn, int destroyAfterTurns)
+    public DamageOverTime(string dice, int currentTurn, int destroyAfterTurns)
     {
-        StatusEffectType = type;
+        DiceNotation = dice;
         CurrentTurnCount = currentTurn;
         DestroyAfterTurnCount = destroyAfterTurns;
+        m_Dice = new Dice(dice);
     }
 
     public override void Init(IEntity self)
     {
         base.Init(self);
         RegisteredEvents.Add(GameEventId.EndTurn);
-
-        switch(StatusEffectType)
-        {
-            case StatusEffects.Rage:
-                m_StatusComponent = new Rage();
-                break;
-            case StatusEffects.Poison:
-                m_StatusComponent = new Poison();
-                break;
-        }
-
-        Self.AddComponent(m_StatusComponent);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
@@ -50,22 +31,33 @@ public class StatusEffect : EntityComponent
         {
             CurrentTurnCount++;
 
-            if (CurrentTurnCount > DestroyAfterTurnCount)
+            if (CurrentTurnCount >= DestroyAfterTurnCount)
             {
-                Self.RemoveComponent(m_StatusComponent);
                 Self.RemoveComponent(this);
+            }
+
+            else if(CurrentTurnCount % 2 == 0)
+            {
+                GameEvent dealDamage = GameEventPool.Get(GameEventId.TakeDamage)
+                                        .With(EventParameters.DamageList, new List<Damage>()
+                                        {
+                                            new Damage(m_Dice.Roll(), DamageType.Poison)
+                                        })
+                                        .With(EventParameters.DamageSource, Self.ID)
+                                        .With(EventParameters.Attack, Self.ID);
+                Self.FireEvent(dealDamage).Release();
             }
         }
     }
 }
 
-public class DTO_StatusEffect : IDataTransferComponent
+public class DTO_DamageOverTime : IDataTransferComponent
 {
     public IComponent Component { get; set; }
 
     public void CreateComponent(string data)
     {
-        StatusEffects effectType = StatusEffects.None;
+        string dice = "";
         int currentturn = 0;
         int destroyafterturns = 0;
 
@@ -77,8 +69,8 @@ public class DTO_StatusEffect : IDataTransferComponent
 
             switch (key)
             {
-                case "StatusEffect":
-                    effectType = (StatusEffects)Enum.Parse(typeof(StatusEffects), value);
+                case "DiceNotation":
+                    dice = value;
                     break;
                 case "DestroyAfterTurnCount":
                     destroyafterturns = int.Parse(value);
@@ -88,12 +80,12 @@ public class DTO_StatusEffect : IDataTransferComponent
                     break;
             }
         }
-        Component = new StatusEffect(effectType, currentturn, destroyafterturns);
+        Component = new DamageOverTime(dice, currentturn, destroyafterturns);
     }
 
     public string CreateSerializableData(IComponent component)
     {
-        StatusEffect bat = (StatusEffect)component;
-        return $"{nameof(StatusEffect)}: {nameof(bat.StatusEffectType)}={bat.StatusEffectType}, {nameof(bat.DestroyAfterTurnCount)}={bat.DestroyAfterTurnCount}, {nameof(bat.CurrentTurnCount)}={bat.CurrentTurnCount}";
+        DamageOverTime bat = (DamageOverTime)component;
+        return $"{nameof(DamageOverTime)}: {nameof(bat.DiceNotation)}={bat.DiceNotation}, {nameof(bat.DestroyAfterTurnCount)}={bat.DestroyAfterTurnCount}, {nameof(bat.CurrentTurnCount)}={bat.CurrentTurnCount}";
     }
 }
