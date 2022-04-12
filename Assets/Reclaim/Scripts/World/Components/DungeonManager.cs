@@ -363,7 +363,7 @@ public class DungeonManager : GameService
         else
         {
             DungeonMetaData dmd = new DungeonMetaData($"{LevelMetaData.MetadataPath}/{m_CurrentLevel}.lvl");
-            DungeonGenerationResult dr = DungeonGenerator.GenerateDungeon(dmd, m_CurrentLevel == 20);
+            DungeonGenerationResult dr = DungeonGenerator.GenerateDungeon(dmd, m_CurrentLevel == 15);
 
             foreach(var tile in m_TileEntity.Values)
             {

@@ -82,6 +82,8 @@ public class AStar : IPathfindingAlgorithm
                                     .With(EventParameters.Weight, 1f);
 
         Tile t = Services.TileInteractionService.GetTile(new Point(start.x, start.y));
+        if (t == null)
+            return 0;
         t.GetPathFindingData(getPathData);
 
         float weight = getPathData.GetValue<float>(EventParameters.Weight);

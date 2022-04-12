@@ -107,7 +107,8 @@ public class PlayerInputController : InputControllerBase
             else if (Input.GetKeyDown(KeyCode.O))
             {
                 GameEvent takeDamage = GameEventPool.Get(GameEventId.TakeDamage)
-                                    .With(EventParameters.DamageList, new List<Damage>() { new Damage(10, DamageType.Slashing) })
+                                    .With(EventParameters.Attack, Self.ID)
+                                    .With(EventParameters.DamageList, new List<Damage>() { new Damage(100, DamageType.Slashing) })
                                     .With(EventParameters.RollToHit, 20)
                                     .With(EventParameters.DamageSource, Self.ID);
                 Self.FireEvent(takeDamage).Release();

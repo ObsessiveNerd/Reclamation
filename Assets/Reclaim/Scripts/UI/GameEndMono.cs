@@ -31,13 +31,17 @@ public class GameEndMono : MonoBehaviour
                 playerNameList = playerNameList.TrimEnd(' ', ',');
             }
 
-            string hero = players.Count == 1 ? "hero" : "heros";
-            string has = players.Count == 1 ? "has" : "have";
+            bool singleHero = players.Count == 1; 
+            string hero = singleHero ? "hero" : "heroes";
+            string has = singleHero ? "has" : "have";
 
-            return $"Gods above!  Our mighty {hero} {has} done it!  I can't say I'm that surprised, you did very well. For the most part. " +
-                    $"Sorry, what I mean is congradulations!  I always knew that {playerNameList} could do it.  Well done!  The halls of Goltarren are freed from the " +
+            string sorryForYourLoss = singleHero ? "Sorry for you loss, by the way.  I hope that's not too soon. " : "";
+
+            return $"Gods above!  Our mighty {hero} {has} done it! {sorryForYourLoss}I can't say I'm that surprised, you did very well. For the most part. " +
+                    $"Sorry, what I mean is congradulations!  I always knew that {playerNameList} could do it.  Wow.  Great character varity there... " +
+                    $"\n\nWell done!  The halls of Goltarren are freed from the " +
                     $"evil that once desecrated them.  We owe everything to you.  You've given the gods back something most sacred, their favorite Sunday brunch spot. " +
-                    $"\n\n\n" +
+                    $"\n\n" +
                     $"What?  The gods, as they are, deserve a nice brunch spot. They're very busy, you know. The prayers of the weak and helpless don't ignore themselves. " +
                     $"It takes quite a lot of effort to smite people for no good reason, I'll have you know.";
         }
