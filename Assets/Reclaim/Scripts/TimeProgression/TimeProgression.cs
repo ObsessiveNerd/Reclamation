@@ -109,7 +109,11 @@ public class TimeProgression
             m_Current.Value.HandleEvent(update);
 
         if (m_Current.Value.NeedsCleanup)
+        { 
             m_Current.Value.CleanupComponents();
+            update.Paramters[EventParameters.UpdateWorldView] = true;
+        }
+
 
         using (new DiagnosticsTimer("Update world view"))
         {

@@ -65,8 +65,10 @@ public class SpellcasterPlayerController : InputControllerBase
         } 
 
         IEntity startingTarget = WorldUtility.GetClosestEnemyTo(Self);
+        if (m_Attack.HasComponent(typeof(Heal)))
+            startingTarget = Self;
 
-        if (startingTarget != null)
+        else if (startingTarget != null)
         {
             GameEvent isInFOV = GameEventPool.Get(GameEventId.IsInFOV)
                                     .With(EventParameters.Entity, startingTarget.ID)
@@ -83,6 +85,9 @@ public class SpellcasterPlayerController : InputControllerBase
         m_TileSelection = Services.WorldDataQuery.GetEntityLocation(startingTarget);
         
         Services.TileSelectionService.SelectTile(m_TileSelection);
+         GameEvent selectTile = GameEventPool.Get(GameEventId.SelectTile)
+                                .With(EventParameters.TilePosition, m_TileSelection);
+        m_Attack.FireEvent(selectTile).Release();
         Services.WorldUpdateService.UpdateWorldView();
         
     }

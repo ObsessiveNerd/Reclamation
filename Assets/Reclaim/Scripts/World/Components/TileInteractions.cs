@@ -11,6 +11,12 @@ public class TileInteractions : GameService
         return m_Tiles[p];
     }
 
+    public void EntityChanged(IEntity e)
+    {
+        if(m_EntityToPointMap.TryGetValue(e.ID, out Point pos))
+            TileChanged(m_Tiles[pos]);
+    }
+
     public void TileChanged(Tile t)
     {
         m_ChangedTiles.Add(t);

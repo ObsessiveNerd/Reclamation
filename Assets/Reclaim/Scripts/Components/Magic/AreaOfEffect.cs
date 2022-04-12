@@ -130,7 +130,7 @@ public class DTO_AreaOfEffect : IDataTransferComponent
                 range = int.Parse(value);
             if (key == "AOEType")
                 aoeType = (AreaOfEffectType)Enum.Parse(typeof(AreaOfEffectType), value);
-            if (key == "RandomAffectCount")
+            if (key == "RandomAffectCount" && !string.IsNullOrEmpty(value))
                 randomAffectArea = int.Parse(value);
         }
         Component = new AreaOfEffect(range, aoeType, randomAffectArea);

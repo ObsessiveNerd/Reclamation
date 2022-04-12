@@ -1,0 +1,11 @@
+<HealArea> (
+	GraphicContainer:SpritePath=Textures/Portraits/spellbookmegapack/SpellBookPage08/SpellBook08_57
+	Spell:ManaCost=4,SpellFailed=None,SpellType=None
+	Range
+	Sound:SoundPath=Sounds/MAGIC_SPELLS/MAGIC_SPELL_Flame_01_mono,Key=Cast
+	AreaOfEffect:Range=2,AOEType=Circle,RandomAffectCount=
+	Name:PrettyName=Heal Area
+	Info:InfoMessage="Heal everything in a selected area."
+	Heal:HealAmount=1d4
+	SpawnEffect:TexturePath=Textures/Sprites/Effects/tiny_dungeon_fx_acidspark_2
+)

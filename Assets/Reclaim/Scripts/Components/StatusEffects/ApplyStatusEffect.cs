@@ -38,6 +38,7 @@ public class ApplyStatusEffect : EntityComponent
     void ApplyEffectToTarget(IEntity target)
     {
         target.AddComponent(new StatusEffect(StatusEffectType, 0, DestroyAfterTurns));
+        Services.TileInteractionService.EntityChanged(target);
     }
 }
 
