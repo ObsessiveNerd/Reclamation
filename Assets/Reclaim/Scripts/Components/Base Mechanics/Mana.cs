@@ -23,6 +23,7 @@ public class Mana : EntityComponent
         RegisteredEvents.Add(GameEventId.DepleteMana);
         RegisteredEvents.Add(GameEventId.GetMana);
         RegisteredEvents.Add(GameEventId.StatBoosted);
+        RegisteredEvents.Add(GameEventId.Rest);
     }
 
     public override void Start()

@@ -63,7 +63,7 @@ public class DTO_Rest : IDataTransferComponent
                 Debug.LogError("Unable to parse health regen value.");
         }
 
-        Component = new HealthRegen(regen, speed);
+        Component = new Rest(regen, speed);
     }
 
     public string CreateSerializableData(IComponent component)

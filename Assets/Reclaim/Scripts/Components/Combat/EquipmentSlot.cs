@@ -188,9 +188,10 @@ public class EquipmentSlot : EntityComponent
         {
             if(!string.IsNullOrEmpty(EquipmentId))
             {
+                GameEvent endTurn = GameEventPool.Get(GameEventId.EndTurn)
+                                    .With(EventParameters.Entity, Self.ID);
                 var equipment = Services.EntityMapService.GetEntity(EquipmentId);
-                gameEvent.Paramters.Add(EventParameters.Entity, Self.ID);
-                equipment.FireEvent(gameEvent);
+                equipment.FireEvent(endTurn).Release();
             }
         }
 
