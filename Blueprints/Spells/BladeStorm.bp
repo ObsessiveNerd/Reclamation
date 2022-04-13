@@ -1,0 +1,12 @@
+<BladeStorm> (
+	GraphicContainer:SpritePath=Textures/Portraits/spellbookmegapack/SpellBookPage06/SpellBook06_47
+	Spell:ManaCost=4,SpellFailed=None,SpellType=None
+	DealDamage:DamageType=Slashing,Dice=1d12
+	Range
+	Sound:SoundPath=Sounds/MAGIC_SPELLS/MAGIC_SPELL_Flame_01_mono,Key=Cast
+	AreaOfEffect:Range=1,AOEType=Circle,RandomAffectCount=0
+	Name:PrettyName="Bladestorm"
+	Info:InfoMessage="Decimate an area with a flurry of attacks."
+	Ammo:TexturePath=Textures/Sprites/Effects/tiny_dungeon_fx_swing_1
+	WeaponType:Type=RangedSpell
+)

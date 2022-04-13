@@ -1,0 +1,13 @@
+<DarkLeatherChest> (
+	GraphicContainer:SpritePath=Textures/Sprites/Armor/td_items_leather_chest
+	Portrait:SpritePath=Textures/Portraits/ArmorIcons_png/transparent/armor/armor_15
+	Position:PositionPoint=0
+	InteractOnTileOvertake
+	EntityTypeContainer:Type=Item
+	Item:Rarity=Uncommon
+	Value:Amount=25
+	Equipment:PreferredBodyPartWhenEquipped=Torso
+	Name:PrettyName="Dark Leather Chest Armor"
+	Resitance:Type=Arcane
+	Resitance:Type=Dark
+)

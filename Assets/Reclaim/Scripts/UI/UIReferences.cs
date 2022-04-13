@@ -10,6 +10,7 @@ public class UIReferences : MonoBehaviour
     public GameObject Chest;
     public GameObject EnchantmentManager;
     public GameObject EndState;
+    public GameObject DebugMenu;
 
     public void OpenSpellExaminer(List<string> spellIds)
     {
@@ -24,6 +25,11 @@ public class UIReferences : MonoBehaviour
 
         CharacterManager.SetActive(true);
         CharacterManager.GetComponent<CharacterManagerMono>().Setup();
+    }
+
+    public void OnOpenDebugMenu()
+    {
+        DebugMenu.SetActive(true);
     }
 
     public void OpenSpellSelector()

@@ -56,12 +56,12 @@ public class PlayerInputController : InputControllerBase
                 Self.FireEvent(e);
             }
 
-            else if(Input.GetKeyDown(KeyCode.RightControl))
+            else if (Input.GetKeyDown(KeyCode.RightControl))
             {
                 Services.StateManagerService.GameOver(true);
             }
 
-            else if(Input.GetKeyDown(KeyCode.RightAlt))
+            else if (Input.GetKeyDown(KeyCode.RightAlt))
             {
                 Services.StateManagerService.GameOver(false);
             }
@@ -120,6 +120,9 @@ public class PlayerInputController : InputControllerBase
                     .With(EventParameters.Mana, 10);
                 FireEvent(Self, gainMana).Release();
             }
+
+            else if (Input.GetKeyDown(KeyCode.Alpha0))
+                Services.WorldUIService.OpenDebugMenu();
 #endif
             else if (InputBinder.PerformRequestedAction(RequestedAction.Look))
             {

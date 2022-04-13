@@ -144,6 +144,11 @@ public class WorldUIController : GameService
         UpdateUI();
     }
 
+    public void OpenDebugMenu()
+    {
+        GameObject.FindObjectOfType<UIReferences>().OnOpenDebugMenu();
+    }
+
     public void OpenEnchantmentUI(IEntity source, IEntity enchantment)
     {
         GameObject.FindObjectOfType<UIReferences>().OpenEnchanter(source, enchantment);
