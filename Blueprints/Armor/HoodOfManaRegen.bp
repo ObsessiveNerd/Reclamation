@@ -1,0 +1,13 @@
+<HoodOfManaRegen> (
+	GraphicContainer:SpritePath=Textures/Sprites/Armor/td_items_hat_magic
+	Portrait:SpritePath=Textures/Portraits/WeaponAndArmorIcons/WeaponAndArmorIcons_png/transparent/addons/089_t
+	Position:PositionPoint=0
+	InteractOnTileOvertake
+	EntityTypeContainer:Type=Item
+	Item:Rarity=Rare
+	Value:Amount=25
+	Equipment:PreferredBodyPartWhenEquipped=Head
+	ManaRegen:RegenAmount=4,RegenSpeed=10
+	Name:PrettyName="Hood of Mana Regeneration"
+	Info:InfoMessage="A lovely hood that restores 4 mana every 10 turns.  It really does look very dashing."
+)

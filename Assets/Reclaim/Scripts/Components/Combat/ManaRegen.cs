@@ -17,19 +17,22 @@ public class ManaRegen : EntityComponent
     public override void Init(IEntity self)
     {
         base.Init(self);
-        RegisteredEvents.Add(GameEventId.AfterMoving);
+        RegisteredEvents.Add(GameEventId.EndTurn);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
     {
-        if(gameEvent.ID == GameEventId.AfterMoving)
+        if(gameEvent.ID == GameEventId.EndTurn)
         {
+             IEntity target = gameEvent.HasParameter(EventParameters.Entity) ?
+                Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameters.Entity)) : Self;
+
             currentTurns++;
             if(currentTurns >= RegenSpeed)
             {
                 GameEvent regenMana = GameEventPool.Get(GameEventId.RestoreMana)
                                             .With(EventParameters.Mana, RegenAmount);
-                FireEvent(Self, regenMana, true).Release();
+                FireEvent(target, regenMana, true).Release();
                 currentTurns = 0;
             }
         }

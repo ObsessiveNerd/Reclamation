@@ -40,7 +40,7 @@ public class GameEndMono : MonoBehaviour
             return $"Gods above!  Our mighty {hero} {has} done it! {sorryForYourLoss}I can't say I'm that surprised, you did very well. For the most part. " +
                     $"Sorry, what I mean is congradulations!  I always knew that {playerNameList} could do it.  Wow.  Great character varity there... " +
                     $"\n\nWell done!  The halls of Goltarren are freed from the " +
-                    $"evil that once desecrated them.  We owe everything to you.  You've given the gods back something most sacred, their favorite Sunday brunch spot. " +
+                    $"evil that once desecrated them.  We owe everything to you.  You've given the gods back something most sacred, their favorite brunch spot. " +
                     $"\n\n" +
                     $"What?  The gods, as they are, deserve a nice brunch spot. They're very busy, you know. The prayers of the weak and helpless don't ignore themselves. " +
                     $"It takes quite a lot of effort to smite people for no good reason, I'll have you know.";
@@ -54,7 +54,7 @@ public class GameEndMono : MonoBehaviour
             return "And so, as it had been many times before, the doors of Goltarren have sealed themselves for another millenia. " +
                     "Evil shall continue to go unhindered in these once hallowed halls.\n\n" +
 
-                    "I really thought you had it there for a minute.  I mean, not that last minute, obviously. Oh well, it's how these things go, I suppose. " +
+                    "I really thought you had it there for a minute.  I mean, not that last minute, obviously. Alas, it's how these things go, I suppose. " +
                     "You gave it your best shot, I'm sure.  That's really all we can hope for. \n\n " +
                     
                     "I'm very proud of you, honest.  I'd probably be more proud if you'd " +
