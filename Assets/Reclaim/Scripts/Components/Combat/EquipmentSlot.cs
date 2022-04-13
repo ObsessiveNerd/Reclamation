@@ -61,6 +61,7 @@ public class EquipmentSlot : EntityComponent
 
     public override void Init(IEntity self)
     {
+        base.Init(self);
         RegisteredEvents.Add(GameEventId.GetImmunity);
         RegisteredEvents.Add(GameEventId.GetResistances);
         RegisteredEvents.Add(GameEventId.AddArmorValue);
@@ -78,7 +79,7 @@ public class EquipmentSlot : EntityComponent
         RegisteredEvents.Add(GameEventId.Died);
         RegisteredEvents.Add(GameEventId.GetBodyPartType);
         RegisteredEvents.Add(GameEventId.CheckItemEquiped);
-        base.Init(self);
+        RegisteredEvents.Add(GameEventId.EndTurn);
     }
 
     //void EquipmentDestroyed(IEntity e)
@@ -183,6 +184,16 @@ public class EquipmentSlot : EntityComponent
                 gameEvent.Paramters[EventParameters.Value] = true;
         }
 
+        else if(gameEvent.ID == GameEventId.EndTurn)
+        {
+            if(!string.IsNullOrEmpty(EquipmentId))
+            {
+                var equipment = Services.EntityMapService.GetEntity(EquipmentId);
+                gameEvent.Paramters.Add(EventParameters.Entity, Self.ID);
+                equipment.FireEvent(gameEvent);
+            }
+        }
+
         //if(gameEvent.ID == GameEventId.GetSpells)
         //{
         //    if (!string.IsNullOrEmpty(EquipmentId))
@@ -201,7 +212,7 @@ public class EquipmentSlot : EntityComponent
         //        FireEvent(EntityQuery.GetEntity(EquipmentId), gameEvent);
         //}
 
-        else if(gameEvent.ID == GameEventId.GetBodyPartType)
+        else if (gameEvent.ID == GameEventId.GetBodyPartType)
         {
             List<BodyPart> desiredBodyParts = gameEvent.GetValue<List<BodyPart>>(EventParameters.DesiredBodyPartTypes);
             foreach (var desiredBodyPart in desiredBodyParts)

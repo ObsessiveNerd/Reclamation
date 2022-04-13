@@ -23,6 +23,7 @@ public class Health : EntityComponent
         RegisteredEvents.Add(GameEventId.GetCombatRating);
         RegisteredEvents.Add(GameEventId.GetHealth);
         RegisteredEvents.Add(GameEventId.StatBoosted);
+        RegisteredEvents.Add(GameEventId.Rest);
     }
 
     public override void Start()
@@ -70,13 +71,20 @@ public class Health : EntityComponent
             MaxHealth = 10 + Mathf.Max(0, stats.CalculateModifier(stats.Con) * modMultiplier);
         }
 
-        else if(gameEvent.ID == GameEventId.RegenHealth)
+        else if(gameEvent.ID == GameEventId.Rest)
         {
             int healAmount = (int)gameEvent.Paramters[EventParameters.Healing];
             CurrentHealth = Mathf.Min(CurrentHealth + healAmount, MaxHealth);
         }
 
-        else if(gameEvent.ID == GameEventId.RestoreHealth)
+        else if(gameEvent.ID == GameEventId.RegenHealth)
+        {
+            int healAmount = (int)gameEvent.Paramters[EventParameters.Healing];
+            CurrentHealth = Mathf.Min(CurrentHealth + healAmount, MaxHealth);
+            Services.WorldUIService.EntityHealedDamage(Self, healAmount);
+        }
+
+        else if (gameEvent.ID == GameEventId.RestoreHealth)
         {
             int healAmount = (int)gameEvent.Paramters[EventParameters.Healing];
             CurrentHealth = Mathf.Min(CurrentHealth + healAmount, MaxHealth);

@@ -196,6 +196,7 @@ public static class GameEventId
     public const string Died = nameof(Died);
     public const string RestoreHealth = nameof(RestoreHealth);
     public const string RegenHealth = nameof(RegenHealth);
+    public const string Rest = nameof(Rest);
     public const string RestoreMana = nameof(RestoreMana);
     public const string DepleteMana = nameof(DepleteMana);
     public const string ApplyEffectToTarget = nameof(ApplyEffectToTarget);

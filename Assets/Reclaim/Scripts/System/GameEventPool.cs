@@ -39,6 +39,7 @@ public static class GameEventPool
         }
 
         var ge2 = new GameEvent(id);
+        ge2.Paramters.Clear();
         m_InUse.Add(ge2);
         return ge2;
     }

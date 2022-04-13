@@ -1,0 +1,11 @@
+<HatOfRegen> (
+	GraphicContainer:SpritePath=Textures/Sprites/Armor/td_items_hat_magic
+	Portrait:SpritePath=Textures/Portraits/WeaponAndArmorIcons/WeaponAndArmorIcons_png/transparent/addons/041_t
+	Position:PositionPoint=0
+	InteractOnTileOvertake
+	EntityTypeContainer:Type=Item
+	Item:Rarity=Rare
+	Value:Amount=25
+	Equipment:PreferredBodyPartWhenEquipped=Head
+	HealthRegen:RegenAmount=2,RegenSpeed=4
+)

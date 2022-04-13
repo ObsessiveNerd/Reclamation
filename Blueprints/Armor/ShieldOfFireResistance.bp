@@ -1,0 +1,14 @@
+<ShieldOfFireResistance> (
+	GraphicContainer:SpritePath=Textures/Sprites/Armor/td_items_shield_magic
+	Portrait:SpritePath=Textures/Portraits/WeaponAndArmorIcons/WeaponAndArmorIcons_png/transparent/shields/shield_t_08
+	Position:PositionPoint=0
+	InteractOnTileOvertake
+	EntityTypeContainer:Type=Item
+	Item:Rarity=Common
+	Armor:ArmorAmount=3
+	Equipment:PreferredBodyPartWhenEquipped=Arm
+	Value:Amount=25
+	Red
+	Name:PrettyName="Shield of Fire Resistance"
+	Resitance:Type=Fire
+)

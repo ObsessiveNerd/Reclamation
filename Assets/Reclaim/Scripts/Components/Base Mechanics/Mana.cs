@@ -37,12 +37,19 @@ public class Mana : EntityComponent
         {
             int healAmount = (int)gameEvent.Paramters[EventParameters.Mana];
             CurrentMana = Mathf.Min(CurrentMana + healAmount, MaxMana);
+            Services.WorldUIService.EntityRegainedMana(Self, healAmount);
         }
 
         else if (gameEvent.ID == GameEventId.StatBoosted)
         {
             Stats stats = gameEvent.GetValue<Stats>(EventParameters.Stats);
             MaxMana = Mathf.Max(0, stats.CalculateModifier(stats.Int) * modMultiplier);
+        }
+        
+        else if(gameEvent.ID == GameEventId.Rest)
+        {
+            int healAmount = (int)gameEvent.Paramters[EventParameters.Mana];
+            CurrentMana = Mathf.Min(CurrentMana + healAmount, MaxMana);
         }
 
         else if (gameEvent.ID == GameEventId.DepleteMana)

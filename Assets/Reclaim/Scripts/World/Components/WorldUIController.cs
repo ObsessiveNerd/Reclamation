@@ -31,6 +31,21 @@ public class WorldUIController : GameService
         go.transform.SetParent(Object.FindObjectOfType<Canvas>().transform);
     }
 
+    public void EntityRegainedMana(IEntity entity, int amount)
+    {
+        if (!m_EntityToPointMap.ContainsKey(entity.ID))
+            return;
+
+        Point p = m_EntityToPointMap[entity.ID];
+        GameObject mapObject = m_GameObjectMap[p];
+        Vector2 newPos = (Vector2)Camera.main.WorldToScreenPoint(mapObject.transform.position);
+        newPos.y += (mapObject.GetComponent<SpriteRenderer>().sprite.textureRect.height);
+
+        GameObject go = GameObject.Instantiate(Resources.Load<GameObject>("Prefabs/UI/FadeText"));
+        go.GetComponent<FadeTextMono>().Setup($"+{amount}", 1, entity, Color.blue);
+        go.transform.SetParent(GameObject.FindObjectOfType<Canvas>().transform);
+    }
+
     public void EntityHealedDamage(IEntity entity, int healing)
     {
         if (!m_EntityToPointMap.ContainsKey(entity.ID))

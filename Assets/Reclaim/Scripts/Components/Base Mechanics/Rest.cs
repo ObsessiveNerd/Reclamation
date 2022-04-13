@@ -1,14 +1,14 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HealthRegen : EntityComponent
+public class Rest : EntityComponent
 {
     public int RegenAmount;
     public int RegenSpeed;
 
     int currentTurns = 0;
-    public HealthRegen(int regenAmount, int speed)
+    public Rest(int regenAmount, int speed)
     {
         RegenAmount = regenAmount;
         RegenSpeed = speed;
@@ -30,16 +30,18 @@ public class HealthRegen : EntityComponent
             currentTurns++;
             if(currentTurns >= RegenSpeed)
             {
-                GameEvent regenHealth = GameEventPool.Get(GameEventId.RegenHealth)
-                                            .With(EventParameters.Healing, RegenAmount);
-                FireEvent(target, regenHealth, true).Release();
+                GameEvent rest = GameEventPool.Get(GameEventId.Rest)
+                                            .With(EventParameters.Healing, RegenAmount)
+                                            .With(EventParameters.Mana, RegenAmount);
+
+                FireEvent(target, rest, true).Release();
                 currentTurns = 0;
             }
         }
     }
 }
 
-public class DTO_HealthRegen : IDataTransferComponent
+public class DTO_Rest : IDataTransferComponent
 {
     public IComponent Component { get; set; }
 
@@ -66,7 +68,7 @@ public class DTO_HealthRegen : IDataTransferComponent
 
     public string CreateSerializableData(IComponent component)
     {
-        HealthRegen hr = (HealthRegen)component;
-        return $"{nameof(HealthRegen)}: {nameof(hr.RegenAmount)}={hr.RegenAmount}, {nameof(hr.RegenSpeed)}={hr.RegenSpeed}";
+        Rest hr = (Rest)component;
+        return $"{nameof(Rest)}: {nameof(hr.RegenAmount)}={hr.RegenAmount}, {nameof(hr.RegenSpeed)}={hr.RegenSpeed}";
     }
 }

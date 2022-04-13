@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class StateManager : GameService
 {
+    public TimeProgression TimeProgress {get { return m_TimeProgression; }}
     public void GameOver(bool win)
     {
         m_TimeProgression.Stop();

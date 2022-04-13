@@ -97,13 +97,6 @@ public class PlayerInputController : InputControllerBase
                 Self.FireEvent(giveExp).Release();
             }
 
-            else if (Input.GetKeyDown(KeyCode.RightShift))
-            {
-                GameEvent gainMana = GameEventPool.Get(GameEventId.RestoreMana)
-                                    .With(EventParameters.Mana, 1000);
-                Self.FireEvent(gainMana).Release();
-            }
-
             else if (Input.GetKeyDown(KeyCode.O))
             {
                 GameEvent takeDamage = GameEventPool.Get(GameEventId.TakeDamage)
@@ -117,7 +110,7 @@ public class PlayerInputController : InputControllerBase
             else if (Input.GetKeyDown(KeyCode.Period))
             {
                 GameEvent gainMana = GameEventPool.Get(GameEventId.RestoreMana)
-                    .With(EventParameters.Mana, 10);
+                    .With(EventParameters.Mana, 1000);
                 FireEvent(Self, gainMana).Release();
             }
 
