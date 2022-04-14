@@ -1,0 +1,16 @@
+<VampireRing> (
+	GraphicContainer:SpritePath=Textures/Sprites/Items/td_items_ring_magic
+	Portrait:SpritePath=Textures/Portraits/WeaponAndArmorIcons/WeaponAndArmorIcons_png/transparent/rings/rn_t_01
+	Position:PositionPoint=0
+	InteractOnTileOvertake
+	EntityTypeContainer:Type=Item
+	Item:Rarity=Epic
+	Value:Amount=25
+	Equipment:PreferredBodyPartWhenEquipped=Finger
+	Name:PrettyName="Soul-stealing Ring"
+	ActiveWhileEquiped
+	HealthRegen:RegenAmount=-3,RegenSpeed=7
+	Resitance:Type=Dark
+	SpellContainer:MaxSpell=1,RandomSpells=False,SpecificSpell=Necrobolt
+	Lifesteal
+)

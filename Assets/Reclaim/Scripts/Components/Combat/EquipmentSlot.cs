@@ -134,7 +134,9 @@ public class EquipmentSlot : EntityComponent
             {
                 IEntity owner = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameters.Entity));
                 FireEvent(owner, GameEventPool.Get(GameEventId.AddToInventory).With(EventParameters.Entity, EquipmentId), true).Release();
-                FireEvent(EntityQuery.GetEntity(EquipmentId), GameEventPool.Get(GameEventId.ItemUnequipped), true).Release();
+                GameEvent itemUnequiped = GameEventPool.Get(GameEventId.ItemUnequipped)
+                                            .With(EventParameters.Owner, owner.ID);
+                FireEvent(EntityQuery.GetEntity(EquipmentId), itemUnequiped, true).Release();
                 EquipmentId = null;
                 //EquipmentName = "";
             }

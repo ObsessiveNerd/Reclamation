@@ -9,5 +9,5 @@
 	Equipment:PreferredBodyPartWhenEquipped=Head
 	ManaRegen:RegenAmount=4,RegenSpeed=10
 	Name:PrettyName="Hood of Mana Regeneration"
-	Info:InfoMessage="A lovely hood that restores 4 mana every 10 turns.  It really does look very dashing."
+	Info:InfoMessage="A lovely hood that appears to be made of silk.  It really does look very dashing."
 )

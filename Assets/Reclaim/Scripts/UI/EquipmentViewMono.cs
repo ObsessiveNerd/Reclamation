@@ -91,7 +91,10 @@ public class EquipmentViewMono : UpdatableUI//, IUpdatableUI
                                     .With(EventParameters.Head, null)
                                     .With(EventParameters.Torso, null)
                                     .With(EventParameters.Arms, null)
-                                    .With(EventParameters.Legs, null);
+                                    .With(EventParameters.Legs, null)
+                                    .With(EventParameters.Finger, null)
+                                    .With(EventParameters.Neck, null)
+                                    .With(EventParameters.Back, null);
 
         var firedEvent = source.FireEvent(getEquipment);
 
@@ -99,9 +102,9 @@ public class EquipmentViewMono : UpdatableUI//, IUpdatableUI
         SetEquipment(source, firedEvent.GetValue<List<EntityComponent>>(EventParameters.Torso), new List<GameObject>() { Torso });
         SetEquipment(source, firedEvent.GetValue<List<EntityComponent>>(EventParameters.Arms), new List<GameObject>() { LeftArm, RightArm });
         SetEquipment(source, firedEvent.GetValue<List<EntityComponent>>(EventParameters.Legs), new List<GameObject>() { LeftLeg/*, RightLeg */});
-        SetEquipment(source, firedEvent.GetValue<List<EntityComponent>>(EventParameters.Legs), new List<GameObject>() { Ring1, Ring2 });
-        SetEquipment(source, firedEvent.GetValue<List<EntityComponent>>(EventParameters.Legs), new List<GameObject>() { Necklace });
-        SetEquipment(source, firedEvent.GetValue<List<EntityComponent>>(EventParameters.Legs), new List<GameObject>() { Back });
+        SetEquipment(source, firedEvent.GetValue<List<EntityComponent>>(EventParameters.Finger), new List<GameObject>() { Ring1, Ring2 });
+        SetEquipment(source, firedEvent.GetValue<List<EntityComponent>>(EventParameters.Neck), new List<GameObject>() { Necklace });
+        SetEquipment(source, firedEvent.GetValue<List<EntityComponent>>(EventParameters.Back), new List<GameObject>() { Back });
         firedEvent.Release();
 
         GameEvent getPicture = GameEventPool.Get(GameEventId.GetPortrait)

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -18,6 +19,7 @@ public class ManaRegen : EntityComponent
     {
         base.Init(self);
         RegisteredEvents.Add(GameEventId.EndTurn);
+        RegisteredEvents.Add(GameEventId.GetInfo);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
@@ -35,6 +37,12 @@ public class ManaRegen : EntityComponent
                 FireEvent(target, regenMana, true).Release();
                 currentTurns = 0;
             }
+        }
+
+        else if(gameEvent.ID == GameEventId.GetInfo)
+        {
+            var dictionary = gameEvent.GetValue<Dictionary<string, string>>(EventParameters.Info);
+            dictionary.Add($"{nameof(ManaRegen)}{Guid.NewGuid()}", $"Renerate {RegenAmount} mana after {RegenSpeed} turns.");
         }
     }
 }

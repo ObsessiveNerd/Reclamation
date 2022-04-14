@@ -1,0 +1,14 @@
+<NecklaceOfDarkResistance> (
+	GraphicContainer:SpritePath=Textures/Sprites/Items/td_items_amulet_silver
+	Portrait:SpritePath=Textures/Portraits/WeaponAndArmorIcons/WeaponAndArmorIcons_png/transparent/necklace/nk_t_05
+	Position:PositionPoint=0
+	InteractOnTileOvertake
+	EntityTypeContainer:Type=Item
+	Item:Rarity=Common
+	Equipment:PreferredBodyPartWhenEquipped=Neck
+	Value:Amount=25
+	Red
+	Name:PrettyName="Void Necklace"
+	Resitance:Type=Dark
+	Resitance:Type=Arcane
+)

@@ -1,0 +1,12 @@
+<LeatherBoots> (
+	GraphicContainer:SpritePath=Textures/Sprites/Armor/td_items_leather_boot
+	Portrait:SpritePath=Textures/Portraits/WeaponAndArmorIcons/WeaponAndArmorIcons_png/transparent/boots/boot_t_02
+	Position:PositionPoint=0
+	InteractOnTileOvertake
+	EntityTypeContainer:Type=Item
+	Item:Rarity=Uncommon
+	Armor:ArmorAmount=1
+	Value:Amount=25
+	Equipment:PreferredBodyPartWhenEquipped=Leg
+	Name:PrettyName="Leather Boots"
+)

@@ -13,6 +13,8 @@ public class AStar : IPathfindingAlgorithm
 
     Dictionary<Point, Point> nodeLinks = new Dictionary<Point, Point>();
 
+    bool m_OnlyIncludeBlocksMovement = false;
+
     public void Clear()
     {
         closedSet.Clear();
@@ -22,8 +24,10 @@ public class AStar : IPathfindingAlgorithm
         nodeLinks.Clear();
     }
 
-    public AStar(int bufferSize)
+    public AStar(int bufferSize, bool onlyIncludeBlocksMovement = false)
     {
+        m_OnlyIncludeBlocksMovement = onlyIncludeBlocksMovement;
+
         closedSet = new Dictionary<Point, bool>(bufferSize);
         openSet = new Dictionary<Point, bool>(bufferSize);
 
@@ -86,8 +90,13 @@ public class AStar : IPathfindingAlgorithm
             return 0;
         t.GetPathFindingData(getPathData);
 
-        float weight = getPathData.GetValue<float>(EventParameters.Weight);
+        float weight = 0f;
+        if (m_OnlyIncludeBlocksMovement && getPathData.GetValue<bool>(EventParameters.BlocksMovement))
+            weight = Pathfinder.ImpassableWeight;
+        else if(!m_OnlyIncludeBlocksMovement)
+            weight = getPathData.GetValue<float>(EventParameters.Weight);
         getPathData.Release();
+
         return distanceH + (int)weight;
     }
 

@@ -1,0 +1,13 @@
+<RingOfMana> (
+	GraphicContainer:SpritePath=Textures/Sprites/Items/td_items_ring_silver
+	Portrait:SpritePath=Textures/Portraits/WeaponAndArmorIcons/WeaponAndArmorIcons_png/transparent/rings/rn_t_05
+	Position:PositionPoint=0
+	InteractOnTileOvertake
+	EntityTypeContainer:Type=Item
+	Item:Rarity=Rare
+	Value:Amount=25
+	Equipment:PreferredBodyPartWhenEquipped=Finger
+	Name:PrettyName="Ring of Minor Mana"
+	ActiveWhileEquiped
+	BoostMaxMana:PercentToBoost=5,CalculatedAmount=
+)

@@ -86,6 +86,7 @@ public class SpellcasterPlayerController : InputControllerBase
         
         Services.TileSelectionService.SelectTile(m_TileSelection);
          GameEvent selectTile = GameEventPool.Get(GameEventId.SelectTile)
+                                .With(EventParameters.Source, Self.ID)
                                 .With(EventParameters.TilePosition, m_TileSelection);
         m_Attack.FireEvent(selectTile).Release();
         Services.WorldUpdateService.UpdateWorldView();
@@ -113,6 +114,7 @@ public class SpellcasterPlayerController : InputControllerBase
             if (desiredDirection != MoveDirection.None)
             {
                 GameEvent moveSelection = GameEventPool.Get(GameEventId.SelectNewTileInDirection).With(EventParameters.InputDirection, desiredDirection)
+                                                                                                    .With(EventParameters.Source, Self.ID)
                                                                                                     .With(EventParameters.TilePosition, 
                                                                                                     Services.TileSelectionService.GetTilePointInDirection(m_TileSelection, desiredDirection));
                 Services.TileSelectionService.SelectTileInNewDirection(m_TileSelection, desiredDirection);

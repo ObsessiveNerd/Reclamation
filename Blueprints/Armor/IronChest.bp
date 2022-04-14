@@ -1,0 +1,12 @@
+<IronChest> (
+	GraphicContainer:SpritePath=Textures/Sprites/Armor/td_items_steel_chest
+	Portrait:SpritePath=Textures/Portraits/WeaponAndArmorIcons/WeaponAndArmorIcons_png/transparent/armor/composite_breastplate_t
+	Position:PositionPoint=0
+	InteractOnTileOvertake
+	EntityTypeContainer:Type=Item
+	Item:Rarity=Uncommon
+	Armor:ArmorAmount=6
+	Value:Amount=25
+	Equipment:PreferredBodyPartWhenEquipped=Torso
+	Name:PrettyName="Iron Chest Armor"
+)

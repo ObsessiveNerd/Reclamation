@@ -1,0 +1,11 @@
+<IronHelmet> (
+	GraphicContainer:SpritePath=Textures/Sprites/Armor/td_items_steel_helm
+	Portrait:SpritePath=Textures/Portraits/WeaponAndArmorIcons/WeaponAndArmorIcons_png/transparent/helmets/hlm_t_09
+	Position:PositionPoint=0
+	InteractOnTileOvertake
+	EntityTypeContainer:Type=Item
+	Item:Rarity=Uncommon
+	Armor:ArmorAmount=2
+	Value:Amount=25
+	Equipment:PreferredBodyPartWhenEquipped=Head
+)

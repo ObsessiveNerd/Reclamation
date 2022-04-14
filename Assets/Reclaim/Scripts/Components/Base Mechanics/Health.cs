@@ -7,15 +7,29 @@ public class Health : EntityComponent
     public int MaxHealth;
     public int CurrentHealth;
     int modMultiplier = 5;
+
+    public int PercentBoost;
+
+    public int TotalHealth
+    {
+        get
+        {
+            float percent = (float)PercentBoost / 100f;
+            int boostAmount = (int)(MaxHealth * percent);
+            return MaxHealth + boostAmount;
+        }
+    }
+
     public override int Priority { get { return 10; } }
 
-    private float PercentHealth {get{ return ((float)CurrentHealth / (float)MaxHealth) * 100f; } }
+    private float PercentHealth {get{ return ((float)CurrentHealth / (float)TotalHealth) * 100f; } }
 
-    public Health(int maxHealth, int currentHealth = -1)
+    public Health(int maxHealth, int currentHealth = -1, int percentBoost = 0)
     {
         MaxHealth = maxHealth;
         //CurrentHealth = currentHealth > 0 ? currentHealth : maxHealth;
         CurrentHealth = currentHealth;
+        PercentBoost = percentBoost;
 
         RegisteredEvents.Add(GameEventId.TakeDamage);
         RegisteredEvents.Add(GameEventId.RestoreHealth);
@@ -24,12 +38,14 @@ public class Health : EntityComponent
         RegisteredEvents.Add(GameEventId.GetHealth);
         RegisteredEvents.Add(GameEventId.StatBoosted);
         RegisteredEvents.Add(GameEventId.Rest);
+        RegisteredEvents.Add(GameEventId.AddMaxHealth);
+        RegisteredEvents.Add(GameEventId.RemoveMaxHealth);
     }
 
     public override void Start()
     {
         base.Start();
-        CurrentHealth = CurrentHealth > 0 ? CurrentHealth : MaxHealth;
+        CurrentHealth = CurrentHealth > 0 ? CurrentHealth : TotalHealth;
     }
 
     public override void HandleEvent(GameEvent gameEvent)
@@ -41,11 +57,17 @@ public class Health : EntityComponent
                 RecLog.Log($"{Self.Name} took {damage.DamageAmount} damage of type {damage.DamageType}");
                 CurrentHealth -= damage.DamageAmount;
 
+                IEntity weapon = Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameters.Attack));
+                GameEvent dealtDamage = GameEventPool.Get(GameEventId.DealtDamage)
+                                        .With(EventParameters.DamageSource, gameEvent.GetValue<string>(EventParameters.DamageSource))
+                                        .With(EventParameters.Damage, damage);
+                weapon.FireEvent(dealtDamage).Release();
+
                 GameEvent playTakeDamageClip = GameEventPool.Get(GameEventId.Playsound)
                                                 .With(EventParameters.SoundSource, Self.ID)
                                                 .With(EventParameters.Key, SoundKey.AttackHit);
-                var weapon = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameters.Attack));
                 weapon.FireEvent(playTakeDamageClip);
+                
                 playTakeDamageClip.Release();
 
                 Services.WorldUIService.EntityTookDamage(Self, damage.DamageAmount);
@@ -71,23 +93,39 @@ public class Health : EntityComponent
             MaxHealth = 10 + Mathf.Max(0, stats.CalculateModifier(stats.Con) * modMultiplier);
         }
 
+        else if(gameEvent.ID == GameEventId.AddMaxHealth)
+        {
+            int amount = gameEvent.GetValue<int>(EventParameters.MaxValue);
+            PercentBoost += amount;
+            Services.WorldUIService.UpdateUI();
+        }
+
+        else if(gameEvent.ID == GameEventId.RemoveMaxHealth)
+        {
+            int amount = gameEvent.GetValue<int>(EventParameters.MaxValue);
+            PercentBoost -= amount;
+            if(TotalHealth < CurrentHealth)
+                CurrentHealth = TotalHealth;
+            Services.WorldUIService.UpdateUI();
+        }
+
         else if(gameEvent.ID == GameEventId.Rest)
         {
             int healAmount = (int)gameEvent.Paramters[EventParameters.Healing];
-            CurrentHealth = Mathf.Min(CurrentHealth + healAmount, MaxHealth);
+            CurrentHealth = Mathf.Min(CurrentHealth + healAmount, TotalHealth);
         }
 
         else if(gameEvent.ID == GameEventId.RegenHealth)
         {
             int healAmount = (int)gameEvent.Paramters[EventParameters.Healing];
-            CurrentHealth = Mathf.Min(CurrentHealth + healAmount, MaxHealth);
+            CurrentHealth = Mathf.Min(CurrentHealth + healAmount, TotalHealth);
             Services.WorldUIService.EntityHealedDamage(Self, healAmount);
         }
 
         else if (gameEvent.ID == GameEventId.RestoreHealth)
         {
             int healAmount = (int)gameEvent.Paramters[EventParameters.Healing];
-            CurrentHealth = Mathf.Min(CurrentHealth + healAmount, MaxHealth);
+            CurrentHealth = Mathf.Min(CurrentHealth + healAmount, TotalHealth);
 
             Services.WorldUIService.EntityHealedDamage(Self, healAmount);
         }
@@ -95,7 +133,7 @@ public class Health : EntityComponent
         else if(gameEvent.ID == GameEventId.GetHealth)
         {
             gameEvent.Paramters[EventParameters.Value] = CurrentHealth;
-            gameEvent.Paramters[EventParameters.MaxValue] = MaxHealth;
+            gameEvent.Paramters[EventParameters.MaxValue] = TotalHealth;
         }
 
         else if(gameEvent.ID == GameEventId.GetCombatRating)
@@ -124,6 +162,8 @@ public class DTO_Health : IDataTransferComponent
     {
         int maxHealth = 0;
         int currentHealth = 0;
+        int percentBoost = 0;
+
         string[] parameters = data.Split(',');
         foreach(string param in parameters)
         {
@@ -138,6 +178,9 @@ public class DTO_Health : IDataTransferComponent
                     case "CurrentHealth":
                         currentHealth = int.Parse(value[1]);
                         break;
+                    case "PercentBoost":
+                        percentBoost = int.Parse(value[1]);
+                        break;
                 }
             }
             else
@@ -146,12 +189,12 @@ public class DTO_Health : IDataTransferComponent
                 currentHealth = parameters.Length > 1 ? int.Parse(parameters[1]) : maxHealth;
             }
         }
-        Component = new Health(maxHealth, currentHealth);
+        Component = new Health(maxHealth, currentHealth, percentBoost);
     }
 
     public string CreateSerializableData(IComponent component)
     {
         Health health = (Health)component;
-        return $"{nameof(Health)}:{nameof(health.MaxHealth)}={health.MaxHealth},{nameof(health.CurrentHealth)}={health.CurrentHealth}";
+        return $"{nameof(Health)}:{nameof(health.MaxHealth)}={health.MaxHealth},{nameof(health.CurrentHealth)}={health.CurrentHealth}, {nameof(health.PercentBoost)}={health.PercentBoost}";
     }
 }

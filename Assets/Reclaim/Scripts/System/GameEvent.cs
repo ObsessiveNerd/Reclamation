@@ -193,10 +193,15 @@ public static class GameEventId
     public const string PerformAttack = nameof(PerformAttack);
     public const string RollToHit = nameof(RollToHit);
     public const string TakeDamage = nameof(TakeDamage);
+    public const string DealtDamage = nameof(DealtDamage);
     public const string Died = nameof(Died);
     public const string RestoreHealth = nameof(RestoreHealth);
     public const string RegenHealth = nameof(RegenHealth);
     public const string Rest = nameof(Rest);
+    public const string AddMaxHealth = nameof(AddMaxHealth);
+    public const string RemoveMaxHealth = nameof(RemoveMaxHealth);
+    public const string AddMaxMana = nameof(AddMaxMana);
+    public const string RemoveMaxMana = nameof(RemoveMaxMana);
     public const string RestoreMana = nameof(RestoreMana);
     public const string DepleteMana = nameof(DepleteMana);
     public const string ApplyEffectToTarget = nameof(ApplyEffectToTarget);
@@ -325,6 +330,7 @@ public static class EventParameters
     public const string Color = nameof(Color);
     public const string Damage = nameof(Damage);
     public const string SoundSource = nameof(SoundSource);
+    public const string Source = nameof(Source);
     public const string DamageSource = nameof(DamageSource);
     public const string DamageList = nameof(DamageList);
     public const string Healing = nameof(Healing);

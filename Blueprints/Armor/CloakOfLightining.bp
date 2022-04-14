@@ -1,0 +1,13 @@
+<CloakOfLightining> (
+	GraphicContainer:SpritePath=Textures/Sprites/Items/td_items_cape_leather
+	Portrait:SpritePath=Textures/Portraits/WeaponAndArmorIcons/WeaponAndArmorIcons_png/transparent/addons/084_t
+	Position:PositionPoint=0
+	InteractOnTileOvertake
+	EntityTypeContainer:Type=Item
+	Item:Rarity=Mythic
+	Equipment:PreferredBodyPartWhenEquipped=Back
+	Value:Amount=200
+	Name:PrettyName="Cloak of Lightining"
+	Resitance:Type=Electric
+	SpellContainer:MaxSpell=1,RandomSpells=False,SpecificSpell=CallTheLightning
+)

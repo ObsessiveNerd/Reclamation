@@ -8,7 +8,8 @@ public enum AreaOfEffectType
 {
     None = 0,
     Circle,
-    Cone
+    Cone,
+    Path
 }
 
 public class AreaOfEffect : EntityComponent
@@ -67,19 +68,21 @@ public class AreaOfEffect : EntityComponent
 
         else if(gameEvent.ID == GameEventId.SelectTile)
         {
-            SelectAroundPosition(gameEvent);
+            IEntity source = Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameters.Source));
+            SelectAroundPosition(gameEvent, source);
         }
 
         else if(gameEvent.ID == GameEventId.SelectNewTileInDirection)
         {
             Point p = gameEvent.GetValue<Point>(EventParameters.TilePosition);
+            IEntity source = Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameters.Source));
             foreach(var tile in m_VisibleTiles)
             {
                 Services.TileSelectionService.EndTileSelection(tile);
             }
             GameEvent builder = GameEventPool.Get(GameEventId.SelectTile)
                                     .With(EventParameters.TilePosition, p);
-            SelectAroundPosition(builder);
+            SelectAroundPosition(builder, source);
             builder.Release();
         }
 
@@ -96,11 +99,21 @@ public class AreaOfEffect : EntityComponent
         }
     }
 
-    void SelectAroundPosition(GameEvent gameEvent)
+    void SelectAroundPosition(GameEvent gameEvent, IEntity source)
     {
         Point p = gameEvent.GetValue<Point>(EventParameters.TilePosition);
-        Shadowcasting sc = new Shadowcasting();
-        var visibleTiles = sc.GetVisibleTiles(WorldUtility.GetEntityAtPosition(p), Range);
+        List<Point> visibleTiles = new List<Point>();
+        if (AOEType == AreaOfEffectType.Circle)
+        {
+            Shadowcasting sc = new Shadowcasting();
+            visibleTiles = sc.GetVisibleTiles(WorldUtility.GetEntityAtPosition(p), Range);
+        }
+        else if(AOEType == AreaOfEffectType.Path)
+        {
+            AStar aStar = new AStar(200);
+            visibleTiles = aStar.CalculatePath(Services.WorldDataQuery.GetPointWhereEntityIs(source), p);
+        }
+
         m_VisibleTiles = visibleTiles;
         m_VisibleTiles.Add(p);
 

@@ -23,7 +23,8 @@ public static class CombatUtility
             CastSpellAtTarget(weapon, source, target);
 
             GameEvent selectTile = GameEventPool.Get(GameEventId.SelectTile)
-            .With(EventParameters.TilePosition, Services.EntityMapService.GetPointWhereEntityIs(target));
+                .With(EventParameters.Source, source.ID)
+                .With(EventParameters.TilePosition, Services.EntityMapService.GetPointWhereEntityIs(target));
             weapon.FireEvent(selectTile);
             selectTile.Release();
 

@@ -19,7 +19,6 @@
 	EquipmentSlot:EquipmentId=,BodyPartType=Leg
 	Aggression
 	EntityTypeContainer:Type=Creature
-	EquipmentSlot:EquipmentId=,BodyPartType=Leg
 	AIFOVHandler
 	RegisterWithTimeSystem
 	Body
@@ -37,4 +36,8 @@
 	Mana:MaxMana=5,CurrentMana=5
 	Sound:SoundPath=Sounds/HUMAN/Body/BODY_Cough_Short_mono,Key=Died
 	Rest:RegenAmount=2,RegenSpeed=4
+	EquipmentSlot:EquipmentId=,BodyPartType=Finger
+	EquipmentSlot:EquipmentId=,BodyPartType=Finger
+	EquipmentSlot:EquipmentId=,BodyPartType=Back
+	EquipmentSlot:EquipmentId=,BodyPartType=Neck
 )

@@ -1,0 +1,12 @@
+<IronBoots> (
+	GraphicContainer:SpritePath=Textures/Sprites/Armor/td_items_steel_boot
+	Portrait:SpritePath=Textures/Portraits/WeaponAndArmorIcons/WeaponAndArmorIcons_png/transparent/boots/boot_t_06
+	Position:PositionPoint=0
+	InteractOnTileOvertake
+	EntityTypeContainer:Type=Item
+	Item:Rarity=Uncommon
+	Armor:ArmorAmount=2
+	Value:Amount=25
+	Equipment:PreferredBodyPartWhenEquipped=Leg
+	Name:PrettyName="Iron Boots"
+)

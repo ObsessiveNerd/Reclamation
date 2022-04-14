@@ -199,7 +199,7 @@ public class Body : EntityComponent
         {
             GameEvent builder = GameEventPool.Get(GameEventId.GetBodyPartType)
                                     .With(EventParameters.BodyParts, new Dictionary<BodyPart, List<EntityComponent>>())
-                                    .With(EventParameters.DesiredBodyPartTypes, new List<BodyPart>(){ BodyPart.Arm, BodyPart.Leg, BodyPart.Torso, BodyPart.Head });
+                                    .With(EventParameters.DesiredBodyPartTypes, new List<BodyPart>(){ BodyPart.Arm, BodyPart.Leg, BodyPart.Torso, BodyPart.Head, BodyPart.Back, BodyPart.Finger, BodyPart.Neck });
 
             var result = FireEvent(Self, builder);
 
@@ -214,6 +214,15 @@ public class Body : EntityComponent
 
             if(result.GetValue<Dictionary<BodyPart, List<EntityComponent>>>(EventParameters.BodyParts).ContainsKey(BodyPart.Leg))
                 gameEvent.Paramters[EventParameters.Legs] = result.GetValue<Dictionary<BodyPart, List<EntityComponent>>>(EventParameters.BodyParts)[BodyPart.Leg];
+             
+            if(result.GetValue<Dictionary<BodyPart, List<EntityComponent>>>(EventParameters.BodyParts).ContainsKey(BodyPart.Finger))
+                gameEvent.Paramters[EventParameters.Finger] = result.GetValue<Dictionary<BodyPart, List<EntityComponent>>>(EventParameters.BodyParts)[BodyPart.Finger];
+            
+            if(result.GetValue<Dictionary<BodyPart, List<EntityComponent>>>(EventParameters.BodyParts).ContainsKey(BodyPart.Back))
+                gameEvent.Paramters[EventParameters.Back] = result.GetValue<Dictionary<BodyPart, List<EntityComponent>>>(EventParameters.BodyParts)[BodyPart.Back];
+            
+            if(result.GetValue<Dictionary<BodyPart, List<EntityComponent>>>(EventParameters.BodyParts).ContainsKey(BodyPart.Neck))
+                gameEvent.Paramters[EventParameters.Neck] = result.GetValue<Dictionary<BodyPart, List<EntityComponent>>>(EventParameters.BodyParts)[BodyPart.Neck];
 
             builder.Release();
         }

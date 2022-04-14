@@ -14,10 +14,18 @@ public class ActiveWhileEquiped : EntityComponent
     public override void HandleEvent(GameEvent gameEvent)
     {
         if(gameEvent.ID == GameEventId.ItemEquipped)
-            FireEvent(Self, GameEventPool.Get(GameEventId.ActivateObject), true).Release();
+        {
+            var activate = GameEventPool.Get(GameEventId.ActivateObject)
+                            .With(EventParameters.Owner, gameEvent.Paramters[EventParameters.Owner]);
+            FireEvent(Self, activate, true).Release();
+        }
 
         if (gameEvent.ID == GameEventId.ItemUnequipped)
-            FireEvent(Self, GameEventPool.Get(GameEventId.DeactivateObject), true).Release();
+        {
+            var deactivate = GameEventPool.Get(GameEventId.DeactivateObject)
+                                .With(EventParameters.Owner, gameEvent.Paramters[EventParameters.Owner]);
+            FireEvent(Self, deactivate, true).Release();
+        }
     }
 }
 

@@ -1,0 +1,12 @@
+<SteelShield> (
+	GraphicContainer:SpritePath=Textures/Sprites/Armor/td_items_shield_steel
+	Portrait:SpritePath=Textures/Portraits/WeaponAndArmorIcons/WeaponAndArmorIcons_png/transparent/shields/shield_t_06
+	Position:PositionPoint=0
+	InteractOnTileOvertake
+	EntityTypeContainer:Type=Item
+	Item:Rarity=Uncommon
+	Armor:ArmorAmount=2
+	Equipment:PreferredBodyPartWhenEquipped=Arm
+	Value:Amount=25
+	Name:PrettyName="Steel Shield"
+)

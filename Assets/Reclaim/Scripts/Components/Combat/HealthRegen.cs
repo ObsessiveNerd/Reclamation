@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -18,6 +19,7 @@ public class HealthRegen : EntityComponent
     {
         base.Init(self);
         RegisteredEvents.Add(GameEventId.EndTurn);
+        RegisteredEvents.Add(GameEventId.GetInfo);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
@@ -35,6 +37,15 @@ public class HealthRegen : EntityComponent
                 FireEvent(target, regenHealth, true).Release();
                 currentTurns = 0;
             }
+        }
+
+        else if(gameEvent.ID == GameEventId.GetInfo)
+        {
+            var dictionary = gameEvent.GetValue<Dictionary<string, string>>(EventParameters.Info);
+            if(RegenAmount < 0)
+                dictionary.Add($"{nameof(HealthRegen)}{Guid.NewGuid()}", $"Lose {RegenAmount * -1} health after {RegenSpeed} turns.");
+            else
+                dictionary.Add($"{nameof(HealthRegen)}{Guid.NewGuid()}", $"Renerate {RegenAmount} health after {RegenSpeed} turns.");
         }
     }
 }

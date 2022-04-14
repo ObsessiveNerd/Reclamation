@@ -1,0 +1,12 @@
+<CloakOfStabResist> (
+	GraphicContainer:SpritePath=Textures/Sprites/Items/td_items_cape_magic
+	Portrait:SpritePath=Textures/Portraits/WeaponAndArmorIcons/WeaponAndArmorIcons_png/transparent/cloaks/cl_t_07
+	Position:PositionPoint=0
+	InteractOnTileOvertake
+	EntityTypeContainer:Type=Item
+	Item:Rarity=Mythic
+	Equipment:PreferredBodyPartWhenEquipped=Back
+	Value:Amount=200
+	Name:PrettyName="Anti-stab Cloak"
+	Resitance:Type=Piercing
+)

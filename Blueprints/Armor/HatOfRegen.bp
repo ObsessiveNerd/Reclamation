@@ -7,5 +7,6 @@
 	Item:Rarity=Rare
 	Value:Amount=25
 	Equipment:PreferredBodyPartWhenEquipped=Head
-	HealthRegen:RegenAmount=2,RegenSpeed=4
+	HealthRegen:RegenAmount=2,RegenSpeed=15
+	Name:PrettyName="Hat of Lesser Regeneration"
 )
