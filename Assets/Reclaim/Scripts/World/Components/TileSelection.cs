@@ -32,7 +32,7 @@ public class TileSelection : GameService
         Point newPoint = GetTilePointInDirection(currentTilePos, moveDirection);
         if (m_Tiles.ContainsKey(newPoint))
         {
-            if (!m_TileEntity[currentTilePos].HasComponent(typeof(SelectedTile)))
+            if (!m_TileEntity[newPoint].HasComponent(typeof(SelectedTile)))
             {
                 m_TileEntity[newPoint].AddComponent(new SelectedTile());
                 m_TileEntity[newPoint].CleanupComponents();

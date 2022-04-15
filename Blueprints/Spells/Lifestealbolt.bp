@@ -1,0 +1,13 @@
+<Lifestealbolt> (
+	GraphicContainer:SpritePath=Textures/Portraits/spellbookmegapack/SpellBookPage06/SpellBook06_94
+	Spell:ManaCost=10,SpellFailed=None,SpellType=None
+	DealDamage:DamageType=Dark,Dice=1d4
+	Range
+	WeaponType:Type=RangedSpell
+	Sound:SoundPath=Sounds/MAGIC_SPELLS/MAGIC_SPELL_Flame_01_mono,Key=Cast
+	Info:InfoMessage="Harness the power of the necromantic arts to absorb health."
+	Name:PrettyName="Lifesteal Bolt"
+	SpawnEffect:TexturePath=Textures/Sprites/Effects/tiny_dungeon_fx_voidspark_1
+	AreaOfEffect:Range=0,AOEType=Path,RandomAffectCount=0
+	Lifesteal
+)

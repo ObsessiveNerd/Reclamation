@@ -12,10 +12,13 @@ public class Shadowcasting : IFovAlgorithm
     List<Point> m_VisiblePoints;
     List<int> m_VisibleOctants = new List<int>() { 1,2,3,4,5,6,7,8 };
 
-    public List<Point> GetVisibleTiles(IEntity source, int range)
+    public List<Point> GetVisibleTiles(IEntity source, int range, List<int> octants = null)
     {
         if (source == null)
             return new List<Point>();
+
+        if (octants == null)
+            octants = m_VisibleOctants;
 
         m_Range = range;
         m_Source = source;
@@ -23,7 +26,7 @@ public class Shadowcasting : IFovAlgorithm
 
         m_VisiblePoints = new List<Point>();
         m_VisiblePoints.Add(m_SourcePoint);
-        foreach (int octant in m_VisibleOctants)
+        foreach (int octant in octants)
             ScanOctant(1, octant, 1.0, 0.0);
         m_VisiblePoints = m_VisiblePoints.Distinct(new PointComparer()).ToList();
         

@@ -21,12 +21,6 @@ public class WorldUIController : GameService
         if (!m_EntityToPointMap.ContainsKey(entity.ID))
             return;
 
-        if(damage > 0)
-        {
-            EntityHealedDamage(entity, damage);
-            return;
-        }
-
         Point p = m_EntityToPointMap[entity.ID];
         GameObject mapObject = m_GameObjectMap[p];
         Vector2 newPos = (Vector2)Camera.main.WorldToScreenPoint(mapObject.transform.position);
@@ -56,12 +50,6 @@ public class WorldUIController : GameService
     {
         if (!m_EntityToPointMap.ContainsKey(entity.ID))
             return;
-
-        if(healing < 0)
-        {
-            EntityTookDamage(entity, healing);
-            return;
-        }
 
         Point p = m_EntityToPointMap[entity.ID];
         GameObject mapObject = m_GameObjectMap[p];

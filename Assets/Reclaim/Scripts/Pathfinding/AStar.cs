@@ -57,7 +57,7 @@ public class AStar : IPathfindingAlgorithm
                 if (closedSet.ContainsKey(neighbor))
                     continue;
 
-                var projectedG = getGScore(current) + 1;
+                var projectedG = getGScore(current) + (int)Point.Distance(neighbor, current);
 
                 if (!openSet.ContainsKey(neighbor))
                     openSet[neighbor] = true;

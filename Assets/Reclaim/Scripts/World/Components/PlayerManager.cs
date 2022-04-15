@@ -113,6 +113,7 @@ public class PlayerManager : GameService
                 for (int i = 0; i < 4; i++)
                 {
                     IEntity player = EntityFactory.CreateEntity("DwarfWarrior");
+                    player.AddComponent(new Name(i.ToString()));
                     result.Add(player);
                     //Spawner.Spawn(player, DungeonGenerator.Rooms[0].GetValidPoint(null));
                     //player.CleanupComponents();

@@ -1,13 +1,13 @@
 <DragonHead> (
 	GraphicContainer:SpritePath= Textures/Sprites/Armor/td_items_leather_helm
-	Portrait:SpritePath= Portraits/Items/addons/71_t
+	Portrait:SpritePath=Textures/Portraits/ArmorIcons_png/transparent/helmets/helmets_11
 	Position:PositionPoint=0
 	InteractOnTileOvertake
 	EntityTypeContainer:Type=Item
 	Item:Rarity=Mythic
 	Equipment:PreferredBodyPartWhenEquipped=Head
 	DealDamage:DamageType=Fire,Dice=1d10
-	SpellContainer:MaxSpell=5,RandomSpells=False,SpecificSpell=Fireball
+	SpellContainer:MaxSpell=1,RandomSpells=False,SpecificSpell=Firebreath
 	WeaponType:Type=Melee
 	Name:PrettyName="Dragon Head"
 	Red

@@ -18,6 +18,7 @@ public class AreaOfEffect : EntityComponent
     public AreaOfEffectType AOEType;
     public int RandomAffectCount = 0;
 
+    MoveDirection savedMoveDir = MoveDirection.None;
     List<Point> m_VisibleTiles = new List<Point>();
 
     public AreaOfEffect(int range, AreaOfEffectType aoeType, int randomEffectCount)
@@ -69,20 +70,17 @@ public class AreaOfEffect : EntityComponent
         else if(gameEvent.ID == GameEventId.SelectTile)
         {
             IEntity source = Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameters.Source));
-            SelectAroundPosition(gameEvent, source);
+            SelectAroundPosition(gameEvent, source, savedMoveDir);
         }
 
         else if(gameEvent.ID == GameEventId.SelectNewTileInDirection)
         {
             Point p = gameEvent.GetValue<Point>(EventParameters.TilePosition);
+            MoveDirection dir = gameEvent.GetValue<MoveDirection>(EventParameters.InputDirection);
             IEntity source = Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameters.Source));
-            foreach(var tile in m_VisibleTiles)
-            {
-                Services.TileSelectionService.EndTileSelection(tile);
-            }
             GameEvent builder = GameEventPool.Get(GameEventId.SelectTile)
                                     .With(EventParameters.TilePosition, p);
-            SelectAroundPosition(builder, source);
+            SelectAroundPosition(builder, source, dir);
             builder.Release();
         }
 
@@ -99,26 +97,75 @@ public class AreaOfEffect : EntityComponent
         }
     }
 
-    void SelectAroundPosition(GameEvent gameEvent, IEntity source)
+    void SelectAroundPosition(GameEvent gameEvent, IEntity source, MoveDirection direction = MoveDirection.None)
     {
+        foreach (var tile in m_VisibleTiles)
+        {
+            Services.TileSelectionService.EndTileSelection(tile);
+        }
+        m_VisibleTiles.Clear();
+
         Point p = gameEvent.GetValue<Point>(EventParameters.TilePosition);
         List<Point> visibleTiles = new List<Point>();
         if (AOEType == AreaOfEffectType.Circle)
         {
             Shadowcasting sc = new Shadowcasting();
-            visibleTiles = sc.GetVisibleTiles(WorldUtility.GetEntityAtPosition(p), Range);
+            visibleTiles = sc.GetVisibleTiles(Services.WorldDataQuery.GetEntityOnTile(p), Range);
+            m_VisibleTiles.Add(p);
         }
-        else if(AOEType == AreaOfEffectType.Path)
+        else if (AOEType == AreaOfEffectType.Path)
         {
             AStar aStar = new AStar(200);
             visibleTiles = aStar.CalculatePath(Services.WorldDataQuery.GetPointWhereEntityIs(source), p);
+            m_VisibleTiles.Add(p);
+        }
+        else if(AOEType == AreaOfEffectType.Cone)
+        {
+            int octant = ConvertDirectionToOctant(direction);
+            Shadowcasting sc = new Shadowcasting();
+            visibleTiles = sc.GetVisibleTiles(source, Range, new List<int>() { octant });
+            visibleTiles.Remove(Services.EntityMapService.GetPointWhereEntityIs(source));
+            Services.TileSelectionService.EndTileSelection(p);
+            savedMoveDir = MoveDirection.None;
         }
 
-        m_VisibleTiles = visibleTiles;
-        m_VisibleTiles.Add(p);
+        m_VisibleTiles.AddRange(visibleTiles);
 
-        foreach (var point in visibleTiles)
+        foreach (var point in m_VisibleTiles)
                 Services.TileSelectionService.SelectTile(point);
+    }
+
+    int ConvertDirectionToOctant(MoveDirection dir)
+    {
+        int octant = 1;
+        switch (dir)
+        {
+            case MoveDirection.N:
+                octant = 6;
+                break;
+            case MoveDirection.NE:
+                octant = 5;
+                break;
+            case MoveDirection.E:
+                octant = 4;
+                break;
+            case MoveDirection.SE:
+                octant = 3;
+                break;
+            case MoveDirection.S:
+                octant = 2;
+                break;
+            case MoveDirection.SW:
+                octant = 1;
+                break;
+            case MoveDirection.W:
+                octant = 8;
+                break;
+            case MoveDirection.NW:
+                octant = 7;
+                break;
+        }
+        return octant;
     }
 }
 

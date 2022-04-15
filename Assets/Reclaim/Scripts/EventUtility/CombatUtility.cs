@@ -22,11 +22,11 @@ public static class CombatUtility
         {
             CastSpellAtTarget(weapon, source, target);
 
-            GameEvent selectTile = GameEventPool.Get(GameEventId.SelectTile)
-                .With(EventParameters.Source, source.ID)
-                .With(EventParameters.TilePosition, Services.EntityMapService.GetPointWhereEntityIs(target));
-            weapon.FireEvent(selectTile);
-            selectTile.Release();
+            //GameEvent selectTile = GameEventPool.Get(GameEventId.SelectTile)
+            //    .With(EventParameters.Source, source.ID)
+            //    .With(EventParameters.TilePosition, Services.EntityMapService.GetPointWhereEntityIs(target));
+            //weapon.FireEvent(selectTile);
+            //selectTile.Release();
 
             GameEvent affectArea = GameEventPool.Get(GameEventId.AffectArea)
                 .With(EventParameters.Effect,
@@ -208,10 +208,15 @@ public static class CombatUtility
 
         if(!weapon.HasComponent(typeof(Summon)))
         {
-            GameEvent fireRangedWeapon = GameEventPool.Get(GameEventId.FireRangedAttack)
-            .With(EventParameters.Entity, WorldUtility.GetGameObject(source).transform.position)
-            .With(EventParameters.Target, WorldUtility.GetGameObject(target).transform.position);
-            weapon.FireEvent(fireRangedWeapon).Release();
+            var sourceGo = WorldUtility.GetGameObject(source);
+            var targetGo = WorldUtility.GetGameObject(target);
+            if(sourceGo != null && targetGo != null)
+            {
+                GameEvent fireRangedWeapon = GameEventPool.Get(GameEventId.FireRangedAttack)
+                   .With(EventParameters.Entity, sourceGo.transform.position)
+                    .With(EventParameters.Target, targetGo.transform.position);
+                weapon.FireEvent(fireRangedWeapon).Release();
+            }
         }
         amAttacking.Release();
         castSpell.Release();

@@ -3,15 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HealthRegen : EntityComponent
+public class DOT : EntityComponent
 {
-    public int RegenAmount;
     public int RegenSpeed;
 
     int currentTurns = 0;
-    public HealthRegen(int regenAmount, int speed)
+    public DOT(int speed)
     {
-        RegenAmount = regenAmount;
         RegenSpeed = speed;
     }
 
@@ -32,9 +30,7 @@ public class HealthRegen : EntityComponent
             currentTurns++;
             if(currentTurns >= RegenSpeed)
             {
-                GameEvent regenHealth = GameEventPool.Get(GameEventId.RegenHealth)
-                                            .With(EventParameters.Healing, RegenAmount);
-                FireEvent(target, regenHealth, true).Release();
+                CombatUtility.CastSpell(Self, target, Self);
                 currentTurns = 0;
             }
         }
@@ -42,12 +38,12 @@ public class HealthRegen : EntityComponent
         else if(gameEvent.ID == GameEventId.GetInfo)
         {
             var dictionary = gameEvent.GetValue<Dictionary<string, string>>(EventParameters.Info);
-            dictionary.Add($"{nameof(HealthRegen)}{Guid.NewGuid()}", $"Renerate {RegenAmount} health after {RegenSpeed} turns.");
+            dictionary.Add($"{nameof(DOT)}{Guid.NewGuid()}", $"Take damage every {RegenSpeed} turns.");
         }
     }
 }
 
-public class DTO_HealthRegen : IDataTransferComponent
+public class DTO_DOT : IDataTransferComponent
 {
     public IComponent Component { get; set; }
 
@@ -69,12 +65,12 @@ public class DTO_HealthRegen : IDataTransferComponent
                 Debug.LogError("Unable to parse health regen value.");
         }
 
-        Component = new HealthRegen(regen, speed);
+        Component = new DOT(speed);
     }
 
     public string CreateSerializableData(IComponent component)
     {
-        HealthRegen hr = (HealthRegen)component;
-        return $"{nameof(HealthRegen)}: {nameof(hr.RegenAmount)}={hr.RegenAmount}, {nameof(hr.RegenSpeed)}={hr.RegenSpeed}";
+        DOT hr = (DOT)component;
+        return $"{nameof(DOT)}: {nameof(hr.RegenSpeed)}={hr.RegenSpeed}";
     }
 }

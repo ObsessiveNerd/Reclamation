@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,6 +9,7 @@ public class Lifesteal : EntityComponent
     {
         base.Init(self);
         RegisteredEvents.Add(GameEventId.DealtDamage);
+        RegisteredEvents.Add(GameEventId.GetInfo);
     }
 
     public override void HandleEvent(GameEvent gameEvent)
@@ -21,6 +23,12 @@ public class Lifesteal : EntityComponent
                                         .With(EventParameters.Healing, damage.DamageAmount);
 
             damageSource.FireEvent(healForDamage).Release();
+        }
+
+        else if (gameEvent.ID == GameEventId.GetInfo)
+        {
+            var dictionary = gameEvent.GetValue<Dictionary<string, string>>(EventParameters.Info);
+            dictionary.Add($"{nameof(Lifesteal)}{Guid.NewGuid()}", "Lifesteal: Damage dealt by this returns health to the attacker.");
         }
     }
 }

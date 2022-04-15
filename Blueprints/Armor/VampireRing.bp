@@ -9,8 +9,8 @@
 	Equipment:PreferredBodyPartWhenEquipped=Finger
 	Name:PrettyName="Soul-stealing Ring"
 	ActiveWhileEquiped
-	HealthRegen:RegenAmount=-3,RegenSpeed=7
 	Resitance:Type=Dark
-	SpellContainer:MaxSpell=1,RandomSpells=False,SpecificSpell=Necrobolt
-	Lifesteal
+	SpellContainer:MaxSpell=1,RandomSpells=False,SpecificSpell=Lifestealbolt
+	DOT:RegenSpeed=10
+	DealDamage:DamageType=Arcane,Dice=1d4
 )

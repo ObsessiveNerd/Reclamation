@@ -4,5 +4,5 @@ using UnityEngine;
 
 public interface IFovAlgorithm
 {
-    List<Point> GetVisibleTiles(IEntity source, int range);
+    List<Point> GetVisibleTiles(IEntity source, int range, List<int> octants = null);
 }
