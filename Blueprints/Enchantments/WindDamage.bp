@@ -1,0 +1,3 @@
+<WindDamage> (
+	DealDamage:DamageType=Wind,Dice=1d6
+)

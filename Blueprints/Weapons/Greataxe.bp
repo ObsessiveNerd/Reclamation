@@ -1,0 +1,16 @@
+<Greataxe> (
+	GraphicContainer:SpritePath=Textures/Sprites/Weapons/td_items_weapon_axe
+	Portrait:SpritePath=Textures/Portraits/WeaponAndArmorIcons/WeaponAndArmorIcons_png/transparent/axes/axe_t_03
+	Position:PositionPoint=0
+	InteractOnTileOvertake
+	EntityTypeContainer:Type=Item
+	Item:Rarity=Uncommon
+	WeaponType:Type=Melee
+	DealDamage:DamageType=Slashing,Dice=1d12
+	Equipment:PreferredBodyPartWhenEquipped=Arm
+	Value:Amount=10
+	Sound:SoundPath=Sounds/Melee/Hammer/HAMMER_Hit_Wood_Shield_stereo,Key=AttackHit
+	Sound:SoundPath=Sounds/Air/WHOOSH_Air_Blade_RR1_mono,Key=AttackMiss
+	TwoHanded
+	Name:PrettyName="Greataxe"
+)

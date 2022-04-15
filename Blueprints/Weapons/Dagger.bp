@@ -1,0 +1,15 @@
+<Dagger> (
+	GraphicContainer:SpritePath=Textures/Sprites/Weapons/td_items_weapon_dagger
+	Portrait:SpritePath=Textures/Portraits/WeaponAndArmorIcons/WeaponAndArmorIcons_png/transparent/addons/072_t
+	Position:PositionPoint=0
+	InteractOnTileOvertake
+	EntityTypeContainer:Type=Item
+	Item:Rarity=Uncommon
+	WeaponType:Type=Finesse
+	DealDamage:DamageType=Piercing,Dice=1d4
+	Equipment:PreferredBodyPartWhenEquipped=Arm
+	Value:Amount=10
+	Sound:SoundPath=Sounds/Melee/Swords/SWORD_Whoosh_Hit_Sword_Hard_RR5_mono,Key=AttackHit
+	Sound:SoundPath=Sounds/Air/WHOOSH_Air_Blade_RR1_mono,Key=AttackMiss
+	Name:PrettyName="Dagger"
+)

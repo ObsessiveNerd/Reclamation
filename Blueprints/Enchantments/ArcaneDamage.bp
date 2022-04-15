@@ -1,0 +1,3 @@
+<ArcaneDamage> (
+	DealDamage:DamageType=Arcane,Dice=1d6
+)

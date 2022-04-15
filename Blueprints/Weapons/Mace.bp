@@ -1,0 +1,15 @@
+<Mace> (
+	GraphicContainer:SpritePath=Textures/Sprites/Weapons/td_items_weapon_mace
+	Portrait:SpritePath=Textures/Portraits/WeaponAndArmorIcons/WeaponAndArmorIcons_png/transparent/maces_and_hammers/bl_t_07
+	Position:PositionPoint=0
+	InteractOnTileOvertake
+	EntityTypeContainer:Type=Item
+	Item:Rarity=Uncommon
+	WeaponType:Type=Melee
+	DealDamage:DamageType=Blunt,Dice=1d8
+	Equipment:PreferredBodyPartWhenEquipped=Arm
+	Value:Amount=10
+	Sound:SoundPath=Sounds/Melee/Swords/SWORD_Hit_Metal_Armor_RR5_mono,Key=AttackHit
+	Sound:SoundPath=Sounds/Classic/WHOOSH_Quick_Darker_mono,Key=AttackMiss
+	Name:PrettyName="Mace"
+)

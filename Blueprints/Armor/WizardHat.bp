@@ -1,0 +1,13 @@
+<WizardHat> (
+	GraphicContainer:SpritePath=Textures/Sprites/Armor/td_items_hat_purple
+	Portrait:SpritePath=Textures/Portraits/ArmorIcons_png/transparent/helmets/helmets_22
+	Position:PositionPoint=0
+	InteractOnTileOvertake
+	EntityTypeContainer:Type=Item
+	Item:Rarity=Rare
+	Value:Amount=25
+	Equipment:PreferredBodyPartWhenEquipped=Head
+	Name:PrettyName="Pointy Wizard Hat"
+	BoostMaxMana:PercentToBoost=15,CalculatedAmount=
+	ActiveWhileEquiped
+)
