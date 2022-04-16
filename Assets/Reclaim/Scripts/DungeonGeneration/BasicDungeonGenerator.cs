@@ -593,7 +593,7 @@ public class BasicDungeonGenerator : IDungeonGenerator
 
     void SpawnEnemies(DungeonMetaData dmd)
     {
-        for (int i = 0; i < RecRandom.Instance.GetRandomValue(2, 9); i++)
+        for (int i = 0; i < RecRandom.Instance.GetRandomValue(10, 25); i++)
         {
             Room randomRoom = Rooms[RecRandom.Instance.GetRandomValue(1, Rooms.Count)];
             IEntity enemy = EntityFactory.CreateEntity(EntityFactory.GetRandomMonsterBPName(dmd));

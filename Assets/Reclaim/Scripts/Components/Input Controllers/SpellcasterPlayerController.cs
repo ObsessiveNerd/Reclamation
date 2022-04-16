@@ -16,53 +16,65 @@ public class SpellcasterPlayerController : InputControllerBase
         m_SpellIndex = spellIndex;
     }
 
+    public SpellcasterPlayerController(IEntity spell)
+    {
+        m_Attack = spell;
+        GameEvent getManaCost = GameEventPool.Get(GameEventId.ManaCost)
+                                        .With(EventParameters.Value, 1);
+        m_ManaCost = m_Attack.FireEvent(getManaCost).GetValue<int>(EventParameters.Value);
+        getManaCost.Release();
+    }
+
     public override void Init(IEntity self)
     {
         base.Init(self);
         UIManager.Push(this);
 
-        GameEvent getSpells = GameEventPool.Get(GameEventId.GetActiveAbilities)
+        if(m_Attack == null)
+        {
+            GameEvent getSpells = GameEventPool.Get(GameEventId.GetActiveAbilities)
                                     .With(EventParameters.Abilities, new List<IEntity>());
 
-        var eventResult = Self.FireEvent(getSpells);
-        var spellList = eventResult.GetValue<List<IEntity>>(EventParameters.Abilities);
-        if(spellList.Count == 0 || spellList.Count - 1 < m_SpellIndex)
-        {
-            UIManager.ForcePop(this);
-            Self.RemoveComponent(this);
-            Self.AddComponent(new PlayerInputController());
-            getSpells.Release();
-            return;
-        }
-
-        if(spellList.ToList().Count() > m_SpellIndex)
-        {
-            m_Attack = spellList[m_SpellIndex];
-
-            GameEvent getCurrentMana = GameEventPool.Get(GameEventId.GetMana)
-                                            .With(EventParameters.Value, 0);
-            int currentMana = Self.FireEvent(getCurrentMana).GetValue<int>(EventParameters.Value);
-
-            GameEvent getManaCost = GameEventPool.Get(GameEventId.ManaCost)
-                                        .With(EventParameters.Value, 1);
-            m_ManaCost = m_Attack.FireEvent(getManaCost).GetValue<int>(EventParameters.Value);
-
-            if (m_ManaCost <= currentMana)
-                Debug.Log("Had enough mana");
-            else
+            var eventResult = Self.FireEvent(getSpells);
+            var spellList = eventResult.GetValue<List<IEntity>>(EventParameters.Abilities);
+            if (spellList.Count == 0 || spellList.Count - 1 < m_SpellIndex)
             {
-                Debug.Log("not enough mana");
-                m_Attack = null;
-                getManaCost.Release();
-                getCurrentMana.Release();
+                UIManager.ForcePop(this);
+                Self.RemoveComponent(this);
+                Self.AddComponent(new PlayerInputController());
                 getSpells.Release();
                 return;
             }
 
-            getManaCost.Release();
-            getCurrentMana.Release();
-            getSpells.Release();
-        } 
+            if (spellList.ToList().Count() > m_SpellIndex)
+            {
+                m_Attack = spellList[m_SpellIndex];
+
+                GameEvent getCurrentMana = GameEventPool.Get(GameEventId.GetMana)
+                                            .With(EventParameters.Value, 0);
+                int currentMana = Self.FireEvent(getCurrentMana).GetValue<int>(EventParameters.Value);
+
+                GameEvent getManaCost = GameEventPool.Get(GameEventId.ManaCost)
+                                        .With(EventParameters.Value, 1);
+                m_ManaCost = m_Attack.FireEvent(getManaCost).GetValue<int>(EventParameters.Value);
+
+                if (m_ManaCost <= currentMana)
+                    Debug.Log("Had enough mana");
+                else
+                {
+                    Debug.Log("not enough mana");
+                    m_Attack = null;
+                    getManaCost.Release();
+                    getCurrentMana.Release();
+                    getSpells.Release();
+                    return;
+                }
+
+                getManaCost.Release();
+                getCurrentMana.Release();
+                getSpells.Release();
+            }
+        }
 
         IEntity startingTarget = WorldUtility.GetClosestEnemyTo(Self);
         if (m_Attack.HasComponent(typeof(Heal)))

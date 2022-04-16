@@ -130,6 +130,11 @@ public class WorldUIController : GameService
         UpdateUI();
     }
 
+    public void OpenSelectAllSpellUI()
+    {
+        GameObject.FindObjectOfType<UIReferences>().OpenSelectFromAllSpells();
+    }
+
     public void OpenSpellExaminationUI(List<string> spellIds)
     {
         GameObject.FindObjectOfType<UIReferences>().OpenSpellExaminer(spellIds);

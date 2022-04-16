@@ -11,11 +11,17 @@ public class UIReferences : MonoBehaviour
     public GameObject EnchantmentManager;
     public GameObject EndState;
     public GameObject DebugMenu;
+    public GameObject SelectFromAllSpells;
 
     public void OpenSpellExaminer(List<string> spellIds)
     {
         SpellExaminer.SetActive(true);
         SpellExaminer.GetComponent<SpellExaminationUI>().Setup(spellIds);
+    }
+
+    public void OpenSelectFromAllSpells()
+    {
+        SelectFromAllSpells.SetActive(true);
     }
 
     public void OpenCharacterManager()

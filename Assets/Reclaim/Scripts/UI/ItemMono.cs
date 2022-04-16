@@ -23,6 +23,7 @@ public class ItemMono : DragAndDrop, IPointerEnterHandler, IPointerExitHandler
         if(IsDragging)
             return;
 
+        Debug.Log("enter");
         string id = GetItemId();
         if (string.IsNullOrEmpty(id))
             return;

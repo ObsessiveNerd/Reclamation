@@ -73,6 +73,13 @@ public class PlayerInputController : InputControllerBase
                 Services.DungeonService.MoveUp();
 
 #endif
+            else if(InputBinder.PerformRequestedAction(RequestedAction.CastSpell))
+            {
+                Self.RemoveComponent(this);
+                Self.AddComponent(new PlayerUIController());
+                Services.WorldUIService.OpenSelectAllSpellUI();
+            }
+
             else if (InputBinder.PerformRequestedAction(RequestedAction.FireRangedWeapon))
             {
 
