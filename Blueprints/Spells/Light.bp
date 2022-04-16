@@ -1,0 +1,11 @@
+<Light> (
+	GraphicContainer:SpritePath=Textures/Portraits/spellbookmegapack/SpellBookPage08/SpellBook08_09
+	Spell:ManaCost=4,SpellFailed=DamageHalved,SpellType=WisSpell
+	DealDamage:DamageType=Light,Dice=1d12
+	Range
+	Sound:SoundPath=Sounds/MAGIC_SPELLS/MAGIC_SPELL_Flame_01_mono,Key=Cast
+	Ammo:TexturePath=Textures/Sprites/Effects/tiny_dungeon_fx_sparkle_2
+	AreaOfEffect:Range=2,AOEType=Circle,RandomAffectCount=
+	Name:PrettyName="Light"
+	Info:InfoMessage="Smite an area with holy light."
+)

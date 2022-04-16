@@ -22,7 +22,7 @@ public class Actor : IEntity
         }
         internal set
         {
-            InternalName = value;
+            //InternalName = value;
         }
     }
     public string ID { get; internal set; }
@@ -36,7 +36,10 @@ public class Actor : IEntity
 
     public Actor(string name)
     {
-        Name = name;
+        if (name.Contains("Minor"))
+            Debug.Log("Shit");
+
+        InternalName = name;
         ID = IDManager.GetNewID().ToString();
         m_Components = new PriorityQueue<IComponent>(new ComponentComparer());
 
@@ -46,7 +49,10 @@ public class Actor : IEntity
 
     public Actor(string name, string id)
     {
-        Name = name;
+        if (name.Contains("Minor"))
+            Debug.Log("Shit");
+
+        InternalName = name;
         ID = string.IsNullOrEmpty(id) ? IDManager.GetNewID() : id;
 
         m_Components = new PriorityQueue<IComponent>(new ComponentComparer());
@@ -160,7 +166,7 @@ public class Actor : IEntity
         CleanupComponents();
 
         StringBuilder sb = new StringBuilder();
-        sb.AppendLine($"<{Name},{ID}>(");
+        sb.AppendLine($"<{InternalName},{ID}>(");
 
         foreach(IComponent comp in m_Components.ToList())
         {

@@ -11,7 +11,7 @@ public class ItemContainer : EntityComponent
     public ItemContainer(string itemNames)
     {
         foreach(var item in EntityFactory.GetEntitiesFromArray(itemNames))
-            IDToEntityMap[item.Name] = item;
+            IDToEntityMap[item.InternalName] = item;
     }
 
     public override void Init(IEntity self)

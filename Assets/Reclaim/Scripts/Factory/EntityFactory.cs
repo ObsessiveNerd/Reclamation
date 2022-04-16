@@ -440,7 +440,7 @@ public static class EntityFactory
         StringBuilder sb = new StringBuilder();
         foreach (var entity in entities)
             if(entity != null)
-                sb.Append($"<{entity.Name}>&");
+                sb.Append($"<{entity.InternalName}>&");
 
         return sb.ToString().TrimEnd('&');
     }

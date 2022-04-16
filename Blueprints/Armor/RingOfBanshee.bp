@@ -1,0 +1,12 @@
+<RingOfBanshee> (
+	GraphicContainer:SpritePath=Textures/Sprites/Items/td_items_ring_gold
+	Portrait:SpritePath=Textures/Portraits/ArmorIcons_png/transparent/rings/rings_3
+	Position:PositionPoint=0
+	InteractOnTileOvertake
+	EntityTypeContainer:Type=Item
+	Item:Rarity=Rare
+	Value:Amount=25
+	Equipment:PreferredBodyPartWhenEquipped=Finger
+	Name:PrettyName="Wailing Ring"
+	SpellContainer:MaxSpell=1,RandomSpells=False,SpecificSpell=BansheeWail
+)

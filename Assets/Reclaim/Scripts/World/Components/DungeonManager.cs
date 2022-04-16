@@ -355,7 +355,7 @@ public class DungeonManager : GameService
             foreach(var tile in m_TileEntity.Values)
             {
                 GameEvent setSprite = GameEventPool.Get(GameEventId.SetSprite)
-                                        .With(EventParameters.Path, dmd.TileType);
+                                        .With(EventParameters.Path, dmd.TileType + dmd.GetRandomLetter());
                 FireEvent(tile, setSprite);
                 setSprite.Release();
             }
@@ -363,7 +363,7 @@ public class DungeonManager : GameService
         else
         {
             DungeonMetaData dmd = new DungeonMetaData($"{LevelMetaData.MetadataPath}/{m_CurrentLevel}.lvl");
-            DungeonGenerationResult dr = DungeonGenerator.GenerateDungeon(dmd, m_CurrentLevel == 15);
+            DungeonGenerationResult dr = DungeonGenerator.GenerateDungeon(dmd, m_CurrentLevel == 20);
 
             foreach(var tile in m_TileEntity.Values)
             {

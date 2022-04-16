@@ -70,7 +70,8 @@ public class AreaOfEffect : EntityComponent
         else if(gameEvent.ID == GameEventId.SelectTile)
         {
             IEntity source = Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameters.Source));
-            SelectAroundPosition(gameEvent, source, savedMoveDir);
+            MoveDirection dir = gameEvent.GetValue<MoveDirection>(EventParameters.InputDirection);
+            SelectAroundPosition(gameEvent, source, dir);
         }
 
         else if(gameEvent.ID == GameEventId.SelectNewTileInDirection)

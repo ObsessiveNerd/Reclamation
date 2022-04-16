@@ -1,0 +1,17 @@
+<EyeOfTheBeholder> (
+	GraphicContainer:SpritePath=Textures/Sprites/Items/td_items_crystal_empty
+	Portrait:SpritePath=Textures/Portraits/MagicItems_png/transparent/orb_06_t
+	Position:PositionPoint=0
+	InteractOnTileOvertake
+	EntityTypeContainer:Type=Item
+	Item:Rarity=Mythic
+	WeaponType:Type=Melee
+	Equipment:PreferredBodyPartWhenEquipped=Arm
+	Value:Amount=10
+	Sound:SoundPath=Sounds/Melee/Swords/SWORD_Hit_Metal_Armor_RR5_mono,Key=AttackHit
+	Sound:SoundPath=Sounds/Classic/WHOOSH_Quick_Darker_mono,Key=AttackMiss
+	Name:PrettyName="Eye of the Beholder"
+	DealDamage:DamageType=Arcane,Dice=1d4
+	SpellContainer:MaxSpell=3,RandomSpells=False,SpecificSpell=<Firewhip>&<Necrobolt>&<IceRay>
+	Info:InfoMessage="It's said to hold beauty. Hard to think of beauty being so... gross."
+)

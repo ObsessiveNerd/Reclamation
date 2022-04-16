@@ -21,13 +21,14 @@
 	AIFOVHandler
 	PackTactics:PartyLeaderId=
 	Move
-	Level:CurrentLevel=2,CurrentExp=0
-	Stats:Str=8,Agi=10,Con=10,Wis=9,Int=13,Cha=8,PrimaryStatType=Int,AttributePoints=0
+	Level:CurrentLevel=4,CurrentExp=0
+	Stats:Str=8,Agi=10,Con=10,Wis=9,Int=18,Cha=8,PrimaryStatType=Int,AttributePoints=0
 	Info:InfoMessage="It's a nasty little goblin.  Its slimy green skin reeks with the pungent odor of dirt and mold."
-	Health:MaxHealth=10,CurrentHealth=10
-	Mana:MaxMana=3,CurrentMana=3
+	Health:MaxHealth=0,CurrentHealth=0,PercentBoost=
+	Mana:MaxMana=0,CurrentMana=0,PercentBoost=
 	ManaRegen:RegenAmount=1,RegenSpeed=5
-	EquipmentSlot:EquipmentId=Spellbook,BodyPartType=Arm
+	EquipmentSlot:EquipmentId=GoblinSpellbook,BodyPartType=Arm
 	EquipmentSlot:EquipmentId=,BodyPartType=Arm
 	Sound:SoundPath=Sounds/MONSTERS_CREATURES/ORCH_Ugh_01_mono,Key=Died
+	BoostMaxMana:PercentToBoost=20,CalculatedAmount=
 )

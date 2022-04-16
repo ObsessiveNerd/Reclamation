@@ -1,0 +1,30 @@
+<Grimbrace> (
+	GraphicContainer:SpritePath=Textures/Sprites/Monsters/td_monsters_reaper_d1
+	Defense
+	ManaRegen:RegenAmount=4,RegenSpeed=1
+	Inventory:InventoryItems=
+	FOV:FOVRange=5
+	Faction:ID=Undead
+	Move
+	Body
+	Aggression
+	RegisterWithTimeSystem
+	EntityTypeContainer:Type=Creature
+	AIFOVHandler
+	Energy:EnergyRegineration=1,CurrentEnergy=0,HasHadTurnStarted=False
+	BlocksNonHostileMovement
+	CombatRating
+	AIController
+	Wander
+	Fear
+	Position:PositionPoint=0
+	InteractOnTileOvertake
+	InteractsWithWorld
+	Stats:Str=18,Agi=16,Con=22,Wis=25,Int=20,Cha=30,PrimaryStatType=Wis,AttributePoints=0
+	Level:CurrentLevel=14,CurrentExp=0
+	Health:MaxHealth=1000,CurrentHealth=0,PercentBoost=
+	Mana:MaxMana=1000,CurrentMana=0,PercentBoost=
+	EquipmentSlot:EquipmentId=GrimScythe,BodyPartType=Arm
+	Name:PrettyName="Grimbrace, the Patron of Death"
+	EquipmentSlot:EquipmentId=,BodyPartType=Arm
+)

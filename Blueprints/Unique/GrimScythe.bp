@@ -1,0 +1,16 @@
+<GrimScythe> (
+	GraphicContainer:SpritePath=Textures/Sprites/Weapons/td_items_weapon_axe
+	Portrait:SpritePath=Textures/Portraits/WeaponAndArmorIcons/WeaponAndArmorIcons_png/transparent/addons/dfg_12_t
+	Position:PositionPoint=0
+	InteractOnTileOvertake
+	EntityTypeContainer:Type=Item
+	Item:Rarity=Mythic
+	Equipment:PreferredBodyPartWhenEquipped=Arm
+	DealDamage:DamageType=Dark,Dice=1d6
+	SpellContainer:MaxSpell=2,RandomSpells=False,SpecificSpell=<SummonSkeletonWarriors>&<BladeStorm>
+	WeaponType:Type=Melee
+	Name:PrettyName="Grim Scythe"
+	TwoHanded
+	Purple
+	DealDamage:DamageType=Slashing,Dice=1d6
+)

@@ -1,0 +1,17 @@
+<UndeadSpellbook> (
+	GraphicContainer:SpritePath=Textures/Sprites/Items/td_items_book_black
+	Portrait:SpritePath=Textures/Portraits/MagicItems_png/transparent/addons/addons_02_t
+	Position:PositionPoint=0
+	InteractOnTileOvertake
+	EntityTypeContainer:Type=Item
+	Item:Rarity=Epic
+	SpellContainer:MaxSpell=3,RandomSpells=False,SpecificSpell=<Necrobolt>&<Darkenergy>&<Poison>
+	Equipment:PreferredBodyPartWhenEquipped=Arm
+	TwoHanded
+	WeaponType:Type=Melee
+	Value:Amount=100
+	DealDamage:DamageType=Blunt,Dice=1d4
+	Name:PrettyName="Undead Grimoire"
+	WeaponType:Type=Melee
+	Sound:SoundPath=Sounds/GORE_SPLATS/GORE_Splat_L_Ground_02_mono,Key=AttackHit
+)

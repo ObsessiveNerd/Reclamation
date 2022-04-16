@@ -68,7 +68,6 @@ public class EquipmentSlot : EntityComponent
         RegisteredEvents.Add(GameEventId.GetSpells);
         RegisteredEvents.Add(GameEventId.GetWeapon);
         RegisteredEvents.Add(GameEventId.GetEquipment);
-        RegisteredEvents.Add(GameEventId.GetSpells);
         RegisteredEvents.Add(GameEventId.ItemEquipped);
         //RegisteredEvents.Add(GameEventId.Equip);
         RegisteredEvents.Add(GameEventId.Unequip);

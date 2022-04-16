@@ -22,6 +22,9 @@ public class MusicService : GameService
             if (m_ActivePlayer == null || m_ActivePlayer.Value == null)
                 return;
 
+            if (!m_EntityToPointMap.ContainsKey(m_ActivePlayer.Value.ID))
+                return;
+
             Point activePlayerPoint = m_EntityToPointMap[m_ActivePlayer.Value.ID];
             Point sourcePoint = Point.InvalidPoint;
 

@@ -26,7 +26,7 @@ public class Summon : EntityComponent
             IEntity spellSource = Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameters.Entity));
             IEntity spellTarget = Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameters.Target));
 
-            var validPoints = Services.DungeonService.GetValidPointsAround(Services.EntityMapService.GetPointWhereEntityIs(spellTarget), 1);
+            var validPoints = Services.DungeonService.GetValidPointsAround(Services.EntityMapService.GetPointWhereEntityIs(spellTarget), 2);
 
             for(int i = 0; i < Amount; i++)
             {
@@ -47,6 +47,9 @@ public class Summon : EntityComponent
                 e.AddComponent(new DestroyAfterTurns(0, 8, true));
 
                 GameEvent skipTurn = GameEventPool.Get(GameEventId.SkipTurn);
+                if (validPoints.Count == 0)
+                    break;
+
                 var point = validPoints[0];
 
                 GameEvent fireRangedWeapon = GameEventPool.Get(GameEventId.FireRangedAttack)

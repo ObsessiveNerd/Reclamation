@@ -211,7 +211,7 @@ MonoBehaviour:
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
-  m_fontSizeMin: 18
+  m_fontSizeMin: 5
   m_fontSizeMax: 72
   m_fontStyle: 0
   m_HorizontalAlignment: 2
@@ -564,6 +564,12 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 5152405560764244912, guid: 3db3d44a3e0fac1479784dd8c91cbe57,
     type: 3}
   m_PrefabInstance: {fileID: 136614834}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &136682431 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6960927172058121983, guid: 92362eccd8fb499489c7ff4d732769c5,
+    type: 3}
+  m_PrefabInstance: {fileID: 508556398}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &143715344
 GameObject:
@@ -1240,6 +1246,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   FadeScreen: {fileID: 0}
   EndingScrollText: {fileID: 0}
+  ObjectsToDestroy: []
+--- !u!1 &359010839 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2064769641213997859, guid: d0c89974bc8df7545afb7032e5e00fa8,
+    type: 3}
+  m_PrefabInstance: {fileID: 503817859}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &376665281
 GameObject:
   m_ObjectHideFlags: 0
@@ -4282,6 +4295,12 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1447194260}
   m_CullTransparentMesh: 0
+--- !u!1 &1447995093 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6669244997140787881, guid: 64089ce7cbbdce946b313f78edccfe35,
+    type: 3}
+  m_PrefabInstance: {fileID: 258361367}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1473009535
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5497,26 +5516,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1860332391}
   m_CullTransparentMesh: 0
---- !u!1 &1936781230 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6241948252624630899, guid: 111d7f65e2b1f5f468dafe018551f1fd,
-    type: 3}
-  m_PrefabInstance: {fileID: 6241948252943195918}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1936781231
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1936781230}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0f5c9cf38bff90c48a41d205f30df544, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  FadeScreen: {fileID: 834912975}
-  EndingScrollText: {fileID: 1765434869}
 --- !u!1 &1969703524
 GameObject:
   m_ObjectHideFlags: 0
@@ -5895,21 +5894,38 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 6241948252624630896, guid: 111d7f65e2b1f5f468dafe018551f1fd,
-        type: 3}
-      propertyPath: MapRows
-      value: 25
+    - target: {fileID: 1936781231, guid: 111d7f65e2b1f5f468dafe018551f1fd, type: 3}
+      propertyPath: FadeScreen
+      value: 
+      objectReference: {fileID: 834912975}
+    - target: {fileID: 1936781231, guid: 111d7f65e2b1f5f468dafe018551f1fd, type: 3}
+      propertyPath: EndingScrollText
+      value: 
+      objectReference: {fileID: 1765434869}
+    - target: {fileID: 1936781231, guid: 111d7f65e2b1f5f468dafe018551f1fd, type: 3}
+      propertyPath: ObjectsToDestroy.Array.size
+      value: 4
       objectReference: {fileID: 0}
-    - target: {fileID: 6241948252624630896, guid: 111d7f65e2b1f5f468dafe018551f1fd,
-        type: 3}
-      propertyPath: InitMode
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 6241948252624630896, guid: 111d7f65e2b1f5f468dafe018551f1fd,
-        type: 3}
-      propertyPath: MapColumns
-      value: 25
-      objectReference: {fileID: 0}
+    - target: {fileID: 1936781231, guid: 111d7f65e2b1f5f468dafe018551f1fd, type: 3}
+      propertyPath: ObjectsToDestroy.Array.data[0]
+      value: 
+      objectReference: {fileID: 359010839}
+    - target: {fileID: 1936781231, guid: 111d7f65e2b1f5f468dafe018551f1fd, type: 3}
+      propertyPath: ObjectsToDestroy.Array.data[1]
+      value: 
+      objectReference: {fileID: 900815863}
+    - target: {fileID: 1936781231, guid: 111d7f65e2b1f5f468dafe018551f1fd, type: 3}
+      propertyPath: ObjectsToDestroy.Array.data[2]
+      value: 
+      objectReference: {fileID: 136682431}
+    - target: {fileID: 1936781231, guid: 111d7f65e2b1f5f468dafe018551f1fd, type: 3}
+      propertyPath: ObjectsToDestroy.Array.data[3]
+      value: 
+      objectReference: {fileID: 1447995093}
+    - target: {fileID: 1936781231, guid: 111d7f65e2b1f5f468dafe018551f1fd, type: 3}
+      propertyPath: ObjectsToDestroy.Array.data[4]
+      value: 
+      objectReference: {fileID: 359010839}
     - target: {fileID: 6241948252624630897, guid: 111d7f65e2b1f5f468dafe018551f1fd,
         type: 3}
       propertyPath: m_RootOrder

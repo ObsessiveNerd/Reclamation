@@ -86,6 +86,7 @@ public class SpellcasterPlayerController : InputControllerBase
         
         Services.TileSelectionService.SelectTile(m_TileSelection);
          GameEvent selectTile = GameEventPool.Get(GameEventId.SelectTile)
+                                .With(EventParameters.InputDirection, PathfindingUtility.GetDirectionTo(Services.EntityMapService.GetPointWhereEntityIs(Self), m_TileSelection))
                                 .With(EventParameters.Source, Self.ID)
                                 .With(EventParameters.TilePosition, m_TileSelection);
         m_Attack.FireEvent(selectTile).Release();

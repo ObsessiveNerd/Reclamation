@@ -1,0 +1,12 @@
+<CloakOfFire> (
+	GraphicContainer:SpritePath=Textures/Sprites/Items/td_items_cape_purple
+	Portrait:SpritePath=Textures/Portraits/ArmorIcons_png/transparent/cloaks/cloaks_14
+	Position:PositionPoint=0
+	InteractOnTileOvertake
+	EntityTypeContainer:Type=Item
+	Item:Rarity=Mythic
+	Equipment:PreferredBodyPartWhenEquipped=Back
+	Value:Amount=200
+	Name:PrettyName="Charred Cloak"
+	Resitance:Type=Fire
+)

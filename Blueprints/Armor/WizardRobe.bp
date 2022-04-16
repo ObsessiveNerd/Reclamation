@@ -1,0 +1,16 @@
+<WizardRobe> (
+	GraphicContainer:SpritePath=Textures/Sprites/Armor/td_items_magic_chest
+	Portrait:SpritePath=Textures/Portraits/ArmorIcons_png/transparent/armor/armor_17
+	Position:PositionPoint=0
+	InteractOnTileOvertake
+	EntityTypeContainer:Type=Item
+	Item:Rarity=Uncommon
+	Value:Amount=25
+	Equipment:PreferredBodyPartWhenEquipped=Torso
+	Name:PrettyName="Basic Wizard Robe"
+	Resitance:Type=Arcane
+	Resitance:Type=Dark
+	Purple
+	ActiveWhileEquiped
+	BoostMaxMana:PercentToBoost=5,CalculatedAmount=
+)

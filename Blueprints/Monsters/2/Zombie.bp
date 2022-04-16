@@ -1,0 +1,27 @@
+<Zombie> (
+	Defense
+	EntityTypeContainer:Type=Creature
+	RegisterWithTimeSystem
+	AIController
+	AIFOVHandler
+	InteractsWithWorld
+	InteractOnTileOvertake
+	Position:PositionPoint=
+	Aggression
+	Weighted:Weight=500.0
+	Fear
+	Wander
+	CombatRating
+	BlocksNonHostileMovement
+	Health:MaxHealth=20,CurrentHealth=20,PercentBoost=
+	Body
+	FOV:FOVRange=3
+	Energy:EnergyRegineration=1.5,CurrentEnergy=0,HasHadTurnStarted=False
+	Move
+	Stats:Str=15,Agi=9,Con=19,Wis=6,Int=6,Cha=2,PrimaryStatType=Str,AttributePoints=0
+	Faction:ID=Undead
+	GraphicContainer:SpritePath=Textures/Sprites/Monsters/td_monsters_zombie_d1
+	EquipmentSlot:EquipmentId=NaturalClaws,BodyPartType=Arm
+	Sound:SoundPath=Sounds/MONSTERS_CREATURES/MONSTER_Groan_Hurt_mono,Key=Died
+	Level:CurrentLevel=8,CurrentExp=
+)

@@ -1,0 +1,10 @@
+<SummonBats> (
+	GraphicContainer:SpritePath=Textures/Portraits/spellbookmegapack/SpellBookPage06/SpellBook06_45
+	Spell:ManaCost=4,SpellFailed=None,SpellType=None
+	Range
+	Sound:SoundPath=Sounds/MAGIC_SPELLS/MAGIC_SPELL_Dark_Pulse_Echo_Subtle_stereo,Key=Cast
+	Name:PrettyName="Summon Bats"
+	Summon:SummonName=Bat,Amount=4
+	Info:InfoMessage="Summon 4 bats to fight by your side for a time."
+	SpawnEffect:TexturePath=Textures/Sprites/Environment/td_world_magic_c
+)

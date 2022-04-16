@@ -11,9 +11,7 @@
 	Aggression
 	EntityTypeContainer:Type=Creature
 	Weighted:Weight=500.0
-	HealthRegen:RegenAmount=1,RegenSpeed=5
 	AIFOVHandler
-	ManaRegen:RegenAmount=1,RegenSpeed=5
 	RegisterWithTimeSystem
 	Body
 	Position:PositionPoint=0
@@ -25,7 +23,8 @@
 	BlocksNonHostileMovement
 	InteractOnTileOvertake
 	Desire:Greed=0
-	Health:MaxHealth=30,CurrentHealth=-1
-	Mana:MaxMana=5,CurrentMana=-1
+	Health:MaxHealth=0,CurrentHealth=0,PercentBoost=
+	Mana:MaxMana=0,CurrentMana=0,PercentBoost=
 	Sound:SoundPath=Sounds/HUMAN/Body/BODY_Cough_Short_mono,Key=Died
+	Rest:RegenAmount=2,RegenSpeed=10
 )

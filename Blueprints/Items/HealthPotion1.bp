@@ -1,0 +1,14 @@
+<HealthPotion1> (
+	GraphicContainer:SpritePath= Textures/Sprites/Items/td_items_potion_red
+	Portrait:SpritePath= Textures/Portraits/Items/17
+	Position:PositionPoint=0
+	InteractOnTileOvertake
+	EntityTypeContainer:Type=Item
+	Item:Rarity=Uncommon
+	Potion
+	Heal:HealAmount=1d4
+	Value:Amount=30
+	Sound:SoundPath=Sounds/FOLEY/VARIOUS/FOLEY_Lid_Removal_Bottle_mono,Key=Quaff
+	Name:PrettyName="Minor Health Potion"
+	Stackable
+)

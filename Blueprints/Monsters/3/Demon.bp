@@ -10,7 +10,7 @@
 	AIFOVHandler
 	InteractsWithWorld
 	Weighted:Weight=500.0
-	Stats:Str=10,Agi=12,Con=10,Wis=9,Int=7,Cha=8,PrimaryStatType=Str,AttributePoints=0
+	Stats:Str=18,Agi=12,Con=18,Wis=9,Int=17,Cha=8,PrimaryStatType=Str,AttributePoints=0
 	Faction:ID=Demons
 	FOV:FOVRange=2
 	Aggression
@@ -20,9 +20,10 @@
 	BlocksNonHostileMovement
 	Energy:EnergyRegineration=1,CurrentEnergy=0,HasHadTurnStarted=False
 	Body
-	Level:CurrentLevel=2,CurrentExp=0
-	Health:MaxHealth=15,CurrentHealth=15
+	Level:CurrentLevel=14,CurrentExp=0
+	Health:MaxHealth=0,CurrentHealth=0,PercentBoost=
 	EquipmentSlot:EquipmentId=NaturalClaws,BodyPartType=Arm
-	EquipmentSlot:EquipmentId=NaturalClaws,BodyPartType=Arm
+	EquipmentSlot:EquipmentId=Firebelt,BodyPartType=Arm
 	Sound:SoundPath=Sounds/MONSTERS_CREATURES/MONSTER_Groan_Hurt_mono,Key=Died
+	Mana:MaxMana=,CurrentMana=,PercentBoost=
 )

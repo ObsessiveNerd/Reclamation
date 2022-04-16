@@ -1,0 +1,17 @@
+<Spellbook3> (
+	GraphicContainer:SpritePath=Textures/Sprites/Items/td_items_book_black
+	Portrait:SpritePath=Textures/Portraits/WeaponAndArmorIcons/WeaponAndArmorIcons_png/transparent/book/b_m_02_t
+	Position:PositionPoint=0
+	InteractOnTileOvertake
+	EntityTypeContainer:Type=Item
+	Item:Rarity=Epic
+	SpellContainer:MaxSpell=15,RandomSpells=True,SpecificSpell=
+	Equipment:PreferredBodyPartWhenEquipped=Arm
+	TwoHanded
+	WeaponType:Type=Melee
+	Value:Amount=100
+	DealDamage:DamageType=Blunt,Dice=1d4
+	Name:PrettyName="Thick Astrologer's Spellbook"
+	WeaponType:Type=None
+	Sound:SoundPath=Sounds/GORE_SPLATS/GORE_Splat_L_Ground_02_mono,Key=AttackHit
+)

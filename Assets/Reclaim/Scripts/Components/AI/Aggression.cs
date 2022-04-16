@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Aggression : EntityComponent
@@ -63,55 +64,70 @@ public class Aggression : EntityComponent
     {
         GameEvent getWeapon = GameEventPool.Get(GameEventId.GetWeapon)
                                 .With(EventParameters.Weapon, new List<string>());
-        var list = FireEvent(Self, getWeapon, true).GetValue<List<string>>(EventParameters.Weapon);
+        var weaponList = FireEvent(Self, getWeapon, true).GetValue<List<string>>(EventParameters.Weapon);
         getWeapon.Release();
-        foreach(var id in list)
+
+        var spellList = CombatUtility.GetSpells(Self);
+
+        bool useWeapon = weaponList.Any();
+        bool useSpells = spellList.Any();
+
+        if(useSpells && useWeapon)
         {
-            var weapon = EntityQuery.GetEntity(id);
-            List<AttackType> attackTypes = CombatUtility.GetWeaponTypeList(weapon);
-            if(attackTypes.Contains(AttackType.Ranged))
-            {
-                var target = WorldUtility.GetEntityAtPosition(m_TargetLocation);
-                CombatUtility.Attack(Self, target, EntityQuery.GetEntity(id), AttackType.Ranged);
-                int howToMove = RecRandom.Instance.GetRandomValue(0, 100);
-                if (howToMove < 20)
-                    return PathfindingUtility.GetDirectionTo(m_CurrentLocation, m_TargetLocation);
-                else if (howToMove < 70)
-                    return MoveDirection.None;
-                else
-                    return PathfindingUtility.GetDirectionAwayFrom(m_CurrentLocation, m_TargetLocation);
-            }
-            else if(weapon.HasComponent(typeof(SpellContainer)) && RecRandom.Instance.GetRandomPercent() < 20)
-            {
-                var target = WorldUtility.GetEntityAtPosition(m_TargetLocation);
+            if (RecRandom.Instance.GetRandomPercent() < 20)
+                useWeapon = false;
+            else
+                useSpells = false;
+        }
 
-                var spells = CombatUtility.GetSpells(EntityQuery.GetEntity(id));
-                var spell = spells[RecRandom.Instance.GetRandomValue(0, spells.Count)];
-
-                //TODO: we're really getting lazy with all this direct component referencing
-                if (spell.HasComponent(typeof(Heal)))
+        if(useWeapon)
+        {
+            foreach(var id in weaponList)
+            {
+                var weapon = EntityQuery.GetEntity(id);
+                List<AttackType> attackTypes = CombatUtility.GetWeaponTypeList(weapon);
+                if (attackTypes.Contains(AttackType.Ranged))
                 {
-                    GameEvent getVisiblePoints = GameEventPool.Get(GameEventId.GetVisibleTiles)
-                                            .With(EventParameters.VisibleTiles, new List<Point>());
-                    List<Point> visiblePoints = FireEvent(Self, getVisiblePoints).GetValue<List<Point>>(EventParameters.VisibleTiles);
-                    getVisiblePoints.Release();
-
-                    target = Services.WorldDataQuery.GetClosestAlly(Self);
-                    var pos = Services.WorldDataQuery.GetPointWhereEntityIs(target);
-                    if (!visiblePoints.Contains(pos))
-                        target = Self;
+                    var target = WorldUtility.GetEntityAtPosition(m_TargetLocation);
+                    CombatUtility.Attack(Self, target, EntityQuery.GetEntity(id), AttackType.Ranged);
+                    int howToMove = RecRandom.Instance.GetRandomValue(0, 100);
+                    if (howToMove < 20)
+                        return PathfindingUtility.GetDirectionTo(m_CurrentLocation, m_TargetLocation);
+                    else if (howToMove < 70)
+                        return MoveDirection.None;
+                    else
+                        return PathfindingUtility.GetDirectionAwayFrom(m_CurrentLocation, m_TargetLocation);
                 }
-
-                CombatUtility.CastSpell(Self, target, spell);
-                
-                int howToMove = RecRandom.Instance.GetRandomValue(0, 100);
-                if (howToMove < 20)
-                    return PathfindingUtility.GetDirectionTo(m_CurrentLocation, m_TargetLocation);
-                else if (howToMove < 70)
-                    return MoveDirection.None;
-                else
-                    return PathfindingUtility.GetDirectionAwayFrom(m_CurrentLocation, m_TargetLocation);
             }
+        }
+        else if (useSpells)
+        {
+            var target = WorldUtility.GetEntityAtPosition(m_TargetLocation);
+            var spell = spellList[RecRandom.Instance.GetRandomValue(0, spellList.Count)];
+
+            //TODO: we're really getting lazy with all this direct component referencing
+            if (spell.HasComponent(typeof(Heal)))
+            {
+                GameEvent getVisiblePoints = GameEventPool.Get(GameEventId.GetVisibleTiles)
+                                            .With(EventParameters.VisibleTiles, new List<Point>());
+                List<Point> visiblePoints = FireEvent(Self, getVisiblePoints).GetValue<List<Point>>(EventParameters.VisibleTiles);
+                getVisiblePoints.Release();
+
+                target = Services.WorldDataQuery.GetClosestAlly(Self);
+                var pos = Services.WorldDataQuery.GetPointWhereEntityIs(target);
+                if (!visiblePoints.Contains(pos))
+                    target = Self;
+            }
+
+            CombatUtility.CastSpell(Self, target, spell);
+
+            int howToMove = RecRandom.Instance.GetRandomValue(0, 100);
+            if (howToMove < 20)
+                return PathfindingUtility.GetDirectionTo(m_CurrentLocation, m_TargetLocation);
+            else if (howToMove < 70)
+                return MoveDirection.None;
+            else
+                return PathfindingUtility.GetDirectionAwayFrom(m_CurrentLocation, m_TargetLocation);
         }
 
         var path = PathfindingUtility.GetPath(m_CurrentLocation, m_TargetLocation);

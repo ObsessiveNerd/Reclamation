@@ -1,0 +1,17 @@
+<VoidEssence> (
+	GraphicContainer:SpritePath=Textures/Sprites/Items/td_items_gem_amethyst
+	Portrait:SpritePath=Textures/Portraits/MagicItems_png/transparent/artifact_10_t
+	Position:PositionPoint=0
+	InteractOnTileOvertake
+	EntityTypeContainer:Type=Item
+	Item:Rarity=Mythic
+	WeaponType:Type=Melee
+	Equipment:PreferredBodyPartWhenEquipped=Neck
+	Value:Amount=10
+	Sound:SoundPath=Sounds/Melee/Swords/SWORD_Hit_Metal_Armor_RR5_mono,Key=AttackHit
+	Sound:SoundPath=Sounds/Classic/WHOOSH_Quick_Darker_mono,Key=AttackMiss
+	Name:PrettyName="Void Essence"
+	DealDamage:DamageType=Arcane,Dice=1d4
+	SpellContainer:MaxSpell=3,RandomSpells=False,SpecificSpell=Necrobolt
+	Info:InfoMessage="The closer you look, the more it seems like something really is looking back."
+)

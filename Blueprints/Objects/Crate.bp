@@ -1,0 +1,11 @@
+<Crate> (
+	GraphicContainer:SpritePath=Textures/Sprites/Environment/td_world_crate
+	Position:PositionPoint=0
+	InteractOnTileOvertake
+	EntityTypeContainer:Type=Object
+	BlocksNonHostileMovement
+	ItemContainer:IDToEntityMap=
+	EnvironmentalObject
+	Sound:SoundPath=Sounds/DOORS_GATES_DRAWERS/GATE_Metal_Open_01_stereo.wav,Key=Open
+	StorageGraphic:HasItemsGraphicPath=Textures/Sprites/Environment/td_world_chest,EmptyGraphicPath=Textures/Sprites/Environment/td_world_chest_empty
+)

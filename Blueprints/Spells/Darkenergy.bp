@@ -1,0 +1,10 @@
+<Darkenergy> (
+	GraphicContainer:SpritePath=Textures/Portraits/spellbookmegapack/SpellBookPage09/SpellBookPage09_83
+	Spell:ManaCost=3,SpellFailed=None,SpellType=None
+	DealDamage:DamageType=Dark,Dice=1d6
+	Range
+	WeaponType:Type=RangedSpell
+	Sound:SoundPath=Sounds/MAGIC_SPELLS/MAGIC_SPELL_Flame_01_mono,Key=Cast
+	Ammo:TexturePath=Textures/Sprites/Effects/tiny_dungeon_fx_voidimpact_1
+	Info:InfoMessage="Fire a small bolt of flame toward a single target."
+)

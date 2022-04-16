@@ -28,26 +28,31 @@ public class SpellContainer : EntityComponent
             }
             else if(!RandomSpells)
             {
-                if (!m_SpellNameToIdMap.ContainsKey(SpecificSpell))
-                    m_SpellNameToIdMap.Add(SpecificSpell, EntityQuery.GetEntity(SpecificSpell));
+                if(SpecificSpell.Contains("&"))
+                {
+                    var list = EntityFactory.GetEntitiesFromArray(SpecificSpell);
+                    foreach (var e in list)
+                    {
+                        if (!m_SpellNameToIdMap.ContainsKey(e.InternalName))
+                            m_SpellNameToIdMap.Add(e.InternalName, e);
+                    }
+                }
+                else
+                {
+                    if (!m_SpellNameToIdMap.ContainsKey(SpecificSpell))
+                        m_SpellNameToIdMap.Add(SpecificSpell, EntityQuery.GetEntity(SpecificSpell));
+                }
             }
             return m_SpellNameToIdMap;
         }
     }
 
-    public SpellContainer(string data)
-    {
-        var spellArray = EntityFactory.GetEntitiesFromArray(data);
-        foreach(var spell in spellArray)
-            m_SpellNameToIdMap.Add(spell.Name, spell);
-    }
-
-    public SpellContainer(string data, string specSpec, int maxSpell)
+    public SpellContainer(string specSpec, int maxSpell)
     {
         MaxSpell = maxSpell;
-        var spellArray = EntityFactory.GetEntitiesFromArray(data);
+        var spellArray = EntityFactory.GetEntitiesFromArray(specSpec);
         foreach(var spell in spellArray)
-            m_SpellNameToIdMap.Add(spell.Name, spell);
+            m_SpellNameToIdMap.Add(spell.InternalName, spell);
         SpecificSpell = specSpec;
         if (!string.IsNullOrEmpty(specSpec))
             RandomSpells = false;
@@ -126,8 +131,8 @@ public class DTO_SpellContainer : IDataTransferComponent
                 string key = dataPair.Split('=')[0];
                 string value = dataPair.Split('=')[1];
 
-                if (key == "SpellNameToIdMap")
-                    dataToPass = value;
+                //if (key == "SpellNameToIdMap")
+                //    dataToPass = value;
                 if (key == "SpecificSpell")
                     specSpell = value;
                 if (key == "MaxSpell")
@@ -135,25 +140,24 @@ public class DTO_SpellContainer : IDataTransferComponent
             }
         }
 
-        Component = new SpellContainer(dataToPass, specSpell, maxSpell);
+        Component = new SpellContainer(specSpell, maxSpell);
     }
 
     public string CreateSerializableData(IComponent component)
     {
         SpellContainer sc = (SpellContainer)component;
-        if (sc.RandomSpells)
+        if (sc.SpellNameToIdMap.Count > 1)
         {
             StringBuilder spellNameBuilder = new StringBuilder();
-            spellNameBuilder.Append($"{nameof(sc.MaxSpell)}={sc.MaxSpell},");
-            spellNameBuilder.Append($"{nameof(sc.SpellNameToIdMap)}=[");
+            spellNameBuilder.Append($"[");
             foreach (var name in sc.SpellNameToIdMap.Keys)
                 spellNameBuilder.Append($"<{name}>&");
             var totalString = spellNameBuilder.ToString().TrimEnd('&');
             totalString += "]";
-            return $"{nameof(SpellContainer)}: {totalString}, {nameof(sc.SpecificSpell)}={sc.SpecificSpell}, {nameof(sc.RandomSpells)}={sc.RandomSpells}";
+            return $"{nameof(SpellContainer)}: {nameof(sc.SpecificSpell)}={totalString}, {nameof(sc.RandomSpells)}={sc.RandomSpells}, {nameof(sc.MaxSpell)}={sc.MaxSpell}";
         }
         else
-            return $"{nameof(SpellContainer)}: {nameof(sc.SpellNameToIdMap)}=[<{sc.SpecificSpell}>], {nameof(sc.RandomSpells)}={sc.RandomSpells}, {nameof(sc.SpecificSpell)}={sc.SpecificSpell}, {nameof(sc.MaxSpell)}={sc.MaxSpell}";
+            return $"{nameof(SpellContainer)}: {nameof(sc.SpecificSpell)}={sc.SpecificSpell}, {nameof(sc.RandomSpells)}={sc.RandomSpells}, {nameof(sc.MaxSpell)}={sc.MaxSpell}";
         //return $"{nameof(SpellContainer)}";
     }
 }

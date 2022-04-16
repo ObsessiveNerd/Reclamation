@@ -1,0 +1,12 @@
+<Firewhip> (
+	GraphicContainer:SpritePath=Textures/Portraits/spellbookmegapack/SpellBookPage06/SpellBook06_24
+	Spell:ManaCost=8,SpellFailed=None,SpellType=None
+	DealDamage:DamageType=Fire,Dice=1d6
+	Range
+	WeaponType:Type=RangedSpell
+	Sound:SoundPath=Sounds/MAGIC_SPELLS/MAGIC_SPELL_Flame_01_mono,Key=Cast
+	Info:InfoMessage="A whip of scorching fire. Does NOT pull wizards over the edge."
+	Name:PrettyName="Fire Whip"
+	SpawnEffect:TexturePath=Textures/Sprites/Effects/tiny_dungeon_fx_fireburn_1
+	AreaOfEffect:Range=0,AOEType=Path,RandomAffectCount=0
+)

@@ -6,9 +6,21 @@ using UnityEngine.SceneManagement;
 
 public class GameEndMono : MonoBehaviour
 {
-    public GameObject FadeScreen;
-    public GameObject EndingScrollText;
-
+    public GameObject FadeScreen
+    {
+        get
+        {
+            return GameObject.FindObjectOfType<FadeTextMono>(true).gameObject;
+        }
+    }
+    public GameObject EndingScrollText
+    {
+        get
+        {
+            return GameObject.FindObjectOfType<ScrollTextMono>(true).gameObject;
+        }
+    }
+    
     string WinningText
     {
         get
@@ -68,5 +80,14 @@ public class GameEndMono : MonoBehaviour
         FadeScreen.SetActive(true);
         EndingScrollText.GetComponent<TextMeshProUGUI>().text = victory ? WinningText : LossText;
         EndingScrollText.SetActive(true);
+    }
+
+    public void CleanGameObjects()
+    {
+        foreach(var name in Singleton.Singletons)
+            GameObject.Destroy(GameObject.Find(name));
+
+        Singleton.Singletons.Clear();
+        Room.CleanStaticData();
     }
 }

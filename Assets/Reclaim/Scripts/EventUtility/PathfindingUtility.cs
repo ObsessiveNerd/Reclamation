@@ -34,6 +34,14 @@ public static class PathfindingUtility
         return MoveDirection.None;
     }
 
+    public static MoveDirection GetDirectionTo(IEntity source, IEntity target)
+    {
+        Point sourceP = Services.EntityMapService.GetPointWhereEntityIs(source);
+        Point targetP = Services.EntityMapService.GetPointWhereEntityIs(target);
+
+        return GetDirectionTo(sourceP, targetP);
+    }
+
     public static MoveDirection GetDirectionTo(Point source, Point target)
     {
         if (source == target)

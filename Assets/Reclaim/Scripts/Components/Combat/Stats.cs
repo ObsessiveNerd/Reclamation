@@ -87,7 +87,7 @@ public class Stats : EntityComponent
         }
         else if(gameEvent.ID == GameEventId.LevelUp)
         {
-            int newLevel = gameEvent.GetValue<int>(EventParameters.Level);
+            //int newLevel = gameEvent.GetValue<int>(EventParameters.Level);
             //if(newLevel % 2 == 0)
                 AttributePoints += 4;
         }

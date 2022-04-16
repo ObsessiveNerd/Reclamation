@@ -20,13 +20,16 @@ public static class CombatUtility
         int cost = weapon.FireEvent(manaCost).GetValue<int>(EventParameters.Value);
         if (cost <= mana)
         {
+            if(!Services.PlayerManagerService.IsPlayableCharacter(source.ID))
+            {
+                GameEvent selectTile = GameEventPool.Get(GameEventId.SelectTile)
+                    .With(EventParameters.Source, source.ID)
+                    .With(EventParameters.InputDirection, PathfindingUtility.GetDirectionTo(source, target))
+                    .With(EventParameters.TilePosition, Services.EntityMapService.GetPointWhereEntityIs(target));
+                weapon.FireEvent(selectTile);
+                selectTile.Release();
+            }
             CastSpellAtTarget(weapon, source, target);
-
-            //GameEvent selectTile = GameEventPool.Get(GameEventId.SelectTile)
-            //    .With(EventParameters.Source, source.ID)
-            //    .With(EventParameters.TilePosition, Services.EntityMapService.GetPointWhereEntityIs(target));
-            //weapon.FireEvent(selectTile);
-            //selectTile.Release();
 
             GameEvent affectArea = GameEventPool.Get(GameEventId.AffectArea)
                 .With(EventParameters.Effect,

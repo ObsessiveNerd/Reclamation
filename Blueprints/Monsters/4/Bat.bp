@@ -1,0 +1,26 @@
+<Bat> (
+	GraphicContainer:SpritePath=Textures/Sprites/Monsters/td_monsters_bat_d1
+	Defense
+	Faction:ID=None
+	Energy:EnergyRegineration=1,CurrentEnergy=0,HasHadTurnStarted=False
+	InteractOnTileOvertake
+	Stats:Str=8,Agi=15,Con=10,Wis=9,Int=10,Cha=5,PrimaryStatType=Agi,AttributePoints=0
+	BlocksNonHostileMovement
+	CombatRating
+	Wander
+	Weighted:Weight=500.0
+	Fear
+	Aggression
+	InteractsWithWorld
+	AIFOVHandler
+	AIController
+	RegisterWithTimeSystem
+	EntityTypeContainer:Type=Creature
+	Position:PositionPoint=0
+	Move
+	FOV:FOVRange=6
+	Body
+	Health:MaxHealth=5,CurrentHealth=5,PercentBoost=
+	Level:CurrentLevel=1,CurrentExp=0
+	Sound:SoundPath=Sounds/MONSTERS_CREATURES/MONSTER_Insect_Squeel_02_Bright_mono,Key=Died
+)

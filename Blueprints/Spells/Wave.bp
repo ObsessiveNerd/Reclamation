@@ -1,0 +1,11 @@
+<Wave> (
+	GraphicContainer:SpritePath=Textures/Portraits/spellbookmegapack/SpellBookPage09/SpellBookPage09_63
+	Spell:ManaCost=6,SpellFailed=DamageHalved,SpellType=AgiSpell
+	DealDamage:DamageType=Ice,Dice=1d10
+	Range
+	Sound:SoundPath=Sounds/MAGIC_SPELLS/MAGIC_SPELL_Flame_01_mono,Key=Cast
+	Ammo:TexturePath=Textures/Sprites/Effects/tiny_dungeon_fx_iceball_s
+	AreaOfEffect:Range=5,AOEType=Cone,RandomAffectCount=
+	Name:PrettyName="Wave"
+	Info:InfoMessage="Drown enemies in a massive wave."
+)

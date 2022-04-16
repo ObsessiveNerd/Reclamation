@@ -7,14 +7,18 @@ public class Level : EntityComponent
     public int CurrentLevel;
     public int CurrentExp;
 
-    int m_ExpToNextLevel;
+    int ExpToNextLevel
+    {
+        get
+        {
+            return (CurrentLevel + 1) * 10;
+        }
+    }
 
     public Level(int currentLevel, int currentExp)
     {
         CurrentLevel = currentLevel;
         CurrentExp = currentExp;
-
-        m_ExpToNextLevel = (CurrentLevel + 1) * 10;
     }
 
     public override void Init(IEntity self)
@@ -33,13 +37,17 @@ public class Level : EntityComponent
             Debug.LogWarning($"Exp gained: {gameEvent.GetValue<int>(EventParameters.Exp)}");
 
             CurrentExp += gameEvent.GetValue<int>(EventParameters.Exp);
-            if(CurrentExp >= m_ExpToNextLevel)
+            if(CurrentExp >= ExpToNextLevel)
             {
-                CurrentExp = CurrentExp - m_ExpToNextLevel;
-                CurrentLevel++;
-                GameEvent e = GameEventPool.Get(GameEventId.LevelUp)
+                do
+                {
+                    CurrentExp = CurrentExp - ExpToNextLevel;
+                    CurrentLevel++;
+                    GameEvent e = GameEventPool.Get(GameEventId.LevelUp)
                                     .With(EventParameters.Level, CurrentLevel);
-                FireEvent(Self, e).Release();
+                    FireEvent(Self, e).Release();
+
+                } while (CurrentExp >= ExpToNextLevel);
             }
         }
 
@@ -48,7 +56,8 @@ public class Level : EntityComponent
             GameEvent giveExp = GameEventPool.Get(GameEventId.GainExperience)
                                     .With(EventParameters.Exp, CurrentLevel * 3);
 
-            EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameters.DamageSource)).FireEvent(giveExp).Release();
+            var expGainer = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameters.DamageSource));
+            expGainer.FireEvent(giveExp).Release();
         }
 
         if(gameEvent.ID == GameEventId.GetLevel)
@@ -59,7 +68,7 @@ public class Level : EntityComponent
         if(gameEvent.ID == GameEventId.GetExperience)
         {
             gameEvent.Paramters[EventParameters.Value] = CurrentExp;
-            gameEvent.Paramters[EventParameters.MaxValue] = m_ExpToNextLevel;
+            gameEvent.Paramters[EventParameters.MaxValue] = ExpToNextLevel;
         }
     }
 }
@@ -82,7 +91,8 @@ public class DTO_Level : IDataTransferComponent
             if (key == "CurrentLevel")
                 currentLevel = int.Parse(value);
             if (key == "CurrentExp")
-                exp = int.Parse(value);
+                if(!string.IsNullOrEmpty(value))
+                    exp = int.Parse(value);
         }
 
         Component = new Level(currentLevel, exp);

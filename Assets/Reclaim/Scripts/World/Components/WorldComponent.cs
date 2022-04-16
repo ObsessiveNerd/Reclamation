@@ -26,11 +26,12 @@ public abstract class GameService //: Component
     {
         foreach (var go in m_GameObjectMap.Values)
             GameObject.Destroy(go);
+        m_TimeProgression = new TimeProgression();
+        m_EntityToPointMap.Clear();
         m_Tiles.Clear();
         m_TileEntity.Clear();
         m_Seed = 0;
         m_ChangedTiles.Clear();
-        m_EntityIdToEntityMap.Clear();
         m_EntityToPreviousPointMap.Clear();
         m_Players.Clear();
         m_ActivePlayer = null;

@@ -1,0 +1,32 @@
+<GoblinRogue> (
+	GraphicContainer:SpritePath=Textures/Sprites/Monsters/td_monsters_goblin_grunt_d1
+	Defense
+	Level:CurrentLevel=4,CurrentExp=0
+	Move
+	PackTactics:PartyLeaderId=
+	AIFOVHandler
+	Body
+	Faction:ID=Goblins
+	Aggression
+	Inventory:InventoryItems=
+	Weighted:Weight=500.0
+	RegisterWithTimeSystem
+	EntityTypeContainer:Type=Creature
+	Stats:Str=8,Agi=14,Con=10,Wis=9,Int=18,Cha=8,PrimaryStatType=Agi,AttributePoints=0
+	Energy:EnergyRegineration=1.2,CurrentEnergy=0,HasHadTurnStarted=False
+	FOV:FOVRange=5
+	BlocksNonHostileMovement
+	CombatRating
+	AIController
+	Wander
+	Fear
+	Position:PositionPoint=0
+	InteractOnTileOvertake
+	InteractsWithWorld
+	Info:InfoMessage="It's a nasty little goblin.  Its slimy green skin reeks with the pungent odor of dirt and mold."
+	Health:MaxHealth=0,CurrentHealth=0,PercentBoost=
+	EquipmentSlot:EquipmentId=PoisonDagger,BodyPartType=Arm
+	EquipmentSlot:EquipmentId=Dagger,BodyPartType=Arm
+	Sound:SoundPath=Sounds/MONSTERS_CREATURES/ORCH_Ugh_01_mono,Key=Died
+	Mana:MaxMana=0,CurrentMana=0,PercentBoost=
+)

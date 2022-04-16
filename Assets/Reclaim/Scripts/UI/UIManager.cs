@@ -81,17 +81,26 @@ public class UIManager : MonoBehaviour
                 var contextMenu = ContextMenuMono.CreateNewContextMenu().GetComponent<ContextMenuMono>();
                 if(Services.Ready)
                 {
-                    contextMenu.AddButton(new ContextMenuButton("Return to Main Menu", () =>
+                    string returnToMenuText = Services.StateManagerService.GameEnded ? "Return to Main Menu" : "Save and Return to Menu";
+                    contextMenu.AddButton(new ContextMenuButton(returnToMenuText, () =>
                     {
-                        Services.SaveAndLoadService.Save();
+                        if(!Services.StateManagerService.GameEnded)
+                            Services.SaveAndLoadService.Save();
+
+                        Services.StateManagerService.CleanGameObjects();
                         SceneManager.LoadSceneAsync("Reclaim/Scenes/Title");
+
                     }), null);
 
-                    contextMenu.AddButton(new ContextMenuButton("Save & Exit", () =>
+                    if(!Services.StateManagerService.GameEnded)
                     {
-                        Services.SaveAndLoadService.Save();
-                        Application.Quit();
-                    }), null);
+                        contextMenu.AddButton(new ContextMenuButton("Save & Exit", () =>
+                        {
+                            Services.SaveAndLoadService.Save();
+                            Services.StateManagerService.CleanGameObjects();
+                            Application.Quit();
+                        }), null);
+                    }
                 }
                 contextMenu.AddButton(new ContextMenuButton("Controls", () =>
                     {

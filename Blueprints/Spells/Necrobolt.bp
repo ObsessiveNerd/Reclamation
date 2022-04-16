@@ -7,6 +7,6 @@
 	Sound:SoundPath=Sounds/MAGIC_SPELLS/MAGIC_SPELL_Flame_01_mono,Key=Cast
 	Info:InfoMessage="Fire a random streak of necomantic energy toward a target."
 	Name:PrettyName="Necromantic Bolt"
-	SpawnEffect:TexturePath=Textures/Sprites/Effects/tiny_dungeon_fx_voidspark_1
 	AreaOfEffect:Range=0,AOEType=Path,RandomAffectCount=0
+	Ammo:TexturePath=Textures/Sprites/Effects/tiny_dungeon_fx_voidball
 )

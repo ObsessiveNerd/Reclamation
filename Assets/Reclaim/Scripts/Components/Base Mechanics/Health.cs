@@ -179,7 +179,8 @@ public class DTO_Health : IDataTransferComponent
                         currentHealth = int.Parse(value[1]);
                         break;
                     case "PercentBoost":
-                        percentBoost = int.Parse(value[1]);
+                        if(!string.IsNullOrEmpty(value[1]))
+                            percentBoost = int.Parse(value[1]);
                         break;
                 }
             }

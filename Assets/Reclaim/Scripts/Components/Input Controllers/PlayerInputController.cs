@@ -66,6 +66,12 @@ public class PlayerInputController : InputControllerBase
                 Services.StateManagerService.GameOver(false);
             }
 
+            else if (Input.GetKeyDown(KeyCode.Alpha9))
+                Services.DungeonService.MoveDown();
+
+            else if (Input.GetKeyDown(KeyCode.Alpha8))
+                Services.DungeonService.MoveUp();
+
 #endif
             else if (InputBinder.PerformRequestedAction(RequestedAction.FireRangedWeapon))
             {
@@ -93,8 +99,9 @@ public class PlayerInputController : InputControllerBase
             else if (Input.GetKeyDown(KeyCode.P))
             {
                 GameEvent giveExp = GameEventPool.Get(GameEventId.GainExperience)
-                                    .With(EventParameters.Exp, 10);
+                                    .With(EventParameters.Exp, 100);
                 Self.FireEvent(giveExp).Release();
+                Services.WorldUIService.UpdateUI();
             }
 
             else if (Input.GetKeyDown(KeyCode.O))

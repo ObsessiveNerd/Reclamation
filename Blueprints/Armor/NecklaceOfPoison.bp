@@ -1,0 +1,14 @@
+<NecklaceOfPoison> (
+	GraphicContainer:SpritePath=Textures/Sprites/Items/td_items_amulet_silver
+	Portrait:SpritePath=Textures/Portraits/WeaponAndArmorIcons/WeaponAndArmorIcons_png/transparent/necklace/nk_t_01
+	Position:PositionPoint=0
+	InteractOnTileOvertake
+	EntityTypeContainer:Type=Item
+	Item:Rarity=Common
+	Equipment:PreferredBodyPartWhenEquipped=Neck
+	Value:Amount=25
+	Name:PrettyName="Poison Necklace"
+	Resitance:Type=Poison
+	Purple
+	SpellContainer:MaxSpell=1,RandomSpells=False,SpecificSpell=Poisonbreath
+)

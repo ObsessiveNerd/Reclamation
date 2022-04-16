@@ -1,0 +1,17 @@
+<Rageorb> (
+	GraphicContainer:SpritePath=Textures/Sprites/Items/td_items_gem_ruby
+	Portrait:SpritePath=Textures/Portraits/MagicItems_png/transparent/addons/addons_13_t
+	Position:PositionPoint=0
+	InteractOnTileOvertake
+	EntityTypeContainer:Type=Item
+	Item:Rarity=Epic
+	WeaponType:Type=Melee
+	DealDamage:DamageType=Blunt,Dice=1d4
+	Equipment:PreferredBodyPartWhenEquipped=Arm
+	Value:Amount=10
+	Sound:SoundPath=Sounds/Melee/Swords/SWORD_Whoosh_Hit_Sword_Hard_RR5_mono,Key=AttackHit
+	Sound:SoundPath=Sounds/Air/WHOOSH_Air_Blade_RR1_mono,Key=AttackMiss
+	Name:PrettyName="Orb of Rage"
+	SpellContainer:MaxSpell=1,RandomSpells=False,SpecificSpell=BecomeEnraged
+	Red
+)

@@ -116,13 +116,16 @@ public class DTO_Mana : IDataTransferComponent
                 switch(value[0])
                 {
                     case "MaxMana":
-                        maxMana = int.Parse(value[1]);
+                        if(!string.IsNullOrEmpty(value[1]))
+                            maxMana = int.Parse(value[1]);
                         break;
                     case "CurrentMana":
-                        currentMana = int.Parse(value[1]);
+                        if(!string.IsNullOrEmpty(value[1]))
+                            currentMana = int.Parse(value[1]);
                         break;
                     case "PercentBoost":
-                        percentBoost = int.Parse(value[1]);
+                        if(!string.IsNullOrEmpty(value[1]))
+                            percentBoost = int.Parse(value[1]);
                         break;
                 }
             }

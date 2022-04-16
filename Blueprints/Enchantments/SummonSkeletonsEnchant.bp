@@ -1,0 +1,3 @@
+<SummonSkeletonsEnchant> (
+	SpellContainer:MaxSpell=1,RandomSpells=False,SpecificSpell=SummonSkeletonWarriors
+)

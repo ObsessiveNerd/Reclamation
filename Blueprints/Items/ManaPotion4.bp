@@ -1,0 +1,14 @@
+<ManaPotion4> (
+	GraphicContainer:SpritePath=Textures/Sprites/Items/td_items_potion_blue
+	Portrait:SpritePath=Textures/Portraits/MagicItems_png/transparent/potion_07_t
+	Position:PositionPoint=0
+	InteractOnTileOvertake
+	EntityTypeContainer:Type=Item
+	Item:Rarity=Uncommon
+	Potion
+	Value:Amount=30
+	Sound:SoundPath=Sounds/FOLEY/VARIOUS/FOLEY_Lid_Removal_Bottle_mono,Key=Quaff
+	Name:PrettyName="Miraculous Mana Potion"
+	Stackable
+	HealMana:HealAmount=2d12
+)

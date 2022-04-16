@@ -1,0 +1,17 @@
+<CloakOfBats> (
+	GraphicContainer:SpritePath=Textures/Sprites/Items/td_items_cape_leather
+	Portrait:SpritePath=Textures/Portraits/ArmorIcons_png/transparent/cloaks/cloaks_16
+	Position:PositionPoint=0
+	InteractOnTileOvertake
+	EntityTypeContainer:Type=Item
+	Item:Rarity=Mythic
+	Equipment:PreferredBodyPartWhenEquipped=Back
+	Value:Amount=200
+	Name:PrettyName="Tymwig's Shadow"
+	Resitance:Type=Dark
+	SpellContainer:MaxSpell=1,RandomSpells=False,SpecificSpell=SummonBats
+	Resitance:Type=Slashing
+	Resitance:Type=Piercing
+	Resitance:Type=Blunt
+	Purple
+)

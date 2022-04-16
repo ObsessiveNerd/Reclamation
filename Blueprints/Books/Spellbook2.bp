@@ -1,17 +1,17 @@
-<Spellbook> (
-	GraphicContainer:SpritePath= Textures/Sprites/Items/td_items_book_brown
+<Spellbook2> (
+	GraphicContainer:SpritePath=Textures/Portraits/WeaponAndArmorIcons/WeaponAndArmorIcons_png/transparent/book/book_03_t
 	Portrait:SpritePath= Textures/Portraits/Items/book_11_t
 	Position:PositionPoint=0
 	InteractOnTileOvertake
 	EntityTypeContainer:Type=Item
 	Item:Rarity=Epic
-	SpellContainer:MaxSpell=20,RandomSpells=True,SpecificSpell=
+	SpellContainer:MaxSpell=7,RandomSpells=True,SpecificSpell=
 	Equipment:PreferredBodyPartWhenEquipped=Arm
 	TwoHanded
 	WeaponType:Type=Melee
 	Value:Amount=100
 	DealDamage:DamageType=Blunt,Dice=1d4
-	Name:PrettyName=Spellbook
-	WeaponType:TypeWeapon=MagicalContainer
+	Name:PrettyName="Somewhat Heavy Spellbook"
+	WeaponType:Type=None
 	Sound:SoundPath=Sounds/GORE_SPLATS/GORE_Splat_L_Ground_02_mono,Key=AttackHit
 )

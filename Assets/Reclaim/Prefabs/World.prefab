@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 6241948252624630897}
   - component: {fileID: 6241948252624630896}
   - component: {fileID: 6241948252943195920}
+  - component: {fileID: 1936781231}
   m_Layer: 0
   m_Name: World
   m_TagString: Untagged
@@ -47,8 +48,8 @@ MonoBehaviour:
   TilePrefab: {fileID: 6901715319108000600, guid: bf8a7134af4c2944cba826274e0f314d,
     type: 3}
   InitMode: 2
-  MapColumns: 65
-  MapRows: 65
+  MapColumns: 25
+  MapRows: 25
 --- !u!114 &6241948252943195920
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -61,3 +62,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 794b40078a109d043ba0be45aa91731d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1936781231
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6241948252624630899}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0f5c9cf38bff90c48a41d205f30df544, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  FadeScreen: {fileID: 0}
+  EndingScrollText: {fileID: 0}
+  ObjectsToDestroy:
+  - {fileID: 6241948252624630899}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}

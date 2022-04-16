@@ -1,6 +1,6 @@
 <SummonSkeletonWarriors> (
 	GraphicContainer:SpritePath=Textures/Portraits/spellbookmegapack/SpellBookPage06/SpellBook06_107
-	Spell:ManaCost=4,SpellFailed=None,SpellType=None
+	Spell:ManaCost=15,SpellFailed=None,SpellType=None
 	Range
 	Sound:SoundPath=Sounds/MAGIC_SPELLS/MAGIC_SPELL_Dark_Pulse_Echo_Subtle_stereo,Key=Cast
 	Name:PrettyName="Summon Skeleton Warriors"

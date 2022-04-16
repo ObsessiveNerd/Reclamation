@@ -1,0 +1,17 @@
+<Firebelt> (
+	GraphicContainer:SpritePath=Textures/Sprites/Items/td_items_rope
+	Portrait:SpritePath=Textures/Portraits/ArmorIcons_png/transparent/belts/belts_6
+	Position:PositionPoint=0
+	InteractOnTileOvertake
+	EntityTypeContainer:Type=Item
+	Item:Rarity=Epic
+	WeaponType:Type=Finesse
+	DealDamage:DamageType=Blunt,Dice=1d4
+	Equipment:PreferredBodyPartWhenEquipped=Arm
+	Value:Amount=10
+	Sound:SoundPath=Sounds/Melee/Swords/SWORD_Whoosh_Hit_Sword_Hard_RR5_mono,Key=AttackHit
+	Sound:SoundPath=Sounds/Air/WHOOSH_Air_Blade_RR1_mono,Key=AttackMiss
+	Name:PrettyName="Burning Whip"
+	SpellContainer:MaxSpell=1,RandomSpells=False,SpecificSpell=Firewhip
+	Red
+)

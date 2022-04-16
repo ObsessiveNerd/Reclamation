@@ -7,7 +7,7 @@
 	Item:Rarity=Common
 	Equipment:PreferredBodyPartWhenEquipped=Neck
 	Value:Amount=25
-	Red
 	Name:PrettyName="Acolyte's Pendant"
 	BoostMaxMana:PercentToBoost=8,CalculatedAmount=
+	ActiveWhileEquiped
 )
