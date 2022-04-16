@@ -644,11 +644,27 @@ public class BasicDungeonGenerator : IDungeonGenerator
                 var e = EntityFactory.CreateEntity(bpName);
                 if(bpName == "Bookshelf")
                 {
-                    GameEvent addItems = GameEventPool.Get(GameEventId.AddItems)
+                    if(RecRandom.Instance.GetRandomPercent() < 35)
+                    {
+                        int numberOfBooks = (int)RecRandom.Instance.GetRandomValue(1f, Mathf.Ceil((float)GameService.CurrentLevel / 2f));
+                        for(int i = 0; i < numberOfBooks; i++)
+                        {
+                            string spellBookName = "Spellbook";
+                            int whatBookChance = RecRandom.Instance.GetRandomPercent();
+                            if (whatBookChance < 10)
+                                spellBookName += "3";
+                            else if (whatBookChance < 20)
+                                spellBookName += "2";
+                            else if (whatBookChance < 45)
+                                spellBookName += "1";
+
+                        GameEvent addItems = GameEventPool.Get(GameEventId.AddItems)
                                             .With(EventParameters.Items, new List<string>(){
-                                                "Spellbook"
+                                                spellBookName
                                             });
-                    e.FireEvent(addItems).Release();
+                            e.FireEvent(addItems).Release();
+                        }
+                    }
                 }
 
                 GameEvent getSpawnRestrictions = GameEventPool.Get(GameEventId.GetSpawnRestrictions)

@@ -58,8 +58,10 @@ public class Equipment : EntityComponent
                     GameEvent remove = GameEventPool.Get(GameEventId.RemoveFromInventory)
                                         .With(EventParameters.Item, Self.ID);
 
-                    foreach(var player in Services.WorldDataQuery.GetPlayableCharacters())
-                        Services.EntityMapService.GetEntity(player).FireEvent(remove);
+                    source.FireEvent(remove);
+
+                    //foreach(var player in Services.WorldDataQuery.GetPlayableCharacters())
+                    //    Services.EntityMapService.GetEntity(player).FireEvent(remove);
 
                     remove.Release();
 
