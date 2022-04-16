@@ -10,7 +10,7 @@ public class GameEndMono : MonoBehaviour
     {
         get
         {
-            return GameObject.FindObjectOfType<FadeTextMono>(true).gameObject;
+            return GameObject.FindObjectOfType<FadeInMono>(true).gameObject;
         }
     }
     public GameObject EndingScrollText
