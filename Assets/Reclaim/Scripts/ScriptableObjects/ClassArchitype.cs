@@ -22,7 +22,10 @@ public class ClassArchitype : ScriptableObject
     public string ArmEquip2;
     public string TorosEquip;
     public string LegEquip1;
-    public string LegEquip2;
+    public string BackEquip;
+    public string NeckEquip;
+    public string Finger1Equip;
+    public string Finger2Equip;
 
     List<string> m_Equipment
     {
@@ -35,7 +38,10 @@ public class ClassArchitype : ScriptableObject
                 ArmEquip2,
                 TorosEquip,
                 LegEquip1,
-                LegEquip2
+                BackEquip,
+                NeckEquip,
+                Finger1Equip,
+                Finger2Equip
             };
         }
     }

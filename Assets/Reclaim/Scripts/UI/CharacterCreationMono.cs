@@ -83,7 +83,10 @@ public class CharacterCreationMono : MonoBehaviour
         character.AddComponent(new EquipmentSlot(ca.ArmEquip1, BodyPart.Arm));
         character.AddComponent(new EquipmentSlot(ca.ArmEquip2, BodyPart.Arm));
         character.AddComponent(new EquipmentSlot(ca.LegEquip1, BodyPart.Leg));
-        character.AddComponent(new EquipmentSlot(ca.LegEquip2, BodyPart.Leg));
+        character.AddComponent(new EquipmentSlot(ca.BackEquip, BodyPart.Back));
+        character.AddComponent(new EquipmentSlot(ca.NeckEquip, BodyPart.Neck));
+        character.AddComponent(new EquipmentSlot(ca.Finger1Equip, BodyPart.Finger));
+        character.AddComponent(new EquipmentSlot(ca.Finger2Equip, BodyPart.Finger));
 
         character.CleanupComponents();
         character.Start();

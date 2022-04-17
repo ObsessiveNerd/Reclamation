@@ -12,6 +12,7 @@ public class InventoryManagerMono : UpdatableUI, IDropHandler
     public Action ItemDropped;
     public TextMeshProUGUI Name;
     public Transform InventoryView;
+    public Image CharacterImage;
     
     public IEntity Source;
     Dictionary<IEntity, GameObject> m_Items = new Dictionary<IEntity,GameObject>();
@@ -44,6 +45,11 @@ public class InventoryManagerMono : UpdatableUI, IDropHandler
     {
         Cleanup();
         Name.text = Source.Name;
+
+        GameEvent getSprite = GameEventPool.Get(GameEventId.GetSprite)
+                                            .With(EventParameters.RenderSprite, null);
+        CharacterImage.sprite = Source.FireEvent(getSprite).GetValue<Sprite>(EventParameters.RenderSprite);
+        getSprite.Release();
 
         GameEvent getCurrentInventory = GameEventPool.Get(GameEventId.GetCurrentInventory)
                                             .With(EventParameters.Value, new List<IEntity>());
