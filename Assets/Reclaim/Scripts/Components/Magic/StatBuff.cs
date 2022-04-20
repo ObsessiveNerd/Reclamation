@@ -37,6 +37,7 @@ public class StatBuff : EntityComponent
 
             GameEvent boostStat = GameEventPool.Get(GameEventId.BoostStat)
                                     .With(EventParameters.StatType, StatToBuff)
+                                    .With(EventParameters.Cost, false)
                                     .With(EventParameters.StatBoostAmount, amountToBuff);
 
             target.FireEvent(boostStat);

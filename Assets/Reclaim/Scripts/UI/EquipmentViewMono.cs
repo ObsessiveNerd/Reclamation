@@ -31,7 +31,7 @@ public class EquipmentViewMono : UpdatableUI//, IUpdatableUI
                 LeftArm,
                 RightArm,
                 LeftArm,
-                //RightLeg,
+                LeftLeg,
                 Back,
                 Necklace,
                 Ring1,

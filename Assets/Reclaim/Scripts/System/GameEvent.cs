@@ -339,6 +339,7 @@ public static class EventParameters
     public const string DamageType = nameof(DamageType);
     public const string RollToHit = nameof(RollToHit);
     public const string Crit = nameof(Crit);
+    public const string Cost = nameof(Cost);
     public const string WeaponType = nameof(WeaponType);
     public const string SpellType = nameof(SpellType);
     public const string WeaponTypeList = nameof(WeaponTypeList);

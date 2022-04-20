@@ -81,8 +81,7 @@ public class Health : EntityComponent
 
                     FireEvent(Self, GameEventPool.Get(GameEventId.Died)
                         .With(EventParameters.DamageSource, gameEvent.GetValue<string>(EventParameters.DamageSource)), true).Release();
-                    Spawner.Despawn(Self);
-                    RecLog.Log("...and died");
+                    Services.SpawnerService.RegisterForDespawn(Self);
                     break;
                 }
             }

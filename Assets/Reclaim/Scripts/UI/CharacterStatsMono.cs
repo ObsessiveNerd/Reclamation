@@ -44,6 +44,7 @@ public class CharacterStatsMono : UpdatableUI//, IUpdatableUI
                 {
                     GameEvent boostStat = GameEventPool.Get(GameEventId.BoostStat)
                                                 .With(EventParameters.StatType, statMono.ControlledStat)
+                                                .With(EventParameters.Cost, true)
                                                 .With(EventParameters.StatBoostAmount, 1);
                     source.FireEvent(boostStat);
                     boostStat.Release();

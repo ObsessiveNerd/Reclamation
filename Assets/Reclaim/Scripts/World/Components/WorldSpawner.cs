@@ -7,6 +7,7 @@ using UnityEngine.UI;
 
 public class WorldSpawner : GameService
 {
+    HashSet<IEntity> m_DespawnAtEndOfFrame = new HashSet<IEntity>();
     public void Spawn(IEntity entity, Point spawnPoint)
     {
         if (!m_Tiles.ContainsKey(spawnPoint))
@@ -25,6 +26,19 @@ public class WorldSpawner : GameService
         FireEvent(entity, GameEventPool.Get(GameEventId.RegisterPlayableCharacter)).Release();
         FireEvent(entity, GameEventPool.Get(GameEventId.RegisterWithTimeSystem)
             .With(EventParameters.Value, m_TimeProgression /*m_PlayerToTimeProgressionMap[m_ActivePlayer.Value]*/)).Release();
+    }
+
+    public void RegisterForDespawn(IEntity entity)
+    {
+        m_DespawnAtEndOfFrame.Add(entity);
+    }
+
+    public void DespawnAllRegistered()
+    {
+        foreach(var e in m_DespawnAtEndOfFrame)
+            Despawn(e);
+
+        m_DespawnAtEndOfFrame.Clear();
     }
 
     public void Despawn(IEntity entity)

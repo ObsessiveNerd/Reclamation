@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -44,15 +44,6 @@ public class Stats : EntityComponent
         RegisteredEvents.Add(GameEventId.GetSpellSaveDC);
         RegisteredEvents.Add(GameEventId.SavingThrow);
         RegisteredEvents.Add(GameEventId.GetPrimaryStatType);
-    }
-
-    public override void Start()
-    {
-        base.Start();
-        GameEvent init = GameEventPool.Get(GameEventId.BoostStat)
-                            .With(EventParameters.Stats, this);
-        Self.FireEvent(init);
-        init.Release();
     }
 
     void SetStats(int Str, int Agi, int Con, int Wis, int Int, int Cha)
@@ -110,6 +101,7 @@ public class Stats : EntityComponent
         {
             Stat s = gameEvent.GetValue<Stat>(EventParameters.StatType);
             int amountToBoost = gameEvent.GetValue<int>(EventParameters.StatBoostAmount);
+            bool costAttributePoint = gameEvent.GetValue<bool>(EventParameters.Cost);
 
             switch (s)
             {
@@ -138,7 +130,8 @@ public class Stats : EntityComponent
 
             FireEvent(Self, statBoosted, true).Release();
 
-            AttributePoints = Mathf.Max(0, AttributePoints - 1);
+            if(costAttributePoint)
+                AttributePoints = Mathf.Max(0, AttributePoints - 1);
         }
         else if(gameEvent.ID == GameEventId.GetAttributePoints)
         {

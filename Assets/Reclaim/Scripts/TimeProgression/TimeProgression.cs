@@ -129,6 +129,8 @@ public class TimeProgression
             }
         }
 
+        Services.SpawnerService.DespawnAllRegistered();
+
         if ((bool)update.Paramters[EventParameters.TakeTurn])
         {
             GameEvent endTurn = GameEventPool.Get(GameEventId.EndTurn);

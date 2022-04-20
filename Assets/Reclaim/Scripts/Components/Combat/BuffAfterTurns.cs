@@ -35,6 +35,7 @@ public class BuffAfterTurns : EntityComponent
             {
                 GameEvent buff = GameEventPool.Get(GameEventId.BoostStat)
                                 .With(EventParameters.StatType, StatType)
+                                .With(EventParameters.Cost, false)
                                 .With(EventParameters.StatBoostAmount, Amount);
 
                 Self.FireEvent(buff);
