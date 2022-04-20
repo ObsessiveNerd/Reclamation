@@ -21,6 +21,9 @@ public class CharacterTab : UpdatableUI
     public bool ShowActivePlayerIcon = true;
     public bool TrackActivePlayer = false;
 
+    public GameObject LevelUp;
+    public Button LevelUpButton;
+
     private IEntity m_Entity;
     private string m_EId;
 
@@ -36,6 +39,14 @@ public class CharacterTab : UpdatableUI
 
         m_Portrait.sprite = firedEvent.GetValue<Sprite>(EventParameters.RenderSprite);
         firedEvent.Release();
+
+        LevelUpButton.onClick.RemoveAllListeners();
+        LevelUpButton.onClick.AddListener(() =>
+        {
+            Services.PlayerManagerService.SetActiveCharacter(m_EId);
+            Services.WorldUIService.OpenInventory();
+            Services.WorldUIService.SetCharacterView("Stats");
+        });
     }
 
     public override void UpdateUI()
@@ -57,6 +68,17 @@ public class CharacterTab : UpdatableUI
         HealthText.text = $"{m_HealthBar.value}/{m_HealthBar.maxValue}";
 
         getHealthResult.Release();
+
+        var getAttribute = GameEventPool.Get(GameEventId.GetAttributePoints)
+                                            .With(EventParameters.AttributePoints, 0);
+        m_Entity.FireEvent(getAttribute);
+
+        if (getAttribute.GetValue<int>(EventParameters.AttributePoints) > 0)
+            LevelUp.SetActive(true);
+        else
+            LevelUp.SetActive(false);
+
+        getAttribute.Release();
 
         GameEvent getMana = GameEventPool.Get(GameEventId.GetMana)
                                     .With(EventParameters.Value, 0)

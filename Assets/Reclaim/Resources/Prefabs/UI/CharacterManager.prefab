@@ -9683,9 +9683,19 @@ PrefabInstance:
       propertyPath: m_fontSize
       value: 42.75
       objectReference: {fileID: 0}
+    - target: {fileID: 6925657496902451888, guid: dc73af1ff59b6104cbc22ab9ab6af655,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 93.435074
+      objectReference: {fileID: 0}
     - target: {fileID: 8189189914524217510, guid: dc73af1ff59b6104cbc22ab9ab6af655,
         type: 3}
       propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8342608563541417019, guid: dc73af1ff59b6104cbc22ab9ab6af655,
+        type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9006828080744084076, guid: dc73af1ff59b6104cbc22ab9ab6af655,

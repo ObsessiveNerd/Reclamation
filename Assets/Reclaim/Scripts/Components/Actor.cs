@@ -202,8 +202,9 @@ public class Actor : IEntity
         return !lhs.Equals(rhs);
     }
 
-    public override int GetHashCode()
-    {
-        return Hash128.Compute(ID).GetHashCode();
-    }
+    //TODO NETWORKING: If we re-add networking, I think we'll need to re-add this
+    //public override int GetHashCode()
+    //{
+    //    return Hash128.Compute(ID).GetHashCode();
+    //}
 }

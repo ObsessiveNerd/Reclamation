@@ -16,6 +16,11 @@ public class WorldUIController : GameService
             ui?.UpdateUI();
     }
 
+    public void SetCharacterView(string setTo)
+    {
+        GameObject.FindObjectOfType<CharacterMono>().ToggleSelected(setTo);
+    }
+
     public void EntityTookDamage(IEntity entity, int damage)
     {
         if (!m_EntityToPointMap.ContainsKey(entity.ID))

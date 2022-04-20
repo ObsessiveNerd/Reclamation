@@ -104,7 +104,7 @@ public class SpellContainer : EntityComponent
 
         else if(gameEvent.ID == GameEventId.GetContextMenuActions)
         {
-            ContextMenuButton button = new ContextMenuButton("Examine", () =>
+            ContextMenuButton button = new ContextMenuButton("Show Spells", () =>
             {
                 Services.WorldUIService.OpenSpellExaminationUI(SpellNameToIdMap.Keys.ToList());
             });
