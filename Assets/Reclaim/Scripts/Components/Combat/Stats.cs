@@ -29,6 +29,15 @@ public class Stats : EntityComponent
 
     public int AttributePoints;
 
+    public override void Start()
+    {
+        base.Start();
+        GameEvent init = GameEventPool.Get(GameEventId.BoostStat)
+                            .With(EventParameters.Stats, this);
+        Self.FireEvent(init);
+        init.Release();
+    }
+
     public Stats(int Str, int Agi, int Con, int Wis, int Int, int Cha, int attributePoints, Stat primaryStatType)
     {
         SetStats(Str, Agi, Con, Wis, Int, Cha);
