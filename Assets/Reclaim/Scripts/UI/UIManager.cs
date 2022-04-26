@@ -9,6 +9,25 @@ public class UIManager : MonoBehaviour
     public static bool UIClear => UIMonoBehaviors.Count == 0;
     static bool m_EscapePressedThisFrame = false;
 
+    private void Start()
+    {
+        SceneManager.sceneLoaded -= SceneManager_sceneLoaded;    
+        SceneManager.sceneLoaded += SceneManager_sceneLoaded;    
+    }
+
+    private void SceneManager_sceneLoaded(Scene arg0, LoadSceneMode arg1)
+    {
+        try
+        {
+            while (UIMonoBehaviors.Count > 0)
+                UIMonoBehaviors.Pop()?.OnEscape();
+        }
+        catch
+        {
+            //do nothing
+        }
+    }
+
     public static void Push(IEscapeableMono mono)
     {
         if (mono == null)
