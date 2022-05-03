@@ -36,7 +36,27 @@ public class Level : EntityComponent
         {
             Debug.LogWarning($"Exp gained: {gameEvent.GetValue<int>(EventParameters.Exp)}");
 
-            CurrentExp += gameEvent.GetValue<int>(EventParameters.Exp);
+            int expGained = gameEvent.GetValue<int>(EventParameters.Exp);
+
+            //Shared player experience.  This should honestly be it's own component on the player, but this is a test
+            if (!gameEvent.HasParameter(EventParameters.Flag))
+            {
+                if (Services.PlayerManagerService.GetAllPlayers().Contains(Self))
+                {
+                    foreach (var otherPlayer in Services.PlayerManagerService.GetAllPlayers())
+                    {
+                        if (otherPlayer != Self)
+                        {
+                            GameEvent giveExp = GameEventPool.Get(GameEventId.GainExperience)
+                                        .With(EventParameters.Flag, true)
+                                        .With(EventParameters.Exp, Mathf.Max(1, (int)((float)expGained * 0.1f)));
+                            otherPlayer.FireEvent(giveExp).Release();
+                        }
+                    }
+                }
+            }
+
+            CurrentExp += expGained;
             if(CurrentExp >= ExpToNextLevel)
             {
                 do

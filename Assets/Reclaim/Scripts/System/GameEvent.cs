@@ -300,6 +300,7 @@ public static class GameEventId
 public static class EventParameters
 {
     public const string InputDirection = nameof(InputDirection);
+    public const string Flag = nameof(Flag);
     public const string Faction = nameof(Faction);
     public const string TakeTurn = nameof(TakeTurn);
     public const string UpdateWorldView = nameof(UpdateWorldView);

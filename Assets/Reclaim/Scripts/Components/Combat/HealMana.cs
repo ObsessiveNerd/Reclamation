@@ -26,7 +26,7 @@ public class HealMana : EntityComponent
         {
             IEntity target = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameters.Entity));
             GameEvent e = GameEventPool.Get(GameEventId.RestoreMana)
-                                .With(EventParameters.Healing, HealAmount.Roll());
+                                .With(EventParameters.Mana, HealAmount.Roll());
             target.FireEvent(e).Release();
         }
         else if (gameEvent.ID == GameEventId.CastSpellEffect)

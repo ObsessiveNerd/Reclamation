@@ -16,6 +16,7 @@ public class InventoryManagerMono : UpdatableUI, IDropHandler
     
     public IEntity Source;
     Dictionary<IEntity, GameObject> m_Items = new Dictionary<IEntity,GameObject>();
+    string m_ActiveFilter = "All";
 
     public void ClearCallback()
     {
@@ -51,11 +52,21 @@ public class InventoryManagerMono : UpdatableUI, IDropHandler
         CharacterImage.sprite = Source.FireEvent(getSprite).GetValue<Sprite>(EventParameters.RenderSprite);
         getSprite.Release();
 
-        GameEvent getCurrentInventory = GameEventPool.Get(GameEventId.GetCurrentInventory)
+        List<IEntity> inventory = new List<IEntity>();
+        Dictionary<IEntity, IEntity> itemToPlayerSource = new Dictionary<IEntity, IEntity>();
+        foreach (var player in Services.PlayerManagerService.GetAllPlayers())
+        {
+            GameEvent getCurrentInventory = GameEventPool.Get(GameEventId.GetCurrentInventory)
                                             .With(EventParameters.Value, new List<IEntity>());
 
-        List<IEntity> inventory = Source.FireEvent(getCurrentInventory).GetValue<List<IEntity>>(EventParameters.Value);
-        getCurrentInventory.Release();
+            var items = player.FireEvent(getCurrentInventory).GetValue<List<IEntity>>(EventParameters.Value);
+            foreach (var item in items)
+                itemToPlayerSource.Add(item, player);
+            inventory.AddRange(items);
+            getCurrentInventory.Release();
+        }
+
+        inventory = Filter(inventory);
 
         foreach (var item in inventory)
         {
@@ -64,10 +75,10 @@ public class InventoryManagerMono : UpdatableUI, IDropHandler
                 if(item.HasComponent(typeof(Stackable)))
                 {
                     if(!m_Items.Keys.Any(k => k.Name == item.Name))
-                       m_Items.Add(item, UIUtility.CreateItemGameObject(Source, item, InventoryView));
+                       m_Items.Add(item, UIUtility.CreateItemGameObject(itemToPlayerSource[item], item, InventoryView));
                 }
                 else
-                    m_Items.Add(item, UIUtility.CreateItemGameObject(Source, item, InventoryView));
+                    m_Items.Add(item, UIUtility.CreateItemGameObject(itemToPlayerSource[item], item, InventoryView));
             }
         }
     }
@@ -130,5 +141,59 @@ public class InventoryManagerMono : UpdatableUI, IDropHandler
 
         ItemDropped?.Invoke();
         Services.WorldUIService.UpdateUI();
+    }
+
+    public void FilterShownEquipment(string filter)
+    {
+        m_ActiveFilter = filter;
+        UpdateUI();
+    }
+
+    List<IEntity> Filter(List<IEntity> allEquipment)
+    {
+        switch (m_ActiveFilter)
+        {
+            case "All":
+                //Do nothing
+                break;
+            case "Armor":
+                allEquipment = allEquipment.Where(e => e.HasComponent(typeof(Armor))).ToList();
+                break;
+            case "Weapons":
+                allEquipment = allEquipment.Where(e => e.HasComponent(typeof(WeaponType))).ToList();
+                break;
+            case "SpellEquipment":
+                allEquipment = allEquipment.Where(e => e.HasComponent(typeof(SpellContainer))).ToList();
+                break;
+            case "Trinkets":
+                allEquipment = allEquipment.Where(e =>
+                {
+                    if (e.HasComponent(typeof(Equipment)) && (e.GetComponent<Equipment>().PreferredBodyPartWhenEquipped == BodyPart.Finger || e.GetComponent<Equipment>().PreferredBodyPartWhenEquipped == BodyPart.Neck))
+                        return true;
+                    return false;
+                }).ToList();
+                break;
+            case "Cloaks":
+                allEquipment = allEquipment.Where(e =>
+                {
+                    if (e.HasComponent(typeof(Equipment)) && e.GetComponent<Equipment>().PreferredBodyPartWhenEquipped == BodyPart.Back)
+                        return true;
+                    return false;
+                }).ToList();
+                break;
+            case "Shields":
+                allEquipment = allEquipment.Where(e =>
+                {
+                    if (e.HasComponent(typeof(Armor)) && e.HasComponent(typeof(Equipment)) && e.GetComponent<Equipment>().PreferredBodyPartWhenEquipped == BodyPart.Arm)
+                        return true;
+                    return false;
+                }).ToList();
+                break;
+            case "Potions":
+                allEquipment = allEquipment.Where(e => e.HasComponent(typeof(Potion))).ToList();
+                break;
+        }
+
+        return allEquipment;
     }
 }

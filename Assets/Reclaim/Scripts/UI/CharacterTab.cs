@@ -39,14 +39,6 @@ public class CharacterTab : UpdatableUI
 
         m_Portrait.sprite = firedEvent.GetValue<Sprite>(EventParameters.RenderSprite);
         firedEvent.Release();
-
-        LevelUpButton.onClick.RemoveAllListeners();
-        LevelUpButton.onClick.AddListener(() =>
-        {
-            Services.PlayerManagerService.SetActiveCharacter(m_EId);
-            Services.WorldUIService.OpenInventory();
-            Services.WorldUIService.SetCharacterView("Stats");
-        });
     }
 
     public override void UpdateUI()
@@ -113,6 +105,14 @@ public class CharacterTab : UpdatableUI
         var getLevelResult = m_Entity.FireEvent(getLevel);
         m_Level.text = getLevelResult.GetValue<int>(EventParameters.Level).ToString();
         getLevelResult.Release();
+
+        LevelUpButton.onClick.RemoveAllListeners();
+        LevelUpButton.onClick.AddListener(() =>
+        {
+            Services.PlayerManagerService.SetActiveCharacter(m_EId);
+            Services.WorldUIService.OpenInventory();
+            Services.WorldUIService.SetCharacterView("Stats");
+        });
 
         if (WorldUtility.IsActivePlayer(m_Entity.ID) && ShowActivePlayerIcon)
             m_ActivePlayerIcon.SetActive(true);

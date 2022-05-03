@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class EquipmentViewMono : UpdatableUI//, IUpdatableUI
 {
     public Image CharacterSprite;
+    public Image CharacterSprite2;
     public Sprite DefaultImage;
 
     public GameObject Head;
@@ -112,6 +113,7 @@ public class EquipmentViewMono : UpdatableUI//, IUpdatableUI
         source.FireEvent(getPicture);
 
         CharacterSprite.sprite = getPicture.GetValue<Sprite>(EventParameters.RenderSprite);
+        CharacterSprite2.sprite = getPicture.GetValue<Sprite>(EventParameters.RenderSprite);
         getPicture.Release();
     }
 }

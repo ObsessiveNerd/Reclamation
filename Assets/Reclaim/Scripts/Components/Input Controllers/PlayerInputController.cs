@@ -48,14 +48,6 @@ public class PlayerInputController : InputControllerBase
                 Services.FOVService.RevealAllTiles();
             }
 
-            else if (Input.GetKeyDown(KeyCode.LeftControl))
-            {
-                IEntity potion = EntityFactory.GetEntity("MinorHealthPotion");
-                GameEvent e = GameEventPool.Get(GameEventId.AddToInventory)
-                                            .With(EventParameters.Entity, potion.ID);
-                Self.FireEvent(e);
-            }
-
             else if (Input.GetKeyDown(KeyCode.RightControl))
             {
                 Services.StateManagerService.GameOver(true);
