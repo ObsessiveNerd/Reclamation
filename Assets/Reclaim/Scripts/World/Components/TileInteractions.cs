@@ -49,6 +49,9 @@ public class TileInteractions : GameService
 
     public void Drop(IEntity droppingEntity, IEntity entity)
     {
+        if (m_Players.Contains(droppingEntity))
+            droppingEntity = m_ActivePlayer.Value;
+
         GameEvent getEntityType = GameEventPool.Get(GameEventId.GetEntityType)
                                     .With(EventParameters.EntityType, EntityType.None);
         FireEvent(entity, getEntityType);

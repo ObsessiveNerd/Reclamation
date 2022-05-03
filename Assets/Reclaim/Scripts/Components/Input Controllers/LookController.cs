@@ -40,7 +40,13 @@ public class LookController : InputControllerBase
                 m_TileSelection = Services.TileSelectionService.SelectTileInNewDirection(m_TileSelection, desiredDirection);
 
                 string info = Services.TileInteractionService.ShowTileInfo(m_TileSelection);
-                m_PopupInstance.GetComponent<InfoMono>().SetData(WorldUtility.GetEntityAtPosition(m_TileSelection).Name, info);
+                string name = WorldUtility.GetEntityAtPosition(m_TileSelection).Name;
+                if (info == "Multiple Items")
+                {
+                    name = info;
+                    info = "";
+                }
+                m_PopupInstance.GetComponent<InfoMono>().SetData(name, info);
 
                 var entity = WorldUtility.GetEntityAtPosition(m_TileSelection);
                 var go = WorldUtility.GetGameObject(entity);

@@ -175,11 +175,15 @@ public class Tile : EntityComponent
     {
         IEntity target = m_IsVisible ? GetTarget()[0] : ObjectSlot == null ? Self : ObjectSlot;
         GameEvent getSprite = GameEventPool.Get(GameEventId.GetSprite).With(EventParameters.RenderSprite, null);
-        GameEvent getSpriteEvent = FireEvent(target, getSprite);
+
+        if (CreatureSlot == null && Items.Count > 1)
+            getSprite.Paramters[EventParameters.RenderSprite] = Resources.Load<Sprite>("Textures/Sprites/Items/r_bag");
+        else
+            FireEvent(target, getSprite);
         //Self.GetComponent<Renderer>().Image.sprite = getSprite.GetValue<Sprite>(EventParameters.RenderSprite);
 
-        FireEvent(Self, GameEventPool.Get(GameEventId.UpdateRenderer).With(getSpriteEvent.Paramters)).Release();
-        getSpriteEvent.Release();
+        FireEvent(Self, GameEventPool.Get(GameEventId.UpdateRenderer).With(getSprite.Paramters)).Release();
+        getSprite.Release();
     }
 
     public void GetPathFindingData(GameEvent gameEvent)
@@ -301,12 +305,20 @@ public class Tile : EntityComponent
 
     public void ShowTileInfo(GameEvent gameEvent)
     {
-        GameEvent showInfo = GameEventPool.Get(GameEventId.ShowInfo)
-            .With(EventParameters.Info, new StringBuilder());
-        foreach (var e in GetTarget())
-            FireEvent(e, showInfo);
-        gameEvent.Paramters[EventParameters.Info] = showInfo.GetValue<StringBuilder>(EventParameters.Info).ToString();
-        showInfo.Release();
+        if(Items.Count > 1)
+        {
+            gameEvent.Paramters[EventParameters.Info] = "Multiple Items";
+            gameEvent.ContinueProcessing = false;
+        }
+        else
+        {
+            GameEvent showInfo = GameEventPool.Get(GameEventId.ShowInfo)
+                .With(EventParameters.Info, new StringBuilder());
+            foreach (var e in GetTarget())
+                FireEvent(e, showInfo);
+            gameEvent.Paramters[EventParameters.Info] = showInfo.GetValue<StringBuilder>(EventParameters.Info).ToString();
+            showInfo.Release();
+        }
     }
 
     public IEntity GetEntityOnTile(bool includeSelf = true)
