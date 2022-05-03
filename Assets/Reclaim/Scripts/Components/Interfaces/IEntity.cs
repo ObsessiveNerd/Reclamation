@@ -23,3 +23,16 @@ public interface IEntity
     void Start();
     //Action<IEntity> Destroyed { get; set; }
 }
+
+public class EntityComparer : Comparer<IEntity>
+{
+    public override int Compare(IEntity x, IEntity y)
+    {
+        if (x.InternalName.GetHashCode() < y.InternalName.GetHashCode())
+            return -1;
+        if (x.InternalName == y.InternalName)
+            return 0;
+
+        return 1;
+    }
+}

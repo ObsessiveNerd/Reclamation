@@ -67,6 +67,7 @@ public class InventoryManagerMono : UpdatableUI, IDropHandler
         }
 
         inventory = Filter(inventory);
+        inventory.Sort(new EntityComparer());
 
         foreach (var item in inventory)
         {
