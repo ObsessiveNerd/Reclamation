@@ -11,7 +11,7 @@ public class Level : EntityComponent
     {
         get
         {
-            return (CurrentLevel + 1) * 10;
+            return (CurrentLevel + 1) * 25;
         }
     }
 
