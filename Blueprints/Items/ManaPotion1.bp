@@ -10,5 +10,5 @@
 	Sound:SoundPath=Sounds/FOLEY/VARIOUS/FOLEY_Lid_Removal_Bottle_mono,Key=Quaff
 	Name:PrettyName="Minor Mana Potion"
 	Stackable
-	HealMana:HealAmount=1d4
+	HealMana:HealAmount=2d4+4
 )

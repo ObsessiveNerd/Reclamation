@@ -10,5 +10,5 @@
 	Sound:SoundPath=Sounds/FOLEY/VARIOUS/FOLEY_Lid_Removal_Bottle_mono,Key=Quaff
 	Name:PrettyName="Miraculous Mana Potion"
 	Stackable
-	HealMana:HealAmount=2d12
+	HealMana:HealAmount=12d12+12
 )

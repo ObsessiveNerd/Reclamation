@@ -6,7 +6,7 @@
 	EntityTypeContainer:Type=Item
 	Item:Rarity=Rare
 	Potion
-	Heal:HealAmount=1d8
+	Heal:HealAmount=4d8+8
 	Value:Amount=30
 	Sound:SoundPath=Sounds/FOLEY/VARIOUS/FOLEY_Lid_Removal_Bottle_mono,Key=Quaff
 	Name:PrettyName="Health Potion"
