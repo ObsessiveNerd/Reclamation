@@ -152,7 +152,7 @@ public class PlayerInputController : InputControllerBase
                 }
             }
 
-            else if (InputBinder.PerformRequestedAction(RequestedAction.PickupItem))
+            else if (InputBinder.PerformRequestedAction(RequestedAction.InteractWithCurrentTile))
             {
                 Services.TileInteractionService.Pickup(Self);
                 energyUsed = true;
