@@ -28,7 +28,7 @@ public class Stairs : EntityComponent
     {
         if(gameEvent.ID == GameEventId.Pickup)
         {
-            string e = gameEvent.GetValue<string>(EventParameters.Entity);
+            string e = gameEvent.GetValue<string>(EventParameter.Entity);
             if (WorldUtility.IsActivePlayer(e))
             {
                 if (Direction == StairDirection.Down)

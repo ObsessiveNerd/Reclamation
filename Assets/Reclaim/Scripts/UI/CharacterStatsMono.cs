@@ -17,8 +17,8 @@ public class CharacterStatsMono : UpdatableUI//, IUpdatableUI
 
         StatMonos = GetComponentsInChildren<StatsUIMono>().ToList();
         GameEvent getAttributePoints = GameEventPool.Get(GameEventId.GetAttributePoints)
-                                            .With(EventParameters.AttributePoints, 0);
-        int attrPoints = source.FireEvent(getAttributePoints).GetValue<int>(EventParameters.AttributePoints);
+                                            .With(EventParameter.AttributePoints, 0);
+        int attrPoints = source.FireEvent(getAttributePoints).GetValue<int>(EventParameter.AttributePoints);
         getAttributePoints.Release();
 
         if (attrPoints == 0)
@@ -43,9 +43,9 @@ public class CharacterStatsMono : UpdatableUI//, IUpdatableUI
                 statMono.Button.onClick.AddListener(() =>
                 {
                     GameEvent boostStat = GameEventPool.Get(GameEventId.BoostStat)
-                                                .With(EventParameters.StatType, statMono.ControlledStat)
-                                                .With(EventParameters.Cost, true)
-                                                .With(EventParameters.StatBoostAmount, 1);
+                                                .With(EventParameter.StatType, statMono.ControlledStat)
+                                                .With(EventParameter.Cost, true)
+                                                .With(EventParameter.StatBoostAmount, 1);
                     source.FireEvent(boostStat);
                     boostStat.Release();
                     Services.WorldUIService.UpdateUI();

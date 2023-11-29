@@ -55,33 +55,33 @@ public class World : MonoBehaviour
         {
             Services.Reset();
             GameService.ClearServicesData();
-            DependencyInjection.Clear();
+            Services.Clear();
         }
 
         GameSaveSystem saveSystem = new GameSaveSystem(loadPath);
         Application.quitting += () => saveSystem.Save();
 
-        DependencyInjection.Register(saveSystem);
-        DependencyInjection.Register(new WorldSpawner());
-        DependencyInjection.Register(new DungeonManager(
+        Services.Register(saveSystem);
+        Services.Register(new WorldSpawner());
+        Services.Register(new DungeonManager(
             RecRandom.Instance.Seed, TilePrefab, MapRows, MapColumns));
-        DependencyInjection.Register(new WorldUpdate());
-        DependencyInjection.Register(new TileSelection());
-        DependencyInjection.Register(new TileInteractions());
-        DependencyInjection.Register(new PlayerManager());
-        DependencyInjection.Register(new EntityMovement());
-        DependencyInjection.Register(new WorldUIController());
-        DependencyInjection.Register(new WorldDataQuery(MapRows, MapColumns));
-        DependencyInjection.Register(new WorldFov());
-        DependencyInjection.Register(new EntityMap());
-        DependencyInjection.Register(new Pathfinder(new AStar(MapRows * MapColumns)));
-        DependencyInjection.Register(new CameraController());
-        DependencyInjection.Register(new StateManager());
-        DependencyInjection.Register(new PartyController());
-        DependencyInjection.Register(new MusicService());
+        Services.Register(new WorldUpdate());
+        Services.Register(new TileSelection());
+        Services.Register(new TileInteractions());
+        Services.Register(new PlayerManager());
+        Services.Register(new EntityMovement());
+        Services.Register(new WorldUIController());
+        Services.Register(new WorldDataQuery(MapRows, MapColumns));
+        Services.Register(new WorldFov());
+        Services.Register(new EntityMap());
+        Services.Register(new Pathfinder(new AStar(MapRows * MapColumns)));
+        Services.Register(new CameraController());
+        Services.Register(new StateManager());
+        Services.Register(new PartyController());
+        Services.Register(new MusicService());
 
         var socket = FindObjectOfType<SocketIOComponent>();
-        DependencyInjection.Register(new EntityNetworkManager(socket));
+        Services.Register(new EntityNetworkManager(socket));
 
         Services.Complete();
     }

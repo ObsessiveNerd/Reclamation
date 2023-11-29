@@ -14,7 +14,7 @@ public class TwoHanded : EntityComponent
     {
         if(gameEvent.ID == GameEventId.GetMultiBodyPartUse)
         {
-            gameEvent.Paramters[EventParameters.Value] = 2;
+            gameEvent.Paramters[EventParameter.Value] = 2;
         }
     }
 }

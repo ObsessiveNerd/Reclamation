@@ -34,12 +34,12 @@ public class Level : EntityComponent
     {
         if(gameEvent.ID == GameEventId.GainExperience)
         {
-            Debug.LogWarning($"Exp gained: {gameEvent.GetValue<int>(EventParameters.Exp)}");
+            Debug.LogWarning($"Exp gained: {gameEvent.GetValue<int>(EventParameter.Exp)}");
 
-            int expGained = gameEvent.GetValue<int>(EventParameters.Exp);
+            int expGained = gameEvent.GetValue<int>(EventParameter.Exp);
 
             //Shared player experience.  This should honestly be it's own component on the player, but this is a test
-            if (!gameEvent.HasParameter(EventParameters.Flag))
+            if (!gameEvent.HasParameter(EventParameter.Flag))
             {
                 if (Services.PlayerManagerService.GetAllPlayers().Contains(Self))
                 {
@@ -48,8 +48,8 @@ public class Level : EntityComponent
                         if (otherPlayer != Self)
                         {
                             GameEvent giveExp = GameEventPool.Get(GameEventId.GainExperience)
-                                        .With(EventParameters.Flag, true)
-                                        .With(EventParameters.Exp, Mathf.Max(1, (int)((float)expGained * 0.1f)));
+                                        .With(EventParameter.Flag, true)
+                                        .With(EventParameter.Exp, Mathf.Max(1, (int)((float)expGained * 0.1f)));
                             otherPlayer.FireEvent(giveExp).Release();
                         }
                     }
@@ -64,7 +64,7 @@ public class Level : EntityComponent
                     CurrentExp = CurrentExp - ExpToNextLevel;
                     CurrentLevel++;
                     GameEvent e = GameEventPool.Get(GameEventId.LevelUp)
-                                    .With(EventParameters.Level, CurrentLevel);
+                                    .With(EventParameter.Level, CurrentLevel);
                     FireEvent(Self, e).Release();
 
                 } while (CurrentExp >= ExpToNextLevel);
@@ -74,21 +74,21 @@ public class Level : EntityComponent
         if(gameEvent.ID == GameEventId.Died)
         {
             GameEvent giveExp = GameEventPool.Get(GameEventId.GainExperience)
-                                    .With(EventParameters.Exp, CurrentLevel * 3);
+                                    .With(EventParameter.Exp, CurrentLevel * 3);
 
-            var expGainer = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameters.DamageSource));
+            var expGainer = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameter.DamageSource));
             expGainer.FireEvent(giveExp).Release();
         }
 
         if(gameEvent.ID == GameEventId.GetLevel)
         {
-            gameEvent.Paramters[EventParameters.Level] = CurrentLevel;
+            gameEvent.Paramters[EventParameter.Level] = CurrentLevel;
         }
 
         if(gameEvent.ID == GameEventId.GetExperience)
         {
-            gameEvent.Paramters[EventParameters.Value] = CurrentExp;
-            gameEvent.Paramters[EventParameters.MaxValue] = ExpToNextLevel;
+            gameEvent.Paramters[EventParameter.Value] = CurrentExp;
+            gameEvent.Paramters[EventParameter.MaxValue] = ExpToNextLevel;
         }
     }
 }

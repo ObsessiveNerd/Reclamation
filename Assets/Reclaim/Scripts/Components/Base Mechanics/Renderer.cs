@@ -19,15 +19,15 @@ public class Renderer : EntityComponent
         {
             Image.color = Color.white;
             GameEvent checkForAlteredSprite = FireEvent(Self, GameEventPool.Get(GameEventId.AlterSprite)
-                    .With(EventParameters.Renderer, Image)
-                    .With(EventParameters.RenderSprite, gameEvent.Paramters[EventParameters.RenderSprite]));
+                    .With(EventParameter.Renderer, Image)
+                    .With(EventParameter.RenderSprite, gameEvent.Paramters[EventParameter.RenderSprite]));
 
             Point pos = Self.GetComponent<Position>().PositionPoint;
             IEntity target = Services.WorldDataQuery.GetEntityOnTile(pos);
 
             target.FireEvent(checkForAlteredSprite);
 
-            Image.sprite = (Sprite)checkForAlteredSprite.Paramters[EventParameters.RenderSprite];
+            Image.sprite = (Sprite)checkForAlteredSprite.Paramters[EventParameter.RenderSprite];
             checkForAlteredSprite.Release();
         }
     }

@@ -15,8 +15,8 @@ MonoBehaviour:
   Name: Ranger
   PrimaryStatType: 1
   Str: 9
-  Agi: 15
-  Con: 12
+  Agi: 14
+  Con: 16
   Wis: 11
   Int: 10
   Cha: 10
@@ -25,4 +25,7 @@ MonoBehaviour:
   ArmEquip2: 
   TorosEquip: 
   LegEquip1: 
-  LegEquip2: 
+  BackEquip: 
+  NeckEquip: 
+  Finger1Equip: 
+  Finger2Equip: 

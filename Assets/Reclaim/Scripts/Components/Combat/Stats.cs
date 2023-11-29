@@ -33,7 +33,7 @@ public class Stats : EntityComponent
     {
         base.Start();
         GameEvent init = GameEventPool.Get(GameEventId.BoostStat)
-                            .With(EventParameters.Stats, this);
+                            .With(EventParameter.Stats, this);
         Self.FireEvent(init);
         init.Release();
     }
@@ -70,20 +70,27 @@ public class Stats : EntityComponent
         if(gameEvent.ID == GameEventId.RollToHit)
         {
             int totalRoll = Dice.Roll("1d20");
-            gameEvent.Paramters[EventParameters.Crit] = ((totalRoll + CalculateModifier(Wis)) >= 20);
-            AttackType weaponType = (AttackType)gameEvent.Paramters[EventParameters.WeaponType];
-            totalRoll += CalculateModifier(weaponType);
-            gameEvent.Paramters[EventParameters.RollToHit] = totalRoll;
+            gameEvent.Paramters[EventParameter.Crit] = ((totalRoll + CalculateModifier(Wis)) >= 20);
+            AttackType weaponType = (AttackType)gameEvent.Paramters[EventParameter.WeaponType];
+            if(gameEvent.HasParameter(EventParameter.SpellType))
+            {
+                SpellType spellType = gameEvent.GetValue<SpellType>(EventParameter.SpellType);
+                totalRoll += GetModifier(GetStatTypeForSpell(spellType));
+            }
+            else
+                totalRoll += CalculateModifier(weaponType);
+
+            gameEvent.Paramters[EventParameter.RollToHit] = totalRoll;
         }
         else if(gameEvent.ID == GameEventId.GetStat)
         {
-            Stat s = gameEvent.GetValue<Stat>(EventParameters.StatType);
-            gameEvent.Paramters[EventParameters.Value] = GetModifier(s);
+            Stat s = gameEvent.GetValue<Stat>(EventParameter.StatType);
+            gameEvent.Paramters[EventParameter.Value] = GetModifier(s);
         }
         else if(gameEvent.ID == GameEventId.GetStatRaw)
         {
-            Stat s = gameEvent.GetValue<Stat>(EventParameters.StatType);
-            gameEvent.Paramters[EventParameters.Value] = GetStat(s);
+            Stat s = gameEvent.GetValue<Stat>(EventParameter.StatType);
+            gameEvent.Paramters[EventParameter.Value] = GetStat(s);
         }
         else if(gameEvent.ID == GameEventId.LevelUp)
         {
@@ -93,24 +100,24 @@ public class Stats : EntityComponent
         }
         else if (gameEvent.ID == GameEventId.GetSpellSaveDC)
         {
-            SpellType spellType = gameEvent.GetValue<SpellType>(EventParameters.SpellType);
-            gameEvent.Paramters[EventParameters.Value] = 11 + GetModifier(GetStatTypeForSpell(spellType));
+            SpellType spellType = gameEvent.GetValue<SpellType>(EventParameter.SpellType);
+            gameEvent.Paramters[EventParameter.Value] = 11 + GetModifier(GetStatTypeForSpell(spellType));
         }
         else if (gameEvent.ID == GameEventId.SavingThrow)
         {
             int roll = Dice.Roll("1d20");
-            var spellType = gameEvent.GetValue<SpellType>(EventParameters.WeaponType);
+            var spellType = gameEvent.GetValue<SpellType>(EventParameter.WeaponType);
             roll += CalculateModifier(spellType);
             if (GetStatTypeForSpell(spellType) == PrimaryStatType)
                 roll += 2;
-            gameEvent.Paramters[EventParameters.Value] = roll;
+            gameEvent.Paramters[EventParameter.Value] = roll;
 
         }
         else if(gameEvent.ID == GameEventId.BoostStat)
         {
-            Stat s = gameEvent.GetValue<Stat>(EventParameters.StatType);
-            int amountToBoost = gameEvent.GetValue<int>(EventParameters.StatBoostAmount);
-            bool costAttributePoint = gameEvent.GetValue<bool>(EventParameters.Cost);
+            Stat s = gameEvent.GetValue<Stat>(EventParameter.StatType);
+            int amountToBoost = gameEvent.GetValue<int>(EventParameter.StatBoostAmount);
+            bool costAttributePoint = gameEvent.GetValue<bool>(EventParameter.Cost);
 
             switch (s)
             {
@@ -135,7 +142,7 @@ public class Stats : EntityComponent
             }
 
             GameEvent statBoosted = GameEventPool.Get(GameEventId.StatBoosted)
-                .With(EventParameters.Stats, this);
+                .With(EventParameter.Stats, this);
 
             FireEvent(Self, statBoosted, true).Release();
 
@@ -144,11 +151,11 @@ public class Stats : EntityComponent
         }
         else if(gameEvent.ID == GameEventId.GetAttributePoints)
         {
-            gameEvent.Paramters[EventParameters.AttributePoints] = AttributePoints;
+            gameEvent.Paramters[EventParameter.AttributePoints] = AttributePoints;
         }
         if(gameEvent.ID == GameEventId.GetPrimaryStatType)
         {
-            gameEvent.Paramters[EventParameters.Value] = PrimaryStatType;
+            gameEvent.Paramters[EventParameter.Value] = PrimaryStatType;
         }
     }
 
@@ -245,9 +252,6 @@ public class Stats : EntityComponent
             case AttackType.Finesse:
             case AttackType.Ranged:
                 value = CalculateModifier(Agi);
-                break;
-            case AttackType.RangedSpell:
-                value = GetModifier(PrimaryStatType);
                 break;
         }
 

@@ -29,9 +29,9 @@ public class ChestMono : EscapeableMono
         Cleanup();
 
         GameEvent getItems = GameEventPool.Get(GameEventId.GetItems)
-                                .With(EventParameters.Items, new List<string>());
+                                .With(EventParameter.Items, new List<string>());
 
-        List<string> itemIds = m_Chest.FireEvent(getItems).GetValue<List<string>>(EventParameters.Items);
+        List<string> itemIds = m_Chest.FireEvent(getItems).GetValue<List<string>>(EventParameter.Items);
         getItems.Release();
 
         foreach (var itemId in itemIds)
@@ -63,12 +63,12 @@ public class ChestMono : EscapeableMono
         {
             IEntity itemEntity = item.GetComponent<InventoryItemMono>().ItemObject;
             GameEvent removeFromChest = GameEventPool.Get(GameEventId.RemoveFromInventory)
-                                        .With(EventParameters.Item, itemEntity.ID);
+                                        .With(EventParameter.Item, itemEntity.ID);
             m_Chest.FireEvent(removeFromChest);
             removeFromChest.Release();
 
             GameEvent addToInventory = GameEventPool.Get(GameEventId.AddToInventory)
-                                                    .With(EventParameters.Entity, itemEntity.ID);
+                                                    .With(EventParameter.Entity, itemEntity.ID);
             IEntity activePlayer = Services.EntityMapService.GetEntity(Services.WorldDataQuery.GetActivePlayerId());
             activePlayer.FireEvent(addToInventory);
             addToInventory.Release();

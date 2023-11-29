@@ -13,7 +13,7 @@ public class SelfTargetingSpell : EntityComponent
     public override void HandleEvent(GameEvent gameEvent)
     {
         if(gameEvent.ID == GameEventId.AmAttacking)
-            gameEvent.Paramters[EventParameters.Target] = gameEvent.Paramters[EventParameters.Entity];
+            gameEvent.Paramters[EventParameter.Target] = gameEvent.Paramters[EventParameter.Entity];
     }
 }
 

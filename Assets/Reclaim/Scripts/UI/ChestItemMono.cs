@@ -24,11 +24,11 @@ public class ChestItemMono : ItemMono, IPointerClickHandler
                 return;
 
             GameEvent remove = GameEventPool.Get(GameEventId.RemoveItem)
-                                    .With(EventParameters.Item, m_Item.ID);
+                                    .With(EventParameter.Item, m_Item.ID);
             m_Chest.FireEvent(remove).Release();
 
             GameEvent add = GameEventPool.Get(GameEventId.AddToInventory)
-                                .With(EventParameters.Entity, m_Item.ID);
+                                .With(EventParameter.Entity, m_Item.ID);
             m_Character.FireEvent(add).Release();
             DestroyPopup();
             //GameEvent getContextMenuActions = GameEventPool.Get(GameEventId.GetContextMenuActions)

@@ -1,4 +1,5 @@
 ﻿﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 /// <summary>
 /// Service Locator pattern
@@ -25,23 +26,44 @@ public static class Services
         Ready = true;
     }
 
-    public static WorldSpawner SpawnerService { get { return DependencyInjection.GetInstance<WorldSpawner>(); } }
-    public static GameSaveSystem SaveAndLoadService { get { return DependencyInjection.GetInstance<GameSaveSystem>(); } }
-    public static DungeonManager DungeonService { get { return DependencyInjection.GetInstance<DungeonManager>(); } }
-    public static WorldUpdate WorldUpdateService { get { return DependencyInjection.GetInstance<WorldUpdate>(); } }
-    public static TileSelection TileSelectionService { get { return DependencyInjection.GetInstance<TileSelection>(); } }
-    public static TileInteractions TileInteractionService { get { return DependencyInjection.GetInstance<TileInteractions>(); } }
-    public static PlayerManager PlayerManagerService { get { return DependencyInjection.GetInstance<PlayerManager>(); } }
-    public static EntityMovement EntityMovementService { get { return DependencyInjection.GetInstance<EntityMovement>(); } }
-    public static WorldUIController WorldUIService { get { return DependencyInjection.GetInstance<WorldUIController>(); } }
-    public static WorldDataQuery WorldDataQuery { get { return DependencyInjection.GetInstance<WorldDataQuery>(); } }
-    public static WorldFov FOVService { get { return DependencyInjection.GetInstance<WorldFov>(); } }
-    public static EntityMap EntityMapService { get { return DependencyInjection.GetInstance<EntityMap>(); } }
-    public static Pathfinder PathfinderService { get { return DependencyInjection.GetInstance<Pathfinder>(); } }
-    public static CameraController CameraService { get { return DependencyInjection.GetInstance<CameraController>(); } }
-    public static StateManager StateManagerService { get { return DependencyInjection.GetInstance<StateManager>(); } }
-    public static PartyController PartyService { get { return DependencyInjection.GetInstance<PartyController>(); } }
-    public static MusicService Music { get { return DependencyInjection.GetInstance<MusicService>(); } }
-    public static EntityNetworkManager NetworkService { get { return DependencyInjection.GetInstance<EntityNetworkManager>(); } }
+    public static WorldSpawner SpawnerService { get { return GetInstance<WorldSpawner>(); } }
+    public static GameSaveSystem SaveAndLoadService { get { return GetInstance<GameSaveSystem>(); } }
+    public static DungeonManager DungeonService { get { return GetInstance<DungeonManager>(); } }
+    public static WorldUpdate WorldUpdateService { get { return GetInstance<WorldUpdate>(); } }
+    public static TileSelection TileSelectionService { get { return GetInstance<TileSelection>(); } }
+    public static TileInteractions TileInteractionService { get { return GetInstance<TileInteractions>(); } }
+    public static PlayerManager PlayerManagerService { get { return GetInstance<PlayerManager>(); } }
+    public static EntityMovement EntityMovementService { get { return GetInstance<EntityMovement>(); } }
+    public static WorldUIController WorldUIService { get { return GetInstance<WorldUIController>(); } }
+    public static WorldDataQuery WorldDataQuery { get { return GetInstance<WorldDataQuery>(); } }
+    public static WorldFov FOVService { get { return GetInstance<WorldFov>(); } }
+    public static EntityMap EntityMapService { get { return GetInstance<EntityMap>(); } }
+    public static Pathfinder PathfinderService { get { return GetInstance<Pathfinder>(); } }
+    public static CameraController CameraService { get { return GetInstance<CameraController>(); } }
+    public static StateManager StateManagerService { get { return GetInstance<StateManager>(); } }
+    public static PartyController PartyService { get { return GetInstance<PartyController>(); } }
+    public static MusicService Music { get { return GetInstance<MusicService>(); } }
+    public static EntityNetworkManager NetworkService { get { return GetInstance<EntityNetworkManager>(); } }
+
+    public static IDictionary<Type, object> _instanceMap = new Dictionary<Type, object>();
+
+    public static void Clear()
+    {
+        _instanceMap.Clear();
+    }
+
+    public static void Register<T>(T instance)
+    {
+        var type = typeof(T);
+        if (_instanceMap.ContainsKey(type))
+            throw new InvalidOperationException("An instance of that type already exists: " + type);
+
+        _instanceMap[type] = instance;
+    }
+
+    public static T GetInstance<T>()
+    {
+        return (T)_instanceMap[typeof(T)];
+    }
 
 }

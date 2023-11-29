@@ -46,8 +46,8 @@ public static class Spawner
 
     public static void Restore(IEntity e)
     {
-        GameEvent getPoint = GameEventPool.Get(GameEventId.GetPoint).With(EventParameters.Value, null);
-        Point spawnPoint = (Point)e.FireEvent(e,getPoint).Paramters[EventParameters.Value];
+        GameEvent getPoint = GameEventPool.Get(GameEventId.GetPoint).With(EventParameter.Value, null);
+        Point spawnPoint = (Point)e.FireEvent(e,getPoint).Paramters[EventParameter.Value];
         Spawn(e, spawnPoint);
         getPoint.Release();
     }

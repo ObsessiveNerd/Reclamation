@@ -42,7 +42,7 @@ public class DebugInput : EscapeableMono
             }
 
             GameEvent giveItem = GameEventPool.Get(GameEventId.AddToInventory)
-                                    .With(EventParameters.Entity, e.ID);
+                                    .With(EventParameter.Entity, e.ID);
 
             Services.PlayerManagerService.GetActivePlayer().FireEvent(giveItem);
             giveItem.Release();

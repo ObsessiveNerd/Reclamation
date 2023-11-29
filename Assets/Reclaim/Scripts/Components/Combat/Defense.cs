@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Defense : EntityComponent
@@ -15,27 +16,28 @@ public class Defense : EntityComponent
 
     public override void HandleEvent(GameEvent gameEvent)
     {
+        IEntity weapon = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameter.Attack));
         if (gameEvent.ID == GameEventId.TakeDamage)
         {
-            AttackType weaponType = gameEvent.GetValue<AttackType>(EventParameters.WeaponType);
-            if (weaponType == AttackType.Melee 
-                || weaponType == AttackType.Finesse 
+            AttackType weaponType = CombatUtility.GetWeaponTypeList(weapon).FirstOrDefault(); //gameEvent.GetValue<AttackType>(EventParameters.WeaponType);
+            if (weaponType == AttackType.Melee
+                || weaponType == AttackType.Finesse
                 || weaponType == AttackType.Ranged 
                 || weaponType == AttackType.RangedSpell)
             {
-                int rollToHit = (int)gameEvent.Paramters[EventParameters.RollToHit];
+                int rollToHit = (int)gameEvent.Paramters[EventParameter.RollToHit];
                 GameEvent getArmor = GameEventPool.Get(GameEventId.AddArmorValue)
-                    .With(EventParameters.Value, 0);
-                int armorBonus = (int)FireEvent(Self, getArmor).Paramters[EventParameters.Value];
+                    .With(EventParameter.Value, 0);
+                int armorBonus = (int)FireEvent(Self, getArmor).Paramters[EventParameter.Value];
                 getArmor.Release();
                 if (rollToHit >= kBaseAC + armorBonus)
                     RecLog.Log($"{Self.Name} was hit!");
                 else
                 {
                     GameEvent playSound = GameEventPool.Get(GameEventId.Playsound)
-                                            .With(EventParameters.SoundSource, Self.ID)
-                                            .With(EventParameters.Key, SoundKey.AttackMiss);
-                    EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameters.Attack)).FireEvent(playSound);
+                                            .With(EventParameter.SoundSource, Self.ID)
+                                            .With(EventParameter.Key, SoundKey.AttackMiss);
+                    EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameter.Attack)).FireEvent(playSound);
                     playSound.Release();
 
                     RecLog.Log($"Attack missed because armor was {kBaseAC + armorBonus}!");
@@ -44,21 +46,20 @@ public class Defense : EntityComponent
             }
             else
             {
-                IEntity weapon = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameters.Attack));
                 if(!weapon.HasComponent(typeof(SelfTargetingSpell)))
                 {
-                    IEntity damageSource = Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameters.DamageSource));
+                    IEntity damageSource = Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameter.DamageSource));
                     GameEvent getSpellSaveDC = GameEventPool.Get(GameEventId.GetSpellSaveDC)
-                    .With(EventParameters.SpellType, CombatUtility.GetSpellType(weapon))
-                    .With(EventParameters.Value, -1);
-                    int saveDC = damageSource.FireEvent(getSpellSaveDC).GetValue<int>(EventParameters.Value);
+                    .With(EventParameter.SpellType, CombatUtility.GetSpellType(weapon))
+                    .With(EventParameter.Value, -1);
+                    int saveDC = damageSource.FireEvent(getSpellSaveDC).GetValue<int>(EventParameter.Value);
                     getSpellSaveDC.Release();
 
                     GameEvent save = GameEventPool.Get(GameEventId.SavingThrow)
-                    .With(EventParameters.Value, 0)
-                    .With(EventParameters.WeaponType, weaponType);
+                    .With(EventParameter.Value, 0)
+                    .With(EventParameter.WeaponType, weaponType);
                     FireEvent(Self, save);
-                    int saveThrow = save.GetValue<int>(EventParameters.Value);
+                    int saveThrow = save.GetValue<int>(EventParameter.Value);
                     save.Release();
 
                     Debug.Log($"{weapon.Name} Spell was cast, Save DC was {saveDC} and save was {saveThrow}");
@@ -66,10 +67,10 @@ public class Defense : EntityComponent
                     if (saveThrow < saveDC)
                     {
                         GameEvent saveFailed = GameEventPool.Get(GameEventId.SaveFailed)
-                        .With(EventParameters.SpellContinues, true)
-                        .With(EventParameters.DamageList, gameEvent.Paramters[EventParameters.DamageList]);
+                        .With(EventParameter.SpellContinues, true)
+                        .With(EventParameter.DamageList, gameEvent.Paramters[EventParameter.DamageList]);
                         FireEvent(weapon, saveFailed);
-                        if (!saveFailed.GetValue<bool>(EventParameters.SpellContinues))
+                        if (!saveFailed.GetValue<bool>(EventParameter.SpellContinues))
                             gameEvent.ContinueProcessing = false;
 
                         saveFailed.Release();
@@ -77,20 +78,6 @@ public class Defense : EntityComponent
                 }
             }
         }
-
-        //if (gameEvent.ID == GameEventId.Sharpness)
-        //{
-        //    int rollToHit = (int)gameEvent.Paramters[EventParameters.RollToHit];
-        //    GameEvent getArmor = GameEventPool.Get(GameEventId.AddArmorValue)
-        //        .With(EventParameters.Value, 0);
-        //    int armorBonus = (int)FireEvent(Self, getArmor).Paramters[EventParameters.Value];
-        //    getArmor.Release();
-
-        //    if (rollToHit < kBaseAC + armorBonus)
-        //        RecLog.Log("Nothing was severed.");
-        //    else
-        //        FireEvent(Self, GameEventPool.Get(GameEventId.SeverBodyPart));
-        //}
     }
 }
 

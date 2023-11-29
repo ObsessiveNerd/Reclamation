@@ -11,7 +11,7 @@ public class RegisterWithTimeSystem : EntityComponent
 
     public override void HandleEvent(GameEvent gameEvent)
     {
-        TimeProgression time = (TimeProgression)gameEvent.Paramters[EventParameters.Value];
+        TimeProgression time = (TimeProgression)gameEvent.Paramters[EventParameter.Value];
         time.RegisterEntity(Self);
     }
 }

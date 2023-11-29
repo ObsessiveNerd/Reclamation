@@ -14,9 +14,9 @@ public class InteractOnTileOvertake : EntityComponent
     {
         if(gameEvent.ID == GameEventId.EntityOvertaking)
         {
-            IEntity source = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Entity]);
+            IEntity source = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameter.Entity]);
             GameEvent ge = GameEventPool.Get(GameEventId.InteractWithTarget)
-                .With(EventParameters.Target, Self.ID);
+                .With(EventParameter.Target, Self.ID);
             FireEvent(source, ge, true).Release();
         }
     }

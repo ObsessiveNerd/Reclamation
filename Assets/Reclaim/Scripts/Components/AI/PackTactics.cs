@@ -42,11 +42,11 @@ public class PackTactics : EntityComponent
         }
         else if(gameEvent.ID == GameEventId.SetLeader)
         {
-            PartyLeaderId = gameEvent.GetValue<string>(EventParameters.Entity);
+            PartyLeaderId = gameEvent.GetValue<string>(EventParameter.Entity);
         }
         else if(gameEvent.ID == GameEventId.GetCombatRating)
         {
-            int startValue = (int)gameEvent.Paramters[EventParameters.Value];
+            int startValue = (int)gameEvent.Paramters[EventParameter.Value];
             int numberOfAllies = 0;
             foreach(var point in m_VisiblePoints)
             {
@@ -55,7 +55,7 @@ public class PackTactics : EntityComponent
                 if (demeanor == Demeanor.Friendly)
                     numberOfAllies++;
             }
-            gameEvent.Paramters[EventParameters.Value] = startValue + numberOfAllies;
+            gameEvent.Paramters[EventParameter.Value] = startValue + numberOfAllies;
         }
         else if (gameEvent.ID == GameEventId.GetActionToTake)
         {
@@ -75,7 +75,7 @@ public class PackTactics : EntityComponent
                     Priority = 3,
                     ActionToTake = MoveWithPack
                 };
-                gameEvent.GetValue<PriorityQueue<AIAction>>(EventParameters.AIActionList).Add(moveWithPack);
+                gameEvent.GetValue<PriorityQueue<AIAction>>(EventParameter.AIActionList).Add(moveWithPack);
             }
         }
     }

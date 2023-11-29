@@ -18,9 +18,9 @@ public class AbilitiesManager : UpdatableUI
         ActionBar = FindObjectOfType<SpellSelectorMono>(true).gameObject;
 
         GameEvent getSpells = GameEventPool.Get(GameEventId.GetSpells)
-                                .With(EventParameters.SpellList, new HashSet<string>());
+                                .With(EventParameter.SpellList, new HashSet<string>());
 
-        var spellList = source.FireEvent(getSpells).GetValue<HashSet<string>>(EventParameters.SpellList);
+        var spellList = source.FireEvent(getSpells).GetValue<HashSet<string>>(EventParameter.SpellList);
         getSpells.Release();
 
         if (spellList.Count == 0)
@@ -34,8 +34,8 @@ public class AbilitiesManager : UpdatableUI
 
             GameObject spriteGoResource = Resources.Load<GameObject>("Prefabs/UI/SpellUI");
             GameEvent getSpriteEvent = GameEventPool.Get(GameEventId.GetSprite)
-                .With(EventParameters.RenderSprite, null);
-            Sprite sprite = spell.FireEvent(spell, getSpriteEvent).GetValue<Sprite>(EventParameters.RenderSprite);
+                .With(EventParameter.RenderSprite, null);
+            Sprite sprite = spell.FireEvent(spell, getSpriteEvent).GetValue<Sprite>(EventParameter.RenderSprite);
             getSpriteEvent.Release();
             if (sprite != null)
             {

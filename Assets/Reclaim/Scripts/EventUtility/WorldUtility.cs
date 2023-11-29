@@ -12,9 +12,9 @@ public static class WorldUtility
     public static Point GetEntityPosition(IEntity entity)
     {
         GameEvent result = entity.FireEvent(GameEventPool.Get(GameEventId.GetPoint)
-            .With(EventParameters.Value, null));
+            .With(EventParameter.Value, null));
 
-        var ret = result.GetValue<Point>(EventParameters.Value);
+        var ret = result.GetValue<Point>(EventParameter.Value);
         result.Release();
         return ret;
     }

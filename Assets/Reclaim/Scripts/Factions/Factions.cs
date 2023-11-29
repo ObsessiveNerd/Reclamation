@@ -31,10 +31,10 @@ public class Faction : EntityComponent
     public override void HandleEvent(GameEvent gameEvent)
     {
         if (gameEvent.ID == GameEventId.GetFaction)
-            gameEvent.Paramters[EventParameters.Value] = this;
+            gameEvent.Paramters[EventParameter.Value] = this;
 
         else if (gameEvent.ID == GameEventId.SetFaction)
-            ID = gameEvent.GetValue<FactionId>(EventParameters.Faction);
+            ID = gameEvent.GetValue<FactionId>(EventParameter.Faction);
     }
 }
 
@@ -101,12 +101,12 @@ public static class Factions
 
     public static Demeanor GetDemeanorForTarget(IEntity source, IEntity target)
     {
-        GameEvent getSourceFaction = GameEventPool.Get(GameEventId.GetFaction).With(EventParameters.Value, null);
-        Faction sourceFaction = (Faction)source.FireEvent(source, getSourceFaction).Paramters[EventParameters.Value];
+        GameEvent getSourceFaction = GameEventPool.Get(GameEventId.GetFaction).With(EventParameter.Value, null);
+        Faction sourceFaction = (Faction)source.FireEvent(source, getSourceFaction).Paramters[EventParameter.Value];
         getSourceFaction.Release();
 
-        GameEvent getTargetFaction = GameEventPool.Get(GameEventId.GetFaction).With(EventParameters.Value, null);
-        Faction targetFaction = (Faction)target.FireEvent(target, getTargetFaction).Paramters[EventParameters.Value];
+        GameEvent getTargetFaction = GameEventPool.Get(GameEventId.GetFaction).With(EventParameter.Value, null);
+        Faction targetFaction = (Faction)target.FireEvent(target, getTargetFaction).Paramters[EventParameter.Value];
         getTargetFaction.Release();
 
         if (sourceFaction == null || targetFaction == null)

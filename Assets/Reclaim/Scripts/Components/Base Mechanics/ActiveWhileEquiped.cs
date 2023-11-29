@@ -16,14 +16,14 @@ public class ActiveWhileEquiped : EntityComponent
         if(gameEvent.ID == GameEventId.ItemEquipped)
         {
             var activate = GameEventPool.Get(GameEventId.ActivateObject)
-                            .With(EventParameters.Owner, gameEvent.Paramters[EventParameters.Owner]);
+                            .With(EventParameter.Owner, gameEvent.Paramters[EventParameter.Owner]);
             FireEvent(Self, activate, true).Release();
         }
 
         if (gameEvent.ID == GameEventId.ItemUnequipped)
         {
             var deactivate = GameEventPool.Get(GameEventId.DeactivateObject)
-                                .With(EventParameters.Owner, gameEvent.Paramters[EventParameters.Owner]);
+                                .With(EventParameter.Owner, gameEvent.Paramters[EventParameter.Owner]);
             FireEvent(Self, deactivate, true).Release();
         }
     }

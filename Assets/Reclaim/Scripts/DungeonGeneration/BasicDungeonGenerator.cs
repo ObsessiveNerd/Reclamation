@@ -78,7 +78,7 @@ public class Room
             if(!string.IsNullOrEmpty(metaData.WallType))
             {
                 GameEvent setSprite = GameEventPool.Get(GameEventId.SetSprite)
-                                        .With(EventParameters.Path, metaData.WallType + metaData.GetRandomLetter());
+                                        .With(EventParameter.Path, metaData.WallType + metaData.GetRandomLetter());
                 e.FireEvent(setSprite);
                 setSprite.Release();
             }
@@ -448,9 +448,9 @@ public class BasicDungeonGenerator : IDungeonGenerator
         {
             IEntity e = EntityFactory.CreateEntity(bp);
             GameEvent getRarity = GameEventPool.Get(GameEventId.GetRarity)
-                .With(EventParameters.Rarity, null);
+                .With(EventParameter.Rarity, null);
 
-            ItemRarity rarity = e.FireEvent(getRarity).GetValue<ItemRarity>(EventParameters.Rarity);
+            ItemRarity rarity = e.FireEvent(getRarity).GetValue<ItemRarity>(EventParameter.Rarity);
             if (!m_ItemRarityToBPName.ContainsKey(rarity))
                 m_ItemRarityToBPName.Add(rarity, new List<string>());
             m_ItemRarityToBPName[rarity].Add(bp);
@@ -616,7 +616,7 @@ public class BasicDungeonGenerator : IDungeonGenerator
                 {
                     IEntity chest = EntityFactory.CreateEntity("Chest");
                     GameEvent addItems = GameEventPool.Get(GameEventId.AddItems)
-                                            .With(EventParameters.Items, items);
+                                            .With(EventParameter.Items, items);
                     if (chest == null)
                         continue;
 
@@ -659,7 +659,7 @@ public class BasicDungeonGenerator : IDungeonGenerator
                                 spellBookName += "1";
 
                         GameEvent addItems = GameEventPool.Get(GameEventId.AddItems)
-                                            .With(EventParameters.Items, new List<string>(){
+                                            .With(EventParameter.Items, new List<string>(){
                                                 spellBookName
                                             });
                             e.FireEvent(addItems).Release();
@@ -668,9 +668,9 @@ public class BasicDungeonGenerator : IDungeonGenerator
                 }
 
                 GameEvent getSpawnRestrictions = GameEventPool.Get(GameEventId.GetSpawnRestrictions)
-                                                        .With(EventParameters.Restrictions, new HashSet<string>());
+                                                        .With(EventParameter.Restrictions, new HashSet<string>());
                 var result = e.FireEvent(getSpawnRestrictions);
-                Spawner.Spawn(e, room.GetValidPoint(result.GetValue<HashSet<string>>(EventParameters.Restrictions)));
+                Spawner.Spawn(e, room.GetValidPoint(result.GetValue<HashSet<string>>(EventParameter.Restrictions)));
                 getSpawnRestrictions.Release();
             }
         }

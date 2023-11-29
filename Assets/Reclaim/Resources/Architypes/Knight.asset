@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: Knight
   m_EditorClassIdentifier: 
   Name: Knight
-  PrimaryStatType: Str
-  Str: 14
-  Agi: 10
-  Con: 15
+  PrimaryStatType: 0
+  Str: 18
+  Agi: 12
+  Con: 18
   Wis: 11
   Int: 8
   Cha: 11
@@ -25,4 +25,7 @@ MonoBehaviour:
   ArmEquip2: Shield
   TorosEquip: 
   LegEquip1: 
-  LegEquip2: 
+  BackEquip: 
+  NeckEquip: 
+  Finger1Equip: 
+  Finger2Equip: 

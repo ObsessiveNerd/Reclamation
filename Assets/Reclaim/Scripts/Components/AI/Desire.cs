@@ -35,14 +35,14 @@ public class Desire : EntityComponent
                     ActionToTake = MoveOrPickup
                 };
 
-                gameEvent.GetValue<PriorityQueue<AIAction>>(EventParameters.AIActionList).Add(continueOnPath);
+                gameEvent.GetValue<PriorityQueue<AIAction>>(EventParameter.AIActionList).Add(continueOnPath);
                 return;
             }
 
             GameEvent getVisiblePoints = GameEventPool.Get(GameEventId.GetVisibleTiles)
-                                           .With(EventParameters.VisibleTiles, new List<Point>());
+                                           .With(EventParameter.VisibleTiles, new List<Point>());
 
-            List<Point> visiblePoints = FireEvent(Self, getVisiblePoints).GetValue<List<Point>>(EventParameters.VisibleTiles);
+            List<Point> visiblePoints = FireEvent(Self, getVisiblePoints).GetValue<List<Point>>(EventParameter.VisibleTiles);
             getVisiblePoints.Release();
             m_CurrentDestination = Point.InvalidPoint;
             m_DesiredValue = 0;
@@ -63,7 +63,7 @@ public class Desire : EntityComponent
                     Priority = GetPriority(),
                     ActionToTake = MoveOrPickup
                 };
-                gameEvent.GetValue<PriorityQueue<AIAction>>(EventParameters.AIActionList).Add(moveToTreasure);
+                gameEvent.GetValue<PriorityQueue<AIAction>>(EventParameter.AIActionList).Add(moveToTreasure);
             }
         }
     }
@@ -75,7 +75,7 @@ public class Desire : EntityComponent
             Services.TileInteractionService.Pickup(Self);
             
             GameEvent tryEquip = GameEventPool.Get(GameEventId.TryEquip)
-                                        .With(EventParameters.Entity, Self.ID);
+                                        .With(EventParameter.Entity, Self.ID);
             Self.FireEvent(tryEquip).Release();
 
             return MoveDirection.None;

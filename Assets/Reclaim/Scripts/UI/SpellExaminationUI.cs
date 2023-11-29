@@ -26,8 +26,8 @@ public class SpellExaminationUI : EscapeableMono//, IUpdatableUI
 
             GameObject spriteGoResource = Resources.Load<GameObject>("Prefabs/UI/SpellUI");
             GameEvent getSpriteEvent = GameEventPool.Get(GameEventId.GetSprite)
-                .With(EventParameters.RenderSprite, null);
-            Sprite sprite = spell.FireEvent(spell, getSpriteEvent).GetValue<Sprite>(EventParameters.RenderSprite);
+                .With(EventParameter.RenderSprite, null);
+            Sprite sprite = spell.FireEvent(spell, getSpriteEvent).GetValue<Sprite>(EventParameter.RenderSprite);
             getSpriteEvent.Release();
             if (sprite != null)
             {
@@ -56,9 +56,9 @@ public class SpellExaminationUI : EscapeableMono//, IUpdatableUI
 
         Dictionary<string, string> classToInfoMap = new Dictionary<string, string>();
         GameEvent getInfo = GameEventPool.Get(GameEventId.GetInfo)
-                                .With(EventParameters.Info, classToInfoMap);
+                                .With(EventParameter.Info, classToInfoMap);
 
-        var result = newSource.FireEvent(getInfo).GetValue<Dictionary<string, string>>(EventParameters.Info);
+        var result = newSource.FireEvent(getInfo).GetValue<Dictionary<string, string>>(EventParameter.Info);
         StringBuilder sb = new StringBuilder();
         foreach (var s in result.Values)
             sb.AppendLine(s);

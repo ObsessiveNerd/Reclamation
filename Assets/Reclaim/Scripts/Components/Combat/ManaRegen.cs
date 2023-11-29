@@ -26,14 +26,14 @@ public class ManaRegen : EntityComponent
     {
         if(gameEvent.ID == GameEventId.EndTurn)
         {
-             IEntity target = gameEvent.HasParameter(EventParameters.Entity) ?
-                Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameters.Entity)) : Self;
+             IEntity target = gameEvent.HasParameter(EventParameter.Entity) ?
+                Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameter.Entity)) : Self;
 
             currentTurns++;
             if(currentTurns >= RegenSpeed)
             {
                 GameEvent regenMana = GameEventPool.Get(GameEventId.RestoreMana)
-                                            .With(EventParameters.Mana, RegenAmount);
+                                            .With(EventParameter.Mana, RegenAmount);
                 FireEvent(target, regenMana, true).Release();
                 currentTurns = 0;
             }
@@ -41,7 +41,7 @@ public class ManaRegen : EntityComponent
 
         else if(gameEvent.ID == GameEventId.GetInfo)
         {
-            var dictionary = gameEvent.GetValue<Dictionary<string, string>>(EventParameters.Info);
+            var dictionary = gameEvent.GetValue<Dictionary<string, string>>(EventParameter.Info);
             dictionary.Add($"{nameof(ManaRegen)}{Guid.NewGuid()}", $"Renerate {RegenAmount} mana after {RegenSpeed} turns.");
         }
     }

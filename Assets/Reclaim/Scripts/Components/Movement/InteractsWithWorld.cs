@@ -13,7 +13,7 @@ public class InteractsWithWorld : EntityComponent
     {
         if (gameEvent.ID == GameEventId.InteractWithTarget)
         {
-            IEntity target = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Target]);
+            IEntity target = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameter.Target]);
             Demeanor demeanor = Factions.GetDemeanorForTarget(Self, target);
 
             switch (demeanor)
@@ -21,12 +21,12 @@ public class InteractsWithWorld : EntityComponent
                 case Demeanor.Friendly:
                 case Demeanor.None:
                 case Demeanor.Neutral:
-                    FireEvent(target, GameEventPool.Get(GameEventId.Interact).With(EventParameters.Entity, Self.ID), true).Release();
+                    FireEvent(target, GameEventPool.Get(GameEventId.Interact).With(EventParameter.Entity, Self.ID), true).Release();
                     break;
                 case Demeanor.Hostile:
                     FireEvent(Self, GameEventPool.Get(GameEventId.PerformAttack)
-                            .With(EventParameters.Target, target.ID)
-                            .With(EventParameters.Melee, true), true).Release();
+                            .With(EventParameter.Target, target.ID)
+                            .With(EventParameter.Melee, true), true).Release();
                     break;
             }
         }

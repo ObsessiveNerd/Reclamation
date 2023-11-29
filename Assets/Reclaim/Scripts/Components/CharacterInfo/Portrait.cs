@@ -26,7 +26,7 @@ public class Portrait : EntityComponent
         {
             if(m_Sprite == null)
                 Debug.Log("Sprite null");
-            gameEvent.Paramters[EventParameters.RenderSprite] = m_Sprite;
+            gameEvent.Paramters[EventParameter.RenderSprite] = m_Sprite;
         }
     }
 }

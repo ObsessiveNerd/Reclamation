@@ -18,17 +18,17 @@ public class PlayerFOVHandler : EntityComponent
     {
         if (gameEvent.ID == GameEventId.FOVRecalculated)
         {
-            m_VisiblePoints = gameEvent.GetValue<List<Point>>(EventParameters.VisibleTiles); //(List<Point>)gameEvent.Paramters[EventParameters.VisibleTiles];
+            m_VisiblePoints = gameEvent.GetValue<List<Point>>(EventParameter.VisibleTiles); //(List<Point>)gameEvent.Paramters[EventParameters.VisibleTiles];
             Services.FOVService.FoVRecalculated(Self, m_VisiblePoints);
         }
 
         else if (gameEvent.ID == GameEventId.GetVisibleTiles)
-            gameEvent.Paramters[EventParameters.VisibleTiles] = m_VisiblePoints;
+            gameEvent.Paramters[EventParameter.VisibleTiles] = m_VisiblePoints;
 
         else if(gameEvent.ID == GameEventId.IsInFOV)
         {
-            var target = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameters.Entity));
-            gameEvent.Paramters[EventParameters.Value] = m_VisiblePoints.Contains(WorldUtility.GetEntityPosition(target));
+            var target = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameter.Entity));
+            gameEvent.Paramters[EventParameter.Value] = m_VisiblePoints.Contains(WorldUtility.GetEntityPosition(target));
         }
     }
 }

@@ -9,7 +9,7 @@
     public override void HandleEvent(GameEvent gameEvent)
     {
         if (gameEvent.ID == GameEventId.BlocksVision)
-            gameEvent.Paramters[EventParameters.Value] = true;
+            gameEvent.Paramters[EventParameter.Value] = true;
     }
 }
 

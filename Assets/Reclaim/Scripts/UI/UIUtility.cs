@@ -18,9 +18,9 @@ public static class UIUtility
             return null;
 
         GameEvent getSprite = GameEventPool.Get(GameEventId.GetPortrait)
-                .With(EventParameters.RenderSprite, null);
+                .With(EventParameter.RenderSprite, null);
 
-        Sprite sprite = item.FireEvent(item, getSprite).GetValue<Sprite>(EventParameters.RenderSprite);
+        Sprite sprite = item.FireEvent(item, getSprite).GetValue<Sprite>(EventParameter.RenderSprite);
         getSprite.Release();
 
         if (sprite != null)

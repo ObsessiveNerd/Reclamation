@@ -6,7 +6,7 @@ public interface IComponent
 {
     void Init(IEntity self);
     IEntity Self { get; }
-    List<string> RegisteredEvents { get; }
+    List<GameEventId> RegisteredEvents { get; }
     bool RespondsTo(GameEvent gameEvent);
     GameEvent FireEvent(IEntity target, GameEvent gameEvent, bool logEvent = false);
     void HandleEvent(GameEvent gameEvent);
@@ -37,8 +37,8 @@ public class EntityComponent : IComponent
     IEntity m_Self;
     public IEntity Self { get { return m_Self; } }
 
-    private List<string> m_RegisteredEvents = new List<string>();
-    public virtual List<string> RegisteredEvents
+    private List<GameEventId> m_RegisteredEvents = new List<GameEventId>();
+    public virtual List<GameEventId> RegisteredEvents
     {
         get { return m_RegisteredEvents; }
     }

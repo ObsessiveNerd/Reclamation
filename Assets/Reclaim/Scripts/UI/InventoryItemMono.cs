@@ -51,10 +51,10 @@ public class InventoryItemMono : ItemMono, IPointerClickHandler
     {
         
         GameEvent getContextMenuActions = GameEventPool.Get(GameEventId.GetContextMenuActions)
-            .With(EventParameters.Entity, Source.ID)
-            .With(EventParameters.InventoryContextActions , new List<ContextMenuButton>());
+            .With(EventParameter.Entity, Source.ID)
+            .With(EventParameter.InventoryContextActions , new List<ContextMenuButton>());
 
-        var result = ItemObject.FireEvent(getContextMenuActions).GetValue<List<ContextMenuButton>>(EventParameters.InventoryContextActions );
+        var result = ItemObject.FireEvent(getContextMenuActions).GetValue<List<ContextMenuButton>>(EventParameter.InventoryContextActions );
         getContextMenuActions.Release();
 
         var contextMenu = ContextMenuMono.CreateNewContextMenu();

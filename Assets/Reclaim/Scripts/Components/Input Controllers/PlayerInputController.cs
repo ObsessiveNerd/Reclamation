@@ -30,7 +30,7 @@ public class PlayerInputController : InputControllerBase
             if (desiredDirection != MoveDirection.None)
             {
                 FireEvent(Self, GameEventPool.Get(GameEventId.MoveKeyPressed)
-                    .With(EventParameters.InputDirection, desiredDirection), true).Release();
+                    .With(EventParameter.InputDirection, desiredDirection), true).Release();
                 Services.CameraService.SetCameraPosition(PathfindingUtility.GetEntityLocation(Self));
                 energyUsed = true;
             }
@@ -76,9 +76,9 @@ public class PlayerInputController : InputControllerBase
             {
 
                 GameEvent getRangedWeapon = FireEvent(Self, GameEventPool.Get(GameEventId.GetWeapon)
-                    .With(EventParameters.Weapon, new List<string>()));
+                    .With(EventParameter.Weapon, new List<string>()));
 
-                List<string> weapons = getRangedWeapon.GetValue<List<string>>(EventParameters.Weapon);
+                List<string> weapons = getRangedWeapon.GetValue<List<string>>(EventParameter.Weapon);
                 if (weapons.Count == 0)
                     return;
 
@@ -87,7 +87,7 @@ public class PlayerInputController : InputControllerBase
                 {
                     Self.RemoveComponent(this);
                     Self.AddComponent(new RangedPlayerAttackController(weapon));
-                    gameEvent.Paramters[EventParameters.UpdateWorldView] = true;
+                    gameEvent.Paramters[EventParameter.UpdateWorldView] = true;
                 }
                 else
                     RecLog.Log("No ranged weapon equiped");
@@ -98,7 +98,7 @@ public class PlayerInputController : InputControllerBase
             else if (Input.GetKeyDown(KeyCode.P))
             {
                 GameEvent giveExp = GameEventPool.Get(GameEventId.GainExperience)
-                                    .With(EventParameters.Exp, 100);
+                                    .With(EventParameter.Exp, 100);
                 Self.FireEvent(giveExp).Release();
                 Services.WorldUIService.UpdateUI();
             }
@@ -106,17 +106,17 @@ public class PlayerInputController : InputControllerBase
             else if (Input.GetKeyDown(KeyCode.O))
             {
                 GameEvent takeDamage = GameEventPool.Get(GameEventId.TakeDamage)
-                                    .With(EventParameters.Attack, Self.ID)
-                                    .With(EventParameters.DamageList, new List<Damage>() { new Damage(100, DamageType.Slashing) })
-                                    .With(EventParameters.RollToHit, 20)
-                                    .With(EventParameters.DamageSource, Self.ID);
+                                    .With(EventParameter.Attack, Self.ID)
+                                    .With(EventParameter.DamageList, new List<Damage>() { new Damage(100, DamageType.Slashing) })
+                                    .With(EventParameter.RollToHit, 20)
+                                    .With(EventParameter.DamageSource, Self.ID);
                 Self.FireEvent(takeDamage).Release();
             }
 
             else if (Input.GetKeyDown(KeyCode.Period))
             {
                 GameEvent gainMana = GameEventPool.Get(GameEventId.RestoreMana)
-                    .With(EventParameters.Mana, 1000);
+                    .With(EventParameter.Mana, 1000);
                 FireEvent(Self, gainMana).Release();
             }
 
@@ -128,7 +128,7 @@ public class PlayerInputController : InputControllerBase
                 Self.RemoveComponent(this);
                 Self.AddComponent(new LookController());
 
-                gameEvent.Paramters[EventParameters.UpdateWorldView] = true;
+                gameEvent.Paramters[EventParameter.UpdateWorldView] = true;
                 //gameEvent.Paramters[EventParameters.CleanupComponents] = true;
             }
 
@@ -190,9 +190,9 @@ public class PlayerInputController : InputControllerBase
             if (energyUsed)
             {
                 GameEvent checkForEnergy = GameEventPool.Get(GameEventId.HasEnoughEnergyToTakeATurn)
-                    .With(EventParameters.TakeTurn, false);
+                    .With(EventParameter.TakeTurn, false);
                 FireEvent(Self, checkForEnergy);
-                gameEvent.Paramters[EventParameters.TakeTurn] = (bool)checkForEnergy.Paramters[EventParameters.TakeTurn];
+                gameEvent.Paramters[EventParameter.TakeTurn] = (bool)checkForEnergy.Paramters[EventParameter.TakeTurn];
                 checkForEnergy.Release();
             }
         }

@@ -14,7 +14,7 @@ public class Green : EntityComponent
     {
         if(gameEvent.ID == GameEventId.AlterSprite)
         {
-            var renderer = gameEvent.GetValue<SpriteRenderer>(EventParameters.Renderer);
+            var renderer = gameEvent.GetValue<SpriteRenderer>(EventParameter.Renderer);
             renderer.color = Color.green;
         }
     }

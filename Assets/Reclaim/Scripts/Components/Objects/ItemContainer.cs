@@ -30,7 +30,7 @@ public class ItemContainer : EntityComponent
     {
         if (gameEvent.ID == GameEventId.GetItems)
         {
-            gameEvent.Paramters[EventParameters.Items] = IDToEntityMap.Keys.ToList();
+            gameEvent.Paramters[EventParameter.Items] = IDToEntityMap.Keys.ToList();
         }
         else if(gameEvent.ID == GameEventId.DropItemsOnMap)
         {
@@ -46,24 +46,24 @@ public class ItemContainer : EntityComponent
         }
         else if(gameEvent.ID == GameEventId.AddItem)
         {
-            string name = gameEvent.GetValue<string>(EventParameters.Item);
+            string name = gameEvent.GetValue<string>(EventParameter.Item);
             AddItem(name);
         }
         else if(gameEvent.ID == GameEventId.AddItems)
         {
-            List<string> names = gameEvent.GetValue<List<string>>(EventParameters.Items);
+            List<string> names = gameEvent.GetValue<List<string>>(EventParameter.Items);
             foreach(var name in names)
                 AddItem(name);
         }
         else if(gameEvent.ID == GameEventId.RemoveFromInventory)
         {
-            string id = gameEvent.GetValue<string>(EventParameters.Item);
+            string id = gameEvent.GetValue<string>(EventParameter.Item);
             if(IDToEntityMap.ContainsKey(id))
                 IDToEntityMap.Remove(id);
         }
         else if(gameEvent.ID == GameEventId.Interact)
         {
-            string characterId = gameEvent.GetValue<string>(EventParameters.Entity);
+            string characterId = gameEvent.GetValue<string>(EventParameter.Entity);
             if (!WorldUtility.IsActivePlayer(characterId))
                 return;
 

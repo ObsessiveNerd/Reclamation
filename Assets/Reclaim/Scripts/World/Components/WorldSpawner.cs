@@ -16,7 +16,7 @@ public class WorldSpawner : GameService
             return;
         }
 
-        FireEvent(entity, GameEventPool.Get(GameEventId.SetPoint).With(EventParameters.TilePosition, spawnPoint)).Release();
+        FireEvent(entity, GameEventPool.Get(GameEventId.SetPoint).With(EventParameter.TilePosition, spawnPoint)).Release();
         m_Tiles[spawnPoint].Spawn(entity);
 
         m_EntityToPointMap[entity.ID] = spawnPoint;
@@ -25,7 +25,7 @@ public class WorldSpawner : GameService
         //Todo: we'll need to make sure we find which player is closest before picking their time system
         FireEvent(entity, GameEventPool.Get(GameEventId.RegisterPlayableCharacter)).Release();
         FireEvent(entity, GameEventPool.Get(GameEventId.RegisterWithTimeSystem)
-            .With(EventParameters.Value, m_TimeProgression /*m_PlayerToTimeProgressionMap[m_ActivePlayer.Value]*/)).Release();
+            .With(EventParameter.Value, m_TimeProgression /*m_PlayerToTimeProgressionMap[m_ActivePlayer.Value]*/)).Release();
     }
 
     public void RegisterForDespawn(IEntity entity)
@@ -44,17 +44,17 @@ public class WorldSpawner : GameService
     public void Despawn(IEntity entity)
     {
         GameEvent getType = GameEventPool.Get(GameEventId.GetEntityType)
-                            .With(EventParameters.EntityType, EntityType.None);
+                            .With(EventParameter.EntityType, EntityType.None);
 
-        EntityType entityType = entity.FireEvent(getType).GetValue<EntityType>(EventParameters.EntityType);
+        EntityType entityType = entity.FireEvent(getType).GetValue<EntityType>(EventParameter.EntityType);
         getType.Release();
 
         if (!m_EntityToPointMap.ContainsKey(entity.ID))
             return;
 
         Point currentPoint = m_EntityToPointMap[entity.ID];
-        GameEvent despawn = GameEventPool.Get(GameEventId.Despawn).With(EventParameters.Entity, entity.ID)
-                                                               .With(EventParameters.EntityType, entityType);
+        GameEvent despawn = GameEventPool.Get(GameEventId.Despawn).With(EventParameter.Entity, entity.ID)
+                                                               .With(EventParameter.EntityType, entityType);
 
         m_Tiles[currentPoint].Despawn(despawn);
 

@@ -68,7 +68,7 @@ public class EnchantmentManagerMono : EscapeableMono
         {
             //emergency save the item
             GameEvent addToInventory = GameEventPool.Get(GameEventId.AddToInventory)
-                                        .With(EventParameters.Entity, Result.ItemMono.ItemObject.ID);
+                                        .With(EventParameter.Entity, Result.ItemMono.ItemObject.ID);
             Services.PlayerManagerService.GetActivePlayer().FireEvent(addToInventory);
             addToInventory.Release();
         }
@@ -90,12 +90,12 @@ public class EnchantmentManagerMono : EscapeableMono
         {
             ItemToEnchant.AcceptsDrop = false;
             GameEvent removeFromInventory = GameEventPool.Get(GameEventId.RemoveFromInventory)
-                                        .With(EventParameters.Item, ItemToEnchant.ItemMono.ItemObject.ID);
+                                        .With(EventParameter.Item, ItemToEnchant.ItemMono.ItemObject.ID);
             ItemToEnchant.ItemMono.Source.FireEvent(removeFromInventory);
             removeFromInventory.Release();
 
             GameEvent destroyEnchantment = GameEventPool.Get(GameEventId.RemoveFromInventory)
-                                            .With(EventParameters.Item, m_Enchantment.ID);
+                                            .With(EventParameter.Item, m_Enchantment.ID);
             m_Source.FireEvent(destroyEnchantment).Release();
 
             if (!Result.ItemMono.ItemObject.HasComponent(typeof(Name)))
@@ -108,7 +108,7 @@ public class EnchantmentManagerMono : EscapeableMono
             else
             {
                 GameEvent nameNewItem = GameEventPool.Get(GameEventId.SetName)
-                                    .With(EventParameters.Name, NewAssetName.text);
+                                    .With(EventParameter.Name, NewAssetName.text);
                 Result.ItemMono.ItemObject.FireEvent(nameNewItem);
                 nameNewItem.Release();
             }
@@ -150,9 +150,9 @@ public class EnchantmentManagerMono : EscapeableMono
             newObject.AddComponent(comp);
 
         GameEvent getEnchantments = GameEventPool.Get(GameEventId.GetEnchantments)
-                                    .With(EventParameters.Enchantments, new List<string>());
+                                    .With(EventParameter.Enchantments, new List<string>());
         m_Enchantment.FireEvent(getEnchantments);
-        List<string> enchantmentEntityIds = getEnchantments.GetValue<List<string>>(EventParameters.Enchantments);
+        List<string> enchantmentEntityIds = getEnchantments.GetValue<List<string>>(EventParameter.Enchantments);
         getEnchantments.Release();
 
         foreach (string id in enchantmentEntityIds)

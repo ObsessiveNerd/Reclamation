@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: Warrior
   PrimaryStatType: 0
-  Str: 16
+  Str: 22
   Agi: 8
   Con: 14
   Wis: 9
@@ -25,4 +25,7 @@ MonoBehaviour:
   ArmEquip2: 
   TorosEquip: 
   LegEquip1: 
-  LegEquip2: 
+  BackEquip: 
+  NeckEquip: 
+  Finger1Equip: 
+  Finger2Equip: 

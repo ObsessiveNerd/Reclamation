@@ -14,7 +14,7 @@ public class NetworkController : InputControllerBase
     public override void HandleEvent(GameEvent gameEvent)
     {
         if(gameEvent.ID == GameEventId.GetEnergy)
-            gameEvent.Paramters[EventParameters.Value] = 1f;
+            gameEvent.Paramters[EventParameter.Value] = 1f;
     }
 }
 

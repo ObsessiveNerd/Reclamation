@@ -73,7 +73,7 @@ public class SpellContainer : EntityComponent
         if (gameEvent.ID == GameEventId.GetSpells)
         {
             foreach (var key in SpellNameToIdMap.Keys)
-                gameEvent.GetValue<HashSet<string>>(EventParameters.SpellList).Add(SpellNameToIdMap[key].ID);
+                gameEvent.GetValue<HashSet<string>>(EventParameter.SpellList).Add(SpellNameToIdMap[key].ID);
         }
 
         else if(gameEvent.ID == GameEventId.ItemUnequipped)
@@ -81,7 +81,7 @@ public class SpellContainer : EntityComponent
             foreach (var key in SpellNameToIdMap.Keys)
             {
                 GameEvent removeAbility = GameEventPool.Get(GameEventId.RemoveFromActiveAbilities)
-                                            .With(EventParameters.Abilities, SpellNameToIdMap.Values.ToList());
+                                            .With(EventParameter.Abilities, SpellNameToIdMap.Values.ToList());
 
                 Services.PlayerManagerService.GetActivePlayer()?.FireEvent(removeAbility).Release();
             }
@@ -89,13 +89,13 @@ public class SpellContainer : EntityComponent
 
         else if (gameEvent.ID == GameEventId.GetInfo)
         {
-            Dictionary<string, string> info = gameEvent.GetValue<Dictionary<string, string>>(EventParameters.Info);
+            Dictionary<string, string> info = gameEvent.GetValue<Dictionary<string, string>>(EventParameter.Info);
             info.Add($"{nameof(SpellContainer)}{Guid.NewGuid()}", "An object that contains arcane magics.  Use carefully.  Or don't.  I'm not your dad.");
         }
 
         else if (gameEvent.ID == GameEventId.ItemEquipped)
         {
-            string sourceId = gameEvent.GetValue<string>(EventParameters.Owner);
+            string sourceId = gameEvent.GetValue<string>(EventParameter.Owner);
             if (WorldUtility.IsActivePlayer(sourceId))
             {
                 Services.WorldUIService.OpenSpellUI();
@@ -109,7 +109,7 @@ public class SpellContainer : EntityComponent
                 Services.WorldUIService.OpenSpellExaminationUI(SpellNameToIdMap.Keys.ToList());
             });
 
-            gameEvent.GetValue<List<ContextMenuButton>>(EventParameters.InventoryContextActions).Add(button);
+            gameEvent.GetValue<List<ContextMenuButton>>(EventParameter.InventoryContextActions).Add(button);
         }
     }
 }

@@ -26,10 +26,10 @@ public class RangedPlayerAttackController : InputControllerBase
         //FireEvent(startingTarget, isVisible.CreateEvent());
 
         GameEvent isInFOV = GameEventPool.Get(GameEventId.IsInFOV)
-                                .With(EventParameters.Entity, startingTarget.ID)
-                                .With(EventParameters.Value, false);
+                                .With(EventParameter.Entity, startingTarget.ID)
+                                .With(EventParameter.Value, false);
 
-        bool isInFoVResult = FireEvent(Self, isInFOV).GetValue<bool>(EventParameters.Value);
+        bool isInFoVResult = FireEvent(Self, isInFOV).GetValue<bool>(EventParameter.Value);
         if (!isInFoVResult)
             startingTarget = Self;
         isInFOV.Release();
@@ -64,9 +64,9 @@ public class RangedPlayerAttackController : InputControllerBase
                 IEntity target = WorldUtility.GetEntityAtPosition(m_TileSelection);
 
                 GameEvent getAmmo = GameEventPool.Get(GameEventId.GetAmmo)
-                    .With(EventParameters.Value, null);
+                    .With(EventParameter.Value, null);
 
-                IEntity attack = EntityQuery.GetEntity(FireEvent(m_Attack, getAmmo).GetValue<string>(EventParameters.Value));
+                IEntity attack = EntityQuery.GetEntity(FireEvent(m_Attack, getAmmo).GetValue<string>(EventParameter.Value));
 
                 CombatUtility.Attack(Self, target, attack, AttackType.Ranged);
 
@@ -78,9 +78,9 @@ public class RangedPlayerAttackController : InputControllerBase
                 //FireEvent(m_Attack, fireRangedWeapon.CreateEvent());
 
                 GameEvent checkForEnergy = GameEventPool.Get(GameEventId.HasEnoughEnergyToTakeATurn)
-                    .With(EventParameters.TakeTurn, false);
+                    .With(EventParameter.TakeTurn, false);
                 FireEvent(Self, checkForEnergy);
-                gameEvent.Paramters[EventParameters.TakeTurn] = (bool)checkForEnergy.Paramters[EventParameters.TakeTurn];
+                gameEvent.Paramters[EventParameter.TakeTurn] = (bool)checkForEnergy.Paramters[EventParameter.TakeTurn];
                 checkForEnergy.Release();
                 getAmmo.Release();
             }

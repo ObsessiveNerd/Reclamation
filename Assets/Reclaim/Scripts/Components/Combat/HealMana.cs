@@ -24,21 +24,21 @@ public class HealMana : EntityComponent
     {
         if (gameEvent.ID == GameEventId.ApplyEffectToTarget)
         {
-            IEntity target = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameters.Entity));
+            IEntity target = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameter.Entity));
             GameEvent e = GameEventPool.Get(GameEventId.RestoreMana)
-                                .With(EventParameters.Mana, HealAmount.Roll());
+                                .With(EventParameter.Mana, HealAmount.Roll());
             target.FireEvent(e).Release();
         }
         else if (gameEvent.ID == GameEventId.CastSpellEffect)
         {
-            IEntity target = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameters.Target));
+            IEntity target = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameter.Target));
             GameEvent e = GameEventPool.Get(GameEventId.RestoreMana)
-                                .With(EventParameters.Healing, HealAmount.Roll());
+                                .With(EventParameter.Healing, HealAmount.Roll());
             target.FireEvent(e).Release();
         }
         else if (gameEvent.ID == GameEventId.GetInfo)
         {
-            var dictionary = gameEvent.GetValue<Dictionary<string, string>>(EventParameters.Info);
+            var dictionary = gameEvent.GetValue<Dictionary<string, string>>(EventParameter.Info);
             dictionary.Add($"{nameof(HealMana)}{Guid.NewGuid()}", $"Heals for: {HealAmount}");
         }
     }

@@ -21,7 +21,7 @@ public class Weighted : EntityComponent
     {
         if(gameEvent.ID == GameEventId.PathfindingData)
         {
-            gameEvent.Paramters[EventParameters.Weight] = (float)gameEvent.Paramters[EventParameters.Weight] + Weight;
+            gameEvent.Paramters[EventParameter.Weight] = (float)gameEvent.Paramters[EventParameter.Weight] + Weight;
         }
     }
 }

@@ -18,6 +18,6 @@ public class SelectedTile : EntityComponent
 
     public override void HandleEvent(GameEvent gameEvent)
     {
-        gameEvent.GetValue<SpriteRenderer>(EventParameters.Renderer).color = Color.blue; //= m_SelectionSprite;
+        gameEvent.GetValue<SpriteRenderer>(EventParameter.Renderer).color = Color.blue; //= m_SelectionSprite;
     }
 }

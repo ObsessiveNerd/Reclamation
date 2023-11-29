@@ -82,16 +82,16 @@ public class WorldUIController : GameService
                             break;
 
                         GameEvent unEquip = GameEventPool.Get(GameEventId.Unequip)
-                                            .With(EventParameters.Entity, s.ID)
-                                            .With(EventParameters.Item, actualItem.ID);
+                                            .With(EventParameter.Entity, s.ID)
+                                            .With(EventParameter.Item, actualItem.ID);
                         s.FireEvent(unEquip).Release();
 
                         GameEvent removeFromInventory = GameEventPool.Get(GameEventId.RemoveFromInventory)
-                                                            .With(EventParameters.Item, actualItem.ID);
+                                                            .With(EventParameter.Item, actualItem.ID);
                         s.FireEvent(removeFromInventory).Release();
 
                         GameEvent addToInventory = GameEventPool.Get(GameEventId.AddToInventory)
-                                                        .With(EventParameters.Entity, actualItem.ID);
+                                                        .With(EventParameter.Entity, actualItem.ID);
                         EntityQuery.GetEntity(target).FireEvent(addToInventory).Release();
                     }
                     Services.WorldUIService.UpdateUI();
@@ -100,16 +100,16 @@ public class WorldUIController : GameService
             else
             {
                 GameEvent unEquip = GameEventPool.Get(GameEventId.Unequip)
-                                            .With(EventParameters.Entity, source.ID)
-                                            .With(EventParameters.Item, item.ID);
+                                            .With(EventParameter.Entity, source.ID)
+                                            .With(EventParameter.Item, item.ID);
                 source.FireEvent(unEquip).Release();
 
                 GameEvent removeFromInventory = GameEventPool.Get(GameEventId.RemoveFromInventory)
-                                                    .With(EventParameters.Item, item.ID);
+                                                    .With(EventParameter.Item, item.ID);
                 source.FireEvent(removeFromInventory).Release();
 
                 GameEvent addToInventory = GameEventPool.Get(GameEventId.AddToInventory)
-                                                .With(EventParameters.Entity, item.ID);
+                                                .With(EventParameter.Entity, item.ID);
                 EntityQuery.GetEntity(target).FireEvent(addToInventory).Release();
                 Services.WorldUIService.UpdateUI();
             }

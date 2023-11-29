@@ -16,18 +16,18 @@ public class Lifesteal : EntityComponent
     {
         if(gameEvent.ID == GameEventId.DealtDamage)
         {
-            IEntity damageSource = Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameters.DamageSource));
-            Damage damage = gameEvent.GetValue<Damage>(EventParameters.Damage);
+            IEntity damageSource = Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameter.DamageSource));
+            Damage damage = gameEvent.GetValue<Damage>(EventParameter.Damage);
 
             GameEvent healForDamage = GameEventPool.Get(GameEventId.RestoreHealth)
-                                        .With(EventParameters.Healing, damage.DamageAmount);
+                                        .With(EventParameter.Healing, damage.DamageAmount);
 
             damageSource.FireEvent(healForDamage).Release();
         }
 
         else if (gameEvent.ID == GameEventId.GetInfo)
         {
-            var dictionary = gameEvent.GetValue<Dictionary<string, string>>(EventParameters.Info);
+            var dictionary = gameEvent.GetValue<Dictionary<string, string>>(EventParameter.Info);
             dictionary.Add($"{nameof(Lifesteal)}{Guid.NewGuid()}", "Lifesteal: Damage dealt by this returns health to the attacker.");
         }
     }

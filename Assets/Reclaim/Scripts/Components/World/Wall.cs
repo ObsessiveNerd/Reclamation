@@ -15,13 +15,13 @@ public class Wall : EntityComponent
         if (gameEvent.ID == GameEventId.BeforeMoving)
         {
             RecLog.Log("OUCH!  You bumped into a wall.");
-            gameEvent.Paramters[EventParameters.RequiredEnergy] = 0f;
-            gameEvent.Paramters[EventParameters.InputDirection] = MoveDirection.None;
+            gameEvent.Paramters[EventParameter.RequiredEnergy] = 0f;
+            gameEvent.Paramters[EventParameter.InputDirection] = MoveDirection.None;
         }
         else if(gameEvent.ID == GameEventId.PathfindingData)
         {
-            gameEvent.Paramters[EventParameters.BlocksMovement] = true;
-            gameEvent.Paramters[EventParameters.Weight] = Pathfinder.ImpassableWeight;
+            gameEvent.Paramters[EventParameter.BlocksMovement] = true;
+            gameEvent.Paramters[EventParameter.Weight] = Pathfinder.ImpassableWeight;
         }
     }
 }

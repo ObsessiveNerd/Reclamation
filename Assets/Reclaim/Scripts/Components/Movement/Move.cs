@@ -21,19 +21,19 @@ public class Move : EntityComponent
         {
             m_StopMovement = false;
             MoveDirection direction;
-            if (gameEvent.Paramters[EventParameters.InputDirection] is string)
-                direction = (MoveDirection)Enum.Parse(typeof(MoveDirection), gameEvent.Paramters[EventParameters.InputDirection].ToString());
+            if (gameEvent.Paramters[EventParameter.InputDirection] is string)
+                direction = (MoveDirection)Enum.Parse(typeof(MoveDirection), gameEvent.Paramters[EventParameter.InputDirection].ToString());
             else
-                direction = (MoveDirection)gameEvent.Paramters[EventParameters.InputDirection];
+                direction = (MoveDirection)gameEvent.Paramters[EventParameter.InputDirection];
 
             Point startPosition = Services.EntityMapService.GetPointWhereEntityIs(Self);
             if (startPosition == Point.InvalidPoint)
                 return;
 
             GameEvent beforeMoving = GameEventPool.Get(GameEventId.BeforeMoving)
-                .With(EventParameters.Entity, Self.ID)
-                .With(EventParameters.InputDirection, direction)
-                .With(EventParameters.RequiredEnergy, m_EnergyRequired);
+                .With(EventParameter.Entity, Self.ID)
+                .With(EventParameter.InputDirection, direction)
+                .With(EventParameter.RequiredEnergy, m_EnergyRequired);
 
             FireEvent(Self, beforeMoving);
 
@@ -42,12 +42,12 @@ public class Move : EntityComponent
 
             t.BeforeMoving(beforeMoving);
 
-            float energyRequired = (float)beforeMoving.Paramters[EventParameters.RequiredEnergy];
+            float energyRequired = (float)beforeMoving.Paramters[EventParameter.RequiredEnergy];
 
             //Make sure we have enough energy;
             GameEvent currentEnergyEvent = FireEvent(Self, GameEventPool.Get(GameEventId.GetEnergy)
-                .With(EventParameters.Value, 0.0f));
-            float currentEnergy = currentEnergyEvent.GetValue<float>(EventParameters.Value);
+                .With(EventParameter.Value, 0.0f));
+            float currentEnergy = currentEnergyEvent.GetValue<float>(EventParameter.Value);
             
             if (energyRequired > 0f && currentEnergy >= energyRequired && !m_StopMovement)
             {
@@ -58,7 +58,7 @@ public class Move : EntityComponent
                 FireEvent(Self, afterMoving);
 
                 //energyRequired = (float)afterMoving.Paramters[EventParameters.RequiredEnergy];
-                GameEvent useEnergy = GameEventPool.Get(GameEventId.UseEnergy).With(EventParameters.Value, m_EnergyRequired);
+                GameEvent useEnergy = GameEventPool.Get(GameEventId.UseEnergy).With(EventParameter.Value, m_EnergyRequired);
                 FireEvent(Self, useEnergy).Release();
 
                 afterMoving.Release();
@@ -71,7 +71,7 @@ public class Move : EntityComponent
             beforeMoving.Release();
         }
         if (gameEvent.ID == GameEventId.GetMinimumEnergyForAction)
-            gameEvent.Paramters[EventParameters.Value] = Mathf.Min((float)gameEvent.Paramters[EventParameters.Value] > 0f ? (float)gameEvent.Paramters[EventParameters.Value] : m_EnergyRequired, m_EnergyRequired);
+            gameEvent.Paramters[EventParameter.Value] = Mathf.Min((float)gameEvent.Paramters[EventParameter.Value] > 0f ? (float)gameEvent.Paramters[EventParameter.Value] : m_EnergyRequired, m_EnergyRequired);
         if (gameEvent.ID == GameEventId.StopMovement)
             m_StopMovement = true;
     }

@@ -18,7 +18,7 @@ public class Party
     public void AssignLeader(string entity)
     {
         GameEvent setLeader = GameEventPool.Get(GameEventId.SetLeader)
-                                    .With(EventParameters.Entity, m_Leader);
+                                    .With(EventParameter.Entity, m_Leader);
 
         EntityQuery.GetEntity(entity).FireEvent(setLeader).Release();
     }
@@ -60,7 +60,7 @@ public class Party
             m_Members.Remove(entity);
 
         GameEvent setLeader = GameEventPool.Get(GameEventId.SetLeader)
-                                    .With(EventParameters.Entity, null);
+                                    .With(EventParameter.Entity, null);
 
         EntityQuery.GetEntity(entity).FireEvent(setLeader).Release();
     }
@@ -77,9 +77,9 @@ public class PartyController : GameService
 
     public void MakePartyLeader(IEntity entity)
     {
-        GameEvent getFaction = GameEventPool.Get(GameEventId.GetFaction).With(EventParameters.Value, null);
+        GameEvent getFaction = GameEventPool.Get(GameEventId.GetFaction).With(EventParameter.Value, null);
         FireEvent(entity, getFaction);
-        Faction f = getFaction.GetValue<Faction>(EventParameters.Value);
+        Faction f = getFaction.GetValue<Faction>(EventParameter.Value);
         FactionId factionId = f.ID;
         getFaction.Release();
 
@@ -98,8 +98,8 @@ public class PartyController : GameService
         if (entity == null)
             return;
 
-        GameEvent getFaction = GameEventPool.Get(GameEventId.GetFaction).With(EventParameters.Value, null);
-        FactionId factionId = FireEvent(entity, getFaction).GetValue<Faction>(EventParameters.Value).ID;
+        GameEvent getFaction = GameEventPool.Get(GameEventId.GetFaction).With(EventParameter.Value, null);
+        FactionId factionId = FireEvent(entity, getFaction).GetValue<Faction>(EventParameter.Value).ID;
         getFaction.Release();
 
         if (!m_FactionParties.ContainsKey(factionId))
@@ -124,8 +124,8 @@ public class PartyController : GameService
 
     public void RemoveFromParty(IEntity entity)
     {
-        GameEvent getFaction = GameEventPool.Get(GameEventId.GetFaction).With(EventParameters.Value, null);
-        FactionId factionId = FireEvent(entity, getFaction).GetValue<Faction>(EventParameters.Value).ID;
+        GameEvent getFaction = GameEventPool.Get(GameEventId.GetFaction).With(EventParameter.Value, null);
+        FactionId factionId = FireEvent(entity, getFaction).GetValue<Faction>(EventParameter.Value).ID;
         getFaction.Release();
 
         if (!m_FactionParties.ContainsKey(factionId))

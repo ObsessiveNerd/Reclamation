@@ -24,11 +24,11 @@ public class GraphicContainer : EntityComponent
             Debug.Log("Sprite null");
 
         if (gameEvent.ID == GameEventId.GetSprite)
-            gameEvent.Paramters[EventParameters.RenderSprite] = m_Sprite;
+            gameEvent.Paramters[EventParameter.RenderSprite] = m_Sprite;
 
         else if (gameEvent.ID == GameEventId.SetSprite)
         {
-            string path = gameEvent.GetValue<string>(EventParameters.Path);
+            string path = gameEvent.GetValue<string>(EventParameter.Path);
             SpritePath = path;
             m_Sprite = Resources.Load<Sprite>(path);
         }

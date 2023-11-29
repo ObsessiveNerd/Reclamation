@@ -21,10 +21,10 @@ public class Immunity : EntityComponent
     public override void HandleEvent(GameEvent gameEvent)
     {
         if (gameEvent.ID == GameEventId.GetImmunity)
-            gameEvent.GetValue<List<DamageType>>(EventParameters.Immunity).Add(Type);
+            gameEvent.GetValue<List<DamageType>>(EventParameter.Immunity).Add(Type);
         else if(gameEvent.ID == GameEventId.TakeDamage)
         {
-            foreach(var damage in gameEvent.GetValue<List<Damage>>(EventParameters.DamageList))
+            foreach(var damage in gameEvent.GetValue<List<Damage>>(EventParameter.DamageList))
             {
                 if (damage.DamageType == Type)
                     damage.DamageAmount = 0;

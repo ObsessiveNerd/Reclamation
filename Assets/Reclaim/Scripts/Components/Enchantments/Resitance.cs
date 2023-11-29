@@ -22,10 +22,10 @@ public class Resitance : EntityComponent
     public override void HandleEvent(GameEvent gameEvent)
     {
         if (gameEvent.ID == GameEventId.GetResistances)
-            gameEvent.GetValue<List<DamageType>>(EventParameters.Resistances).Add(Type);
+            gameEvent.GetValue<List<DamageType>>(EventParameter.Resistances).Add(Type);
         else if(gameEvent.ID == GameEventId.TakeDamage)
         {
-            foreach(var damage in gameEvent.GetValue<List<Damage>>(EventParameters.DamageList))
+            foreach(var damage in gameEvent.GetValue<List<Damage>>(EventParameter.DamageList))
             {
                 if (damage.DamageType == Type)
                     damage.DamageAmount = damage.DamageAmount / 2;
@@ -33,7 +33,7 @@ public class Resitance : EntityComponent
         }
         else if(gameEvent.ID == GameEventId.GetInfo)
         {
-            var dictionary = gameEvent.GetValue<Dictionary<string, string>>(EventParameters.Info);
+            var dictionary = gameEvent.GetValue<Dictionary<string, string>>(EventParameter.Info);
             dictionary.Add($"{nameof(Resitance)}{Guid.NewGuid()}", $"{Type.ToString()} Resistance");
         }
     }

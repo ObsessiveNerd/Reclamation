@@ -15,8 +15,8 @@ public class Actor : IEntity
         get
         {
             GameEvent getName = GameEventPool.Get(GameEventId.GetName)
-                                    .With(EventParameters.Name, InternalName);
-            var ret = FireEvent(getName).GetValue<string>(EventParameters.Name);
+                                    .With(EventParameter.Name, InternalName);
+            var ret = FireEvent(getName).GetValue<string>(EventParameter.Name);
             getName.Release();
             return ret;
         }

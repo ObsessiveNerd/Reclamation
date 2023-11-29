@@ -26,14 +26,14 @@ public class HealthRegen : EntityComponent
     {
         if(gameEvent.ID == GameEventId.EndTurn)
         {
-            IEntity target = gameEvent.HasParameter(EventParameters.Entity) ?
-                Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameters.Entity)) : Self;
+            IEntity target = gameEvent.HasParameter(EventParameter.Entity) ?
+                Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameter.Entity)) : Self;
 
             currentTurns++;
             if(currentTurns >= RegenSpeed)
             {
                 GameEvent regenHealth = GameEventPool.Get(GameEventId.RegenHealth)
-                                            .With(EventParameters.Healing, RegenAmount);
+                                            .With(EventParameter.Healing, RegenAmount);
                 FireEvent(target, regenHealth, true).Release();
                 currentTurns = 0;
             }
@@ -41,7 +41,7 @@ public class HealthRegen : EntityComponent
 
         else if(gameEvent.ID == GameEventId.GetInfo)
         {
-            var dictionary = gameEvent.GetValue<Dictionary<string, string>>(EventParameters.Info);
+            var dictionary = gameEvent.GetValue<Dictionary<string, string>>(EventParameter.Info);
             dictionary.Add($"{nameof(HealthRegen)}{Guid.NewGuid()}", $"Renerate {RegenAmount} health after {RegenSpeed} turns.");
         }
     }

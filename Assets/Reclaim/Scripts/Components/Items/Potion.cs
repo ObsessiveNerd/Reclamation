@@ -15,35 +15,35 @@ public class Potion : EntityComponent
     {
         if(gameEvent.ID == GameEventId.Quaff)
         {
-            IEntity target = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameters.Entity));
+            IEntity target = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameter.Entity));
 
             GameEvent builder = GameEventPool.Get(GameEventId.ApplyEffectToTarget)
-                                    .With(EventParameters.Entity, target.ID);
+                                    .With(EventParameter.Entity, target.ID);
             FireEvent(Self, builder, true).Release();
         }
 
         else if(gameEvent.ID == GameEventId.GetContextMenuActions)
         {
-            IEntity source = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameters.Entity));
+            IEntity source = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameter.Entity));
 
             ContextMenuButton button = new ContextMenuButton("Quaff", () =>
             {
                 Debug.Log(source);
                 GameEvent quaff = GameEventPool.Get(GameEventId.Quaff)
-                                        .With(EventParameters.Entity, source.ID);
-                Self.FireEvent(quaff).Release();
+                                        .With(EventParameter.Entity, source.ID);
+                Services.PlayerManagerService.GetActivePlayer().FireEvent(quaff).Release();
 
                 GameEvent remove = GameEventPool.Get(GameEventId.RemoveFromInventory)
-                                        .With(EventParameters.Item, Self.ID);
+                                        .With(EventParameter.Item, Self.ID);
                 source.FireEvent(remove).Release();
 
                 GameEvent playSound = GameEventPool.Get(GameEventId.Playsound)
-                                        .With(EventParameters.SoundSource, source.ID)
-                                        .With(EventParameters.Key, SoundKey.Quaff);
+                                        .With(EventParameter.SoundSource, source.ID)
+                                        .With(EventParameter.Key, SoundKey.Quaff);
                 Self.FireEvent(playSound).Release();
             });
 
-            gameEvent.GetValue<List<ContextMenuButton>>(EventParameters.InventoryContextActions).Add(button);
+            gameEvent.GetValue<List<ContextMenuButton>>(EventParameter.InventoryContextActions).Add(button);
         }
     }
 }

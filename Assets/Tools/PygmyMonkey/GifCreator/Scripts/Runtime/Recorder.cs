@@ -531,7 +531,7 @@ namespace PygmyMonkey.GifCreator
 				pixelArray[px] = texture.GetPixelBilinear(incX * ((float)px % width), incY * ((float)Mathf.Floor(px / width))); 
 			}
 
-			texture.Resize(width, height);
+			texture.Reinitialize(width, height);
 			texture.SetPixels(pixelArray, 0); 
 			texture.Apply();
 		}

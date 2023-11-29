@@ -234,9 +234,9 @@ public class EntityNetworkManager : GameService
         {
             if (Point.TryParse(ges.TargetEntityId, out Point result))
             {
-                EntityType eType = (EntityType)Enum.Parse(typeof(EntityType), ge.GetValue<string>(EventParameters.EntityType));
-                ge.Paramters[EventParameters.EntityType] = eType;
-                IEntity source = Services.EntityMapService.GetEntity(ge.GetValue<string>(EventParameters.Entity));
+                EntityType eType = (EntityType)Enum.Parse(typeof(EntityType), ge.GetValue<string>(EventParameter.EntityType));
+                ge.Paramters[EventParameter.EntityType] = eType;
+                IEntity source = Services.EntityMapService.GetEntity(ge.GetValue<string>(EventParameter.Entity));
                 Services.FOVService.FoVRecalculated(source, new List<Point>());
                 m_Tiles[result].Despawn(ge);
             }
@@ -414,8 +414,8 @@ public class EntityNetworkManager : GameService
             networkEntity.CleanupComponents();
 
             GameEvent getPosition = GameEventPool.Get(GameEventId.GetPoint)
-                                .With(EventParameters.Value, Point.InvalidPoint);
-            Point p = networkEntity.FireEvent(getPosition).GetValue<Point>(EventParameters.Value);
+                                .With(EventParameter.Value, Point.InvalidPoint);
+            Point p = networkEntity.FireEvent(getPosition).GetValue<Point>(EventParameter.Value);
             getPosition.Release();
 
             networkEntity.GetComponent<Position>().PositionPoint = p == new Point(0, 0) ? Services.DungeonService.DungeonGenerator.Rooms[0].GetValidPoint() : p;

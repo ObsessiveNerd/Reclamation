@@ -310,8 +310,8 @@ public class DungeonManager : GameService
                 {
                     entity.Start();
                     GameEvent getPoint = GameEventPool.Get(GameEventId.GetPoint)
-                                            .With(EventParameters.Value, Point.InvalidPoint);
-                    Point p = FireEvent(entity, getPoint).GetValue<Point>(EventParameters.Value);
+                                            .With(EventParameter.Value, Point.InvalidPoint);
+                    Point p = FireEvent(entity, getPoint).GetValue<Point>(EventParameter.Value);
                     if (p != Point.InvalidPoint)
                         Spawner.Spawn(entity, p);
                     getPoint.Release();
@@ -325,8 +325,8 @@ public class DungeonManager : GameService
                 {
                     entity.Start();
                     GameEvent getPoint = GameEventPool.Get(GameEventId.GetPoint)
-                                            .With(EventParameters.Value, Point.InvalidPoint);
-                    Point p = FireEvent(entity, getPoint).GetValue<Point>(EventParameters.Value);
+                                            .With(EventParameter.Value, Point.InvalidPoint);
+                    Point p = FireEvent(entity, getPoint).GetValue<Point>(EventParameter.Value);
                     if (p != Point.InvalidPoint)
                     {
                         if (Services.NetworkService.IsConnected)
@@ -348,14 +348,14 @@ public class DungeonManager : GameService
             {
                 FireEvent(m_TileEntity[dungeonLevel.TilePoints[i]], 
                     GameEventPool.Get(GameEventId.SetHasBeenVisited)
-                        .With(EventParameters.HasBeenVisited, dungeonLevel.TileHasBeenVisited[i])).Release();
+                        .With(EventParameter.HasBeenVisited, dungeonLevel.TileHasBeenVisited[i])).Release();
             }
 
             DungeonMetaData dmd = new DungeonMetaData($"{LevelMetaData.MetadataPath}/{m_CurrentLevel}.lvl");
             foreach(var tile in m_TileEntity.Values)
             {
                 GameEvent setSprite = GameEventPool.Get(GameEventId.SetSprite)
-                                        .With(EventParameters.Path, dmd.TileType + dmd.GetRandomLetter());
+                                        .With(EventParameter.Path, dmd.TileType + dmd.GetRandomLetter());
                 FireEvent(tile, setSprite);
                 setSprite.Release();
             }
@@ -368,7 +368,7 @@ public class DungeonManager : GameService
             foreach(var tile in m_TileEntity.Values)
             {
                 GameEvent setSprite = GameEventPool.Get(GameEventId.SetSprite)
-                                        .With(EventParameters.Path, dmd.TileType + dmd.GetRandomLetter());
+                                        .With(EventParameter.Path, dmd.TileType + dmd.GetRandomLetter());
                 FireEvent(tile, setSprite);
                 setSprite.Release();
             }
@@ -378,7 +378,7 @@ public class DungeonManager : GameService
                 foreach (var point in m_Tiles.Keys)
                 {
                     FireEvent(m_TileEntity[point], GameEventPool.Get(GameEventId.SetHasBeenVisited)
-                        .With(EventParameters.HasBeenVisited, false)).Release();
+                        .With(EventParameter.HasBeenVisited, false)).Release();
                 }
             }
             m_DungeonLevelMap.Add(m_CurrentLevel, dr);

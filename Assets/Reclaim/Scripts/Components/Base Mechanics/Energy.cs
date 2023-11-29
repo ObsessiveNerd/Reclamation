@@ -30,21 +30,21 @@ public class Energy : EntityComponent
             case GameEventId.StartTurn:
                 if (!HasHadTurnStarted)
                 {
-                    data = GameEventPool.Get(GameEventId.AlterEnergy).With(EventParameters.EnergyRegen, EnergyRegineration);
+                    data = GameEventPool.Get(GameEventId.AlterEnergy).With(EventParameter.EnergyRegen, EnergyRegineration);
                     Self.HandleEvent(data);
-                    CurrentEnergy += (float)data.Paramters[EventParameters.EnergyRegen];
+                    CurrentEnergy += (float)data.Paramters[EventParameter.EnergyRegen];
                     HasHadTurnStarted = true;
                 }
                 break;
             case GameEventId.HasEnoughEnergyToTakeATurn:
-                data = GameEventPool.Get(GameEventId.GetMinimumEnergyForAction).With(EventParameters.Value, 0f);
+                data = GameEventPool.Get(GameEventId.GetMinimumEnergyForAction).With(EventParameter.Value, 0f);
                 FireEvent(Self, data);
-                float minEnergy = (float)data.Paramters[EventParameters.Value];
+                float minEnergy = (float)data.Paramters[EventParameter.Value];
                 bool takeTurn = (minEnergy == 0 || CurrentEnergy < minEnergy);
-                gameEvent.Paramters[EventParameters.TakeTurn] = takeTurn;
+                gameEvent.Paramters[EventParameter.TakeTurn] = takeTurn;
                 break;
             case GameEventId.UseEnergy:
-                float energyUsed = (float)gameEvent.Paramters[EventParameters.Value];
+                float energyUsed = (float)gameEvent.Paramters[EventParameter.Value];
                 CurrentEnergy -= energyUsed;
                 break;
             case GameEventId.SkipTurn:
@@ -52,7 +52,7 @@ public class Energy : EntityComponent
                 HasHadTurnStarted = true;
                 break;
             case GameEventId.GetEnergy:
-                gameEvent.Paramters[EventParameters.Value] = CurrentEnergy;
+                gameEvent.Paramters[EventParameter.Value] = CurrentEnergy;
                 break;
             case GameEventId.EndTurn:
                 HasHadTurnStarted = false;

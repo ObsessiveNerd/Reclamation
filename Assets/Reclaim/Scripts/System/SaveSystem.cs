@@ -175,7 +175,7 @@ public class GameSaveSystem : GameService
         foreach (var tile in m_Tiles.Values)
         {
             GameEvent serializeTile = GameEventPool.Get(GameEventId.SerializeTile)
-                                         .With(EventParameters.Value, level);
+                                         .With(EventParameter.Value, level);
             tile.SerializeTile(serializeTile);
             serializeTile.Release();
         }

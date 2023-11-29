@@ -28,7 +28,7 @@ public class Wander : EntityComponent
     {
         if(gameEvent.ID == GameEventId.GetActionToTake)
         {
-            PriorityQueue<AIAction> actionQueue = gameEvent.GetValue<PriorityQueue<AIAction>>(EventParameters.AIActionList);
+            PriorityQueue<AIAction> actionQueue = gameEvent.GetValue<PriorityQueue<AIAction>>(EventParameter.AIActionList);
             AIAction action = new AIAction()
             {
                 Priority = Weight,

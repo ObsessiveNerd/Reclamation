@@ -25,7 +25,7 @@ public class TileInteractions : GameService
     public void Pickup(IEntity pickupEntity)
     {
         GameEvent pickup = GameEventPool.Get(GameEventId.Pickup)
-                            .With(EventParameters.Entity, pickupEntity.ID);
+                            .With(EventParameter.Entity, pickupEntity.ID);
 
         Point p = m_EntityToPointMap[pickupEntity.ID];
         m_Tiles[p].Pickup(pickup);
@@ -53,10 +53,10 @@ public class TileInteractions : GameService
             droppingEntity = m_ActivePlayer.Value;
 
         GameEvent getEntityType = GameEventPool.Get(GameEventId.GetEntityType)
-                                    .With(EventParameters.EntityType, EntityType.None);
+                                    .With(EventParameter.EntityType, EntityType.None);
         FireEvent(entity, getEntityType);
 
-        EntityType entityType = getEntityType.GetValue<EntityType>(EventParameters.EntityType);
+        EntityType entityType = getEntityType.GetValue<EntityType>(EventParameter.EntityType);
         getEntityType.Release();
 
         if (!m_EntityToPointMap.ContainsKey(droppingEntity.ID))
@@ -69,10 +69,10 @@ public class TileInteractions : GameService
     public string ShowTileInfo(Point pos)
     {
         GameEvent showTileInfo = GameEventPool.Get(GameEventId.ShowTileInfo)
-            .With(EventParameters.Info, "");
+            .With(EventParameter.Info, "");
 
         m_Tiles[pos].ShowTileInfo(showTileInfo);
-        string value = showTileInfo.GetValue<string>(EventParameters.Info);
+        string value = showTileInfo.GetValue<string>(EventParameter.Info);
         showTileInfo.Release();
         return value;
     }

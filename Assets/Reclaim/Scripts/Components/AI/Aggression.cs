@@ -20,14 +20,14 @@ public class Aggression : EntityComponent
         {
             m_CurrentLocation = PathfindingUtility.GetEntityLocation(Self);
             GameEvent getMyAggressionLevel = GameEventPool.Get(GameEventId.GetCombatRating)
-                                                        .With(EventParameters.Value, -1);
+                                                        .With(EventParameter.Value, -1);
 
-            int myCombatLevel = FireEvent(Self, getMyAggressionLevel).GetValue<int>(EventParameters.Value);
+            int myCombatLevel = FireEvent(Self, getMyAggressionLevel).GetValue<int>(EventParameter.Value);
             getMyAggressionLevel.Release();
 
             GameEvent getVisiblePoints = GameEventPool.Get(GameEventId.GetVisibleTiles)
-                                            .With(EventParameters.VisibleTiles, new List<Point>());
-            List<Point> visiblePoints = FireEvent(Self, getVisiblePoints).GetValue<List<Point>>(EventParameters.VisibleTiles);
+                                            .With(EventParameter.VisibleTiles, new List<Point>());
+            List<Point> visiblePoints = FireEvent(Self, getVisiblePoints).GetValue<List<Point>>(EventParameter.VisibleTiles);
             getVisiblePoints.Release();
             foreach(var point in visiblePoints)
             {
@@ -39,9 +39,9 @@ public class Aggression : EntityComponent
                 if (Factions.GetDemeanorForTarget(Self, target) != Demeanor.Hostile) continue;
 
                 GameEvent getCombatRatingOfTile = GameEventPool.Get(GameEventId.GetCombatRating)
-                                                        .With(EventParameters.Value, -1);
+                                                        .With(EventParameter.Value, -1);
 
-                int targetCombatRating = FireEvent(target, getCombatRatingOfTile).GetValue<int>(EventParameters.Value);
+                int targetCombatRating = FireEvent(target, getCombatRatingOfTile).GetValue<int>(EventParameter.Value);
                 getCombatRatingOfTile.Release();
                 Debug.Log($"{Self.Name} combat rating is {myCombatLevel}.  Target {target.Name} CR is {targetCombatRating}");
                 if (/*targetCombatRating > -1 && */CombatUtility.ICanTakeThem(myCombatLevel, targetCombatRating))
@@ -52,7 +52,7 @@ public class Aggression : EntityComponent
                         Priority = 2,
                         ActionToTake = MakeAttack
                     };
-                    gameEvent.GetValue<PriorityQueue<AIAction>>(EventParameters.AIActionList).Add(attackAction);
+                    gameEvent.GetValue<PriorityQueue<AIAction>>(EventParameter.AIActionList).Add(attackAction);
                     break;
                 }
             }
@@ -63,8 +63,8 @@ public class Aggression : EntityComponent
     MoveDirection MakeAttack()
     {
         GameEvent getWeapon = GameEventPool.Get(GameEventId.GetWeapon)
-                                .With(EventParameters.Weapon, new List<string>());
-        var weaponList = FireEvent(Self, getWeapon, true).GetValue<List<string>>(EventParameters.Weapon);
+                                .With(EventParameter.Weapon, new List<string>());
+        var weaponList = FireEvent(Self, getWeapon, true).GetValue<List<string>>(EventParameter.Weapon);
         getWeapon.Release();
 
         var spellList = CombatUtility.GetSpells(Self);
@@ -109,8 +109,8 @@ public class Aggression : EntityComponent
             if (spell.HasComponent(typeof(Heal)))
             {
                 GameEvent getVisiblePoints = GameEventPool.Get(GameEventId.GetVisibleTiles)
-                                            .With(EventParameters.VisibleTiles, new List<Point>());
-                List<Point> visiblePoints = FireEvent(Self, getVisiblePoints).GetValue<List<Point>>(EventParameters.VisibleTiles);
+                                            .With(EventParameter.VisibleTiles, new List<Point>());
+                List<Point> visiblePoints = FireEvent(Self, getVisiblePoints).GetValue<List<Point>>(EventParameter.VisibleTiles);
                 getVisiblePoints.Release();
 
                 target = Services.WorldDataQuery.GetClosestAlly(Self);
@@ -119,7 +119,7 @@ public class Aggression : EntityComponent
                     target = Self;
             }
 
-            CombatUtility.CastSpell(Self, target, spell);
+            CombatUtility.Attack(Self, target, spell, AttackType.Spell);
 
             int howToMove = RecRandom.Instance.GetRandomValue(0, 100);
             if (howToMove < 20)

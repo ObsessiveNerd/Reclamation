@@ -35,21 +35,21 @@ public class EntityMovement : GameService
             return;
         Point currentPoint = m_EntityToPointMap[entity.ID];
         GameEvent getEntityType = GameEventPool.Get(GameEventId.GetEntityType)
-                                    .With(EventParameters.EntityType, EntityType.None);
+                                    .With(EventParameter.EntityType, EntityType.None);
 
-        EntityType entityType = entity.FireEvent(getEntityType).GetValue<EntityType>(EventParameters.EntityType);
+        EntityType entityType = entity.FireEvent(getEntityType).GetValue<EntityType>(EventParameter.EntityType);
         getEntityType.Release();
 
         GameEvent removeEntityFromTile = GameEventPool.Get(GameEventId.Despawn)
-                                            .With(EventParameters.Entity, entity.ID)
-                                            .With(EventParameters.EntityType, entityType);
+                                            .With(EventParameter.Entity, entity.ID)
+                                            .With(EventParameter.EntityType, entityType);
         m_Tiles[currentPoint].Despawn(removeEntityFromTile);
         removeEntityFromTile.Release();
 
         m_EntityToPointMap[entity.ID] = newPoint;
         GameEvent addEntityToTile = GameEventPool.Get(GameEventId.Spawn)
-                                        .With(EventParameters.Entity, entity.ID)
-                                        .With(EventParameters.EntityType, entityType);
+                                        .With(EventParameter.Entity, entity.ID)
+                                        .With(EventParameter.EntityType, entityType);
         m_Tiles[newPoint].Spawn(entity);
         addEntityToTile.Release();
         Services.WorldUpdateService.UpdateWorldView();
@@ -67,7 +67,7 @@ public class EntityMovement : GameService
             m_ChangedTiles.Add(m_Tiles[currentPoint]);
             m_ChangedTiles.Add(m_Tiles[newPoint]);
 
-            var pointEvent = FireEvent(entity, GameEventPool.Get(GameEventId.SetPoint).With(EventParameters.TilePosition, newPoint));
+            var pointEvent = FireEvent(entity, GameEventPool.Get(GameEventId.SetPoint).With(EventParameter.TilePosition, newPoint));
             SetEntityPosition(entity, newPoint);
             pointEvent.Release();
         }

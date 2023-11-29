@@ -23,7 +23,7 @@ public class ActiveAbilities : EntityComponent
     {
         if (gameEvent.ID == GameEventId.AddToActiveAbilities)
         {
-            IEntity ability = Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameters.Entity));
+            IEntity ability = Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameter.Entity));
             if (ActiveAbilitiesList.Contains(ability))
                 ActiveAbilitiesList.Remove(ability);
             else
@@ -31,11 +31,11 @@ public class ActiveAbilities : EntityComponent
         }
         else if(gameEvent.ID == GameEventId.GetActiveAbilities)
         {
-            gameEvent.GetValue<List<IEntity>>(EventParameters.Abilities).AddRange(ActiveAbilitiesList);
+            gameEvent.GetValue<List<IEntity>>(EventParameter.Abilities).AddRange(ActiveAbilitiesList);
         }
         else if(gameEvent.ID == GameEventId.RemoveFromActiveAbilities)
         {
-            foreach(var entity in gameEvent.GetValue<List<IEntity>>(EventParameters.Abilities))
+            foreach(var entity in gameEvent.GetValue<List<IEntity>>(EventParameter.Abilities))
             {
                 if(ActiveAbilitiesList.Contains(entity))
                     ActiveAbilitiesList.Remove(entity);

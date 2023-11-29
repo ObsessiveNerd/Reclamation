@@ -83,13 +83,13 @@ public class TimeProgression
     }
     
     GameEvent update = new GameEvent(GameEventId.UpdateEntity)
-        .With(EventParameters.TakeTurn, false)
-        .With(EventParameters.UpdateWorldView, false);
+        .With(EventParameter.TakeTurn, false)
+        .With(EventParameter.UpdateWorldView, false);
 
     public void Update()
     {
-        update.Paramters[EventParameters.TakeTurn] = false;
-        update.Paramters[EventParameters.UpdateWorldView] = false;
+        update.Paramters[EventParameter.TakeTurn] = false;
+        update.Paramters[EventParameter.UpdateWorldView] = false;
         update.ContinueProcessing = true;
 
         if (m_EntityList.Count == 0 || m_IsStopped)
@@ -111,7 +111,7 @@ public class TimeProgression
         if (m_Current.Value.NeedsCleanup)
         { 
             m_Current.Value.CleanupComponents();
-            update.Paramters[EventParameters.UpdateWorldView] = true;
+            update.Paramters[EventParameter.UpdateWorldView] = true;
         }
 
 
@@ -119,7 +119,7 @@ public class TimeProgression
         {
             try
             {
-                if ((bool)update.Paramters[EventParameters.UpdateWorldView])
+                if ((bool)update.Paramters[EventParameter.UpdateWorldView])
                     Services.WorldUpdateService.UpdateWorldView();
             }
             catch (Exception e)
@@ -131,7 +131,7 @@ public class TimeProgression
 
         Services.SpawnerService.DespawnAllRegistered();
 
-        if ((bool)update.Paramters[EventParameters.TakeTurn])
+        if ((bool)update.Paramters[EventParameter.TakeTurn])
         {
             GameEvent endTurn = GameEventPool.Get(GameEventId.EndTurn);
             m_Current.Value.HandleEvent(endTurn);

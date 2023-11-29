@@ -16,13 +16,16 @@ MonoBehaviour:
   PrimaryStatType: 4
   Str: 8
   Agi: 11
-  Con: 10
+  Con: 15
   Wis: 15
-  Int: 17
+  Int: 18
   Cha: 10
   HeadEquip: 
   ArmEquip1: Spellbook
   ArmEquip2: 
   TorosEquip: 
   LegEquip1: 
-  LegEquip2: 
+  BackEquip: 
+  NeckEquip: 
+  Finger1Equip: 
+  Finger2Equip: 

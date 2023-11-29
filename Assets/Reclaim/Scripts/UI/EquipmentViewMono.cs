@@ -52,10 +52,10 @@ public class EquipmentViewMono : UpdatableUI//, IUpdatableUI
                 break;
 
             GameEvent builder = GameEventPool.Get(GameEventId.GetEquipment)
-                                    .With(EventParameters.Equipment, "");
+                                    .With(EventParameter.Equipment, "");
             components[i].HandleEvent(builder);
 
-            string equipmentId = builder.GetValue<string>(EventParameters.Equipment);
+            string equipmentId = builder.GetValue<string>(EventParameter.Equipment);
             builder.Release();
             if (!string.IsNullOrEmpty(equipmentId))
             {
@@ -89,31 +89,31 @@ public class EquipmentViewMono : UpdatableUI//, IUpdatableUI
             slotMono.GetComponent<EquipmentItemSlotMono>().Setup(source);
 
         GameEvent getEquipment = GameEventPool.Get(GameEventId.GetCurrentEquipment)
-                                    .With(EventParameters.Head, null)
-                                    .With(EventParameters.Torso, null)
-                                    .With(EventParameters.Arms, null)
-                                    .With(EventParameters.Legs, null)
-                                    .With(EventParameters.Finger, null)
-                                    .With(EventParameters.Neck, null)
-                                    .With(EventParameters.Back, null);
+                                    .With(EventParameter.Head, null)
+                                    .With(EventParameter.Torso, null)
+                                    .With(EventParameter.Arms, null)
+                                    .With(EventParameter.Legs, null)
+                                    .With(EventParameter.Finger, null)
+                                    .With(EventParameter.Neck, null)
+                                    .With(EventParameter.Back, null);
 
         var firedEvent = source.FireEvent(getEquipment);
 
-        SetEquipment(source, firedEvent.GetValue<List<EntityComponent>>(EventParameters.Head), new List<GameObject>() { Head });
-        SetEquipment(source, firedEvent.GetValue<List<EntityComponent>>(EventParameters.Torso), new List<GameObject>() { Torso });
-        SetEquipment(source, firedEvent.GetValue<List<EntityComponent>>(EventParameters.Arms), new List<GameObject>() { LeftArm, RightArm });
-        SetEquipment(source, firedEvent.GetValue<List<EntityComponent>>(EventParameters.Legs), new List<GameObject>() { LeftLeg/*, RightLeg */});
-        SetEquipment(source, firedEvent.GetValue<List<EntityComponent>>(EventParameters.Finger), new List<GameObject>() { Ring1, Ring2 });
-        SetEquipment(source, firedEvent.GetValue<List<EntityComponent>>(EventParameters.Neck), new List<GameObject>() { Necklace });
-        SetEquipment(source, firedEvent.GetValue<List<EntityComponent>>(EventParameters.Back), new List<GameObject>() { Back });
+        SetEquipment(source, firedEvent.GetValue<List<EntityComponent>>(EventParameter.Head), new List<GameObject>() { Head });
+        SetEquipment(source, firedEvent.GetValue<List<EntityComponent>>(EventParameter.Torso), new List<GameObject>() { Torso });
+        SetEquipment(source, firedEvent.GetValue<List<EntityComponent>>(EventParameter.Arms), new List<GameObject>() { LeftArm, RightArm });
+        SetEquipment(source, firedEvent.GetValue<List<EntityComponent>>(EventParameter.Legs), new List<GameObject>() { LeftLeg/*, RightLeg */});
+        SetEquipment(source, firedEvent.GetValue<List<EntityComponent>>(EventParameter.Finger), new List<GameObject>() { Ring1, Ring2 });
+        SetEquipment(source, firedEvent.GetValue<List<EntityComponent>>(EventParameter.Neck), new List<GameObject>() { Necklace });
+        SetEquipment(source, firedEvent.GetValue<List<EntityComponent>>(EventParameter.Back), new List<GameObject>() { Back });
         firedEvent.Release();
 
         GameEvent getPicture = GameEventPool.Get(GameEventId.GetPortrait)
-                                .With(EventParameters.RenderSprite, null);
+                                .With(EventParameter.RenderSprite, null);
         source.FireEvent(getPicture);
 
-        CharacterSprite.sprite = getPicture.GetValue<Sprite>(EventParameters.RenderSprite);
-        CharacterSprite2.sprite = getPicture.GetValue<Sprite>(EventParameters.RenderSprite);
+        CharacterSprite.sprite = getPicture.GetValue<Sprite>(EventParameter.RenderSprite);
+        CharacterSprite2.sprite = getPicture.GetValue<Sprite>(EventParameter.RenderSprite);
         getPicture.Release();
     }
 }

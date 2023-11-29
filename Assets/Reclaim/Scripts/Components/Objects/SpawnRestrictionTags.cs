@@ -55,7 +55,7 @@ public class SpawnRestrictor : EntityComponent
     {
         if(gameEvent.ID == GameEventId.GetSpawnRestrictions)
         {
-            var value = gameEvent.GetValue<HashSet<string>>(EventParameters.Restrictions);
+            var value = gameEvent.GetValue<HashSet<string>>(EventParameter.Restrictions);
             foreach (string r in Restrictions.Restrictions)
                 value.Add(r);
         }

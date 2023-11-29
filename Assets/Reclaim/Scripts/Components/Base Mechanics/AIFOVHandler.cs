@@ -16,7 +16,7 @@ public class AIFOVHandler : EntityComponent
     {
         if (gameEvent.ID == GameEventId.FOVRecalculated)
         {
-            m_VisiblePoints = (List<Point>)gameEvent.Paramters[EventParameters.VisibleTiles];
+            m_VisiblePoints = (List<Point>)gameEvent.Paramters[EventParameter.VisibleTiles];
             //foreach(var tile in m_VisiblePoints)
             //{
             //    IEntity helm = EntityFactory.CreateEntity("Helmet");
@@ -24,7 +24,7 @@ public class AIFOVHandler : EntityComponent
             //}
         }
         else if (gameEvent.ID == GameEventId.GetVisibleTiles)
-            gameEvent.Paramters[EventParameters.VisibleTiles] = m_VisiblePoints;
+            gameEvent.Paramters[EventParameter.VisibleTiles] = m_VisiblePoints;
     }
 }
 

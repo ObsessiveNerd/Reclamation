@@ -19,7 +19,7 @@ public class UIIcon : EntityComponent
     public override void HandleEvent(GameEvent gameEvent)
     {
         if(gameEvent.ID == GameEventId.GetIcon)
-            gameEvent.Paramters[EventParameters.RenderSprite] = Resources.Load<Sprite>(IconPath);
+            gameEvent.Paramters[EventParameter.RenderSprite] = Resources.Load<Sprite>(IconPath);
     }
 }
 

@@ -24,7 +24,7 @@ public class ApplyDamageOverTime : EntityComponent
     {
         if(gameEvent.ID == GameEventId.CastSpellEffect)
         {
-            IEntity target = Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameters.Target));
+            IEntity target = Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameter.Target));
             target.AddComponent(new DamageOverTime(Amount, 0, RemoveAfterTurns));
         }
     }

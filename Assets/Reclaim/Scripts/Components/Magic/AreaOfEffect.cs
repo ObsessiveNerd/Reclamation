@@ -41,7 +41,7 @@ public class AreaOfEffect : EntityComponent
     {
         if(gameEvent.ID == GameEventId.AffectArea)
         {
-            Action<IEntity> effect = gameEvent.GetValue<Action<IEntity>>(EventParameters.Effect);
+            Action<IEntity> effect = gameEvent.GetValue<Action<IEntity>>(EventParameter.Effect);
 
             var tilesToAffect = new List<Point>();
             if (RandomAffectCount > 0 && m_VisibleTiles.Count > 0)
@@ -58,7 +58,7 @@ public class AreaOfEffect : EntityComponent
                 effect.Invoke(WorldUtility.GetEntityAtPosition(visibleTile));
 
             GameEvent endSelection = GameEventPool.Get(GameEventId.EndSelection)
-                .With(EventParameters.TilePosition, null);
+                .With(EventParameter.TilePosition, null);
 
             foreach (var tile in m_VisibleTiles)
                 Services.TileSelectionService.EndTileSelection(tile);
@@ -69,18 +69,18 @@ public class AreaOfEffect : EntityComponent
 
         else if(gameEvent.ID == GameEventId.SelectTile)
         {
-            IEntity source = Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameters.Source));
-            MoveDirection dir = gameEvent.GetValue<MoveDirection>(EventParameters.InputDirection);
+            IEntity source = Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameter.Source));
+            MoveDirection dir = gameEvent.GetValue<MoveDirection>(EventParameter.InputDirection);
             SelectAroundPosition(gameEvent, source, dir);
         }
 
         else if(gameEvent.ID == GameEventId.SelectNewTileInDirection)
         {
-            Point p = gameEvent.GetValue<Point>(EventParameters.TilePosition);
-            MoveDirection dir = gameEvent.GetValue<MoveDirection>(EventParameters.InputDirection);
-            IEntity source = Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameters.Source));
+            Point p = gameEvent.GetValue<Point>(EventParameter.TilePosition);
+            MoveDirection dir = gameEvent.GetValue<MoveDirection>(EventParameter.InputDirection);
+            IEntity source = Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameter.Source));
             GameEvent builder = GameEventPool.Get(GameEventId.SelectTile)
-                                    .With(EventParameters.TilePosition, p);
+                                    .With(EventParameter.TilePosition, p);
             SelectAroundPosition(builder, source, dir);
             builder.Release();
         }
@@ -88,7 +88,7 @@ public class AreaOfEffect : EntityComponent
         else if(gameEvent.ID == GameEventId.EndSelection)
         {
             GameEvent endSelection = GameEventPool.Get(GameEventId.EndSelection)
-                .With(EventParameters.TilePosition, null);
+                .With(EventParameter.TilePosition, null);
 
             foreach (var tile in m_VisibleTiles)
                 Services.TileSelectionService.EndTileSelection(tile);
@@ -106,7 +106,7 @@ public class AreaOfEffect : EntityComponent
         }
         m_VisibleTiles.Clear();
 
-        Point p = gameEvent.GetValue<Point>(EventParameters.TilePosition);
+        Point p = gameEvent.GetValue<Point>(EventParameter.TilePosition);
         List<Point> visibleTiles = new List<Point>();
         if (AOEType == AreaOfEffectType.Circle)
         {

@@ -50,27 +50,27 @@ public class Mana : EntityComponent
     {
         if (gameEvent.ID == GameEventId.RestoreMana)
         {
-            int healAmount = (int)gameEvent.Paramters[EventParameters.Mana];
+            int healAmount = (int)gameEvent.Paramters[EventParameter.Mana];
             CurrentMana = Mathf.Min(CurrentMana + healAmount, TotalMana);
             Services.WorldUIService.EntityRegainedMana(Self, healAmount);
         }
 
         else if (gameEvent.ID == GameEventId.StatBoosted)
         {
-            Stats stats = gameEvent.GetValue<Stats>(EventParameters.Stats);
+            Stats stats = gameEvent.GetValue<Stats>(EventParameter.Stats);
             MaxMana = Mathf.Max(0, stats.CalculateModifier(stats.Int) * modMultiplier);
         }
         
         else if(gameEvent.ID == GameEventId.AddMaxMana)
         {
-            int amount = gameEvent.GetValue<int>(EventParameters.MaxValue);
+            int amount = gameEvent.GetValue<int>(EventParameter.MaxValue);
             PercentBoost += amount;
             Services.WorldUIService.UpdateUI();
         }
 
         else if(gameEvent.ID == GameEventId.RemoveMaxMana)
         {
-            int amount = gameEvent.GetValue<int>(EventParameters.MaxValue);
+            int amount = gameEvent.GetValue<int>(EventParameter.MaxValue);
             PercentBoost -= amount;
             if(MaxMana < CurrentMana)
                 CurrentMana = MaxMana;
@@ -79,20 +79,20 @@ public class Mana : EntityComponent
 
         else if(gameEvent.ID == GameEventId.Rest)
         {
-            int healAmount = (int)gameEvent.Paramters[EventParameters.Mana];
+            int healAmount = (int)gameEvent.Paramters[EventParameter.Mana];
             CurrentMana = Mathf.Min(CurrentMana + healAmount, TotalMana);
         }
 
         else if (gameEvent.ID == GameEventId.DepleteMana)
         {
-            int amountToDrain = gameEvent.GetValue<int>(EventParameters.Mana);
+            int amountToDrain = gameEvent.GetValue<int>(EventParameter.Mana);
             CurrentMana = Mathf.Max(CurrentMana - amountToDrain, 0);
         }
 
         else if(gameEvent.ID == GameEventId.GetMana)
         {
-            gameEvent.Paramters[EventParameters.Value] = CurrentMana;
-            gameEvent.Paramters[EventParameters.MaxValue] = TotalMana;
+            gameEvent.Paramters[EventParameter.Value] = CurrentMana;
+            gameEvent.Paramters[EventParameter.MaxValue] = TotalMana;
         }
     }
 }

@@ -39,12 +39,12 @@ public class DamageOverTime : EntityComponent
             else if(CurrentTurnCount % 2 == 0)
             {
                 GameEvent dealDamage = GameEventPool.Get(GameEventId.TakeDamage)
-                                        .With(EventParameters.DamageList, new List<Damage>()
+                                        .With(EventParameter.DamageList, new List<Damage>()
                                         {
                                             new Damage(m_Dice.Roll(), DamageType.Poison)
                                         })
-                                        .With(EventParameters.DamageSource, Self.ID)
-                                        .With(EventParameters.Attack, Self.ID);
+                                        .With(EventParameter.DamageSource, Self.ID)
+                                        .With(EventParameter.Attack, Self.ID);
                 Self.FireEvent(dealDamage).Release();
             }
         }

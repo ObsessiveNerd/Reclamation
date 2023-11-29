@@ -52,20 +52,20 @@ public class Health : EntityComponent
     {
         if (gameEvent.ID == GameEventId.TakeDamage)
         {
-            foreach (var damage in (List<Damage>)gameEvent.Paramters[EventParameters.DamageList])
+            foreach (var damage in (List<Damage>)gameEvent.Paramters[EventParameter.DamageList])
             {
                 RecLog.Log($"{Self.Name} took {damage.DamageAmount} damage of type {damage.DamageType}");
                 CurrentHealth -= damage.DamageAmount;
 
-                IEntity weapon = Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameters.Attack));
+                IEntity weapon = Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameter.Attack));
                 GameEvent dealtDamage = GameEventPool.Get(GameEventId.DealtDamage)
-                                        .With(EventParameters.DamageSource, gameEvent.GetValue<string>(EventParameters.DamageSource))
-                                        .With(EventParameters.Damage, damage);
+                                        .With(EventParameter.DamageSource, gameEvent.GetValue<string>(EventParameter.DamageSource))
+                                        .With(EventParameter.Damage, damage);
                 weapon.FireEvent(dealtDamage).Release();
 
                 GameEvent playTakeDamageClip = GameEventPool.Get(GameEventId.Playsound)
-                                                .With(EventParameters.SoundSource, Self.ID)
-                                                .With(EventParameters.Key, SoundKey.AttackHit);
+                                                .With(EventParameter.SoundSource, Self.ID)
+                                                .With(EventParameter.Key, SoundKey.AttackHit);
                 weapon.FireEvent(playTakeDamageClip);
                 
                 playTakeDamageClip.Release();
@@ -75,12 +75,12 @@ public class Health : EntityComponent
                 if (CurrentHealth <= 0)
                 {
                     GameEvent playDeathSound = GameEventPool.Get(GameEventId.Playsound)
-                                                .With(EventParameters.SoundSource, Self.ID)
-                                                .With(EventParameters.Key, SoundKey.Died);
+                                                .With(EventParameter.SoundSource, Self.ID)
+                                                .With(EventParameter.Key, SoundKey.Died);
                     FireEvent(Self, playDeathSound, true).Release();
 
                     FireEvent(Self, GameEventPool.Get(GameEventId.Died)
-                        .With(EventParameters.DamageSource, gameEvent.GetValue<string>(EventParameters.DamageSource)), true).Release();
+                        .With(EventParameter.DamageSource, gameEvent.GetValue<string>(EventParameter.DamageSource)), true).Release();
                     Services.SpawnerService.RegisterForDespawn(Self);
                     break;
                 }
@@ -88,20 +88,20 @@ public class Health : EntityComponent
         }
         else if (gameEvent.ID == GameEventId.StatBoosted)
         {
-            Stats stats = gameEvent.GetValue<Stats>(EventParameters.Stats);
+            Stats stats = gameEvent.GetValue<Stats>(EventParameter.Stats);
             MaxHealth = 10 + Mathf.Max(0, stats.CalculateModifier(stats.Con) * modMultiplier);
         }
 
         else if(gameEvent.ID == GameEventId.AddMaxHealth)
         {
-            int amount = gameEvent.GetValue<int>(EventParameters.MaxValue);
+            int amount = gameEvent.GetValue<int>(EventParameter.MaxValue);
             PercentBoost += amount;
             Services.WorldUIService.UpdateUI();
         }
 
         else if(gameEvent.ID == GameEventId.RemoveMaxHealth)
         {
-            int amount = gameEvent.GetValue<int>(EventParameters.MaxValue);
+            int amount = gameEvent.GetValue<int>(EventParameter.MaxValue);
             PercentBoost -= amount;
             if(TotalHealth < CurrentHealth)
                 CurrentHealth = TotalHealth;
@@ -110,20 +110,20 @@ public class Health : EntityComponent
 
         else if(gameEvent.ID == GameEventId.Rest)
         {
-            int healAmount = (int)gameEvent.Paramters[EventParameters.Healing];
+            int healAmount = (int)gameEvent.Paramters[EventParameter.Healing];
             CurrentHealth = Mathf.Min(CurrentHealth + healAmount, TotalHealth);
         }
 
         else if(gameEvent.ID == GameEventId.RegenHealth)
         {
-            int healAmount = (int)gameEvent.Paramters[EventParameters.Healing];
+            int healAmount = (int)gameEvent.Paramters[EventParameter.Healing];
             CurrentHealth = Mathf.Min(CurrentHealth + healAmount, TotalHealth);
             Services.WorldUIService.EntityHealedDamage(Self, healAmount);
         }
 
         else if (gameEvent.ID == GameEventId.RestoreHealth)
         {
-            int healAmount = (int)gameEvent.Paramters[EventParameters.Healing];
+            int healAmount = (int)gameEvent.Paramters[EventParameter.Healing];
             CurrentHealth = Mathf.Min(CurrentHealth + healAmount, TotalHealth);
 
             Services.WorldUIService.EntityHealedDamage(Self, healAmount);
@@ -131,13 +131,13 @@ public class Health : EntityComponent
 
         else if(gameEvent.ID == GameEventId.GetHealth)
         {
-            gameEvent.Paramters[EventParameters.Value] = CurrentHealth;
-            gameEvent.Paramters[EventParameters.MaxValue] = TotalHealth;
+            gameEvent.Paramters[EventParameter.Value] = CurrentHealth;
+            gameEvent.Paramters[EventParameter.MaxValue] = TotalHealth;
         }
 
         else if(gameEvent.ID == GameEventId.GetCombatRating)
         {
-            int startValue = (int)gameEvent.Paramters[EventParameters.Value];
+            int startValue = (int)gameEvent.Paramters[EventParameter.Value];
             int modifier = 0;
             if (PercentHealth > 95)
                 modifier = 2;
@@ -148,7 +148,7 @@ public class Health : EntityComponent
             else if (PercentHealth < 20)
                 modifier = -2;
 
-            gameEvent.Paramters[EventParameters.Value] = startValue + modifier;
+            gameEvent.Paramters[EventParameter.Value] = startValue + modifier;
         }
     }
 }

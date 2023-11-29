@@ -26,17 +26,17 @@ public class BoostMaxHealth : EntityComponent
     {
         if(gameEvent.ID == GameEventId.ActivateObject)
         {
-            IEntity owner = Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameters.Owner));
+            IEntity owner = Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameter.Owner));
             GameEvent getHealth = GameEventPool.Get(GameEventId.GetHealth)
-                                    .With(EventParameters.Value, 0)
-                                    .With(EventParameters.MaxValue, 0);
+                                    .With(EventParameter.Value, 0)
+                                    .With(EventParameter.MaxValue, 0);
 
             owner.FireEvent(getHealth);
             //float percent = ((float)PercentToBoost / 100f);
             //CalculatedAmount = (int)(getHealth.GetValue<int>(EventParameters.MaxValue) * percent);
 
             GameEvent boostHealth = GameEventPool.Get(GameEventId.AddMaxHealth)
-                                    .With(EventParameters.MaxValue, PercentToBoost);
+                                    .With(EventParameter.MaxValue, PercentToBoost);
             owner.FireEvent(boostHealth);
 
             getHealth.Release();
@@ -44,15 +44,15 @@ public class BoostMaxHealth : EntityComponent
         }
         else if(gameEvent.ID == GameEventId.DeactivateObject)
         {
-            IEntity owner = Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameters.Owner));
+            IEntity owner = Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameter.Owner));
             GameEvent removeBoost = GameEventPool.Get(GameEventId.RemoveMaxHealth)
-                                    .With(EventParameters.MaxValue, PercentToBoost);
+                                    .With(EventParameter.MaxValue, PercentToBoost);
             owner.FireEvent(removeBoost);
             removeBoost.Release();
         }
         else if(gameEvent.ID == GameEventId.GetInfo)
         {
-            var dictionary = gameEvent.GetValue<Dictionary<string, string>>(EventParameters.Info);
+            var dictionary = gameEvent.GetValue<Dictionary<string, string>>(EventParameter.Info);
             dictionary.Add($"{nameof(BoostMaxHealth)}{Guid.NewGuid()}", $"Boost maximum health by {PercentToBoost}%");
         }
     }

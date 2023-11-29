@@ -26,19 +26,19 @@ public class StatBuff : EntityComponent
     {
         if(gameEvent.ID == GameEventId.CastSpellEffect)
         {
-            IEntity target = Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameters.Target));
+            IEntity target = Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameter.Target));
             GameEvent getStat = GameEventPool.Get(GameEventId.GetStatRaw)
-                                .With(EventParameters.StatType, StatToBuff)
-                                .With(EventParameters.Value, Stat.Str);
+                                .With(EventParameter.StatType, StatToBuff)
+                                .With(EventParameter.Value, Stat.Str);
 
-            int value = target.FireEvent(getStat).GetValue<int>(EventParameters.Value);
+            int value = target.FireEvent(getStat).GetValue<int>(EventParameter.Value);
             float percent = Amount / 100f;
             int amountToBuff = (int)(value * percent);
 
             GameEvent boostStat = GameEventPool.Get(GameEventId.BoostStat)
-                                    .With(EventParameters.StatType, StatToBuff)
-                                    .With(EventParameters.Cost, false)
-                                    .With(EventParameters.StatBoostAmount, amountToBuff);
+                                    .With(EventParameter.StatType, StatToBuff)
+                                    .With(EventParameter.Cost, false)
+                                    .With(EventParameter.StatBoostAmount, amountToBuff);
 
             target.FireEvent(boostStat);
             boostStat.Release();

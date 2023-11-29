@@ -19,7 +19,7 @@ public class Value : EntityComponent
     public override void HandleEvent(GameEvent gameEvent)
     {
         if (gameEvent.ID == GameEventId.GetValue)
-            gameEvent.Paramters[EventParameters.Value] = Amount;
+            gameEvent.Paramters[EventParameter.Value] = Amount;
     }
 }
 

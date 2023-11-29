@@ -26,12 +26,12 @@ public class Equipment : EntityComponent
 
         if(gameEvent.ID == GameEventId.GetContextMenuActions)
         {
-            IEntity source = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameters.Entity));
+            IEntity source = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameter.Entity));
             GameEvent amIEquiped = GameEventPool.Get(GameEventId.CheckItemEquiped)
-                                        .With(EventParameters.Item, Self.ID)
-                                        .With(EventParameters.Value, false);
+                                        .With(EventParameter.Item, Self.ID)
+                                        .With(EventParameter.Value, false);
 
-            bool isEquiped = source.FireEvent(amIEquiped).GetValue<bool>(EventParameters.Value);
+            bool isEquiped = source.FireEvent(amIEquiped).GetValue<bool>(EventParameter.Value);
             amIEquiped.Release();
 
             if(isEquiped)
@@ -39,24 +39,24 @@ public class Equipment : EntityComponent
                 ContextMenuButton button = new ContextMenuButton("Unequip", () =>
                 {
                     GameEvent unequip = GameEventPool.Get(GameEventId.Unequip)
-                                .With(EventParameters.Entity, source.ID)
-                                .With(EventParameters.Item, Self.ID);
+                                .With(EventParameter.Entity, source.ID)
+                                .With(EventParameter.Item, Self.ID);
 
                     source.FireEvent(unequip, true).Release();
                     Services.WorldUIService.UpdateUI();
                 });
-                gameEvent.GetValue<List<ContextMenuButton>>(EventParameters.InventoryContextActions).Add(button);
+                gameEvent.GetValue<List<ContextMenuButton>>(EventParameter.InventoryContextActions).Add(button);
             }
             else
             {
                 ContextMenuButton button = new ContextMenuButton("Equip", () =>
                 {
                     GameEvent equip = GameEventPool.Get(GameEventId.Equip)
-                                            .With(EventParameters.EntityType, PreferredBodyPartWhenEquipped)
-                                            .With(EventParameters.Equipment, Self.ID);
+                                            .With(EventParameter.EntityType, PreferredBodyPartWhenEquipped)
+                                            .With(EventParameter.Equipment, Self.ID);
 
                     GameEvent remove = GameEventPool.Get(GameEventId.RemoveFromInventory)
-                                        .With(EventParameters.Item, Self.ID);
+                                        .With(EventParameter.Item, Self.ID);
 
                     source.FireEvent(remove);
 
@@ -68,23 +68,23 @@ public class Equipment : EntityComponent
                     Services.EntityMapService.GetEntity(Services.WorldDataQuery.GetActivePlayerId()).FireEvent(equip, true).Release();
                     Services.WorldUIService.UpdateUI();
                 });
-                gameEvent.GetValue<List<ContextMenuButton>>(EventParameters.InventoryContextActions).Add(button);
+                gameEvent.GetValue<List<ContextMenuButton>>(EventParameter.InventoryContextActions).Add(button);
             }
         }
 
         else if (gameEvent.ID == GameEventId.TryEquip)
         {
-            IEntity source = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameters.Entity));
+            IEntity source = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameter.Entity));
             GameEvent equip = GameEventPool.Get(GameEventId.Equip)
-                                            .With(EventParameters.EntityType, PreferredBodyPartWhenEquipped)
-                                            .With(EventParameters.Equipment, Self.ID);
+                                            .With(EventParameter.EntityType, PreferredBodyPartWhenEquipped)
+                                            .With(EventParameter.Equipment, Self.ID);
             Debug.LogWarning($"{source?.Name} is trying to equip {Self?.Name}");
             source.FireEvent(equip, true).Release();
         }
 
         else if (gameEvent.ID == GameEventId.GetBodyPartType)
         {
-            gameEvent.Paramters[EventParameters.BodyPart] = PreferredBodyPartWhenEquipped;
+            gameEvent.Paramters[EventParameter.BodyPart] = PreferredBodyPartWhenEquipped;
         }
     }
 }

@@ -20,7 +20,7 @@ public class Drunk : EntityComponent
     public override void HandleEvent(GameEvent gameEvent)
     {
         if (gameEvent.ID == GameEventId.BeforeMoving)
-            gameEvent.Paramters[EventParameters.InputDirection] = InputUtility.GetRandomMoveDirection();
+            gameEvent.Paramters[EventParameter.InputDirection] = InputUtility.GetRandomMoveDirection();
 
         if (gameEvent.ID == GameEventId.EndTurn)
         {

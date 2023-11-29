@@ -19,12 +19,12 @@ public class Info : EntityComponent
     {
         if(gameEvent.ID == GameEventId.ShowInfo)
         {
-            gameEvent.GetValue<StringBuilder>(EventParameters.Info).AppendLine(InfoMessage);
+            gameEvent.GetValue<StringBuilder>(EventParameter.Info).AppendLine(InfoMessage);
             RecLog.Log(InfoMessage);
         }
         else if(gameEvent.ID == GameEventId.GetInfo)
         {
-            var dictionary = gameEvent.GetValue<Dictionary<string, string>>(EventParameters.Info);
+            var dictionary = gameEvent.GetValue<Dictionary<string, string>>(EventParameter.Info);
             dictionary.Add($"CustomText", InfoMessage);
         }
     }

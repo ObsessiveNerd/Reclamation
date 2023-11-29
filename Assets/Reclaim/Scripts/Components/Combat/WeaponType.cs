@@ -10,8 +10,7 @@ public enum AttackType
     Ranged,
     RangedSpell,
     Finesse,
-    MagicalContainer
-    
+    Spell
 }
 
 public enum SpellType
@@ -39,9 +38,9 @@ public class WeaponType : EntityComponent
     public override void HandleEvent(GameEvent gameEvent)
     {
         if (gameEvent.ID == GameEventId.GetWeaponType)
-            gameEvent.GetValue<List<AttackType>>(EventParameters.WeaponType).Add(Type);
+            gameEvent.GetValue<List<AttackType>>(EventParameter.WeaponType).Add(Type);
         else if (gameEvent.ID == GameEventId.GetWeapon)
-            gameEvent.GetValue<List<string>>(EventParameters.Weapon).Add(Self.ID);
+            gameEvent.GetValue<List<string>>(EventParameter.Weapon).Add(Self.ID);
     }
 }
 

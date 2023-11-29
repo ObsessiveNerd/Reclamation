@@ -25,13 +25,13 @@ public class Name : EntityComponent
         if(gameEvent.ID == GameEventId.GetName)
         {
             if(!string.IsNullOrEmpty(PrettyName))
-                gameEvent.Paramters[EventParameters.Name] = PrettyName;
+                gameEvent.Paramters[EventParameter.Name] = PrettyName;
             else
-                gameEvent.Paramters[EventParameters.Name] = Self.InternalName;
+                gameEvent.Paramters[EventParameter.Name] = Self.InternalName;
         }
 
         if(gameEvent.ID == GameEventId.SetName)
-            PrettyName = gameEvent.GetValue<string>(EventParameters.Name);
+            PrettyName = gameEvent.GetValue<string>(EventParameter.Name);
     }
 }
 

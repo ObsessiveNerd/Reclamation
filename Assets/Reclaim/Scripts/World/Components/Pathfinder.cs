@@ -20,15 +20,15 @@ public class Pathfinder : GameService
         }
 
         GameEvent ge = GameEventPool.Get(GameEventId.PathfindingData)
-                        .With(EventParameters.BlocksMovement, false)
-                        .With(EventParameters.Weight, 0f);
+                        .With(EventParameter.BlocksMovement, false)
+                        .With(EventParameter.Weight, 0f);
 
         if (!m_Tiles.ContainsKey(p))
             throw new System.Exception($"Tiles does not have {p}");
 
         m_Tiles[p].GetPathFindingData(ge);
-        blocksMovement = ge.GetValue<bool>(EventParameters.BlocksMovement);
-        weight = ge.GetValue<float>(EventParameters.Weight);
+        blocksMovement = ge.GetValue<bool>(EventParameter.BlocksMovement);
+        weight = ge.GetValue<float>(EventParameter.Weight);
         ge.Release();
     }
 

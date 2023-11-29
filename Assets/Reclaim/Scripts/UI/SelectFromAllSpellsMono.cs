@@ -18,9 +18,9 @@ public class SelectFromAllSpellsMono : EscapeableMono//, IUpdatableUI
             return;
 
         GameEvent getSpells = GameEventPool.Get(GameEventId.GetSpells)
-                                    .With(EventParameters.SpellList, new HashSet<string>());
+                                    .With(EventParameter.SpellList, new HashSet<string>());
 
-        var spellList = source.FireEvent(getSpells).GetValue<HashSet<string>>(EventParameters.SpellList);
+        var spellList = source.FireEvent(getSpells).GetValue<HashSet<string>>(EventParameter.SpellList);
         getSpells.Release();
 
         if (spellList.Count == 0)
@@ -37,8 +37,8 @@ public class SelectFromAllSpellsMono : EscapeableMono//, IUpdatableUI
             IEntity spell = Services.EntityMapService.GetEntity(spellId);
             GameObject spriteGoResource = Resources.Load<GameObject>("Prefabs/UI/SpellUILarge");
             GameEvent getSpriteEvent = GameEventPool.Get(GameEventId.GetSprite)
-                .With(EventParameters.RenderSprite, null);
-            Sprite sprite = spell.FireEvent(spell, getSpriteEvent).GetValue<Sprite>(EventParameters.RenderSprite);
+                .With(EventParameter.RenderSprite, null);
+            Sprite sprite = spell.FireEvent(spell, getSpriteEvent).GetValue<Sprite>(EventParameter.RenderSprite);
             getSpriteEvent.Release();
             if (sprite != null)
             {
@@ -48,15 +48,15 @@ public class SelectFromAllSpellsMono : EscapeableMono//, IUpdatableUI
                 spriteGo.transform.SetParent(SpellView.transform, false);
 
                 GameEvent getMana = GameEventPool.Get(GameEventId.GetMana)
-                                    .With(EventParameters.Value, 0)
-                                    .With(EventParameters.MaxValue, 0);
+                                    .With(EventParameter.Value, 0)
+                                    .With(EventParameter.MaxValue, 0);
                 source.FireEvent(getMana);
 
                 GameEvent getSpellCost = GameEventPool.Get(GameEventId.ManaCost)
-                                        .With(EventParameters.Value, 0);
+                                        .With(EventParameter.Value, 0);
                 spell.FireEvent(getSpellCost);
 
-                if (getMana.GetValue<int>(EventParameters.Value) < getSpellCost.GetValue<int>(EventParameters.Value))
+                if (getMana.GetValue<int>(EventParameter.Value) < getSpellCost.GetValue<int>(EventParameter.Value))
                     spriteRenderer.color = Color.black;
                 else
                     spriteRenderer.color = Color.white;

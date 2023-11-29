@@ -24,9 +24,9 @@ public class SpawnEffect : EntityComponent
         if(gameEvent.ID == GameEventId.FireRangedAttack)
         {
             GameObject go = Resources.Load<GameObject>("Prefabs/RangedAttack");
-            var instance = GameObject.Instantiate(go, gameEvent.GetValue<Vector3>(EventParameters.Target), Quaternion.identity);
+            var instance = GameObject.Instantiate(go, gameEvent.GetValue<Vector3>(EventParameter.Target), Quaternion.identity);
             instance.GetComponent<SpriteRenderer>().sprite = Texture;
-            instance.AddComponent<SpawnEffectMono>().Setup(gameEvent.GetValue<Vector3>(EventParameters.Target), 2f); 
+            instance.AddComponent<SpawnEffectMono>().Setup(gameEvent.GetValue<Vector3>(EventParameter.Target), 2f); 
         }
     }
 }

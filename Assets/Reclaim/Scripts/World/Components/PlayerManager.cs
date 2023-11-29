@@ -18,9 +18,9 @@ public class PlayerManager : GameService
     {
         List<IEntity> activeAbilities = new List<IEntity>();
         GameEvent getAbilities = GameEventPool.Get(GameEventId.GetActiveAbilities)
-                                    .With(EventParameters.Abilities, new List<IEntity>());
+                                    .With(EventParameter.Abilities, new List<IEntity>());
         m_EntityIdToEntityMap[id].FireEvent(getAbilities);
-        activeAbilities = getAbilities.GetValue<List<IEntity>>(EventParameters.Abilities);
+        activeAbilities = getAbilities.GetValue<List<IEntity>>(EventParameter.Abilities);
         getAbilities.Release();
         return activeAbilities.Distinct().ToList();
     }

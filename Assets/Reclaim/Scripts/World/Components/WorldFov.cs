@@ -32,7 +32,7 @@ public class WorldFov : GameService
     {
         foreach (var tile in m_TileEntity.Values)
             FireEvent(tile, GameEventPool.Get(GameEventId.SetVisibility)
-                .With(EventParameters.TileInSight, true)).Release();
+                .With(EventParameter.TileInSight, true)).Release();
         Services.WorldUpdateService.UpdateWorldView();
     }
 
@@ -47,14 +47,14 @@ public class WorldFov : GameService
             if(!m_TileEntity.ContainsKey(tile)) continue;
 
                 FireEvent(m_TileEntity[tile], GameEventPool.Get(GameEventId.SetVisibility)
-                    .With(EventParameters.TileInSight, true)).Release();
+                    .With(EventParameter.TileInSight, true)).Release();
         }
 
         foreach (Point tile in oldTiles)
         { 
             if(!allVisibleTiles.Contains(tile) && m_TileEntity.ContainsKey(tile))
                 FireEvent(m_TileEntity[tile], GameEventPool.Get(GameEventId.SetVisibility)
-                    .With(EventParameters.TileInSight, false)).Release();
+                    .With(EventParameter.TileInSight, false)).Release();
         }
     }
 }

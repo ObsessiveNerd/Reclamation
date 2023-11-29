@@ -23,10 +23,10 @@ public class Position : EntityComponent
     public override void HandleEvent(GameEvent gameEvent)
     {
         if(gameEvent.ID == GameEventId.SetPoint)
-            PositionPoint = (Point)gameEvent.Paramters[EventParameters.TilePosition];
+            PositionPoint = (Point)gameEvent.Paramters[EventParameter.TilePosition];
 
         if (gameEvent.ID == GameEventId.GetPoint)
-            gameEvent.Paramters[EventParameters.Value] = PositionPoint;
+            gameEvent.Paramters[EventParameter.Value] = PositionPoint;
     }
 }
 

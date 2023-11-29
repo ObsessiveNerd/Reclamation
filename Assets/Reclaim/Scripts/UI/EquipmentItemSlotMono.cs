@@ -32,9 +32,9 @@ public class EquipmentItemSlotMono : MonoBehaviour, IDropHandler
         IEntity item = eventData.pointerDrag.GetComponent<InventoryItemMono>().ItemObject;
 
         GameEvent getBodyPartForEquipment = GameEventPool.Get(GameEventId.GetBodyPartType)
-            .With(EventParameters.BodyPart, BodyPart.None);
+            .With(EventParameter.BodyPart, BodyPart.None);
         item.FireEvent(getBodyPartForEquipment);
-        BodyPart equipmentBodyPart = getBodyPartForEquipment.GetValue<BodyPart>(EventParameters.BodyPart);
+        BodyPart equipmentBodyPart = getBodyPartForEquipment.GetValue<BodyPart>(EventParameter.BodyPart);
         getBodyPartForEquipment.Release();
 
         if (equipmentBodyPart == Part)
@@ -50,7 +50,7 @@ public class EquipmentItemSlotMono : MonoBehaviour, IDropHandler
                // source.FireEvent(unEquip).Release();
 
                 GameEvent removeFromInventory = GameEventPool.Get(GameEventId.RemoveFromInventory)
-                                        .With(EventParameters.Item, item.ID);
+                                        .With(EventParameter.Item, item.ID);
                 source.FireEvent(removeFromInventory).Release();
                 removeFromInventory.Release();
 
@@ -58,8 +58,8 @@ public class EquipmentItemSlotMono : MonoBehaviour, IDropHandler
             }
 
             GameEvent equip = GameEventPool.Get(GameEventId.Equip)
-                .With(EventParameters.EntityType, equipmentBodyPart)
-                .With(EventParameters.Equipment, item.ID);
+                .With(EventParameter.EntityType, equipmentBodyPart)
+                .With(EventParameter.Equipment, item.ID);
 
             Source.FireEvent(equip);
             equip.Release();
@@ -75,9 +75,9 @@ public class EquipmentItemSlotMono : MonoBehaviour, IDropHandler
             Debug.Log($"Trying to unequip {item.Name}");
 
              GameEvent unEquip = GameEventPool.Get(GameEventId.Unequip)
-                .With(EventParameters.EntityType, equipmentBodyPart)
-                .With(EventParameters.Item, currentItem.ID)
-                .With(EventParameters.Entity, current.ID);
+                .With(EventParameter.EntityType, equipmentBodyPart)
+                .With(EventParameter.Item, currentItem.ID)
+                .With(EventParameter.Entity, current.ID);
 
             current.FireEvent(unEquip);
             unEquip.Release();

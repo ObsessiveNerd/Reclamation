@@ -25,12 +25,12 @@ public class ApplyStatusEffect : EntityComponent
     {
         if(gameEvent.ID == GameEventId.ApplyEffectToTarget)
         {
-            var target = gameEvent.GetValue<string>(EventParameters.Entity);
+            var target = gameEvent.GetValue<string>(EventParameter.Entity);
             ApplyEffectToTarget(Services.EntityMapService.GetEntity(target));
         }
         else if(gameEvent.ID == GameEventId.CastSpellEffect)
         {
-            var target = gameEvent.GetValue<string>(EventParameters.Target);
+            var target = gameEvent.GetValue<string>(EventParameter.Target);
             ApplyEffectToTarget(Services.EntityMapService.GetEntity(target));
         }
     }

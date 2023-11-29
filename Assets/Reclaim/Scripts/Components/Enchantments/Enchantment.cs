@@ -31,8 +31,8 @@ public class Enchantment : EntityComponent
     {
         if (gameEvent.ID == GameEventId.GetContextMenuActions)
         {
-            IEntity source = Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameters.Entity));
-            gameEvent.GetValue<List<ContextMenuButton>>(EventParameters.InventoryContextActions)
+            IEntity source = Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameter.Entity));
+            gameEvent.GetValue<List<ContextMenuButton>>(EventParameter.InventoryContextActions)
                 .Add(new ContextMenuButton("Enchant", () =>
             {
                 UIManager.ForcePop();
@@ -43,7 +43,7 @@ public class Enchantment : EntityComponent
 
         else if(gameEvent.ID == GameEventId.GetEnchantments)
         {
-            gameEvent.GetValue<List<string>>(EventParameters.Enchantments).Add(EnchantmentEntity.ID);
+            gameEvent.GetValue<List<string>>(EventParameter.Enchantments).Add(EnchantmentEntity.ID);
         }
         else if(gameEvent.ID == GameEventId.GetInfo)
         {

@@ -22,7 +22,7 @@ public class EquipmentType : EntityComponent
     {
         if(gameEvent.ID == GameEventId.GetValidAppendage)
         {
-            gameEvent.Paramters[EventParameters.Value] = EquipmentBodyPart;
+            gameEvent.Paramters[EventParameter.Value] = EquipmentBodyPart;
         }
     }
 }

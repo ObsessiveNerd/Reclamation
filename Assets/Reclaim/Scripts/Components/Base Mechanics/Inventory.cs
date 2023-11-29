@@ -32,7 +32,7 @@ public class Inventory : EntityComponent
 
         if (gameEvent.ID == GameEventId.AddToInventory)
         {
-            IEntity item = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Entity]);
+            IEntity item = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameter.Entity]);
             if (!InventoryItems.Contains(item))
             {
                 InventoryItems.Add(item);
@@ -45,7 +45,7 @@ public class Inventory : EntityComponent
 
         if (gameEvent.ID == GameEventId.RemoveFromInventory)
         {
-            IEntity item = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Item]);
+            IEntity item = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameter.Item]);
             if (InventoryItems.Contains(item))
                 InventoryItems.Remove(item);
         }
@@ -66,7 +66,7 @@ public class Inventory : EntityComponent
 
         if(gameEvent.ID == GameEventId.GetCurrentInventory)
         {
-            gameEvent.Paramters[EventParameters.Value] = InventoryItems;
+            gameEvent.Paramters[EventParameter.Value] = InventoryItems;
         }
     }
 }

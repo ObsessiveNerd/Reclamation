@@ -41,10 +41,10 @@ public class StatsUIMono : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
         m_Popup = Resources.Load<GameObject>("Prefabs/UI/ItemPopup");
         GameEvent getStat = GameEventPool.Get(GameEventId.GetStatRaw)
-                                .With(EventParameters.StatType, ControlledStat)
-                                .With(EventParameters.Value, Stat.Str);
+                                .With(EventParameter.StatType, ControlledStat)
+                                .With(EventParameter.Value, Stat.Str);
 
-        int value = source.FireEvent(getStat).GetValue<int>(EventParameters.Value);
+        int value = source.FireEvent(getStat).GetValue<int>(EventParameter.Value);
         Text.text = $"{ControlledStat.ToString()}: {value}";
         getStat.Release();
     }

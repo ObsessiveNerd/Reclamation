@@ -11,7 +11,7 @@ public class Slow : EntityComponent
 
     public override void HandleEvent(GameEvent gameEvent)
     {
-        gameEvent.Paramters[EventParameters.EnergyRegen] = ((float)gameEvent.Paramters[EventParameters.EnergyRegen]) / 2f;
+        gameEvent.Paramters[EventParameter.EnergyRegen] = ((float)gameEvent.Paramters[EventParameter.EnergyRegen]) / 2f;
     }
 }
 

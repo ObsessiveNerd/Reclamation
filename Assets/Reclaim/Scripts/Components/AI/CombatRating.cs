@@ -15,23 +15,23 @@ public class CombatRating : EntityComponent
         if(gameEvent.ID == GameEventId.GetCombatRating)
         {
             GameEvent getPrimaryStat = GameEventPool.Get(GameEventId.GetPrimaryStatType)
-                                            .With(EventParameters.Value, null);
-            Stat primaryType = FireEvent(Self, getPrimaryStat).GetValue<Stat>(EventParameters.Value);
+                                            .With(EventParameter.Value, null);
+            Stat primaryType = FireEvent(Self, getPrimaryStat).GetValue<Stat>(EventParameter.Value);
             getPrimaryStat.Release();
 
             int primaryStatMod = GetStatMod(primaryType);
             int conStatMod = GetStatMod(Stat.Con);
 
-            gameEvent.Paramters[EventParameters.Value] = ((int)gameEvent.Paramters[EventParameters.Value] + primaryStatMod + conStatMod);
+            gameEvent.Paramters[EventParameter.Value] = ((int)gameEvent.Paramters[EventParameter.Value] + primaryStatMod + conStatMod);
         }
     }
 
     int GetStatMod(Stat statType)
     {
         GameEvent getPrimaryStatModifier = GameEventPool.Get(GameEventId.GetStat)
-                                                    .With(EventParameters.StatType, statType)
-                                                    .With(EventParameters.Value, 0);
-        var res = FireEvent(Self, getPrimaryStatModifier).GetValue<int>(EventParameters.Value);
+                                                    .With(EventParameter.StatType, statType)
+                                                    .With(EventParameter.Value, 0);
+        var res = FireEvent(Self, getPrimaryStatModifier).GetValue<int>(EventParameter.Value);
         getPrimaryStatModifier.Release();
         return res;
     }

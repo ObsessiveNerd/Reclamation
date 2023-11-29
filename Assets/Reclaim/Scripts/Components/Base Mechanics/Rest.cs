@@ -24,15 +24,15 @@ public class Rest : EntityComponent
     {
         if(gameEvent.ID == GameEventId.EndTurn)
         {
-            IEntity target = gameEvent.HasParameter(EventParameters.Entity) ?
-                Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameters.Entity)) : Self;
+            IEntity target = gameEvent.HasParameter(EventParameter.Entity) ?
+                Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameter.Entity)) : Self;
 
             currentTurns++;
             if(currentTurns >= RegenSpeed)
             {
                 GameEvent rest = GameEventPool.Get(GameEventId.Rest)
-                                            .With(EventParameters.Healing, RegenAmount)
-                                            .With(EventParameters.Mana, RegenAmount);
+                                            .With(EventParameter.Healing, RegenAmount)
+                                            .With(EventParameter.Mana, RegenAmount);
 
                 FireEvent(target, rest, true).Release();
                 currentTurns = 0;

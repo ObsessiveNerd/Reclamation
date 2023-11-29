@@ -48,8 +48,8 @@ public class InventoryManagerMono : UpdatableUI, IDropHandler
         Name.text = Source.Name;
 
         GameEvent getSprite = GameEventPool.Get(GameEventId.GetSprite)
-                                            .With(EventParameters.RenderSprite, null);
-        CharacterImage.sprite = Source.FireEvent(getSprite).GetValue<Sprite>(EventParameters.RenderSprite);
+                                            .With(EventParameter.RenderSprite, null);
+        CharacterImage.sprite = Source.FireEvent(getSprite).GetValue<Sprite>(EventParameter.RenderSprite);
         getSprite.Release();
 
         List<IEntity> inventory = new List<IEntity>();
@@ -57,9 +57,9 @@ public class InventoryManagerMono : UpdatableUI, IDropHandler
         foreach (var player in Services.PlayerManagerService.GetAllPlayers())
         {
             GameEvent getCurrentInventory = GameEventPool.Get(GameEventId.GetCurrentInventory)
-                                            .With(EventParameters.Value, new List<IEntity>());
+                                            .With(EventParameter.Value, new List<IEntity>());
 
-            var items = player.FireEvent(getCurrentInventory).GetValue<List<IEntity>>(EventParameters.Value);
+            var items = player.FireEvent(getCurrentInventory).GetValue<List<IEntity>>(EventParameter.Value);
             foreach (var item in items)
                 itemToPlayerSource.Add(item, player);
             inventory.AddRange(items);
@@ -99,17 +99,17 @@ public class InventoryManagerMono : UpdatableUI, IDropHandler
         IEntity item = eventData.pointerDrag.GetComponent<InventoryItemMono>().ItemObject;
 
         GameEvent getBodyPartForEquipment = GameEventPool.Get(GameEventId.GetBodyPartType)
-            .With(EventParameters.BodyPart, BodyPart.None);
+            .With(EventParameter.BodyPart, BodyPart.None);
         item.FireEvent(getBodyPartForEquipment);
-        BodyPart equipmentBodyPart = getBodyPartForEquipment.GetValue<BodyPart>(EventParameters.BodyPart);
+        BodyPart equipmentBodyPart = getBodyPartForEquipment.GetValue<BodyPart>(EventParameter.BodyPart);
         getBodyPartForEquipment.Release();
 
         if (equipmentBodyPart != BodyPart.None)
         {
             GameEvent unEquip = GameEventPool.Get(GameEventId.Unequip)
-                .With(EventParameters.Entity, source.ID)
-                .With(EventParameters.EntityType, equipmentBodyPart)
-                .With(EventParameters.Item, item.ID);
+                .With(EventParameter.Entity, source.ID)
+                .With(EventParameter.EntityType, equipmentBodyPart)
+                .With(EventParameter.Item, item.ID);
 
             source.FireEvent(unEquip);
             unEquip.Release();
@@ -118,14 +118,14 @@ public class InventoryManagerMono : UpdatableUI, IDropHandler
         if (source != Source)
         {
             GameEvent removeFromInventory = GameEventPool.Get(GameEventId.RemoveFromInventory)
-                                        .With(EventParameters.Item, item.ID);
+                                        .With(EventParameter.Item, item.ID);
             source.FireEvent(removeFromInventory);
             removeFromInventory.Release();
             //Services.WorldUIService.UpdateUI(source.ID);
         }
 
         GameEvent addToInventory = GameEventPool.Get(GameEventId.AddToInventory)
-                                    .With(EventParameters.Entity, item.ID);
+                                    .With(EventParameter.Entity, item.ID);
         Source.FireEvent(addToInventory);
         addToInventory.Release();
 

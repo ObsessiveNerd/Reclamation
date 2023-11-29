@@ -34,9 +34,9 @@ public class BuffAfterTurns : EntityComponent
             if (CurrentTurnCount >= DestroyAfterTurnCount)
             {
                 GameEvent buff = GameEventPool.Get(GameEventId.BoostStat)
-                                .With(EventParameters.StatType, StatType)
-                                .With(EventParameters.Cost, false)
-                                .With(EventParameters.StatBoostAmount, Amount);
+                                .With(EventParameter.StatType, StatType)
+                                .With(EventParameter.Cost, false)
+                                .With(EventParameter.StatBoostAmount, Amount);
 
                 Self.FireEvent(buff);
                 Self.RemoveComponent(this);

@@ -27,13 +27,13 @@ public class DealDamage : EntityComponent
     {
         if (gameEvent.ID == GameEventId.AmAttacking)
         { 
-            ((List<Damage>)gameEvent.Paramters[EventParameters.DamageList]).Add(new Damage(Dice.Roll(), DamageType));
+            ((List<Damage>)gameEvent.Paramters[EventParameter.DamageList]).Add(new Damage(Dice.Roll(), DamageType));
         }
         else if (gameEvent.ID == GameEventId.GetCombatRating)
-            gameEvent.Paramters[EventParameters.Value] = (int)gameEvent.Paramters[EventParameters.Value] + Dice.GetAverageRoll();
+            gameEvent.Paramters[EventParameter.Value] = (int)gameEvent.Paramters[EventParameter.Value] + Dice.GetAverageRoll();
         else if (gameEvent.ID == GameEventId.GetInfo)
         {
-            var dictionary = gameEvent.GetValue<Dictionary<string, string>>(EventParameters.Info);
+            var dictionary = gameEvent.GetValue<Dictionary<string, string>>(EventParameter.Info);
             dictionary.Add($"{nameof(DealDamage)}{Guid.NewGuid()}", $"Damage Type: {DamageType}\nDamage: {Dice.GetNotation()}");
         }
     }

@@ -33,11 +33,11 @@ public class CharacterTab : UpdatableUI
         m_EId = m_Entity.ID;
 
         GameEvent characterInfo = GameEventPool.Get(GameEventId.GetPortrait)
-                            .With(EventParameters.RenderSprite, null);
+                            .With(EventParameter.RenderSprite, null);
 
         var firedEvent = entity.FireEvent(characterInfo);
 
-        m_Portrait.sprite = firedEvent.GetValue<Sprite>(EventParameters.RenderSprite);
+        m_Portrait.sprite = firedEvent.GetValue<Sprite>(EventParameter.RenderSprite);
         firedEvent.Release();
     }
 
@@ -50,22 +50,22 @@ public class CharacterTab : UpdatableUI
             m_Entity = EntityQuery.GetEntity(m_EId);
 
         GameEvent getHealth = GameEventPool.Get(GameEventId.GetHealth)
-                                    .With(EventParameters.Value, 0)
-                                    .With(EventParameters.MaxValue, 0);
+                                    .With(EventParameter.Value, 0)
+                                    .With(EventParameter.MaxValue, 0);
 
         var getHealthResult = m_Entity.FireEvent(getHealth);
 
-        m_HealthBar.maxValue = getHealthResult.GetValue<int>(EventParameters.MaxValue);
-        m_HealthBar.value = getHealthResult.GetValue<int>(EventParameters.Value);
+        m_HealthBar.maxValue = getHealthResult.GetValue<int>(EventParameter.MaxValue);
+        m_HealthBar.value = getHealthResult.GetValue<int>(EventParameter.Value);
         HealthText.text = $"{m_HealthBar.value}/{m_HealthBar.maxValue}";
 
         getHealthResult.Release();
 
         var getAttribute = GameEventPool.Get(GameEventId.GetAttributePoints)
-                                            .With(EventParameters.AttributePoints, 0);
+                                            .With(EventParameter.AttributePoints, 0);
         m_Entity.FireEvent(getAttribute);
 
-        if (getAttribute.GetValue<int>(EventParameters.AttributePoints) > 0)
+        if (getAttribute.GetValue<int>(EventParameter.AttributePoints) > 0)
             LevelUp.SetActive(true);
         else
             LevelUp.SetActive(false);
@@ -73,37 +73,37 @@ public class CharacterTab : UpdatableUI
         getAttribute.Release();
 
         GameEvent getMana = GameEventPool.Get(GameEventId.GetMana)
-                                    .With(EventParameters.Value, 0)
-                                    .With(EventParameters.MaxValue, 0);
+                                    .With(EventParameter.Value, 0)
+                                    .With(EventParameter.MaxValue, 0);
 
         var getManaResult = m_Entity.FireEvent(getMana);
 
-        m_ManaBar.maxValue = getManaResult.GetValue<int>(EventParameters.MaxValue);
-        m_ManaBar.value = getManaResult.GetValue<int>(EventParameters.Value);
+        m_ManaBar.maxValue = getManaResult.GetValue<int>(EventParameter.MaxValue);
+        m_ManaBar.value = getManaResult.GetValue<int>(EventParameter.Value);
         ManaText.text = $"{m_ManaBar.value}/{m_ManaBar.maxValue}";
         getManaResult.Release();
 
         GameEvent getInfo = GameEventPool.Get(GameEventId.GetName)
-                                .With(EventParameters.Name, "");
-        m_PrettyName.text = m_Entity.FireEvent(getInfo).GetValue<string>(EventParameters.Name);
+                                .With(EventParameter.Name, "");
+        m_PrettyName.text = m_Entity.FireEvent(getInfo).GetValue<string>(EventParameter.Name);
         getInfo.Release();
 
          GameEvent getExp = GameEventPool.Get(GameEventId.GetExperience)
-                                    .With(EventParameters.Value, 0)
-                                    .With(EventParameters.MaxValue, 0);
+                                    .With(EventParameter.Value, 0)
+                                    .With(EventParameter.MaxValue, 0);
 
         var getExpResult = m_Entity.FireEvent(getExp);
 
-        m_ExpBar.maxValue = getExpResult.GetValue<int>(EventParameters.MaxValue);
-        m_ExpBar.value = getExpResult.GetValue<int>(EventParameters.Value);
+        m_ExpBar.maxValue = getExpResult.GetValue<int>(EventParameter.MaxValue);
+        m_ExpBar.value = getExpResult.GetValue<int>(EventParameter.Value);
         ExpText.text = $"{m_ExpBar.value}/{m_ExpBar.maxValue}";
         getExpResult.Release();
 
         GameEvent getLevel = GameEventPool.Get(GameEventId.GetLevel)
-                                    .With(EventParameters.Level, 0);
+                                    .With(EventParameter.Level, 0);
 
         var getLevelResult = m_Entity.FireEvent(getLevel);
-        m_Level.text = getLevelResult.GetValue<int>(EventParameters.Level).ToString();
+        m_Level.text = getLevelResult.GetValue<int>(EventParameter.Level).ToString();
         getLevelResult.Release();
 
         LevelUpButton.onClick.RemoveAllListeners();

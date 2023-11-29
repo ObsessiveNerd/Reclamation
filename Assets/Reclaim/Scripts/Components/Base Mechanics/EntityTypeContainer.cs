@@ -23,7 +23,7 @@ public class EntityTypeContainer : EntityComponent
 
     public override void HandleEvent(GameEvent gameEvent)
     {
-        gameEvent.Paramters[EventParameters.EntityType] = Type;
+        gameEvent.Paramters[EventParameter.EntityType] = Type;
     }
 }
 

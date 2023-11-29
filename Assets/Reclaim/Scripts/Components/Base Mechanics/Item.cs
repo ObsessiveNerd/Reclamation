@@ -30,49 +30,49 @@ public class Item : EntityComponent
     {
         if (gameEvent.ID == GameEventId.Pickup)
         {
-            IEntity entity = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Entity]);
+            IEntity entity = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameter.Entity]);
             FireEvent(entity, GameEventPool.Get(GameEventId.AddToInventory)
-                .With(EventParameters.Entity, Self.ID), true).Release();
+                .With(EventParameter.Entity, Self.ID), true).Release();
         }
 
         if (gameEvent.ID == GameEventId.Drop)
         {
-            IEntity droppingEntity = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Entity]);
+            IEntity droppingEntity = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameter.Entity]);
             Services.TileInteractionService.Drop(droppingEntity, Self);
 
             GameEvent unequip = GameEventPool.Get(GameEventId.Unequip)
-                                .With(EventParameters.Entity, droppingEntity.ID)
-                                .With(EventParameters.Item, Self.ID);
+                                .With(EventParameter.Entity, droppingEntity.ID)
+                                .With(EventParameter.Item, Self.ID);
 
             FireEvent(droppingEntity, unequip, true);
             FireEvent(droppingEntity, GameEventPool.Get(GameEventId.RemoveFromInventory)
-                .With(EventParameters.Item, Self.ID), true).Release();
+                .With(EventParameter.Item, Self.ID), true).Release();
             unequip.Release();
 
         }
 
         if (gameEvent.ID == GameEventId.GetContextMenuActions)
         {
-            IEntity source = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameters.Entity));
+            IEntity source = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameter.Entity));
             ContextMenuButton dropButton = new ContextMenuButton("Drop", () =>
             {
                 GameEvent drop = GameEventPool.Get(GameEventId.Drop)
-                                        .With(EventParameters.Entity, source.ID);
+                                        .With(EventParameter.Entity, source.ID);
 
                 FireEvent(Self, drop, true).Release();
             });
-            gameEvent.GetValue<List<ContextMenuButton>>(EventParameters.InventoryContextActions).Add(dropButton);
+            gameEvent.GetValue<List<ContextMenuButton>>(EventParameter.InventoryContextActions).Add(dropButton);
 
             ContextMenuButton giveTo = new ContextMenuButton("Give to...", () =>
             {
                 Services.WorldUIService.PromptToGiveItem(source,Self);
             });
-            gameEvent.GetValue<List<ContextMenuButton>>(EventParameters.InventoryContextActions).Add(giveTo);
+            gameEvent.GetValue<List<ContextMenuButton>>(EventParameter.InventoryContextActions).Add(giveTo);
         }
 
         if(gameEvent.ID == GameEventId.GetRarity)
         {
-            gameEvent.Paramters[EventParameters.Rarity] = Rarity;
+            gameEvent.Paramters[EventParameter.Rarity] = Rarity;
         }
     }
 }

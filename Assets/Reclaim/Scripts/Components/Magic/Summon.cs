@@ -23,8 +23,8 @@ public class Summon : EntityComponent
     {
         if(gameEvent.ID == GameEventId.CastSpellEffect)
         {
-            IEntity spellSource = Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameters.Entity));
-            IEntity spellTarget = Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameters.Target));
+            IEntity spellSource = Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameter.Entity));
+            IEntity spellTarget = Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameter.Target));
 
             var validPoints = Services.DungeonService.GetValidPointsAround(Services.EntityMapService.GetPointWhereEntityIs(spellTarget), 2);
 
@@ -35,7 +35,7 @@ public class Summon : EntityComponent
                 {
                     FactionId factionId = spellSource.GetComponent<Faction>().ID;
                     GameEvent setFaction = GameEventPool.Get(GameEventId.SetFaction)
-                                            .With(EventParameters.Faction, factionId);
+                                            .With(EventParameter.Faction, factionId);
                     e.FireEvent(setFaction);
                 }
 
@@ -53,8 +53,8 @@ public class Summon : EntityComponent
                 var point = validPoints[0];
 
                 GameEvent fireRangedWeapon = GameEventPool.Get(GameEventId.FireRangedAttack)
-                    .With(EventParameters.Entity, WorldUtility.GetGameObject(spellSource).transform.position)
-                    .With(EventParameters.Target, WorldUtility.GetGameObject(Services.WorldDataQuery.GetEntityOnTile(point)).transform.position);
+                    .With(EventParameter.Entity, WorldUtility.GetGameObject(spellSource).transform.position)
+                    .With(EventParameter.Target, WorldUtility.GetGameObject(Services.WorldDataQuery.GetEntityOnTile(point)).transform.position);
                 Self.FireEvent(fireRangedWeapon).Release();
                 fireRangedWeapon.Release();
 

@@ -24,20 +24,20 @@ public class DOT : EntityComponent
     {
         if(gameEvent.ID == GameEventId.EndTurn)
         {
-            IEntity target = gameEvent.HasParameter(EventParameters.Entity) ?
-                Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameters.Entity)) : Self;
+            IEntity target = gameEvent.HasParameter(EventParameter.Entity) ?
+                Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameter.Entity)) : Self;
 
             currentTurns++;
             if(currentTurns >= RegenSpeed)
             {
-                CombatUtility.CastSpell(Self, target, Self);
+                CombatUtility.Attack(Self, target, Self);
                 currentTurns = 0;
             }
         }
 
         else if(gameEvent.ID == GameEventId.GetInfo)
         {
-            var dictionary = gameEvent.GetValue<Dictionary<string, string>>(EventParameters.Info);
+            var dictionary = gameEvent.GetValue<Dictionary<string, string>>(EventParameter.Info);
             dictionary.Add($"{nameof(DOT)}{Guid.NewGuid()}", $"Take damage every {RegenSpeed} turns.");
         }
     }

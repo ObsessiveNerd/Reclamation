@@ -25,12 +25,12 @@ public static class GameEventPool
             e.Release();
     }
 
-    public static GameEvent Get(string id)
+    public static GameEvent Get(GameEventId id)
     {
         if (m_Pool.Count > 0)
         {
             var ge = m_Pool.Pop();
-            if (string.IsNullOrEmpty(ge.ID))
+            if (ge.ID == GameEventId.None)
             {
                 ge.SetId(id);
                 m_InUse.Add(ge);

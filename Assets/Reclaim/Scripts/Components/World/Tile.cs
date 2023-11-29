@@ -103,35 +103,15 @@ public struct Point
     }
 }
 
-public class Tile : EntityComponent
+public class Tile
 {
     public IEntity CreatureSlot;
     public IEntity ObjectSlot;
     public List<IEntity> Items = new List<IEntity>();
     public bool BlocksMovement
     {
-        get
-        {
-            if (CreatureSlot == null && ObjectSlot == null)
-                return false;
-            else
-            {
-                GameEvent b = GameEventPool.Get(GameEventId.PathfindingData)
-                                .With(EventParameters.BlocksMovement, false)
-                                .With(EventParameters.Weight, 1f);
-                foreach (var t in GetTarget(false))
-                {
-                    var e = FireEvent(t, b);
-                    if (e.GetValue<bool>(EventParameters.BlocksMovement))
-                    {
-                        b.Release();
-                        return true;
-                    }
-                }
-                b.Release();
-                return false;
-            }
-        }
+        get;
+        set;
     }
 
     List<IEntity> AllEntities
@@ -148,54 +128,36 @@ public class Tile : EntityComponent
     bool m_IsVisible = false;
     Point m_GridPoint;
 
-    public Tile(IEntity self, Point gridPoint)
-    {
-        Init(self);
-        m_GridPoint = gridPoint;
+    //public Tile(IEntity self, Point gridPoint)
+    //{
+    //    Init(self);
+    //    m_GridPoint = gridPoint;
 
-        RegisteredEvents.Add(GameEventId.UpdateTile);
-        RegisteredEvents.Add(GameEventId.Spawn);
-        RegisteredEvents.Add(GameEventId.Despawn);
-        RegisteredEvents.Add(GameEventId.ShowTileInfo);
-        RegisteredEvents.Add(GameEventId.AddComponentToTile);
-        RegisteredEvents.Add(GameEventId.GetEntityOnTile);
-        RegisteredEvents.Add(GameEventId.BeforeMoving);
-        RegisteredEvents.Add(GameEventId.Pickup);
-        RegisteredEvents.Add(GameEventId.VisibilityUpdated);
-        RegisteredEvents.Add(GameEventId.BlocksMovement);
-        RegisteredEvents.Add(GameEventId.DestroyObject);
-        RegisteredEvents.Add(GameEventId.CleanTile);
-        RegisteredEvents.Add(GameEventId.PathfindingData);
-        RegisteredEvents.Add(GameEventId.GetValueOnTile);
-        RegisteredEvents.Add(GameEventId.GetInteractableObjects);
-        RegisteredEvents.Add(GameEventId.SerializeTile);
-    }
-
-    public void UpdateTile()
-    {
-        IEntity target = m_IsVisible ? GetTarget()[0] : ObjectSlot == null ? Self : ObjectSlot;
-        GameEvent getSprite = GameEventPool.Get(GameEventId.GetSprite).With(EventParameters.RenderSprite, null);
-
-        if (CreatureSlot == null && Items.Count > 1)
-            getSprite.Paramters[EventParameters.RenderSprite] = Resources.Load<Sprite>("Textures/Sprites/Items/r_bag");
-        else
-            FireEvent(target, getSprite);
-        //Self.GetComponent<Renderer>().Image.sprite = getSprite.GetValue<Sprite>(EventParameters.RenderSprite);
-
-        FireEvent(Self, GameEventPool.Get(GameEventId.UpdateRenderer).With(getSprite.Paramters)).Release();
-        getSprite.Release();
-    }
+    //    RegisteredEvents.Add(GameEventId.UpdateTile);
+    //    RegisteredEvents.Add(GameEventId.Spawn);
+    //    RegisteredEvents.Add(GameEventId.Despawn);
+    //    RegisteredEvents.Add(GameEventId.ShowTileInfo);
+    //    RegisteredEvents.Add(GameEventId.AddComponentToTile);
+    //    RegisteredEvents.Add(GameEventId.GetEntityOnTile);
+    //    RegisteredEvents.Add(GameEventId.BeforeMoving);
+    //    RegisteredEvents.Add(GameEventId.Pickup);
+    //    RegisteredEvents.Add(GameEventId.VisibilityUpdated);
+    //    RegisteredEvents.Add(GameEventId.BlocksMovement);
+    //    RegisteredEvents.Add(GameEventId.DestroyObject);
+    //    RegisteredEvents.Add(GameEventId.CleanTile);
+    //    RegisteredEvents.Add(GameEventId.PathfindingData);
+    //    RegisteredEvents.Add(GameEventId.GetValueOnTile);
+    //    RegisteredEvents.Add(GameEventId.GetInteractableObjects);
+    //    RegisteredEvents.Add(GameEventId.SerializeTile);
+    //}
 
     public void GetPathFindingData(GameEvent gameEvent)
     {
-        foreach(var target in GetTarget(false))
-                FireEvent(target, gameEvent);
-    }
-
-
-    public override void HandleEvent(GameEvent gameEvent)
-    {
-        throw new Exception($"Tile does not accept events {gameEvent.ID}");
+        gameEvent.SetValue<bool>(EventParameter.BlocksMovement, BlocksMovement);
+        float weight = gameEvent.GetValue<float>(EventParameter.Weight);
+        foreach(var entity in AllEntities)
+            weight += entity.GetComponent<TileWeight>().Weight;
+        gameEvent.SetValue<float>(EventParameter.Weight, weight);
     }
 
     public void CleanTile()
@@ -203,46 +165,20 @@ public class Tile : EntityComponent
         CreatureSlot = null;
         ObjectSlot = null;
         Items.Clear();
-        FireEvent(Self, GameEventPool.Get(GameEventId.SetVisibility)
-            .With(EventParameters.TileInSight, false)).Release();
-        FireEvent(Self, GameEventPool.Get(GameEventId.SetHasBeenVisited)
-            .With(EventParameters.HasBeenVisited, false)).Release();
-        //Spawner.Despawn(CreatureSlot);
-        //Spawner.Despawn(ObjectSlot);
-        //List<IEntity> items = new List<IEntity>(Items);
-        //foreach (var item in items)
-        //    Spawner.Despawn(item);
-        Services.TileInteractionService.TileChanged(this);
     }
 
-    public void VisibilityUpdated(GameEvent gameEvent)
-    {
-        m_IsVisible = (bool)gameEvent.Paramters[EventParameters.Value];
-        Services.TileInteractionService.TileChanged(this);
-    }
-
-    public void BeforeMoving(GameEvent gameEvent)
-    {
-        if (m_HasEntity)
-        {
-            foreach (IEntity target in GetTarget())
-            {
-                GameEvent entityOvertaking = GameEventPool.Get(GameEventId.EntityOvertaking)
-                    .With(EventParameters.Entity, gameEvent.GetValue<string>(EventParameters.Entity)); //.Paramters[EventParameters.Entity]);
-                FireEvent(target, entityOvertaking);
-                FireEvent(target, gameEvent);
-
-                entityOvertaking.Release();
-            }
-        }
-    }
+    //public void VisibilityUpdated(GameEvent gameEvent)
+    //{
+    //    m_IsVisible = (bool)gameEvent.Paramters[EventParameter.Value];
+    //    Services.TileInteractionService.TileChanged(this);
+    //}
 
     public void Spawn(IEntity entity)
     {
         GameEvent getType = GameEventPool.Get(GameEventId.GetEntityType)
-                            .With(EventParameters.EntityType, EntityType.None);
+                            .With(EventParameter.EntityType, EntityType.None);
 
-        EntityType entityType = entity.FireEvent(getType).GetValue<EntityType>(EventParameters.EntityType);
+        EntityType entityType = entity.FireEvent(getType).GetValue<EntityType>(EventParameter.EntityType);
         getType.Release();
 
         switch (entityType)
@@ -262,14 +198,14 @@ public class Tile : EntityComponent
 
     public void Pickup(GameEvent gameEvent)
     {
-        IEntity entity = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Entity]);
+        IEntity entity = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameter.Entity]);
         if (Items.Count > 0)
         {
             List<IEntity> itemsPickedup = new List<IEntity>();
             foreach (var item in Items)
             {
-                var pickupEvent = FireEvent(entity, GameEventPool.Get(GameEventId.AddToInventory)
-                    .With(EventParameters.Entity, item.ID), true);
+                var pickupEvent = entity.FireEvent(entity, GameEventPool.Get(GameEventId.AddToInventory)
+                    .With(EventParameter.Entity, item.ID), true);
                 itemsPickedup.Add(item);
                 pickupEvent.Release();
             }
@@ -279,15 +215,15 @@ public class Tile : EntityComponent
         }
         if (ObjectSlot != null)
         {
-            FireEvent(ObjectSlot, gameEvent, true);
+            entity.FireEvent(ObjectSlot, gameEvent, true);
         }
         Services.TileInteractionService.TileChanged(this);
     }
 
     public void Despawn(GameEvent gameEvent)
     {
-        IEntity entity = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameters.Entity]);
-        EntityType entityType = gameEvent.GetValue<EntityType>(EventParameters.EntityType);
+        IEntity entity = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameter.Entity]);
+        EntityType entityType = gameEvent.GetValue<EntityType>(EventParameter.EntityType);
         switch (entityType)
         {
             case EntityType.Creature:
@@ -307,16 +243,16 @@ public class Tile : EntityComponent
     {
         if(Items.Count > 1)
         {
-            gameEvent.Paramters[EventParameters.Info] = "Multiple Items";
+            gameEvent.Paramters[EventParameter.Info] = "Multiple Items";
             gameEvent.ContinueProcessing = false;
         }
         else
         {
             GameEvent showInfo = GameEventPool.Get(GameEventId.ShowInfo)
-                .With(EventParameters.Info, new StringBuilder());
+                .With(EventParameter.Info, new StringBuilder());
             foreach (var e in GetTarget())
-                FireEvent(e, showInfo);
-            gameEvent.Paramters[EventParameters.Info] = showInfo.GetValue<StringBuilder>(EventParameters.Info).ToString();
+                e.FireEvent(showInfo);
+            gameEvent.Paramters[EventParameter.Info] = showInfo.GetValue<StringBuilder>(EventParameter.Info).ToString();
             showInfo.Release();
         }
     }
@@ -330,43 +266,44 @@ public class Tile : EntityComponent
             return GetTarget(includeSelf)[0];
     }
 
-    public bool IsTileBlocking
-    {
-        get
-        {
-            GameEvent isTileBlocking = GameEventPool.Get(GameEventId.BlocksMovement)
-                                        .With(EventParameters.BlocksMovement, false);
-            if (GetTarget()[0] != Self)
-            {
-                foreach (IEntity e in GetTarget())
-                    FireEvent(e, isTileBlocking);
-            }
-            bool returnValue = isTileBlocking.GetValue<bool>(EventParameters.BlocksMovement);
-            isTileBlocking.Release();
-            return returnValue;
-        }
-    }
+    //public bool IsTileBlocking
+    //{
+    //    get
+    //    {
+    //        GameEvent isTileBlocking = GameEventPool.Get(GameEventId.BlocksMovement)
+    //                                    .With(EventParameter.BlocksMovement, false);
+    //        if (GetTarget()[0] != Self)
+    //        {
+    //            foreach (IEntity e in GetTarget())
+    //                FireEvent(e, isTileBlocking);
+    //        }
+    //        bool returnValue = isTileBlocking.GetValue<bool>(EventParameter.BlocksMovement);
+    //        isTileBlocking.Release();
+    //        return returnValue;
+    //    }
+    //}
 
     public bool BlocksVision
     {
-        get
-        {
-            GameEvent isTileBlocking = GameEventPool.Get(GameEventId.BlocksVision)
-                                        .With(EventParameters.Value, false);
-            if (GetTarget()[0] != Self)
-            {
-                foreach (IEntity e in GetTarget())
-                    FireEvent(e, isTileBlocking);
-            }
-            bool returnValue = isTileBlocking.GetValue<bool>(EventParameters.Value);
-            isTileBlocking.Release();
-            return returnValue;
-        }
+        get;
+        //{
+        //    GameEvent isTileBlocking = GameEventPool.Get(GameEventId.BlocksVision)
+        //                                .With(EventParameter.Value, false);
+        //    if (GetTarget()[0] != Self)
+        //    {
+        //        foreach (IEntity e in GetTarget())
+        //            FireEvent(e, isTileBlocking);
+        //    }
+        //    bool returnValue = isTileBlocking.GetValue<bool>(EventParameter.Value);
+        //    isTileBlocking.Release();
+        //    return returnValue;
+        //}
+        set;
     }
 
     public void SerializeTile(GameEvent gameEvent)
     {
-        DungeonGenerationResult levelData = gameEvent.GetValue<DungeonGenerationResult>(EventParameters.Value);
+        DungeonGenerationResult levelData = gameEvent.GetValue<DungeonGenerationResult>(EventParameter.Value);
         foreach (var target in AllEntities)
             if (target != null)
             {
@@ -377,18 +314,18 @@ public class Tile : EntityComponent
             }
 
         GameEvent getVisibilityData = GameEventPool.Get(GameEventId.GetVisibilityData)
-                                            .With(EventParameters.HasBeenVisited, m_IsVisible);
+                                            .With(EventParameter.HasBeenVisited, m_IsVisible);
 
-        var getVis = FireEvent(Self, getVisibilityData);
-        levelData.TilePoints.Add(m_GridPoint);
-        levelData.TileHasBeenVisited.Add(getVis.GetValue<bool>(EventParameters.HasBeenVisited));
-        getVis.Release();
+        //var getVis = FireEvent(Self, getVisibilityData);
+        //levelData.TilePoints.Add(m_GridPoint);
+        //levelData.TileHasBeenVisited.Add(getVis.GetValue<bool>(EventParameter.HasBeenVisited));
+        //getVis.Release();
     }
 
     public void DestroyObject()
     {
         Spawner.Despawn(ObjectSlot);
-        Services.TileInteractionService.TileChanged(this);
+        //Services.TileInteractionService.TileChanged(this);
     }
 
     List<IEntity> GetTarget(bool includeSelf = true)
@@ -403,8 +340,8 @@ public class Tile : EntityComponent
                 return Items;
         }
 
-        if(includeSelf)
-            return new List<IEntity>() { Self };
+        //if(includeSelf)
+        //    return new List<IEntity>() { Self };
 
         return new List<IEntity>();
     }

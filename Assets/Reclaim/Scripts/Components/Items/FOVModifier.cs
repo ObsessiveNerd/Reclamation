@@ -21,9 +21,9 @@ public class FOVModifier : EntityComponent
     {
         if(gameEvent.ID == GameEventId.BeforeFOVRecalculated)
         {
-            int currentMod = (int)gameEvent.Paramters[EventParameters.FOVRange];
+            int currentMod = (int)gameEvent.Paramters[EventParameter.FOVRange];
             currentMod += Modifier;
-            gameEvent.Paramters[EventParameters.FOVRange] = currentMod;
+            gameEvent.Paramters[EventParameter.FOVRange] = currentMod;
         }
     }
 }

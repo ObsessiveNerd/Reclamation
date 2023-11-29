@@ -33,7 +33,7 @@ public class ItemMono : DragAndDrop, IPointerEnterHandler, IPointerExitHandler
 
         Dictionary<string, string> classToInfoMap = new Dictionary<string, string>();
         GameEvent getInfo = GameEventPool.Get(GameEventId.GetInfo)
-                                .With(EventParameters.Info, classToInfoMap);
+                                .With(EventParameter.Info, classToInfoMap);
 
         var entity = EntityQuery.GetEntity(id);
         entity.FireEvent(getInfo);

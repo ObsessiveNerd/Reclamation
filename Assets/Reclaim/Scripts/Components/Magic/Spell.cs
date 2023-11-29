@@ -40,20 +40,20 @@ public class Spell : EntityComponent
     public override void HandleEvent(GameEvent gameEvent)
     {
         if (gameEvent.ID == GameEventId.GetSpells)
-            gameEvent.GetValue<HashSet<string>>(EventParameters.SpellList).Add(Self.ID);
+            gameEvent.GetValue<HashSet<string>>(EventParameter.SpellList).Add(Self.ID);
 
         else if (gameEvent.ID == GameEventId.GetSpellType)
-            gameEvent.Paramters[EventParameters.SpellType] = SpellType;
+            gameEvent.Paramters[EventParameter.SpellType] = SpellType;
 
         else if (gameEvent.ID == GameEventId.ManaCost)
-            gameEvent.Paramters[EventParameters.Value] = ManaCost;
+            gameEvent.Paramters[EventParameter.Value] = ManaCost;
 
         else if (gameEvent.ID == GameEventId.CastSpellEffect)
             CastSpellEffect(gameEvent);
 
         else if (gameEvent.ID == GameEventId.GetInfo)
         {
-            Dictionary<string, string> info = gameEvent.GetValue<Dictionary<string, string>>(EventParameters.Info);
+            Dictionary<string, string> info = gameEvent.GetValue<Dictionary<string, string>>(EventParameter.Info);
             info.Add($"{nameof(Spell)}{Guid.NewGuid()}", $"Mana cost: {ManaCost}");
         }
 
@@ -62,7 +62,7 @@ public class Spell : EntityComponent
             switch (SpellFailed)
             {
                 case SpellFailedSaveEffect.DamageHalved:
-                    foreach (var damage in gameEvent.GetValue<List<Damage>>(EventParameters.DamageList))
+                    foreach (var damage in gameEvent.GetValue<List<Damage>>(EventParameter.DamageList))
                         damage.DamageAmount /= 2;
                     break;
                 case SpellFailedSaveEffect.SpellStops:

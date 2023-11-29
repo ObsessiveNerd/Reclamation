@@ -20,8 +20,8 @@ public class SpellcasterPlayerController : InputControllerBase
     {
         m_Attack = spell;
         GameEvent getManaCost = GameEventPool.Get(GameEventId.ManaCost)
-                                        .With(EventParameters.Value, 1);
-        m_ManaCost = m_Attack.FireEvent(getManaCost).GetValue<int>(EventParameters.Value);
+                                        .With(EventParameter.Value, 1);
+        m_ManaCost = m_Attack.FireEvent(getManaCost).GetValue<int>(EventParameter.Value);
         getManaCost.Release();
     }
 
@@ -33,10 +33,10 @@ public class SpellcasterPlayerController : InputControllerBase
         if(m_Attack == null)
         {
             GameEvent getSpells = GameEventPool.Get(GameEventId.GetActiveAbilities)
-                                    .With(EventParameters.Abilities, new List<IEntity>());
+                                    .With(EventParameter.Abilities, new List<IEntity>());
 
             var eventResult = Self.FireEvent(getSpells);
-            var spellList = eventResult.GetValue<List<IEntity>>(EventParameters.Abilities);
+            var spellList = eventResult.GetValue<List<IEntity>>(EventParameter.Abilities);
             if (spellList.Count == 0 || spellList.Count - 1 < m_SpellIndex)
             {
                 UIManager.ForcePop(this);
@@ -51,12 +51,12 @@ public class SpellcasterPlayerController : InputControllerBase
                 m_Attack = spellList[m_SpellIndex];
 
                 GameEvent getCurrentMana = GameEventPool.Get(GameEventId.GetMana)
-                                            .With(EventParameters.Value, 0);
-                int currentMana = Self.FireEvent(getCurrentMana).GetValue<int>(EventParameters.Value);
+                                            .With(EventParameter.Value, 0);
+                int currentMana = Self.FireEvent(getCurrentMana).GetValue<int>(EventParameter.Value);
 
                 GameEvent getManaCost = GameEventPool.Get(GameEventId.ManaCost)
-                                        .With(EventParameters.Value, 1);
-                m_ManaCost = m_Attack.FireEvent(getManaCost).GetValue<int>(EventParameters.Value);
+                                        .With(EventParameter.Value, 1);
+                m_ManaCost = m_Attack.FireEvent(getManaCost).GetValue<int>(EventParameter.Value);
 
                 if (m_ManaCost <= currentMana)
                     Debug.Log("Had enough mana");
@@ -83,10 +83,10 @@ public class SpellcasterPlayerController : InputControllerBase
         else if (startingTarget != null)
         {
             GameEvent isInFOV = GameEventPool.Get(GameEventId.IsInFOV)
-                                    .With(EventParameters.Entity, startingTarget.ID)
-                                    .With(EventParameters.Value, false);
+                                    .With(EventParameter.Entity, startingTarget.ID)
+                                    .With(EventParameter.Value, false);
 
-            bool isInFoVResult = FireEvent(Self, isInFOV).GetValue<bool>(EventParameters.Value);
+            bool isInFoVResult = FireEvent(Self, isInFOV).GetValue<bool>(EventParameter.Value);
             if (!isInFoVResult)
                 startingTarget = Self;
             isInFOV.Release();
@@ -98,9 +98,9 @@ public class SpellcasterPlayerController : InputControllerBase
         
         Services.TileSelectionService.SelectTile(m_TileSelection);
          GameEvent selectTile = GameEventPool.Get(GameEventId.SelectTile)
-                                .With(EventParameters.InputDirection, PathfindingUtility.GetDirectionTo(Services.EntityMapService.GetPointWhereEntityIs(Self), m_TileSelection))
-                                .With(EventParameters.Source, Self.ID)
-                                .With(EventParameters.TilePosition, m_TileSelection);
+                                .With(EventParameter.InputDirection, PathfindingUtility.GetDirectionTo(Services.EntityMapService.GetPointWhereEntityIs(Self), m_TileSelection))
+                                .With(EventParameter.Source, Self.ID)
+                                .With(EventParameter.TilePosition, m_TileSelection);
         m_Attack.FireEvent(selectTile).Release();
         Services.WorldUpdateService.UpdateWorldView();
         
@@ -126,13 +126,13 @@ public class SpellcasterPlayerController : InputControllerBase
 
             if (desiredDirection != MoveDirection.None)
             {
-                GameEvent moveSelection = GameEventPool.Get(GameEventId.SelectNewTileInDirection).With(EventParameters.InputDirection, desiredDirection)
-                                                                                                    .With(EventParameters.Source, Self.ID)
-                                                                                                    .With(EventParameters.TilePosition, 
+                GameEvent moveSelection = GameEventPool.Get(GameEventId.SelectNewTileInDirection).With(EventParameter.InputDirection, desiredDirection)
+                                                                                                    .With(EventParameter.Source, Self.ID)
+                                                                                                    .With(EventParameter.TilePosition, 
                                                                                                     Services.TileSelectionService.GetTilePointInDirection(m_TileSelection, desiredDirection));
                 Services.TileSelectionService.SelectTileInNewDirection(m_TileSelection, desiredDirection);
                 FireEvent(m_Attack, moveSelection);
-                m_TileSelection = (Point)moveSelection.Paramters[EventParameters.TilePosition];
+                m_TileSelection = (Point)moveSelection.Paramters[EventParameter.TilePosition];
                 Services.WorldUpdateService.UpdateWorldView();
                 moveSelection.Release();
             }
@@ -145,7 +145,7 @@ public class SpellcasterPlayerController : InputControllerBase
             if (Input.GetKeyDown(KeyCode.Escape))
             { 
                 GameEvent eb = GameEventPool.Get(GameEventId.EndSelection)
-                                    .With(EventParameters.TilePosition, m_TileSelection);
+                                    .With(EventParameter.TilePosition, m_TileSelection);
                 m_Attack.FireEvent(eb).Release();
                 EndSelection(m_TileSelection);
             }
@@ -157,18 +157,18 @@ public class SpellcasterPlayerController : InputControllerBase
         //AttackType weaponType = CombatUtility.GetWeaponType(m_Attack);
         IEntity target = WorldUtility.GetEntityAtPosition(m_TileSelection);
 
-        CombatUtility.CastSpell(Self, target, m_Attack);
+        CombatUtility.Attack(Self, target, m_Attack);
         //CombatUtility.Attack(Self, target, m_Attack, weaponType);
 
         EndSelection(m_TileSelection);
 
         GameEvent eb = GameEventPool.Get(GameEventId.EndSelection)
-                                    .With(EventParameters.TilePosition, m_TileSelection);
+                                    .With(EventParameter.TilePosition, m_TileSelection);
         m_Attack.FireEvent(eb).Release();
 
-        GameEvent checkForEnergy = GameEventPool.Get(GameEventId.HasEnoughEnergyToTakeATurn).With(EventParameters.TakeTurn, false);
+        GameEvent checkForEnergy = GameEventPool.Get(GameEventId.HasEnoughEnergyToTakeATurn).With(EventParameter.TakeTurn, false);
         FireEvent(Self, checkForEnergy);
-        gameEvent.Paramters[EventParameters.TakeTurn] = (bool)checkForEnergy.Paramters[EventParameters.TakeTurn];
+        gameEvent.Paramters[EventParameter.TakeTurn] = (bool)checkForEnergy.Paramters[EventParameter.TakeTurn];
         checkForEnergy.Release();
 
         //GameEvent depleteMana = GameEventPool.Get(GameEventId.DepleteMana).With(EventParameters.Mana, m_ManaCost);

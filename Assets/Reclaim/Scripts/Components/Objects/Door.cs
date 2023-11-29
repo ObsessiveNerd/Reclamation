@@ -54,26 +54,26 @@ public class Door : EntityComponent
         {
             if(Locked && Closed)
             {
-                gameEvent.Paramters[EventParameters.BlocksMovement] = true;
-                gameEvent.Paramters[EventParameters.Weight] = Pathfinder.ImpassableWeight;
+                gameEvent.Paramters[EventParameter.BlocksMovement] = true;
+                gameEvent.Paramters[EventParameter.Weight] = Pathfinder.ImpassableWeight;
             }
         }
         else if (gameEvent.ID == GameEventId.BlocksMovement)
         {
             if(Locked)
-                gameEvent.Paramters[EventParameters.BlocksMovement] = true;
+                gameEvent.Paramters[EventParameter.BlocksMovement] = true;
         }
         else if(gameEvent.ID == GameEventId.BlocksVision)
         {
             if(Closed)
-                gameEvent.Paramters[EventParameters.Value] = true;
+                gameEvent.Paramters[EventParameter.Value] = true;
         }
         else if (gameEvent.ID == GameEventId.GetSprite)
         {
             if(Closed)
-                gameEvent.Paramters[EventParameters.RenderSprite] = m_ClosedSprite;
+                gameEvent.Paramters[EventParameter.RenderSprite] = m_ClosedSprite;
             else
-                gameEvent.Paramters[EventParameters.RenderSprite] = m_OpenSprite;
+                gameEvent.Paramters[EventParameter.RenderSprite] = m_OpenSprite;
         }
     }
 }

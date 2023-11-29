@@ -21,14 +21,14 @@ public class Fear : EntityComponent
         {
             m_CurrentLocation = PathfindingUtility.GetEntityLocation(Self);
             GameEvent getMyAggressionLevel = GameEventPool.Get(GameEventId.GetCombatRating)
-                                                        .With(EventParameters.Value, -1);
+                                                        .With(EventParameter.Value, -1);
 
-            int myCombatLevel = FireEvent(Self, getMyAggressionLevel).GetValue<int>(EventParameters.Value);
+            int myCombatLevel = FireEvent(Self, getMyAggressionLevel).GetValue<int>(EventParameter.Value);
             getMyAggressionLevel.Release();
 
             GameEvent getVisiblePoints = GameEventPool.Get(GameEventId.GetVisibleTiles)
-                                            .With(EventParameters.VisibleTiles, new List<Point>());
-            List<Point> visiblePoints = FireEvent(Self, getVisiblePoints).GetValue<List<Point>>(EventParameters.VisibleTiles);
+                                            .With(EventParameter.VisibleTiles, new List<Point>());
+            List<Point> visiblePoints = FireEvent(Self, getVisiblePoints).GetValue<List<Point>>(EventParameter.VisibleTiles);
             getVisiblePoints.Release();
             
             foreach(var point in visiblePoints)
@@ -41,10 +41,10 @@ public class Fear : EntityComponent
                 if (Factions.GetDemeanorForTarget(Self, target) != Demeanor.Hostile) continue;
 
                 GameEvent getCombatRatingOfTile = GameEventPool.Get(GameEventId.GetCombatRating)
-                                                        .With(EventParameters.TilePosition, point)
-                                                        .With(EventParameters.Value, -1);
+                                                        .With(EventParameter.TilePosition, point)
+                                                        .With(EventParameter.Value, -1);
 
-                int targetCombatRating = FireEvent(target, getCombatRatingOfTile).GetValue<int>(EventParameters.Value);
+                int targetCombatRating = FireEvent(target, getCombatRatingOfTile).GetValue<int>(EventParameter.Value);
                 getCombatRatingOfTile.Release();
 
                 if(CombatUtility.AmIAfraid(myCombatLevel, targetCombatRating))
@@ -55,7 +55,7 @@ public class Fear : EntityComponent
                         Priority = 1,
                         ActionToTake = RunAway
                     };
-                    gameEvent.GetValue<PriorityQueue<AIAction>>(EventParameters.AIActionList).Add(attackAction);
+                    gameEvent.GetValue<PriorityQueue<AIAction>>(EventParameter.AIActionList).Add(attackAction);
                     break;
                 }
             }

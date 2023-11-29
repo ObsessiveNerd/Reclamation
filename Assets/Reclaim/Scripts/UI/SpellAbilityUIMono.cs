@@ -28,9 +28,9 @@ public class SpellAbilityUIMono : ItemMono, IPointerDownHandler
         m_Source = source;
         m_Spell = spell;
         GameEvent getActiveAbilities = GameEventPool.Get(GameEventId.GetActiveAbilities)
-                                            .With(EventParameters.Abilities, new List<IEntity>());
+                                            .With(EventParameter.Abilities, new List<IEntity>());
         m_Source.FireEvent(getActiveAbilities);
-        List<IEntity> activeAbilities = getActiveAbilities.GetValue<List<IEntity>>(EventParameters.Abilities);
+        List<IEntity> activeAbilities = getActiveAbilities.GetValue<List<IEntity>>(EventParameter.Abilities);
         if (!activeAbilities.Contains(m_Spell))
             Image.color = Color.white;
         else
@@ -61,13 +61,13 @@ public class SpellAbilityUIMono : ItemMono, IPointerDownHandler
         {
             Debug.Log("Double clicked");
             GameEvent activeAbility = GameEventPool.Get(GameEventId.AddToActiveAbilities)
-                                        .With(EventParameters.Entity, m_Spell.ID);
+                                        .With(EventParameter.Entity, m_Spell.ID);
 
             m_Source.FireEvent(activeAbility).Release();
             GameEvent getSpells = GameEventPool.Get(GameEventId.GetActiveAbilities)
-                                    .With(EventParameters.Abilities, new List<IEntity>());
+                                    .With(EventParameter.Abilities, new List<IEntity>());
 
-            var spellList = m_Source.FireEvent(getSpells).GetValue<List<IEntity>>(EventParameters.Abilities);
+            var spellList = m_Source.FireEvent(getSpells).GetValue<List<IEntity>>(EventParameter.Abilities);
             getSpells.Release();
 
             if (spellList.Count == 0)

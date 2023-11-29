@@ -29,7 +29,7 @@ public class TileVisible : EntityComponent
         base.Start();
         m_Tile = Self.GetComponent<Tile>();
         //FireEvent(Self, GameEventPool.Get(GameEventId.VisibilityUpdated, new .With(EventParameters.Value, HasBeenVisited)));
-        GameEvent ge = GameEventPool.Get(GameEventId.VisibilityUpdated).With(EventParameters.Value, HasBeenVisited);
+        GameEvent ge = GameEventPool.Get(GameEventId.VisibilityUpdated).With(EventParameter.Value, HasBeenVisited);
         m_Tile.VisibilityUpdated(ge);
         ge.Release();
     }
@@ -38,24 +38,24 @@ public class TileVisible : EntityComponent
     {
         if (gameEvent.ID == GameEventId.SetVisibility)
         {
-            bool tileInsight = (bool)gameEvent.Paramters[EventParameters.TileInSight];
+            bool tileInsight = (bool)gameEvent.Paramters[EventParameter.TileInSight];
             IsVisible = tileInsight;
             if (!HasBeenVisited && IsVisible)
                 HasBeenVisited = true;
             //FireEvent(Self, GameEventPool.Get(GameEventId.VisibilityUpdated, new .With(EventParameters.Value, IsVisible)));
-            GameEvent ge = GameEventPool.Get(GameEventId.VisibilityUpdated).With(EventParameters.Value, IsVisible);
+            GameEvent ge = GameEventPool.Get(GameEventId.VisibilityUpdated).With(EventParameter.Value, IsVisible);
             m_Tile.VisibilityUpdated(ge);
             ge.Release();
         }
 
         if (gameEvent.ID == GameEventId.SetHasBeenVisited)
         {
-            HasBeenVisited = gameEvent.GetValue<bool>(EventParameters.HasBeenVisited);
+            HasBeenVisited = gameEvent.GetValue<bool>(EventParameter.HasBeenVisited);
         }
 
         if(gameEvent.ID == GameEventId.AlterSprite)
         {
-            SpriteRenderer sr = (SpriteRenderer)gameEvent.Paramters[EventParameters.Renderer];
+            SpriteRenderer sr = (SpriteRenderer)gameEvent.Paramters[EventParameter.Renderer];
             if (!IsVisible && !HasBeenVisited)
                 sr.color = new Color(0, 0, 0, 0);
             else if (!IsVisible && HasBeenVisited)
@@ -66,7 +66,7 @@ public class TileVisible : EntityComponent
 
         if(gameEvent.ID == GameEventId.GetVisibilityData)
         {
-            gameEvent.Paramters[EventParameters.HasBeenVisited] = HasBeenVisited;
+            gameEvent.Paramters[EventParameter.HasBeenVisited] = HasBeenVisited;
         }
     }
 }

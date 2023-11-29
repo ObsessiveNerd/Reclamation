@@ -13,8 +13,8 @@ public class EnvironmentalObject : EntityComponent
     {
         if (gameEvent.ID == GameEventId.PathfindingData)
         {
-            gameEvent.Paramters[EventParameters.BlocksMovement] = true;
-            gameEvent.Paramters[EventParameters.Weight] = Pathfinder.ImpassableWeight;
+            gameEvent.Paramters[EventParameter.BlocksMovement] = true;
+            gameEvent.Paramters[EventParameter.Weight] = Pathfinder.ImpassableWeight;
         }
     }
 }
