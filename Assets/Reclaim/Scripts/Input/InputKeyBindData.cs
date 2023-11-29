@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -17,7 +17,7 @@ public enum RequestedAction
     FireRangedWeapon,
     Look,
     CastSpell,
-    PickupItem,
+    InteractWithCurrentTile,
     RotateCharacter,
     SpellSelect1,
     SpellSelect2,
@@ -55,7 +55,7 @@ public class InputKeyBindData
     [SerializeField]
     KeyCode CastSpell;
     [SerializeField]
-    KeyCode PickupItem;
+    KeyCode InteractWithCurrentTile;
     [SerializeField]
     KeyCode RotateCharacter;
     [SerializeField]
@@ -105,7 +105,7 @@ public class InputKeyBindData
         FireRangedWeapon = KeyCode.F;
         Look = KeyCode.L;
         CastSpell = KeyCode.C;
-        PickupItem = KeyCode.Space;
+        InteractWithCurrentTile = KeyCode.Space;
 
         RotateCharacter = KeyCode.Tab;
         SpellSelect1 = KeyCode.Alpha1;
