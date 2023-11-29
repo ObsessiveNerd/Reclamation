@@ -74,3 +74,5 @@ crashlytics-build.properties
 # Assets
 /[Aa]ssets/[Tt]extures/*
 /[Aa]ssets/[Tt]extures.meta
+Packages/packages-lock.json
+Packages/packages-lock.json~239c6ec570fffe9a8c869082530c7ff0b507875e
