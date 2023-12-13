@@ -99,7 +99,7 @@ public static class Factions
         /*Undead*/              { 1,     3,       3,    1,    1,    1,    1,    1,    1,    1,    2,    2}
     };
 
-    public static Demeanor GetDemeanorForTarget(IEntity source, IEntity target)
+    public static Demeanor GetDemeanorForTarget(GameObject source, GameObject target)
     {
         GameEvent getSourceFaction = GameEventPool.Get(GameEventId.GetFaction).With(EventParameter.Value, null);
         Faction sourceFaction = (Faction)source.FireEvent(source, getSourceFaction).Paramters[EventParameter.Value];

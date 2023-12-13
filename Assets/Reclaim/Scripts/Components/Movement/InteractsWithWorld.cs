@@ -13,7 +13,7 @@ public class InteractsWithWorld : EntityComponent
     {
         if (gameEvent.ID == GameEventId.InteractWithTarget)
         {
-            IEntity target = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameter.Target]);
+            GameObject target = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameter.Target]);
             Demeanor demeanor = Factions.GetDemeanorForTarget(Self, target);
 
             switch (demeanor)

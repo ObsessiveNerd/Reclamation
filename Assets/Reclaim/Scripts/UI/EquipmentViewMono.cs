@@ -41,7 +41,7 @@ public class EquipmentViewMono : UpdatableUI//, IUpdatableUI
         }
     }
 
-    void SetEquipment(IEntity source, List<EntityComponent> components, List<GameObject> slots)
+    void SetEquipment(GameObject source, List<EntityComponent> components, List<GameObject> slots)
     {
         if (components == null || components.Count == 0)
             return;
@@ -59,7 +59,7 @@ public class EquipmentViewMono : UpdatableUI//, IUpdatableUI
             builder.Release();
             if (!string.IsNullOrEmpty(equipmentId))
             {
-                IEntity equipment = EntityQuery.GetEntity(equipmentId);
+                GameObject equipment = EntityQuery.GetEntity(equipmentId);
 
                 //TODO, we should probably not assume that the current equipment object is what we're trying to equip
                 for (int j = 0; j < slots[i].transform.childCount; j++)

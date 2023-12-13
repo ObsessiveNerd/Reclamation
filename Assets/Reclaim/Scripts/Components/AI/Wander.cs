@@ -10,7 +10,7 @@ public class Wander : EntityComponent
     private List<Point> m_CurrentPath;
     private Point m_PreviousPosition;
 
-    public override void Init(IEntity self)
+    public override void Init(GameObject self)
     {
         base.Init(self);
         RegisteredEvents.Add(GameEventId.GetActionToTake);

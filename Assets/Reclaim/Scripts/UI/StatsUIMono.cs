@@ -34,7 +34,7 @@ public class StatsUIMono : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
     public void SetData()
     {
-        IEntity source = Services.PlayerManagerService.GetActivePlayer();
+        GameObject source = Services.PlayerManagerService.GetActivePlayer();
         
         if (Text == null)
             Text = GetComponent<TextMeshProUGUI>();

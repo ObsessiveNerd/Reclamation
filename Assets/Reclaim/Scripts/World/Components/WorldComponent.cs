@@ -5,7 +5,7 @@ using UnityEngine;
 
 public abstract class GameService //: Component
 {
-    //protected static Dictionary<IEntity, TimeProgression> m_PlayerToTimeProgressionMap = new Dictionary<IEntity, TimeProgression>();
+    //protected static Dictionary<GameObject, TimeProgression> m_PlayerToTimeProgressionMap = new Dictionary<GameObject, TimeProgression>();
     protected static TimeProgression m_TimeProgression = new TimeProgression();
     protected static Dictionary<Point, Tile> m_Tiles = new Dictionary<Point, Tile>();
     protected static Dictionary<Point, Actor> m_TileEntity = new Dictionary<Point, Actor>();
@@ -14,13 +14,13 @@ public abstract class GameService //: Component
 
     protected static Dictionary<string, Point> m_EntityToPointMap = new Dictionary<string, Point>();
     protected static Dictionary<string, Point> m_EntityToPreviousPointMap = new Dictionary<string, Point>();
-    protected static LinkedList<IEntity> m_Players = new LinkedList<IEntity>();
-    protected static LinkedListNode<IEntity> m_ActivePlayer;
+    protected static LinkedList<GameObject> m_Players = new LinkedList<GameObject>();
+    protected static LinkedListNode<GameObject> m_ActivePlayer;
     protected static HashSet<Point> m_ValidDungeonPoints = new HashSet<Point>();
     protected static Dictionary<Point, UnityEngine.GameObject> m_GameObjectMap = new Dictionary<Point, UnityEngine.GameObject>();
     protected static Dictionary<int, DungeonGenerationResult> m_DungeonLevelMap = new Dictionary<int, DungeonGenerationResult>();
     protected static int m_CurrentLevel = 1;
-    protected static Dictionary<string, IEntity> m_EntityIdToEntityMap = new Dictionary<string, IEntity>();
+    protected static Dictionary<string, GameObject> m_EntityIdToEntityMap = new Dictionary<string, GameObject>();
 
     public static void ClearServicesData()
     {
@@ -50,7 +50,7 @@ public abstract class GameService //: Component
         }
     }
 
-    public Point GetPointWhereEntityIs(IEntity e)
+    public Point GetPointWhereEntityIs(GameObject e)
     {
         if (m_EntityToPointMap.ContainsKey(e.ID))
         {
@@ -107,7 +107,7 @@ public abstract class GameService //: Component
         return new Point(x, y);
     }
 
-    protected GameEvent FireEvent(IEntity target, GameEvent gameEvent)
+    protected GameEvent FireEvent(GameObject target, GameEvent gameEvent)
     {
         return target.FireEvent(gameEvent);
     }

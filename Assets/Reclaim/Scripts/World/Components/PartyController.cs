@@ -75,7 +75,7 @@ public class PartyController : GameService
 {
     Dictionary<FactionId, List<Party>> m_FactionParties = new Dictionary<FactionId, List<Party>>();
 
-    public void MakePartyLeader(IEntity entity)
+    public void MakePartyLeader(GameObject entity)
     {
         GameEvent getFaction = GameEventPool.Get(GameEventId.GetFaction).With(EventParameter.Value, null);
         FireEvent(entity, getFaction);
@@ -93,7 +93,7 @@ public class PartyController : GameService
         }
     }
 
-    public void LookingForGroup(IEntity entity)
+    public void LookingForGroup(GameObject entity)
     {
         if (entity == null)
             return;
@@ -122,7 +122,7 @@ public class PartyController : GameService
         }
     }
 
-    public void RemoveFromParty(IEntity entity)
+    public void RemoveFromParty(GameObject entity)
     {
         GameEvent getFaction = GameEventPool.Get(GameEventId.GetFaction).With(EventParameter.Value, null);
         FactionId factionId = FireEvent(entity, getFaction).GetValue<Faction>(EventParameter.Value).ID;

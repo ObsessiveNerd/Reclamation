@@ -16,7 +16,7 @@ public class ContextMenuMono : EscapeableMono
         return contextMenu;
     }
 
-    public void AddButton(ContextMenuButton cmb, IEntity source, Action afterClickCallback = null)
+    public void AddButton(ContextMenuButton cmb, GameObject source, Action afterClickCallback = null)
     {
         GameObject instance = cmb.CreateButton(Resources.Load<GameObject>("Prefabs/UI/ContextMenuButton"));
         Button button = instance.GetComponent<Button>();
@@ -34,7 +34,7 @@ public class ContextMenuMono : EscapeableMono
         instance.transform.SetParent(Content, false);
     }
 
-    public void GetAmountToGive(Action<IEntity, IEntity, int> actionForSelectedPlayer, IEntity source, IEntity item)
+    public void GetAmountToGive(Action<GameObject, GameObject, int> actionForSelectedPlayer, GameObject source, GameObject item)
     {
         GameObject instance = Instantiate(Resources.Load<GameObject>("Prefabs/UI/TextInputField"));
         instance.GetComponent<TextFieldMono>().Init("Amount to give...");

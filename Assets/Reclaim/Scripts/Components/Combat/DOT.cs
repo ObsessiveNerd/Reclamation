@@ -13,9 +13,8 @@ public class DOT : EntityComponent
         RegenSpeed = speed;
     }
 
-    public override void Init(IEntity self)
+    public void Start()
     {
-        base.Init(self);
         RegisteredEvents.Add(GameEventId.EndTurn);
         RegisteredEvents.Add(GameEventId.GetInfo);
     }
@@ -24,13 +23,13 @@ public class DOT : EntityComponent
     {
         if(gameEvent.ID == GameEventId.EndTurn)
         {
-            IEntity target = gameEvent.HasParameter(EventParameter.Entity) ?
+            GameObject target = gameEvent.HasParameter(EventParameter.Entity) ?
                 Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameter.Entity)) : Self;
 
             currentTurns++;
             if(currentTurns >= RegenSpeed)
             {
-                CombatUtility.Attack(Self, target, Self);
+                CombatUtility.Attack(gameObject, target, gameObject);
                 currentTurns = 0;
             }
         }
@@ -43,34 +42,34 @@ public class DOT : EntityComponent
     }
 }
 
-public class DTO_DOT : IDataTransferComponent
-{
-    public IComponent Component { get; set; }
+//public class DTO_DOT : IDataTransferComponent
+//{
+//    public IComponent Component { get; set; }
 
-    public void CreateComponent(string data)
-    {
-        int regen = 0;
-        int speed = 0;
+//    public void CreateComponent(string data)
+//    {
+//        int regen = 0;
+//        int speed = 0;
 
-        var kvps = data.Split(',');
-        foreach(var kvp in kvps)
-        {
-            var splitKvp = kvp.Split('=');
-            var value = int.Parse(splitKvp[1]);
-            if (splitKvp[0] == "RegenAmount")
-                regen = value;
-            else if (splitKvp[0] == "RegenSpeed")
-                speed = value;
-            else
-                Debug.LogError("Unable to parse health regen value.");
-        }
+//        var kvps = data.Split(',');
+//        foreach(var kvp in kvps)
+//        {
+//            var splitKvp = kvp.Split('=');
+//            var value = int.Parse(splitKvp[1]);
+//            if (splitKvp[0] == "RegenAmount")
+//                regen = value;
+//            else if (splitKvp[0] == "RegenSpeed")
+//                speed = value;
+//            else
+//                Debug.LogError("Unable to parse health regen value.");
+//        }
 
-        Component = new DOT(speed);
-    }
+//        Component = new DOT(speed);
+//    }
 
-    public string CreateSerializableData(IComponent component)
-    {
-        DOT hr = (DOT)component;
-        return $"{nameof(DOT)}: {nameof(hr.RegenSpeed)}={hr.RegenSpeed}";
-    }
-}
+//    public string CreateSerializableData(IComponent component)
+//    {
+//        DOT hr = (DOT)component;
+//        return $"{nameof(DOT)}: {nameof(hr.RegenSpeed)}={hr.RegenSpeed}";
+//    }
+//}

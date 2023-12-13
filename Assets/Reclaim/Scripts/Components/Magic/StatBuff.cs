@@ -16,7 +16,7 @@ public class StatBuff : EntityComponent
         RemoveAfterTurns = removeAfterTurns;
     }
 
-    public override void Init(IEntity self)
+    public override void Init(GameObject self)
     {
         base.Init(self);
         RegisteredEvents.Add(GameEventId.CastSpellEffect);
@@ -26,7 +26,7 @@ public class StatBuff : EntityComponent
     {
         if(gameEvent.ID == GameEventId.CastSpellEffect)
         {
-            IEntity target = Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameter.Target));
+            GameObject target = Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameter.Target));
             GameEvent getStat = GameEventPool.Get(GameEventId.GetStatRaw)
                                 .With(EventParameter.StatType, StatToBuff)
                                 .With(EventParameter.Value, Stat.Str);

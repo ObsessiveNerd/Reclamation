@@ -4,50 +4,27 @@ using UnityEngine;
 
 public interface IComponent
 {
-    void Init(IEntity self);
-    IEntity Self { get; }
-    List<GameEventId> RegisteredEvents { get; }
+    HashSet<GameEventId> RegisteredEvents { get; }
     bool RespondsTo(GameEvent gameEvent);
-    GameEvent FireEvent(IEntity target, GameEvent gameEvent, bool logEvent = false);
+    GameEvent FireEvent(GameObject target, GameEvent gameEvent, bool logEvent = false);
     void HandleEvent(GameEvent gameEvent);
-    int Priority { get; }
-    void Start();
 }
 
-public class EntityComponent : IComponent
+public class EntityComponent : MonoBehaviour, IComponent
 {
-    //public string ComponentID;
-
-    public virtual void Init(IEntity self)
-    {
-        m_Self = self;
-    }
-
-    public EntityComponent() { }
-
-    //Priority right now is from 1 to 10
-    public virtual int Priority { get { return 5; } }
-
-    public virtual void Start() 
-    {
-        //if (string.IsNullOrEmpty(ComponentID))
-        //    ComponentID = IDManager.GetNewID();
-    }
-
-    IEntity m_Self;
-    public IEntity Self { get { return m_Self; } }
-
-    private List<GameEventId> m_RegisteredEvents = new List<GameEventId>();
-    public virtual List<GameEventId> RegisteredEvents
+    private HashSet<GameEventId> m_RegisteredEvents = new HashSet<GameEventId>();
+    public virtual HashSet<GameEventId> RegisteredEvents
     {
         get { return m_RegisteredEvents; }
     }
 
-    public GameEvent FireEvent(IEntity target, GameEvent gameEvent, bool logEvent = false)
+    public GameEvent FireEvent(GameObject target, GameEvent gameEvent, bool logEvent = false)
     {
         if(target != null)
-            target.FireEvent(target, gameEvent, logEvent);
-
+        {
+            foreach(var comp in target.GetComponents<EntityComponent>())
+                comp.HandleEvent(gameEvent);
+        }
         return gameEvent;
     }
 
@@ -59,17 +36,5 @@ public class EntityComponent : IComponent
     }
 
     public virtual void HandleEvent(GameEvent gameEvent) { }
-}
-
-public class ComponentComparer : IComparer<IComponent>
-{
-    public int Compare(IComponent x, IComponent y)
-    {
-        if (x.Priority < y.Priority)
-            return -1;
-        if (x.Priority == y.Priority)
-            return 0;
-        return 1;
-    }
 }
 

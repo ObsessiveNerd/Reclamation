@@ -10,7 +10,7 @@ public class PlayerInfoMono : UpdatableUI
 
     public override void UpdateUI()
     {
-        IEntity source = Services.PlayerManagerService.GetActivePlayer();
+        GameObject source = Services.PlayerManagerService.GetActivePlayer();
         StringBuilder sb = new StringBuilder();
 
         GameEvent getArmor = GameEventPool.Get(GameEventId.AddArmorValue)

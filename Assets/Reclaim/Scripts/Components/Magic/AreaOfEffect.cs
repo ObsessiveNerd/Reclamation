@@ -28,7 +28,7 @@ public class AreaOfEffect : EntityComponent
         RandomAffectCount = randomEffectCount;
     }
 
-    public override void Init(IEntity self)
+    public override void Init(GameObject self)
     {
         base.Init(self);
         RegisteredEvents.Add(GameEventId.AffectArea);
@@ -41,7 +41,7 @@ public class AreaOfEffect : EntityComponent
     {
         if(gameEvent.ID == GameEventId.AffectArea)
         {
-            Action<IEntity> effect = gameEvent.GetValue<Action<IEntity>>(EventParameter.Effect);
+            Action<GameObject> effect = gameEvent.GetValue<Action<GameObject>>(EventParameter.Effect);
 
             var tilesToAffect = new List<Point>();
             if (RandomAffectCount > 0 && m_VisibleTiles.Count > 0)
@@ -69,7 +69,7 @@ public class AreaOfEffect : EntityComponent
 
         else if(gameEvent.ID == GameEventId.SelectTile)
         {
-            IEntity source = Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameter.Source));
+            GameObject source = Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameter.Source));
             MoveDirection dir = gameEvent.GetValue<MoveDirection>(EventParameter.InputDirection);
             SelectAroundPosition(gameEvent, source, dir);
         }
@@ -78,7 +78,7 @@ public class AreaOfEffect : EntityComponent
         {
             Point p = gameEvent.GetValue<Point>(EventParameter.TilePosition);
             MoveDirection dir = gameEvent.GetValue<MoveDirection>(EventParameter.InputDirection);
-            IEntity source = Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameter.Source));
+            GameObject source = Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameter.Source));
             GameEvent builder = GameEventPool.Get(GameEventId.SelectTile)
                                     .With(EventParameter.TilePosition, p);
             SelectAroundPosition(builder, source, dir);
@@ -98,7 +98,7 @@ public class AreaOfEffect : EntityComponent
         }
     }
 
-    void SelectAroundPosition(GameEvent gameEvent, IEntity source, MoveDirection direction = MoveDirection.None)
+    void SelectAroundPosition(GameEvent gameEvent, GameObject source, MoveDirection direction = MoveDirection.None)
     {
         foreach (var tile in m_VisibleTiles)
         {

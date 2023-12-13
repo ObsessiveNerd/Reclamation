@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Inventory : EntityComponent
 {
-    public List<IEntity> InventoryItems = new List<IEntity>();
+    public List<GameObject> InventoryItems = new List<GameObject>();
 
     public Inventory()
     {
@@ -18,7 +18,7 @@ public class Inventory : EntityComponent
         RegisteredEvents.Add(GameEventId.TryEquip);
     }
 
-    public void AddToInventory(IEntity e)
+    public void AddToInventory(GameObject e)
     {
         InventoryItems.Add(e);
     }
@@ -32,7 +32,7 @@ public class Inventory : EntityComponent
 
         if (gameEvent.ID == GameEventId.AddToInventory)
         {
-            IEntity item = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameter.Entity]);
+            GameObject item = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameter.Entity]);
             if (!InventoryItems.Contains(item))
             {
                 InventoryItems.Add(item);
@@ -45,22 +45,22 @@ public class Inventory : EntityComponent
 
         if (gameEvent.ID == GameEventId.RemoveFromInventory)
         {
-            IEntity item = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameter.Item]);
+            GameObject item = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameter.Item]);
             if (InventoryItems.Contains(item))
                 InventoryItems.Remove(item);
         }
 
         if (gameEvent.ID == GameEventId.Died)
         {
-            foreach (IEntity item in InventoryItems)
+            foreach (GameObject item in InventoryItems)
                 Services.TileInteractionService.Drop(Self, item);
             InventoryItems.Clear();
         }
 
         if(gameEvent.ID == GameEventId.TryEquip)
         {
-            List<IEntity> items = new List<IEntity>(InventoryItems);
-            foreach (IEntity item in items)
+            List<GameObject> items = new List<GameObject>(InventoryItems);
+            foreach (GameObject item in items)
                 FireEvent(item, gameEvent, true);
         }
 
@@ -85,7 +85,7 @@ public class DTO_Inventory : IDataTransferComponent
         Component = new Inventory();
         if(!string.IsNullOrEmpty(value))
         {
-            foreach (IEntity e in EntityFactory.GetEntitiesFromArray(value))
+            foreach (GameObject e in EntityFactory.GetEntitiesFromArray(value))
                 ((Inventory)Component).AddToInventory(e);
 
         }

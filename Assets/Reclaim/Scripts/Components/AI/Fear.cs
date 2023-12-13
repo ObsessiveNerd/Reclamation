@@ -9,7 +9,7 @@ public class Fear : EntityComponent
     Point m_TargetLocation;
     //int m_FearMargin = 2;
 
-   public override void Init(IEntity self)
+   public override void Init(GameObject self)
     {
         base.Init(self);
         RegisteredEvents.Add(GameEventId.GetActionToTake);
@@ -35,7 +35,7 @@ public class Fear : EntityComponent
             {
                 if (point == m_CurrentLocation) continue;
 
-                IEntity target = Services.WorldDataQuery.GetEntityOnTile(point);
+                GameObject target = Services.WorldDataQuery.GetEntityOnTile(point);
                 if (target == null) continue;
 
                 if (Factions.GetDemeanorForTarget(Self, target) != Demeanor.Hostile) continue;

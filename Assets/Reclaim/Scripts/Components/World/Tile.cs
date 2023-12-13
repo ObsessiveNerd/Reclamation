@@ -105,20 +105,20 @@ public struct Point
 
 public class Tile
 {
-    public IEntity CreatureSlot;
-    public IEntity ObjectSlot;
-    public List<IEntity> Items = new List<IEntity>();
+    public GameObject CreatureSlot;
+    public GameObject ObjectSlot;
+    public List<GameObject> Items = new List<GameObject>();
     public bool BlocksMovement
     {
         get;
         set;
     }
 
-    List<IEntity> AllEntities
+    List<GameObject> AllEntities
     {
         get
         {
-            List<IEntity> entities = new List<IEntity>(Items);
+            List<GameObject> entities = new List<GameObject>(Items);
             entities.Add(CreatureSlot);
             entities.Add(ObjectSlot);
             return entities;
@@ -128,7 +128,7 @@ public class Tile
     bool m_IsVisible = false;
     Point m_GridPoint;
 
-    //public Tile(IEntity self, Point gridPoint)
+    //public Tile(GameObject self, Point gridPoint)
     //{
     //    Init(self);
     //    m_GridPoint = gridPoint;
@@ -156,7 +156,7 @@ public class Tile
         gameEvent.SetValue<bool>(EventParameter.BlocksMovement, BlocksMovement);
         float weight = gameEvent.GetValue<float>(EventParameter.Weight);
         foreach(var entity in AllEntities)
-            weight += entity.GetComponent<TileWeight>().Weight;
+            weight += entity.GetComponent<Weighted>().Weight;
         gameEvent.SetValue<float>(EventParameter.Weight, weight);
     }
 
@@ -173,7 +173,7 @@ public class Tile
     //    Services.TileInteractionService.TileChanged(this);
     //}
 
-    public void Spawn(IEntity entity)
+    public void Spawn(GameObject entity)
     {
         GameEvent getType = GameEventPool.Get(GameEventId.GetEntityType)
                             .With(EventParameter.EntityType, EntityType.None);
@@ -198,10 +198,10 @@ public class Tile
 
     public void Pickup(GameEvent gameEvent)
     {
-        IEntity entity = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameter.Entity]);
+        GameObject entity = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameter.Entity]);
         if (Items.Count > 0)
         {
-            List<IEntity> itemsPickedup = new List<IEntity>();
+            List<GameObject> itemsPickedup = new List<GameObject>();
             foreach (var item in Items)
             {
                 var pickupEvent = entity.FireEvent(entity, GameEventPool.Get(GameEventId.AddToInventory)
@@ -222,7 +222,7 @@ public class Tile
 
     public void Despawn(GameEvent gameEvent)
     {
-        IEntity entity = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameter.Entity]);
+        GameObject entity = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameter.Entity]);
         EntityType entityType = gameEvent.GetValue<EntityType>(EventParameter.EntityType);
         switch (entityType)
         {
@@ -257,7 +257,7 @@ public class Tile
         }
     }
 
-    public IEntity GetEntityOnTile(bool includeSelf = true)
+    public GameObject GetEntityOnTile(bool includeSelf = true)
     {
         var targets = GetTarget(includeSelf);
         if (targets.Count == 0)
@@ -274,7 +274,7 @@ public class Tile
     //                                    .With(EventParameter.BlocksMovement, false);
     //        if (GetTarget()[0] != Self)
     //        {
-    //            foreach (IEntity e in GetTarget())
+    //            foreach (GameObject e in GetTarget())
     //                FireEvent(e, isTileBlocking);
     //        }
     //        bool returnValue = isTileBlocking.GetValue<bool>(EventParameter.BlocksMovement);
@@ -291,7 +291,7 @@ public class Tile
         //                                .With(EventParameter.Value, false);
         //    if (GetTarget()[0] != Self)
         //    {
-        //        foreach (IEntity e in GetTarget())
+        //        foreach (GameObject e in GetTarget())
         //            FireEvent(e, isTileBlocking);
         //    }
         //    bool returnValue = isTileBlocking.GetValue<bool>(EventParameter.Value);
@@ -328,21 +328,21 @@ public class Tile
         //Services.TileInteractionService.TileChanged(this);
     }
 
-    List<IEntity> GetTarget(bool includeSelf = true)
+    List<GameObject> GetTarget(bool includeSelf = true)
     {
         //if (m_IsVisible)
         {
             if (CreatureSlot != null)
-                return new List<IEntity>() { CreatureSlot };
+                return new List<GameObject>() { CreatureSlot };
             else if (ObjectSlot != null)
-                return new List<IEntity>() { ObjectSlot };
+                return new List<GameObject>() { ObjectSlot };
             else if (Items.Count > 0)
                 return Items;
         }
 
         //if(includeSelf)
-        //    return new List<IEntity>() { Self };
+        //    return new List<GameObject>() { Self };
 
-        return new List<IEntity>();
+        return new List<GameObject>();
     }
 }

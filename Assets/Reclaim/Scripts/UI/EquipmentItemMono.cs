@@ -7,11 +7,11 @@ using UnityEngine.UI;
 
 public class EquipmentItemMono : MonoBehaviour, IPointerClickHandler
 {
-    IEntity m_Source;
-    IEntity m_Item;
+    GameObject m_Source;
+    GameObject m_Item;
     Action m_Callback;
 
-    public void Init(IEntity source, IEntity item, Action callback)
+    public void Init(GameObject source, GameObject item, Action callback)
     {
         m_Source = source;
         m_Item = item;

@@ -13,7 +13,7 @@ public class SelectFromAllSpellsMono : EscapeableMono//, IUpdatableUI
     protected override void OnEnable()
     {
         base.OnEnable();
-        IEntity source = Services.PlayerManagerService.GetActivePlayer();
+        GameObject source = Services.PlayerManagerService.GetActivePlayer();
         if (source == null)
             return;
 
@@ -34,7 +34,7 @@ public class SelectFromAllSpellsMono : EscapeableMono//, IUpdatableUI
         int index = 1;
         foreach (string spellId in spellList)
         {
-            IEntity spell = Services.EntityMapService.GetEntity(spellId);
+            GameObject spell = Services.EntityMapService.GetEntity(spellId);
             GameObject spriteGoResource = Resources.Load<GameObject>("Prefabs/UI/SpellUILarge");
             GameEvent getSpriteEvent = GameEventPool.Get(GameEventId.GetSprite)
                 .With(EventParameter.RenderSprite, null);

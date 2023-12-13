@@ -8,7 +8,7 @@ public class SelectedTile : EntityComponent
 
     public override int Priority { get { return 6; } }
 
-    public override void Init(IEntity self)
+    public override void Init(GameObject self)
     {
         base.Init(self);
 

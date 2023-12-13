@@ -23,7 +23,7 @@ public class Spell : EntityComponent
         SpellType = spellType;
     }
 
-    public override void Init(IEntity self)
+    public override void Init(GameObject self)
     {
         base.Init(self);
         RegisteredEvents.Add(GameEventId.GetSpells);
@@ -72,7 +72,7 @@ public class Spell : EntityComponent
         }
         //else if(gameEvent.ID == GameEventId.GetContextMenuActions)
         //{
-        //    IEntity source = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameters.Entity));
+        //    GameObject source = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameters.Entity));
         //    ContextMenuButton dropButton = new ContextMenuButton("Add to ActionBar", () =>
         //    {
         //        GameEvent addToActiveAbilities = GameEventPool.Get(GameEventId.AddToActiveAbilities)

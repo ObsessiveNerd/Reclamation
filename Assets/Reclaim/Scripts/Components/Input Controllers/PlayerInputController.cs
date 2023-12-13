@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerInputController : InputControllerBase
 {
-    public override void Init(IEntity self)
+    public override void Init(GameObject self)
     {
         base.Init(self);
         RegisteredEvents.Add(GameEventId.UpdateEntity);
@@ -82,7 +82,7 @@ public class PlayerInputController : InputControllerBase
                 if (weapons.Count == 0)
                     return;
 
-                IEntity weapon = EntityQuery.GetEntity(weapons[0]);
+                GameObject weapon = EntityQuery.GetEntity(weapons[0]);
                 if (weapon.HasComponent(typeof(Bow)))
                 {
                     Self.RemoveComponent(this);

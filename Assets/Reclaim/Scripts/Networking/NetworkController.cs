@@ -5,7 +5,7 @@ using UnityEngine;
 public class NetworkController : InputControllerBase
 {
     public override int Priority => 10;
-    public override void Init(IEntity self)
+    public override void Init(GameObject self)
     {
         base.Init(self);
         RegisteredEvents.Add(GameEventId.GetEnergy);

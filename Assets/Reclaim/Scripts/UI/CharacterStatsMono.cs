@@ -13,7 +13,7 @@ public class CharacterStatsMono : UpdatableUI//, IUpdatableUI
 
     public override void UpdateUI()
     {
-        IEntity source = Services.PlayerManagerService.GetActivePlayer();
+        GameObject source = Services.PlayerManagerService.GetActivePlayer();
 
         StatMonos = GetComponentsInChildren<StatsUIMono>().ToList();
         GameEvent getAttributePoints = GameEventPool.Get(GameEventId.GetAttributePoints)

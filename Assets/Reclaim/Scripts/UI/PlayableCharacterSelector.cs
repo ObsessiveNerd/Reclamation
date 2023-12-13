@@ -13,7 +13,7 @@ public class PlayableCharacterSelector : MonoBehaviour
         if (m_CharacterIdToTabGameObject.ContainsKey(id))
             return;
 
-        IEntity entity = EntityQuery.GetEntity(id);
+        GameObject entity = EntityQuery.GetEntity(id);
 
         var newTab = Instantiate(CharacterButton);
         newTab.transform.SetParent(transform);

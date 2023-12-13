@@ -34,7 +34,7 @@ public static class PathfindingUtility
         return MoveDirection.None;
     }
 
-    public static MoveDirection GetDirectionTo(IEntity source, IEntity target)
+    public static MoveDirection GetDirectionTo(GameObject source, GameObject target)
     {
         Point sourceP = Services.EntityMapService.GetPointWhereEntityIs(source);
         Point targetP = Services.EntityMapService.GetPointWhereEntityIs(target);
@@ -75,12 +75,12 @@ public static class PathfindingUtility
         return Services.DungeonService.GetRandomValidPoint();
     }
 
-    public static Point GetEntityLocation(IEntity entity)
+    public static Point GetEntityLocation(GameObject entity)
     {
         return Services.WorldDataQuery.GetEntityLocation(entity);
     }
 
-    public static Point GetValidPointWithinRange(IEntity target, int range)
+    public static Point GetValidPointWithinRange(GameObject target, int range)
     {
         Point startPos = GetEntityLocation(target);
         return startPos;

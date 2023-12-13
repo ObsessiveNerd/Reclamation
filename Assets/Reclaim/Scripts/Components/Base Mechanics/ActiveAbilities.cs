@@ -4,14 +4,14 @@ using UnityEngine;
 
 public class ActiveAbilities : EntityComponent
 {
-    public List<IEntity> ActiveAbilitiesList = new List<IEntity>();
+    public List<GameObject> ActiveAbilitiesList = new List<GameObject>();
 
-    public ActiveAbilities(List<IEntity> entities)
+    public ActiveAbilities(List<GameObject> entities)
     {
         ActiveAbilitiesList = entities;
     }
 
-    public override void Init(IEntity self)
+    public override void Init(GameObject self)
     {
         base.Init(self);
         RegisteredEvents.Add(GameEventId.AddToActiveAbilities);
@@ -23,7 +23,7 @@ public class ActiveAbilities : EntityComponent
     {
         if (gameEvent.ID == GameEventId.AddToActiveAbilities)
         {
-            IEntity ability = Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameter.Entity));
+            GameObject ability = Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameter.Entity));
             if (ActiveAbilitiesList.Contains(ability))
                 ActiveAbilitiesList.Remove(ability);
             else
@@ -31,11 +31,11 @@ public class ActiveAbilities : EntityComponent
         }
         else if(gameEvent.ID == GameEventId.GetActiveAbilities)
         {
-            gameEvent.GetValue<List<IEntity>>(EventParameter.Abilities).AddRange(ActiveAbilitiesList);
+            gameEvent.GetValue<List<GameObject>>(EventParameter.Abilities).AddRange(ActiveAbilitiesList);
         }
         else if(gameEvent.ID == GameEventId.RemoveFromActiveAbilities)
         {
-            foreach(var entity in gameEvent.GetValue<List<IEntity>>(EventParameter.Abilities))
+            foreach(var entity in gameEvent.GetValue<List<GameObject>>(EventParameter.Abilities))
             {
                 if(ActiveAbilitiesList.Contains(entity))
                     ActiveAbilitiesList.Remove(entity);

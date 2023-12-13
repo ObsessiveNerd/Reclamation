@@ -62,7 +62,7 @@ public class CharacterCreationMono : MonoBehaviour
 
     public string CreateEntityData()
     {
-        IEntity character = EntityFactory.CreateEntity("CharacterTemplate");
+        GameObject character = EntityFactory.CreateEntity("CharacterTemplate");
 
         string name = string.IsNullOrEmpty(InputField.text) ? EntityFactory.GetRandomCharacterName() : InputField.text;
 

@@ -30,14 +30,14 @@ public class Item : EntityComponent
     {
         if (gameEvent.ID == GameEventId.Pickup)
         {
-            IEntity entity = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameter.Entity]);
+            GameObject entity = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameter.Entity]);
             FireEvent(entity, GameEventPool.Get(GameEventId.AddToInventory)
                 .With(EventParameter.Entity, Self.ID), true).Release();
         }
 
         if (gameEvent.ID == GameEventId.Drop)
         {
-            IEntity droppingEntity = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameter.Entity]);
+            GameObject droppingEntity = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameter.Entity]);
             Services.TileInteractionService.Drop(droppingEntity, Self);
 
             GameEvent unequip = GameEventPool.Get(GameEventId.Unequip)
@@ -53,7 +53,7 @@ public class Item : EntityComponent
 
         if (gameEvent.ID == GameEventId.GetContextMenuActions)
         {
-            IEntity source = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameter.Entity));
+            GameObject source = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameter.Entity));
             ContextMenuButton dropButton = new ContextMenuButton("Drop", () =>
             {
                 GameEvent drop = GameEventPool.Get(GameEventId.Drop)

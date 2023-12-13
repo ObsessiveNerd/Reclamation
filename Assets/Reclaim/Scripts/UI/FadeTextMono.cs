@@ -9,9 +9,9 @@ public class FadeTextMono : MonoBehaviour
     float m_DeltaTime = 0f;
     float m_StartTime;
     float m_Lifetime = 0f;
-    IEntity m_Target;
+    GameObject m_Target;
 
-    public void Setup(string text, float lifetime, IEntity target, Color color)
+    public void Setup(string text, float lifetime, GameObject target, Color color)
     {
         var tmp = GetComponent<TextMeshProUGUI>();
         tmp.text = text;

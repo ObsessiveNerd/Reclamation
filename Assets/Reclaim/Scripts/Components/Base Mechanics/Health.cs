@@ -57,7 +57,7 @@ public class Health : EntityComponent
                 RecLog.Log($"{Self.Name} took {damage.DamageAmount} damage of type {damage.DamageType}");
                 CurrentHealth -= damage.DamageAmount;
 
-                IEntity weapon = Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameter.Attack));
+                GameObject weapon = Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameter.Attack));
                 GameEvent dealtDamage = GameEventPool.Get(GameEventId.DealtDamage)
                                         .With(EventParameter.DamageSource, gameEvent.GetValue<string>(EventParameter.DamageSource))
                                         .With(EventParameter.Damage, damage);

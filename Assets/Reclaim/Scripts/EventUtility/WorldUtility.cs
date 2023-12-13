@@ -4,12 +4,12 @@ using UnityEngine;
 
 public static class WorldUtility
 {
-    public static IEntity GetEntityAtPosition(Point position, bool includeTile = true)
+    public static GameObject GetEntityAtPosition(Point position, bool includeTile = true)
     {
         return Services.WorldDataQuery.GetEntityOnTile(position);
     }
 
-    public static Point GetEntityPosition(IEntity entity)
+    public static Point GetEntityPosition(GameObject entity)
     {
         GameEvent result = entity.FireEvent(GameEventPool.Get(GameEventId.GetPoint)
             .With(EventParameter.Value, null));
@@ -19,12 +19,12 @@ public static class WorldUtility
         return ret;
     }
 
-    public static IEntity GetClosestEnemyTo(IEntity e)
+    public static GameObject GetClosestEnemyTo(GameObject e)
     {
         return Services.WorldDataQuery.GetClosestEnemy(e);
     }
 
-    public static GameObject GetGameObject(IEntity e)
+    public static GameObject GetGameObject(GameObject e)
     {
         return Services.WorldDataQuery.GetGameObject(Services.EntityMapService.GetPointWhereEntityIs(e));
     }

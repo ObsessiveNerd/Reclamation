@@ -45,7 +45,7 @@ public class SpawnRestrictor : EntityComponent
         Restrictions = restrictions;
     }
 
-    public override void Init(IEntity self)
+    public override void Init(GameObject self)
     {
         RegisteredEvents.Add(GameEventId.GetSpawnRestrictions);
         base.Init(self);

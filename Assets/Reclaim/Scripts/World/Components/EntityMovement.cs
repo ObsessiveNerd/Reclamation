@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class EntityMovement : GameService
 {
-    //public MoveDirection BeforeMoving(IEntity entity, MoveDirection moveDirection, out float energyRequired)
+    //public MoveDirection BeforeMoving(GameObject entity, MoveDirection moveDirection, out float energyRequired)
     //{
     //    if (!m_EntityToPointMap.ContainsKey(entity))
     //    {
@@ -29,7 +29,7 @@ public class EntityMovement : GameService
     //    return ret;
     //}
 
-    public void SetEntityPosition(IEntity entity, Point newPoint)
+    public void SetEntityPosition(GameObject entity, Point newPoint)
     {
         if (!m_EntityToPointMap.ContainsKey(entity.ID))
             return;
@@ -55,7 +55,7 @@ public class EntityMovement : GameService
         Services.WorldUpdateService.UpdateWorldView();
     }
 
-    public void Move(IEntity entity, MoveDirection moveDirection)
+    public void Move(GameObject entity, MoveDirection moveDirection)
     {
         if (!m_EntityToPointMap.ContainsKey(entity.ID))
             return;

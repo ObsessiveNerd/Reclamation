@@ -14,7 +14,7 @@ public class Rest : EntityComponent
         RegenSpeed = speed;
     }
 
-    public override void Init(IEntity self)
+    public override void Init(GameObject self)
     {
         base.Init(self);
         RegisteredEvents.Add(GameEventId.EndTurn);
@@ -24,7 +24,7 @@ public class Rest : EntityComponent
     {
         if(gameEvent.ID == GameEventId.EndTurn)
         {
-            IEntity target = gameEvent.HasParameter(EventParameter.Entity) ?
+            GameObject target = gameEvent.HasParameter(EventParameter.Entity) ?
                 Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameter.Entity)) : Self;
 
             currentTurns++;

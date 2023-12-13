@@ -11,7 +11,7 @@ public class SpellExaminationUI : EscapeableMono//, IUpdatableUI
     private TextMeshProUGUI Title;
     private TextMeshProUGUI Body;
 
-    IEntity m_ActiveSpell;
+    GameObject m_ActiveSpell;
 
     public void Setup(List<string> spellList)
     {
@@ -22,7 +22,7 @@ public class SpellExaminationUI : EscapeableMono//, IUpdatableUI
         int index = 1;
         foreach (string spellId in spellList)
         {
-            IEntity spell = EntityQuery.GetEntity(spellId);
+            GameObject spell = EntityQuery.GetEntity(spellId);
 
             GameObject spriteGoResource = Resources.Load<GameObject>("Prefabs/UI/SpellUI");
             GameEvent getSpriteEvent = GameEventPool.Get(GameEventId.GetSprite)
@@ -49,7 +49,7 @@ public class SpellExaminationUI : EscapeableMono//, IUpdatableUI
         UpdatePage(EntityQuery.GetEntity(spellList[0]));
     }
 
-    public void UpdatePage(IEntity newSource)
+    public void UpdatePage(GameObject newSource)
     {
         m_ActiveSpell = newSource;
         Title.text = newSource.Name;

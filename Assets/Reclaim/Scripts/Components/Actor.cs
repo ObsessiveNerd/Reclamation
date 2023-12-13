@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-public class Actor : IEntity
+public class Actor : GameObject
 {
     PriorityQueue<IComponent> m_Components;
     List<IComponent> m_AddQueue = new List<IComponent>();
@@ -66,7 +66,7 @@ public class Actor : IEntity
             c.Start();
     }
 
-    public GameEvent FireEvent(IEntity target, GameEvent gameEvent, bool logEvent = false)
+    public GameEvent FireEvent(GameObject target, GameEvent gameEvent, bool logEvent = false)
     {
         if (logEvent && target != null)
             GameSaveSystem.LogEvent(target.ID, gameEvent);
@@ -187,8 +187,8 @@ public class Actor : IEntity
 
     public override bool Equals(object obj)
     {
-        if (obj is IEntity)
-            return (obj as IEntity).ID == ID;
+        if (obj is GameObject)
+            return (obj as GameObject).ID == ID;
         return false;
     }
 

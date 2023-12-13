@@ -14,8 +14,8 @@ public class InventoryManagerMono : UpdatableUI, IDropHandler
     public Transform InventoryView;
     public Image CharacterImage;
     
-    public IEntity Source;
-    Dictionary<IEntity, GameObject> m_Items = new Dictionary<IEntity,GameObject>();
+    public GameObject Source;
+    Dictionary<GameObject, GameObject> m_Items = new Dictionary<GameObject,GameObject>();
     string m_ActiveFilter = "All";
 
     public void ClearCallback()
@@ -23,7 +23,7 @@ public class InventoryManagerMono : UpdatableUI, IDropHandler
         ItemDropped = null;
     }
 
-    public void Setup(IEntity source)
+    public void Setup(GameObject source)
     {
         if (source != null)
             Source = source;
@@ -31,8 +31,8 @@ public class InventoryManagerMono : UpdatableUI, IDropHandler
 
     public void Cleanup()
     {
-        List<IEntity> keysToRemove = new List<IEntity>();
-        foreach (IEntity entity in m_Items.Keys)
+        List<GameObject> keysToRemove = new List<GameObject>();
+        foreach (GameObject entity in m_Items.Keys)
         {
             Destroy(m_Items[entity]);
             keysToRemove.Add(entity);
@@ -52,14 +52,14 @@ public class InventoryManagerMono : UpdatableUI, IDropHandler
         CharacterImage.sprite = Source.FireEvent(getSprite).GetValue<Sprite>(EventParameter.RenderSprite);
         getSprite.Release();
 
-        List<IEntity> inventory = new List<IEntity>();
-        Dictionary<IEntity, IEntity> itemToPlayerSource = new Dictionary<IEntity, IEntity>();
+        List<GameObject> inventory = new List<GameObject>();
+        Dictionary<GameObject, GameObject> itemToPlayerSource = new Dictionary<GameObject, GameObject>();
         foreach (var player in Services.PlayerManagerService.GetAllPlayers())
         {
             GameEvent getCurrentInventory = GameEventPool.Get(GameEventId.GetCurrentInventory)
-                                            .With(EventParameter.Value, new List<IEntity>());
+                                            .With(EventParameter.Value, new List<GameObject>());
 
-            var items = player.FireEvent(getCurrentInventory).GetValue<List<IEntity>>(EventParameter.Value);
+            var items = player.FireEvent(getCurrentInventory).GetValue<List<GameObject>>(EventParameter.Value);
             foreach (var item in items)
                 itemToPlayerSource.Add(item, player);
             inventory.AddRange(items);
@@ -95,8 +95,8 @@ public class InventoryManagerMono : UpdatableUI, IDropHandler
             return;
 
         eventData.pointerDrag.GetComponent<InventoryItemMono>().AllowConxtMenuOptions = true;
-        IEntity source = eventData.pointerDrag.GetComponent<InventoryItemMono>().Source;
-        IEntity item = eventData.pointerDrag.GetComponent<InventoryItemMono>().ItemObject;
+        GameObject source = eventData.pointerDrag.GetComponent<InventoryItemMono>().Source;
+        GameObject item = eventData.pointerDrag.GetComponent<InventoryItemMono>().ItemObject;
 
         GameEvent getBodyPartForEquipment = GameEventPool.Get(GameEventId.GetBodyPartType)
             .With(EventParameter.BodyPart, BodyPart.None);
@@ -150,7 +150,7 @@ public class InventoryManagerMono : UpdatableUI, IDropHandler
         UpdateUI();
     }
 
-    List<IEntity> Filter(List<IEntity> allEquipment)
+    List<GameObject> Filter(List<GameObject> allEquipment)
     {
         switch (m_ActiveFilter)
         {

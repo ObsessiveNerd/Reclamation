@@ -7,12 +7,12 @@ using UnityEngine;
 public class Shadowcasting : IFovAlgorithm
 {
     int m_Range;
-    IEntity m_Source;
+    GameObject m_Source;
     Point m_SourcePoint;
     List<Point> m_VisiblePoints;
     List<int> m_VisibleOctants = new List<int>() { 1,2,3,4,5,6,7,8 };
 
-    public List<Point> GetVisibleTiles(IEntity source, int range, List<int> octants = null)
+    public List<Point> GetVisibleTiles(GameObject source, int range, List<int> octants = null)
     {
         if (source == null)
             return new List<Point>();

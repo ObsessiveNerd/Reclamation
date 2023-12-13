@@ -9,9 +9,9 @@ public class EquipmentItemSlotMono : MonoBehaviour, IDropHandler
     public GameObject BaseImage;
 
     InventoryManagerMono inventoryManager;
-    IEntity Source;
+    GameObject Source;
 
-    public void Setup(IEntity source)
+    public void Setup(GameObject source)
     {
         Source = source;
         //if (transform.childCount > 1)
@@ -28,8 +28,8 @@ public class EquipmentItemSlotMono : MonoBehaviour, IDropHandler
     public void OnDrop(PointerEventData eventData)
     {
         Debug.Log("Dropped");
-        IEntity source = eventData.pointerDrag.GetComponent<InventoryItemMono>().Source;
-        IEntity item = eventData.pointerDrag.GetComponent<InventoryItemMono>().ItemObject;
+        GameObject source = eventData.pointerDrag.GetComponent<InventoryItemMono>().Source;
+        GameObject item = eventData.pointerDrag.GetComponent<InventoryItemMono>().ItemObject;
 
         GameEvent getBodyPartForEquipment = GameEventPool.Get(GameEventId.GetBodyPartType)
             .With(EventParameter.BodyPart, BodyPart.None);
@@ -67,8 +67,8 @@ public class EquipmentItemSlotMono : MonoBehaviour, IDropHandler
 
         foreach(var inventoryItem in transform.GetComponentsInChildren<InventoryItemMono>())
         {
-            IEntity current = inventoryItem.Source;
-            IEntity currentItem = inventoryItem.ItemObject;
+            GameObject current = inventoryItem.Source;
+            GameObject currentItem = inventoryItem.ItemObject;
 
             if (current.ID == Services.WorldDataQuery.GetActivePlayerId())
             { 

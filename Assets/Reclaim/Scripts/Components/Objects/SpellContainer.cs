@@ -11,8 +11,8 @@ public class SpellContainer : EntityComponent
     public bool RandomSpells = true;
     public string SpecificSpell;
 
-    Dictionary<string, IEntity> m_SpellNameToIdMap = new Dictionary<string, IEntity>();
-    public Dictionary<string, IEntity> SpellNameToIdMap
+    Dictionary<string, GameObject> m_SpellNameToIdMap = new Dictionary<string, GameObject>();
+    public Dictionary<string, GameObject> SpellNameToIdMap
     {
         get
         {
@@ -58,7 +58,7 @@ public class SpellContainer : EntityComponent
             RandomSpells = false;
     }
 
-    public override void Init(IEntity self)
+    public override void Init(GameObject self)
     {
         base.Init(self);
         RegisteredEvents.Add(GameEventId.GetContextMenuActions);

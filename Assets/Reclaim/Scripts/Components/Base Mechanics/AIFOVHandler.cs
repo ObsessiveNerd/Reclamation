@@ -5,7 +5,7 @@ using UnityEngine;
 public class AIFOVHandler : EntityComponent
 {
     private List<Point> m_VisiblePoints = new List<Point>();
-    public override void Init(IEntity self)
+    public override void Init(GameObject self)
     {
         base.Init(self);
         RegisteredEvents.Add(GameEventId.FOVRecalculated);
@@ -19,7 +19,7 @@ public class AIFOVHandler : EntityComponent
             m_VisiblePoints = (List<Point>)gameEvent.Paramters[EventParameter.VisibleTiles];
             //foreach(var tile in m_VisiblePoints)
             //{
-            //    IEntity helm = EntityFactory.CreateEntity("Helmet");
+            //    GameObject helm = EntityFactory.CreateEntity("Helmet");
             //    Spawner.Spawn(helm, tile);
             //}
         }

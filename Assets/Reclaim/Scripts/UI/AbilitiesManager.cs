@@ -12,7 +12,7 @@ public class AbilitiesManager : UpdatableUI
 
     public override void UpdateUI()
     {
-        IEntity source = Services.PlayerManagerService.GetActivePlayer();
+        GameObject source = Services.PlayerManagerService.GetActivePlayer();
 
         Close();
         ActionBar = FindObjectOfType<SpellSelectorMono>(true).gameObject;
@@ -30,7 +30,7 @@ public class AbilitiesManager : UpdatableUI
 
         foreach (string spellId in spellList)
         {
-            IEntity spell = EntityQuery.GetEntity(spellId);
+            GameObject spell = EntityQuery.GetEntity(spellId);
 
             GameObject spriteGoResource = Resources.Load<GameObject>("Prefabs/UI/SpellUI");
             GameEvent getSpriteEvent = GameEventPool.Get(GameEventId.GetSprite)

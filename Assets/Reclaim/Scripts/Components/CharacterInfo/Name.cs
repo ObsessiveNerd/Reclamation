@@ -11,7 +11,7 @@ public class Name : EntityComponent
         PrettyName = name;
     }
 
-    public override void Init(IEntity self)
+    public override void Init(GameObject self)
     {
         base.Init(self);
         RegisteredEvents.Add(GameEventId.GetInfo);

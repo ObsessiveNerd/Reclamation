@@ -12,7 +12,7 @@ public class HealMana : EntityComponent
         HealAmount = healAmount;
     }
 
-    public override void Init(IEntity self)
+    public override void Init(GameObject self)
     {
         base.Init(self);
         RegisteredEvents.Add(GameEventId.ApplyEffectToTarget);
@@ -24,14 +24,14 @@ public class HealMana : EntityComponent
     {
         if (gameEvent.ID == GameEventId.ApplyEffectToTarget)
         {
-            IEntity target = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameter.Entity));
+            GameObject target = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameter.Entity));
             GameEvent e = GameEventPool.Get(GameEventId.RestoreMana)
                                 .With(EventParameter.Mana, HealAmount.Roll());
             target.FireEvent(e).Release();
         }
         else if (gameEvent.ID == GameEventId.CastSpellEffect)
         {
-            IEntity target = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameter.Target));
+            GameObject target = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameter.Target));
             GameEvent e = GameEventPool.Get(GameEventId.RestoreMana)
                                 .With(EventParameter.Healing, HealAmount.Roll());
             target.FireEvent(e).Release();

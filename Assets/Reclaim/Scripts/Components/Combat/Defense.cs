@@ -16,7 +16,7 @@ public class Defense : EntityComponent
 
     public override void HandleEvent(GameEvent gameEvent)
     {
-        IEntity weapon = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameter.Attack));
+        GameObject weapon = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameter.Attack));
         if (gameEvent.ID == GameEventId.TakeDamage)
         {
             AttackType weaponType = CombatUtility.GetWeaponTypeList(weapon).FirstOrDefault(); //gameEvent.GetValue<AttackType>(EventParameters.WeaponType);
@@ -48,7 +48,7 @@ public class Defense : EntityComponent
             {
                 if(!weapon.HasComponent(typeof(SelfTargetingSpell)))
                 {
-                    IEntity damageSource = Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameter.DamageSource));
+                    GameObject damageSource = Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameter.DamageSource));
                     GameEvent getSpellSaveDC = GameEventPool.Get(GameEventId.GetSpellSaveDC)
                     .With(EventParameter.SpellType, CombatUtility.GetSpellType(weapon))
                     .With(EventParameter.Value, -1);

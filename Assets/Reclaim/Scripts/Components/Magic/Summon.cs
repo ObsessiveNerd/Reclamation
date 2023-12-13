@@ -13,7 +13,7 @@ public class Summon : EntityComponent
         Amount = amount;
     }
 
-    public override void Init(IEntity self)
+    public override void Init(GameObject self)
     {
         base.Init(self);
         RegisteredEvents.Add(GameEventId.CastSpellEffect);
@@ -23,14 +23,14 @@ public class Summon : EntityComponent
     {
         if(gameEvent.ID == GameEventId.CastSpellEffect)
         {
-            IEntity spellSource = Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameter.Entity));
-            IEntity spellTarget = Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameter.Target));
+            GameObject spellSource = Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameter.Entity));
+            GameObject spellTarget = Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameter.Target));
 
             var validPoints = Services.DungeonService.GetValidPointsAround(Services.EntityMapService.GetPointWhereEntityIs(spellTarget), 2);
 
             for(int i = 0; i < Amount; i++)
             {
-                IEntity e = EntityFactory.CreateEntity(SummonName);
+                GameObject e = EntityFactory.CreateEntity(SummonName);
                 if(spellSource.HasComponent(typeof(Faction)))
                 {
                     FactionId factionId = spellSource.GetComponent<Faction>().ID;

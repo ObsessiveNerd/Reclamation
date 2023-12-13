@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Lifesteal : EntityComponent
 {
-    public override void Init(IEntity self)
+    public override void Init(GameObject self)
     {
         base.Init(self);
         RegisteredEvents.Add(GameEventId.DealtDamage);
@@ -16,7 +16,7 @@ public class Lifesteal : EntityComponent
     {
         if(gameEvent.ID == GameEventId.DealtDamage)
         {
-            IEntity damageSource = Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameter.DamageSource));
+            GameObject damageSource = Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameter.DamageSource));
             Damage damage = gameEvent.GetValue<Damage>(EventParameter.Damage);
 
             GameEvent healForDamage = GameEventPool.Get(GameEventId.RestoreHealth)

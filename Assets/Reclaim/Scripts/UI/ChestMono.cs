@@ -10,10 +10,10 @@ public class ChestMono : EscapeableMono
 
     List<GameObject> m_Inventories = new List<GameObject>();
 
-    private IEntity m_Chest;
+    private GameObject m_Chest;
     private List<GameObject> m_Items = new List<GameObject>();
 
-    public void Setup(IEntity chest)
+    public void Setup(GameObject chest)
     {
         if (chest == null)
             return;
@@ -61,7 +61,7 @@ public class ChestMono : EscapeableMono
         List<GameObject> items = new List<GameObject>(m_Items);
         foreach(var item in items)
         {
-            IEntity itemEntity = item.GetComponent<InventoryItemMono>().ItemObject;
+            GameObject itemEntity = item.GetComponent<InventoryItemMono>().ItemObject;
             GameEvent removeFromChest = GameEventPool.Get(GameEventId.RemoveFromInventory)
                                         .With(EventParameter.Item, itemEntity.ID);
             m_Chest.FireEvent(removeFromChest);
@@ -69,7 +69,7 @@ public class ChestMono : EscapeableMono
 
             GameEvent addToInventory = GameEventPool.Get(GameEventId.AddToInventory)
                                                     .With(EventParameter.Entity, itemEntity.ID);
-            IEntity activePlayer = Services.EntityMapService.GetEntity(Services.WorldDataQuery.GetActivePlayerId());
+            GameObject activePlayer = Services.EntityMapService.GetEntity(Services.WorldDataQuery.GetActivePlayerId());
             activePlayer.FireEvent(addToInventory);
             addToInventory.Release();
 

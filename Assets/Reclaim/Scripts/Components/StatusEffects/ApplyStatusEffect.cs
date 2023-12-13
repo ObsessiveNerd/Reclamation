@@ -14,7 +14,7 @@ public class ApplyStatusEffect : EntityComponent
         DestroyAfterTurns = destroyAfterTurns;
     }
 
-    public override void Init(IEntity self)
+    public override void Init(GameObject self)
     {
         base.Init(self);
         RegisteredEvents.Add(GameEventId.ApplyEffectToTarget);
@@ -35,7 +35,7 @@ public class ApplyStatusEffect : EntityComponent
         }
     }
 
-    void ApplyEffectToTarget(IEntity target)
+    void ApplyEffectToTarget(GameObject target)
     {
         target.AddComponent(new StatusEffect(StatusEffectType, 0, DestroyAfterTurns));
         Services.TileInteractionService.EntityChanged(target);

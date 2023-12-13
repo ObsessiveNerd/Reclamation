@@ -446,7 +446,7 @@ public class BasicDungeonGenerator : IDungeonGenerator
 
         foreach(var bp in EntityFactory.InventoryEntities)
         {
-            IEntity e = EntityFactory.CreateEntity(bp);
+            GameObject e = EntityFactory.CreateEntity(bp);
             GameEvent getRarity = GameEventPool.Get(GameEventId.GetRarity)
                 .With(EventParameter.Rarity, null);
 
@@ -492,7 +492,7 @@ public class BasicDungeonGenerator : IDungeonGenerator
         if (metaData.SpawnBoss)
         {
             Room randomRoom = Rooms[RecRandom.Instance.GetRandomValue(1, Rooms.Count)];
-            IEntity boss = EntityFactory.CreateEntity(EntityFactory.GetBossNameForArea(metaData));
+            GameObject boss = EntityFactory.CreateEntity(EntityFactory.GetBossNameForArea(metaData));
             if (finalLevel)
                 boss.AddComponent(new WinGameOnDeath());
             Spawner.Spawn(boss, randomRoom.GetValidPoint());
@@ -596,7 +596,7 @@ public class BasicDungeonGenerator : IDungeonGenerator
         for (int i = 0; i < RecRandom.Instance.GetRandomValue(10, 25); i++)
         {
             Room randomRoom = Rooms[RecRandom.Instance.GetRandomValue(1, Rooms.Count)];
-            IEntity enemy = EntityFactory.CreateEntity(EntityFactory.GetRandomMonsterBPName(dmd));
+            GameObject enemy = EntityFactory.CreateEntity(EntityFactory.GetRandomMonsterBPName(dmd));
             Spawner.Spawn(enemy, randomRoom.GetValidPoint());
         }
     }
@@ -614,7 +614,7 @@ public class BasicDungeonGenerator : IDungeonGenerator
 
                 if (spawnChest)
                 {
-                    IEntity chest = EntityFactory.CreateEntity("Chest");
+                    GameObject chest = EntityFactory.CreateEntity("Chest");
                     GameEvent addItems = GameEventPool.Get(GameEventId.AddItems)
                                             .With(EventParameter.Items, items);
                     if (chest == null)

@@ -21,7 +21,7 @@ public class WorldUIController : GameService
         GameObject.FindObjectOfType<CharacterMono>().ToggleSelected(setTo);
     }
 
-    public void EntityTookDamage(IEntity entity, int damage)
+    public void EntityTookDamage(GameObject entity, int damage)
     {
         if (!m_EntityToPointMap.ContainsKey(entity.ID))
             return;
@@ -36,7 +36,7 @@ public class WorldUIController : GameService
         go.transform.SetParent(Object.FindObjectOfType<Canvas>().transform);
     }
 
-    public void EntityRegainedMana(IEntity entity, int amount)
+    public void EntityRegainedMana(GameObject entity, int amount)
     {
         if (!m_EntityToPointMap.ContainsKey(entity.ID))
             return;
@@ -51,7 +51,7 @@ public class WorldUIController : GameService
         go.transform.SetParent(GameObject.FindObjectOfType<Canvas>().transform);
     }
 
-    public void EntityHealedDamage(IEntity entity, int healing)
+    public void EntityHealedDamage(GameObject entity, int healing)
     {
         if (!m_EntityToPointMap.ContainsKey(entity.ID))
             return;
@@ -66,7 +66,7 @@ public class WorldUIController : GameService
         go.transform.SetParent(GameObject.FindObjectOfType<Canvas>().transform);
     }
 
-    public void PromptToGiveItem(IEntity source, IEntity item)
+    public void PromptToGiveItem(GameObject source, GameObject item)
     {
         var contextMenu = ContextMenuMono.CreateNewContextMenu();
         contextMenu.GetComponent<ContextMenuMono>().SelectPlayer((target) =>
@@ -129,7 +129,7 @@ public class WorldUIController : GameService
             UpdatableUI.Add(go);
     }
 
-    public void OpenChestUI(IEntity chest, IEntity character)
+    public void OpenChestUI(GameObject chest, GameObject character)
     {
         GameObject.FindObjectOfType<UIReferences>().OpenChest(chest);
         UpdateUI();
@@ -174,7 +174,7 @@ public class WorldUIController : GameService
         GameObject.FindObjectOfType<UIReferences>().OnOpenDebugMenu();
     }
 
-    public void OpenEnchantmentUI(IEntity source, IEntity enchantment)
+    public void OpenEnchantmentUI(GameObject source, GameObject enchantment)
     {
         GameObject.FindObjectOfType<UIReferences>().OpenEnchanter(source, enchantment);
         UpdateUI();

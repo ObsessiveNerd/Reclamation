@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public static class UIUtility
 {
-    public static GameObject CreateItemGameObject(IEntity source, IEntity item, Transform parent)
+    public static GameObject CreateItemGameObject(GameObject source, GameObject item, Transform parent)
     {
         if (source == null || item == null || parent == null)
         {

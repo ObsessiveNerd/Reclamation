@@ -12,7 +12,7 @@ public class Equipment : EntityComponent
         PreferredBodyPartWhenEquipped = preferredBodyPart;
     }
 
-    public override void Init(IEntity self)
+    public override void Init(GameObject self)
     {
         base.Init(self);
         RegisteredEvents.Add(GameEventId.GetContextMenuActions);
@@ -26,7 +26,7 @@ public class Equipment : EntityComponent
 
         if(gameEvent.ID == GameEventId.GetContextMenuActions)
         {
-            IEntity source = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameter.Entity));
+            GameObject source = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameter.Entity));
             GameEvent amIEquiped = GameEventPool.Get(GameEventId.CheckItemEquiped)
                                         .With(EventParameter.Item, Self.ID)
                                         .With(EventParameter.Value, false);
@@ -74,7 +74,7 @@ public class Equipment : EntityComponent
 
         else if (gameEvent.ID == GameEventId.TryEquip)
         {
-            IEntity source = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameter.Entity));
+            GameObject source = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameter.Entity));
             GameEvent equip = GameEventPool.Get(GameEventId.Equip)
                                             .With(EventParameter.EntityType, PreferredBodyPartWhenEquipped)
                                             .With(EventParameter.Equipment, Self.ID);

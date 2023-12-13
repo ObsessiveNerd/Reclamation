@@ -5,9 +5,9 @@ using UnityEngine;
 
 public class NameplateMono : MonoBehaviour
 {
-    IEntity m_Target;
+    GameObject m_Target;
 
-    public void Setup(IEntity entity)
+    public void Setup(GameObject entity)
     {
         m_Target = entity;
         GetComponent<TextMeshProUGUI>().text = m_Target?.Name;

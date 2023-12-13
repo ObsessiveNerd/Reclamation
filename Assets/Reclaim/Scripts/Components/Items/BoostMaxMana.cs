@@ -14,7 +14,7 @@ public class BoostMaxMana : EntityComponent
         CalculatedAmount = calculated;
     }
 
-    public override void Init(IEntity self)
+    public override void Init(GameObject self)
     {
         base.Init(self);
         RegisteredEvents.Add(GameEventId.ActivateObject);
@@ -26,7 +26,7 @@ public class BoostMaxMana : EntityComponent
     {
         if(gameEvent.ID == GameEventId.ActivateObject)
         {
-            IEntity owner = Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameter.Owner));
+            GameObject owner = Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameter.Owner));
             GameEvent getHealth = GameEventPool.Get(GameEventId.GetMana)
                                     .With(EventParameter.Value, 0)
                                     .With(EventParameter.MaxValue, 0);
@@ -44,7 +44,7 @@ public class BoostMaxMana : EntityComponent
         }
         else if(gameEvent.ID == GameEventId.DeactivateObject)
         {
-            IEntity owner = Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameter.Owner));
+            GameObject owner = Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameter.Owner));
             GameEvent removeBoost = GameEventPool.Get(GameEventId.RemoveMaxMana)
                                     .With(EventParameter.MaxValue, PercentToBoost);
             owner.FireEvent(removeBoost);

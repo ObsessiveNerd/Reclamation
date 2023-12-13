@@ -59,7 +59,7 @@ public class EquipmentSlot : EntityComponent
         }
     }
 
-    public override void Init(IEntity self)
+    public override void Init(GameObject self)
     {
         base.Init(self);
         RegisteredEvents.Add(GameEventId.GetImmunity);
@@ -81,7 +81,7 @@ public class EquipmentSlot : EntityComponent
         RegisteredEvents.Add(GameEventId.EndTurn);
     }
 
-    //void EquipmentDestroyed(IEntity e)
+    //void EquipmentDestroyed(GameObject e)
     //{
     //    if(m_Equipment != null && m_Equipment == e)
     //    {
@@ -131,7 +131,7 @@ public class EquipmentSlot : EntityComponent
         {
             if (EquipmentId != null && gameEvent.GetValue<string>(EventParameter.Item) == EquipmentId)
             {
-                IEntity owner = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameter.Entity));
+                GameObject owner = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameter.Entity));
                 FireEvent(owner, GameEventPool.Get(GameEventId.AddToInventory).With(EventParameter.Entity, EquipmentId), true).Release();
                 GameEvent itemUnequiped = GameEventPool.Get(GameEventId.ItemUnequipped)
                                             .With(EventParameter.Owner, owner.ID);
@@ -145,7 +145,7 @@ public class EquipmentSlot : EntityComponent
         {
             if (!string.IsNullOrEmpty(EquipmentId))
             {
-                IEntity equipmentEntity = EntityQuery.GetEntity(EquipmentId);
+                GameObject equipmentEntity = EntityQuery.GetEntity(EquipmentId);
                 if (equipmentEntity == null)
                     return;
 

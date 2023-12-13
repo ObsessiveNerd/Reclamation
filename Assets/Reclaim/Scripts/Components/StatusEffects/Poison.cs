@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Poison : EntityComponent
 {
-    public override void Init(IEntity self)
+    public override void Init(GameObject self)
     {
         base.Init(self);
         RegisteredEvents.Add(GameEventId.AlterSprite);

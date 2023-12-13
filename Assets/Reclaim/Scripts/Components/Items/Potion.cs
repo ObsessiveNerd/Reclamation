@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Potion : EntityComponent
 {
-    public override void Init(IEntity self)
+    public override void Init(GameObject self)
     {
         base.Init(self);
         RegisteredEvents.Add(GameEventId.Quaff);
@@ -15,7 +15,7 @@ public class Potion : EntityComponent
     {
         if(gameEvent.ID == GameEventId.Quaff)
         {
-            IEntity target = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameter.Entity));
+            GameObject target = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameter.Entity));
 
             GameEvent builder = GameEventPool.Get(GameEventId.ApplyEffectToTarget)
                                     .With(EventParameter.Entity, target.ID);
@@ -24,7 +24,7 @@ public class Potion : EntityComponent
 
         else if(gameEvent.ID == GameEventId.GetContextMenuActions)
         {
-            IEntity source = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameter.Entity));
+            GameObject source = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameter.Entity));
 
             ContextMenuButton button = new ContextMenuButton("Quaff", () =>
             {

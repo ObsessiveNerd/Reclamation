@@ -9,14 +9,14 @@ public class SpellcasterPlayerController : InputControllerBase
     int m_SpellIndex = 0;
     int m_ManaCost = 0;
     Point m_TileSelection = Point.InvalidPoint;
-    IEntity m_Attack;
+    GameObject m_Attack;
 
     public SpellcasterPlayerController(int spellIndex)
     {
         m_SpellIndex = spellIndex;
     }
 
-    public SpellcasterPlayerController(IEntity spell)
+    public SpellcasterPlayerController(GameObject spell)
     {
         m_Attack = spell;
         GameEvent getManaCost = GameEventPool.Get(GameEventId.ManaCost)
@@ -25,7 +25,7 @@ public class SpellcasterPlayerController : InputControllerBase
         getManaCost.Release();
     }
 
-    public override void Init(IEntity self)
+    public override void Init(GameObject self)
     {
         base.Init(self);
         UIManager.Push(this);
@@ -33,10 +33,10 @@ public class SpellcasterPlayerController : InputControllerBase
         if(m_Attack == null)
         {
             GameEvent getSpells = GameEventPool.Get(GameEventId.GetActiveAbilities)
-                                    .With(EventParameter.Abilities, new List<IEntity>());
+                                    .With(EventParameter.Abilities, new List<GameObject>());
 
             var eventResult = Self.FireEvent(getSpells);
-            var spellList = eventResult.GetValue<List<IEntity>>(EventParameter.Abilities);
+            var spellList = eventResult.GetValue<List<GameObject>>(EventParameter.Abilities);
             if (spellList.Count == 0 || spellList.Count - 1 < m_SpellIndex)
             {
                 UIManager.ForcePop(this);
@@ -76,7 +76,7 @@ public class SpellcasterPlayerController : InputControllerBase
             }
         }
 
-        IEntity startingTarget = WorldUtility.GetClosestEnemyTo(Self);
+        GameObject startingTarget = WorldUtility.GetClosestEnemyTo(Self);
         if (m_Attack.HasComponent(typeof(Heal)))
             startingTarget = Self;
 
@@ -155,7 +155,7 @@ public class SpellcasterPlayerController : InputControllerBase
     void ConfirmSpellCast(GameEvent gameEvent)
     {
         //AttackType weaponType = CombatUtility.GetWeaponType(m_Attack);
-        IEntity target = WorldUtility.GetEntityAtPosition(m_TileSelection);
+        GameObject target = WorldUtility.GetEntityAtPosition(m_TileSelection);
 
         CombatUtility.Attack(Self, target, m_Attack);
         //CombatUtility.Attack(Self, target, m_Attack, weaponType);

@@ -19,7 +19,7 @@ public class WorldDataQuery : GameService
         return m_ActivePlayer?.Value.ID;
     }
 
-    public Point GetEntityLocation(IEntity entity)
+    public Point GetEntityLocation(GameObject entity)
     {
         if (m_EntityToPointMap.TryGetValue(entity.ID, out Point result))
             return result;
@@ -45,13 +45,13 @@ public class WorldDataQuery : GameService
         //return retVal;
     }
 
-    public IEntity GetClosestEnemy(IEntity source)
+    public GameObject GetClosestEnemy(GameObject source)
     {
-        IEntity closestEnemy = null;
+        GameObject closestEnemy = null;
         Point sourcePoint = m_EntityToPointMap[source.ID];
         foreach (var tile  in m_Tiles.Values)
         {
-            IEntity e = tile.CreatureSlot;
+            GameObject e = tile.CreatureSlot;
             if (e == null) continue;
 
             Demeanor demeanor = Factions.GetDemeanorForTarget(source, e);
@@ -72,13 +72,13 @@ public class WorldDataQuery : GameService
         return closestEnemy;
     }
 
-    public IEntity GetClosestAlly(IEntity source)
+    public GameObject GetClosestAlly(GameObject source)
     {
-        IEntity ally = source;
+        GameObject ally = source;
         Point sourcePoint = m_EntityToPointMap[source.ID];
         foreach (var tile  in m_Tiles.Values)
         {
-            IEntity e = tile.CreatureSlot;
+            GameObject e = tile.CreatureSlot;
             if (e == null) continue;
 
             Demeanor demeanor = Factions.GetDemeanorForTarget(source, e);
@@ -112,14 +112,14 @@ public class WorldDataQuery : GameService
         return null;
     }
 
-    public IEntity GetEntityOnTile(Point currentTilePos)
+    public GameObject GetEntityOnTile(Point currentTilePos)
     {
         if (m_Tiles.ContainsKey(currentTilePos))
             return m_Tiles[currentTilePos].GetEntityOnTile();
         return null;
     }
 
-    public List<IEntity> GetEntities()
+    public List<GameObject> GetEntities()
     {
         return m_EntityToPointMap.Keys.Select(e => m_EntityIdToEntityMap[e]).ToList();
     }

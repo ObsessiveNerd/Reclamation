@@ -11,7 +11,7 @@ public class TileInteractions : GameService
         return m_Tiles[p];
     }
 
-    public void EntityChanged(IEntity e)
+    public void EntityChanged(GameObject e)
     {
         if(m_EntityToPointMap.TryGetValue(e.ID, out Point pos))
             TileChanged(m_Tiles[pos]);
@@ -22,7 +22,7 @@ public class TileInteractions : GameService
         m_ChangedTiles.Add(t);
     }
 
-    public void Pickup(IEntity pickupEntity)
+    public void Pickup(GameObject pickupEntity)
     {
         GameEvent pickup = GameEventPool.Get(GameEventId.Pickup)
                             .With(EventParameter.Entity, pickupEntity.ID);
@@ -47,7 +47,7 @@ public class TileInteractions : GameService
         return false;
     }
 
-    public void Drop(IEntity droppingEntity, IEntity entity)
+    public void Drop(GameObject droppingEntity, GameObject entity)
     {
         if (m_Players.Contains(droppingEntity))
             droppingEntity = m_ActivePlayer.Value;

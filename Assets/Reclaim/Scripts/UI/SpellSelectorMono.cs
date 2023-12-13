@@ -12,14 +12,14 @@ public class SpellSelectorMono : UpdatableUI//, IUpdatableUI
     public override void UpdateUI()
     {
         Close();
-        IEntity source = Services.PlayerManagerService.GetActivePlayer();
+        GameObject source = Services.PlayerManagerService.GetActivePlayer();
         if (source == null)
             return;
 
         GameEvent getSpells = GameEventPool.Get(GameEventId.GetActiveAbilities)
-                                    .With(EventParameter.Abilities, new List<IEntity>());
+                                    .With(EventParameter.Abilities, new List<GameObject>());
 
-        var spellList = source.FireEvent(getSpells).GetValue<List<IEntity>>(EventParameter.Abilities);
+        var spellList = source.FireEvent(getSpells).GetValue<List<GameObject>>(EventParameter.Abilities);
         getSpells.Release();
 
         if (spellList.Count == 0)
@@ -29,7 +29,7 @@ public class SpellSelectorMono : UpdatableUI//, IUpdatableUI
         }
 
         int index = 1;
-        foreach (IEntity spell in spellList)
+        foreach (GameObject spell in spellList)
         {
             GameObject spriteGoResource = Resources.Load<GameObject>("Prefabs/UI/SpellUI");
             GameEvent getSpriteEvent = GameEventPool.Get(GameEventId.GetSprite)

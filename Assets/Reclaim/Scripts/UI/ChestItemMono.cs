@@ -5,11 +5,11 @@ using UnityEngine.EventSystems;
 
 public class ChestItemMono : ItemMono, IPointerClickHandler
 {
-    IEntity m_Chest { get; set; }
-    IEntity m_Item { get; set; }
-    IEntity m_Character { get; set; }
+    GameObject m_Chest { get; set; }
+    GameObject m_Item { get; set; }
+    GameObject m_Character { get; set; }
 
-    public void Init(IEntity chest, IEntity item, IEntity character)
+    public void Init(GameObject chest, GameObject item, GameObject character)
     {
         m_Chest = chest;
         m_Item = item;

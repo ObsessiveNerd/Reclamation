@@ -24,10 +24,10 @@ public class CharacterTab : UpdatableUI
     public GameObject LevelUp;
     public Button LevelUpButton;
 
-    private IEntity m_Entity;
+    private GameObject m_Entity;
     private string m_EId;
 
-    public void Setup(IEntity entity)
+    public void Setup(GameObject entity)
     {
         m_Entity = entity;
         m_EId = m_Entity.ID;

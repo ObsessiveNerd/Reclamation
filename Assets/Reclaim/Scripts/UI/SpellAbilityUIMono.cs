@@ -14,10 +14,10 @@ public class SpellAbilityUIMono : ItemMono, IPointerDownHandler
 
     bool m_CanSetActiveAbilities = true;
 
-    IEntity m_Source;
-    IEntity m_Spell;
+    GameObject m_Source;
+    GameObject m_Spell;
 
-    public void Setup(IEntity source, IEntity spell, bool canSetAsActiveAbility, bool showIndex)
+    public void Setup(GameObject source, GameObject spell, bool canSetAsActiveAbility, bool showIndex)
     {
         m_CanSetActiveAbilities = canSetAsActiveAbility;
         if (showIndex)
@@ -28,9 +28,9 @@ public class SpellAbilityUIMono : ItemMono, IPointerDownHandler
         m_Source = source;
         m_Spell = spell;
         GameEvent getActiveAbilities = GameEventPool.Get(GameEventId.GetActiveAbilities)
-                                            .With(EventParameter.Abilities, new List<IEntity>());
+                                            .With(EventParameter.Abilities, new List<GameObject>());
         m_Source.FireEvent(getActiveAbilities);
-        List<IEntity> activeAbilities = getActiveAbilities.GetValue<List<IEntity>>(EventParameter.Abilities);
+        List<GameObject> activeAbilities = getActiveAbilities.GetValue<List<GameObject>>(EventParameter.Abilities);
         if (!activeAbilities.Contains(m_Spell))
             Image.color = Color.white;
         else
@@ -65,9 +65,9 @@ public class SpellAbilityUIMono : ItemMono, IPointerDownHandler
 
             m_Source.FireEvent(activeAbility).Release();
             GameEvent getSpells = GameEventPool.Get(GameEventId.GetActiveAbilities)
-                                    .With(EventParameter.Abilities, new List<IEntity>());
+                                    .With(EventParameter.Abilities, new List<GameObject>());
 
-            var spellList = m_Source.FireEvent(getSpells).GetValue<List<IEntity>>(EventParameter.Abilities);
+            var spellList = m_Source.FireEvent(getSpells).GetValue<List<GameObject>>(EventParameter.Abilities);
             getSpells.Release();
 
             if (spellList.Count == 0)

@@ -5,25 +5,25 @@ using UnityEngine;
 
 public class TimeProgression
 {
-    LinkedList<IEntity> m_EntityList = new LinkedList<IEntity>();
-    LinkedListNode<IEntity> m_Previous;
-    LinkedListNode<IEntity> m_Current;
+    LinkedList<GameObject> m_EntityList = new LinkedList<GameObject>();
+    LinkedListNode<GameObject> m_Previous;
+    LinkedListNode<GameObject> m_Current;
     Action m_PostFrameCallback;
     bool m_IsStopped = false;
 
-    public void RegisterEntity(IEntity entity)
+    public void RegisterEntity(GameObject entity)
     {
         if(!m_EntityList.Contains(entity))
             m_EntityList.AddLast(entity);
     }
 
-    public void RemoveEntity(IEntity entity)
+    public void RemoveEntity(GameObject entity)
     {
         if(m_EntityList.Contains(entity))
             m_EntityList.Remove(entity);
     }
 
-    public bool ContainsEntity(IEntity entity)
+    public bool ContainsEntity(GameObject entity)
     {
         return m_EntityList.Contains(entity);
     }
@@ -44,7 +44,7 @@ public class TimeProgression
         m_IsStopped = true;
     }
 
-    public void SetActiveEntity(IEntity entity)
+    public void SetActiveEntity(GameObject entity)
     {
         m_PostFrameCallback = () =>
         {

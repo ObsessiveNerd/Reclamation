@@ -26,7 +26,7 @@ public class StatusEffect : EntityComponent
         DestroyAfterTurnCount = destroyAfterTurns;
     }
 
-    public override void Init(IEntity self)
+    public override void Init(GameObject self)
     {
         base.Init(self);
         RegisteredEvents.Add(GameEventId.EndTurn);

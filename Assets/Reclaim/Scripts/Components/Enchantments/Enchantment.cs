@@ -4,14 +4,14 @@ using UnityEngine;
 
 public class Enchantment : EntityComponent
 {
-    public IEntity EnchantmentEntity;
+    public GameObject EnchantmentEntity;
 
     public Enchantment(string id)
     {
         EnchantmentEntity = EntityFactory.GetEntity(id);
     }
 
-    public override void Init(IEntity self)
+    public override void Init(GameObject self)
     {
         base.Init(self);
         RegisteredEvents.Add(GameEventId.GetContextMenuActions);
@@ -31,7 +31,7 @@ public class Enchantment : EntityComponent
     {
         if (gameEvent.ID == GameEventId.GetContextMenuActions)
         {
-            IEntity source = Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameter.Entity));
+            GameObject source = Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameter.Entity));
             gameEvent.GetValue<List<ContextMenuButton>>(EventParameter.InventoryContextActions)
                 .Add(new ContextMenuButton("Enchant", () =>
             {

@@ -4,12 +4,12 @@ using UnityEngine;
 
 public static class Spawner
 {
-    public static void Spawn(IEntity e, Point point)
+    public static void Spawn(GameObject e, Point point)
     {
         Spawn(e, point.x, point.y);
     }
 
-    public static void Spawn(IEntity e, int x, int y)
+    public static void Spawn(GameObject e, int x, int y)
     {
         if (x == -1 && y == -1)
             return;
@@ -21,7 +21,7 @@ public static class Spawner
         e.FireEvent(GameEventPool.Get(GameEventId.InitFOV)).Release();
     }
 
-    public static void Despawn(IEntity e)
+    public static void Despawn(GameObject e)
     {
         if (e == null)
             return;
@@ -29,7 +29,7 @@ public static class Spawner
         Services.SpawnerService.Despawn(e);
     }
 
-    public static void Swap(IEntity lhs, IEntity rhs)
+    public static void Swap(GameObject lhs, GameObject rhs)
     {
         var lhsPos = WorldUtility.GetEntityPosition(lhs);
         var rhsPos = WorldUtility.GetEntityPosition(rhs);
@@ -44,7 +44,7 @@ public static class Spawner
         //rhsPos = WorldUtility.GetEntityPosition(rhs);
     }
 
-    public static void Restore(IEntity e)
+    public static void Restore(GameObject e)
     {
         GameEvent getPoint = GameEventPool.Get(GameEventId.GetPoint).With(EventParameter.Value, null);
         Point spawnPoint = (Point)e.FireEvent(e,getPoint).Paramters[EventParameter.Value];

@@ -39,7 +39,7 @@ public class EntityNetworkManager : GameService
     public bool IsHost;
     public bool IsConnected;
 
-    Dictionary<string, IEntity> m_NetworkIdToEntityMap = new Dictionary<string, IEntity>();
+    Dictionary<string, GameObject> m_NetworkIdToEntityMap = new Dictionary<string, GameObject>();
 
     public Action SyncWorldCompleted;
     public Action DungeonLevelSynced;
@@ -85,14 +85,14 @@ public class EntityNetworkManager : GameService
     void OnDisconnect(SocketIOEvent e)
     {
         string disconnectedPlayer = GetNetworkIdFromSocketEvent(e);
-        IEntity entity = m_NetworkIdToEntityMap[disconnectedPlayer];
+        GameObject entity = m_NetworkIdToEntityMap[disconnectedPlayer];
         Spawner.Despawn(entity);
         Services.WorldUIService.UnRegisterPlayableCharacter(entity.ID);
         m_NetworkIdToEntityMap.Remove(disconnectedPlayer);
         Services.WorldUpdateService.UpdateWorldView();
     }
 
-    public void DespawnEntity(IEntity deSpawn)
+    public void DespawnEntity(GameObject deSpawn)
     {
         //socket.Emit(Despawn, CreateJSONObject(deSpawn.ID));
     }
@@ -236,7 +236,7 @@ public class EntityNetworkManager : GameService
             {
                 EntityType eType = (EntityType)Enum.Parse(typeof(EntityType), ge.GetValue<string>(EventParameter.EntityType));
                 ge.Paramters[EventParameter.EntityType] = eType;
-                IEntity source = Services.EntityMapService.GetEntity(ge.GetValue<string>(EventParameter.Entity));
+                GameObject source = Services.EntityMapService.GetEntity(ge.GetValue<string>(EventParameter.Entity));
                 Services.FOVService.FoVRecalculated(source, new List<Point>());
                 m_Tiles[result].Despawn(ge);
             }
@@ -248,7 +248,7 @@ public class EntityNetworkManager : GameService
         }
         else
         {
-            IEntity entity = Services.EntityMapService.GetEntity(ges.TargetEntityId);
+            GameObject entity = Services.EntityMapService.GetEntity(ges.TargetEntityId);
             entity.FireEvent(ge);
             ge.Release();
         }
@@ -275,7 +275,7 @@ public class EntityNetworkManager : GameService
             }
 
             EntityFactory.ReloadTempBlueprints();
-            IEntity networkEntity = EntityFactory.ParseEntityData(data);
+            GameObject networkEntity = EntityFactory.ParseEntityData(data);
 
             if (networkEntity.GetComponent<NetworkId>().ID != NetworkId)
             {
@@ -409,7 +409,7 @@ public class EntityNetworkManager : GameService
 
             EntityFactory.ReloadTempBlueprints();
 
-            IEntity networkEntity = EntityFactory.ParseEntityData(data);
+            GameObject networkEntity = EntityFactory.ParseEntityData(data);
             Services.PlayerManagerService.ConvertToPlayableEntity(networkEntity);
             networkEntity.CleanupComponents();
 
@@ -457,7 +457,7 @@ public class EntityNetworkManager : GameService
         }
     }
 
-    public void ConvertToNetworkedPlayer(IEntity player)
+    public void ConvertToNetworkedPlayer(GameObject player)
     {
         player.RemoveComponent(typeof(InputControllerBase));
         player.RemoveComponent(typeof(RegisterPlayableCharacter));
@@ -470,7 +470,7 @@ public class EntityNetworkManager : GameService
     {
         Services.SaveAndLoadService.Load(Services.SaveAndLoadService.CurrentSavePath, false);
 
-        List<IEntity> remotePlayers = new List<IEntity>();
+        List<GameObject> remotePlayers = new List<GameObject>();
         foreach (var player in m_Players)
         {
             if (player.GetComponent<NetworkId>().ID != NetworkId)
@@ -495,7 +495,7 @@ public class EntityNetworkManager : GameService
         SyncWorldCompleted -= SpawnPlayers;
     }
 
-    public void SpawnPlayer(IEntity e)
+    public void SpawnPlayer(GameObject e)
     {
         if(!e.HasComponent(typeof(NetworkId)))
             e.AddComponent(new NetworkId(NetworkId));

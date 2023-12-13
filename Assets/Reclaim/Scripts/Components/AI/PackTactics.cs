@@ -20,7 +20,7 @@ public class PackTactics : EntityComponent
         Services.PartyService.LookingForGroup(Self);
     }
 
-    public override void Init(IEntity self)
+    public override void Init(GameObject self)
     {
         base.Init(self);
         RegisteredEvents.Add(GameEventId.GetActionToTake);
@@ -50,7 +50,7 @@ public class PackTactics : EntityComponent
             int numberOfAllies = 0;
             foreach(var point in m_VisiblePoints)
             {
-                IEntity target = WorldUtility.GetEntityAtPosition(point);
+                GameObject target = WorldUtility.GetEntityAtPosition(point);
                 var demeanor = Factions.GetDemeanorForTarget(Self, target);
                 if (demeanor == Demeanor.Friendly)
                     numberOfAllies++;
@@ -61,7 +61,7 @@ public class PackTactics : EntityComponent
         {
             if (!string.IsNullOrEmpty(PartyLeaderId) && Self.ID != PartyLeaderId)
             {
-                IEntity partyLeader = EntityQuery.GetEntity(PartyLeaderId);
+                GameObject partyLeader = EntityQuery.GetEntity(PartyLeaderId);
                 if (partyLeader == null)
                 {
                     PartyLeaderId = null;
@@ -91,7 +91,7 @@ public class PackTactics : EntityComponent
     //    //bool partyLeaderInSight = false;
     //    foreach (var point in m_VisiblePoints)
     //    {
-    //        IEntity entityAtTile = WorldUtility.GetEntityAtPosition(point);
+    //        GameObject entityAtTile = WorldUtility.GetEntityAtPosition(point);
 
     //        if (entityAtTile == null || entityAtTile == Self)
     //            continue;

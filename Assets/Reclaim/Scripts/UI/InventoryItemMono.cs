@@ -8,14 +8,14 @@ using UnityEngine.EventSystems;
 
 public class InventoryItemMono : ItemMono, IPointerClickHandler
 {
-    public IEntity Source { get; set; }
-    public IEntity ItemObject { get; set; }
+    public GameObject Source { get; set; }
+    public GameObject ItemObject { get; set; }
 
     public GameObject StackableView;
     public TextMeshProUGUI ItemNumberText;
     public bool AllowConxtMenuOptions = true;
 
-    public void Init(IEntity source, IEntity thisObject)
+    public void Init(GameObject source, GameObject thisObject)
     {
         Source = source;
         ItemObject = thisObject;

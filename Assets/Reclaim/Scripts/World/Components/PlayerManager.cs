@@ -14,23 +14,23 @@ public class PlayerManager : GameService
         Services.WorldUIService.UpdateUI();
     }
 
-    public List<IEntity> GetPlayerActiveAbilities(string id)
+    public List<GameObject> GetPlayerActiveAbilities(string id)
     {
-        List<IEntity> activeAbilities = new List<IEntity>();
+        List<GameObject> activeAbilities = new List<GameObject>();
         GameEvent getAbilities = GameEventPool.Get(GameEventId.GetActiveAbilities)
-                                    .With(EventParameter.Abilities, new List<IEntity>());
+                                    .With(EventParameter.Abilities, new List<GameObject>());
         m_EntityIdToEntityMap[id].FireEvent(getAbilities);
-        activeAbilities = getAbilities.GetValue<List<IEntity>>(EventParameter.Abilities);
+        activeAbilities = getAbilities.GetValue<List<GameObject>>(EventParameter.Abilities);
         getAbilities.Release();
         return activeAbilities.Distinct().ToList();
     }
 
-    public List<IEntity> GetAllPlayers()
+    public List<GameObject> GetAllPlayers()
     {
         return m_Players.ToList();
     }
 
-    public IEntity GetActivePlayer()
+    public GameObject GetActivePlayer()
     {
         return m_ActivePlayer?.Value;
     }
@@ -54,7 +54,7 @@ public class PlayerManager : GameService
         return m_Players.Contains(EntityQuery.GetEntity(id));
     }
 
-    public void RegisterPlayer(IEntity entity)
+    public void RegisterPlayer(GameObject entity)
     {
         if (!m_Players.Any(p => p.ID == entity.ID))
         {
@@ -102,9 +102,9 @@ public class PlayerManager : GameService
         }
     }
 
-    public List<IEntity> GetPlayerEntitiesToSpawn()
+    public List<GameObject> GetPlayerEntitiesToSpawn()
     {
-        List<IEntity> result = new List<IEntity>();
+        List<GameObject> result = new List<GameObject>();
         {
             string charactersPath = GameSaveSystem.kSaveDataPath + "/" + Services.SaveAndLoadService.CurrentSaveName + "/Blueprints/Characters";
 //#if UNITY_EDITOR
@@ -112,7 +112,7 @@ public class PlayerManager : GameService
             {
                 for (int i = 0; i < 4; i++)
                 {
-                    IEntity player = EntityFactory.CreateEntity("DwarfWarrior");
+                    GameObject player = EntityFactory.CreateEntity("DwarfWarrior");
                     player.AddComponent(new Name(i.ToString()));
                     result.Add(player);
                     //Spawner.Spawn(player, DungeonGenerator.Rooms[0].GetValidPoint(null));
@@ -126,7 +126,7 @@ public class PlayerManager : GameService
             {
                 foreach (var bp in Directory.EnumerateFiles(charactersPath, "*.bp"))
                 {
-                    IEntity player = EntityFactory.CreateEntity(Path.GetFileNameWithoutExtension(bp));
+                    GameObject player = EntityFactory.CreateEntity(Path.GetFileNameWithoutExtension(bp));
                     result.Add(player);
 
                     //Services.PlayerManagerService.ConvertToPlayableEntity(player);
@@ -148,7 +148,7 @@ public class PlayerManager : GameService
         //}
     }
 
-    public void ConvertToPlayableEntity(IEntity entity)
+    public void ConvertToPlayableEntity(GameObject entity)
     {
         if (!entity.HasComponent(typeof(RegisterPlayableCharacter)))
         {
@@ -161,7 +161,7 @@ public class PlayerManager : GameService
         }
     }
 
-    public void UnRegisterPlayer(IEntity entity)
+    public void UnRegisterPlayer(GameObject entity)
     {
         m_Players.Remove(entity);
         if (m_Players.Count == 0)

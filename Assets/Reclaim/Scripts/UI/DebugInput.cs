@@ -32,7 +32,7 @@ public class DebugInput : EscapeableMono
         m_InputField.ActivateInputField();
         m_InputField.onEndEdit.AddListener((str) =>
         {
-            IEntity e = EntityFactory.CreateEntity(str);
+            GameObject e = EntityFactory.CreateEntity(str);
             if (e == null)
             {
                 m_InputField.text = "";

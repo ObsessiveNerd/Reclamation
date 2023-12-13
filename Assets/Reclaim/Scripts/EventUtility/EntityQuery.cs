@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class EntityQuery
 {
-    public static IEntity GetEntity(string id)
+    public static GameObject GetEntity(string id)
     {
         return Services.EntityMapService.GetEntity(id);
 
@@ -14,9 +14,9 @@ public class EntityQuery
         //GameEvent builder = GameEventPool.Get(GameEventId.GetEntity)
         //                        .With(EventParameters.Value, id)
         //                        .With(EventParameters.Entity, null);
-        //var entity =  World.Instance?.Self.FireEvent(World.Instance.Self, builder).GetValue<IEntity>(EventParameters.Entity);
+        //var entity =  World.Instance?.Self.FireEvent(World.Instance.Self, builder).GetValue<GameObject>(EventParameters.Entity);
 
-        //IEntity returnValue = null;
+        //GameObject returnValue = null;
         //if (entity != null)
         //    returnValue = entity;
         //else

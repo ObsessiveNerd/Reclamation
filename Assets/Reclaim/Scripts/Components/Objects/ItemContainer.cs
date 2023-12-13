@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class ItemContainer : EntityComponent
 {
-    public Dictionary<string, IEntity> IDToEntityMap = new Dictionary<string, IEntity>();
+    public Dictionary<string, GameObject> IDToEntityMap = new Dictionary<string, GameObject>();
 
     public ItemContainer(string itemNames)
     {
@@ -14,7 +14,7 @@ public class ItemContainer : EntityComponent
             IDToEntityMap[item.InternalName] = item;
     }
 
-    public override void Init(IEntity self)
+    public override void Init(GameObject self)
     {
         base.Init(self);
         RegisteredEvents.Add(GameEventId.GetItems);
@@ -83,7 +83,7 @@ public class ItemContainer : EntityComponent
 
     void AddItem(string name)
     {
-        IEntity entity = EntityFactory.CreateEntity(name);
+        GameObject entity = EntityFactory.CreateEntity(name);
         if (entity == null)
             entity = EntityQuery.GetEntity(name);
         if (entity != null)

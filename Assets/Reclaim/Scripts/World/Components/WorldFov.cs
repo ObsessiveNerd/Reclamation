@@ -7,7 +7,7 @@ public class WorldFov : GameService
 {
     Dictionary<string, List<Point>> m_PlayerToVisibleTiles = new Dictionary<string, List<Point>>();
 
-    public void UnRegisterPlayer(IEntity player)
+    public void UnRegisterPlayer(GameObject player)
     {
         if (m_PlayerToVisibleTiles.ContainsKey(player.ID))
             m_PlayerToVisibleTiles.Remove(player.ID);
@@ -18,7 +18,7 @@ public class WorldFov : GameService
         m_PlayerToVisibleTiles.Clear();
     }
 
-    public void FoVRecalculated(IEntity source, List<Point> newVisibleTiles)
+    public void FoVRecalculated(GameObject source, List<Point> newVisibleTiles)
     {
         if (!m_PlayerToVisibleTiles.ContainsKey(source.ID))
             m_PlayerToVisibleTiles.Add(source.ID, newVisibleTiles);

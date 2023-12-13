@@ -43,13 +43,13 @@ public class UIReferences : MonoBehaviour
         SpellSelector.SetActive(true);
     }
 
-    public void OpenChest(IEntity chest)
+    public void OpenChest(GameObject chest)
     {
         Chest.SetActive(true);
         Chest.GetComponent<ChestMono>().Setup(chest);
     }
 
-    public void OpenEnchanter(IEntity source, IEntity enchantment)
+    public void OpenEnchanter(GameObject source, GameObject enchantment)
     {
         EnchantmentManager.SetActive(true);
         EnchantmentManager.GetComponent<EnchantmentManagerMono>().Setup(source, enchantment);

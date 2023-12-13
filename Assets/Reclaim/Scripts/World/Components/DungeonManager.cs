@@ -305,7 +305,7 @@ public class DungeonManager : GameService
 
             foreach(string wall in dungeonLevel.Walls)
             {
-                IEntity entity = EntityFactory.ParseEntityData(wall);
+                GameObject entity = EntityFactory.ParseEntityData(wall);
                 if (entity != null)
                 {
                     entity.Start();
@@ -320,7 +320,7 @@ public class DungeonManager : GameService
 
             foreach (string entityData in dungeonLevel.Entities)
             {
-                IEntity entity = EntityFactory.ParseEntityData(entityData);
+                GameObject entity = EntityFactory.ParseEntityData(entityData);
                 if (entity != null)
                 {
                     entity.Start();

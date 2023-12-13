@@ -271,14 +271,14 @@ public class Body : EntityComponent
     //        return $"Head=1[], Torso=1[], Arm=2[], Leg=2[]";
 
     //    string headEquipment = GetSerializedEquipment(Head);
-    //    string torsoEquipment = GetSerializedEquipment(new List<IEntity>() { Torso });
+    //    string torsoEquipment = GetSerializedEquipment(new List<GameObject>() { Torso });
     //    string armEquipment = GetSerializedEquipment(Arm);
     //    string legEquipment = GetSerializedEquipment(Leg);
 
     //    return $"Head={Head.Count}[{headEquipment}], Torso=1[{torsoEquipment}], Arm={Arm.Count}[{armEquipment}], Leg={Leg.Count}[{legEquipment}]";
     //}
 
-    private string GetSerializedEquipment(List<IEntity> bodyPart)
+    private string GetSerializedEquipment(List<GameObject> bodyPart)
     {
         if (bodyPart == null)
             return "";
@@ -309,7 +309,7 @@ public class DTO_Body : IDataTransferComponent
     public void CreateComponent(string data)
     {
         Component = new Body();
-        //Dictionary<BodyPart, List<IEntity>> equipment = new Dictionary<BodyPart, List<IEntity>>();
+        //Dictionary<BodyPart, List<GameObject>> equipment = new Dictionary<BodyPart, List<GameObject>>();
         //string[] bodyParts = data.Split(',');
         //foreach(string bp in bodyParts)
         //{
@@ -327,7 +327,7 @@ public class DTO_Body : IDataTransferComponent
         //    //    equipmentData = bpTypeToCount[1];
 
         //    if (!equipment.ContainsKey(bpType))
-        //        equipment[bpType] = new List<IEntity>();
+        //        equipment[bpType] = new List<GameObject>();
         //    equipment[bpType].AddRange(EntityFactory.GetEntitiesFromArray(equipmentData));
 
         //    switch (bpType)
@@ -360,14 +360,14 @@ public class DTO_Body : IDataTransferComponent
         //Body body = (Body)component;
 
         //string headEquipment = GetSerializedEquipment(body.Head);
-        //string torsoEquipment = GetSerializedEquipment(new List<IEntity>() { body.Torso });
+        //string torsoEquipment = GetSerializedEquipment(new List<GameObject>() { body.Torso });
         //string armEquipment = GetSerializedEquipment(body.Arm);
         //string legEquipment = GetSerializedEquipment(body.Leg);
 
         //return $"Body:Head={body.Head.Count}[{headEquipment}], Torso=1[{torsoEquipment}], Arm={body.Arm.Count}[{armEquipment}], Leg={body.Leg.Count}[{legEquipment}]";
     }
 
-    string GetSerializedEquipment(IList<IEntity> bodyParts)
+    string GetSerializedEquipment(IList<GameObject> bodyParts)
     {
         StringBuilder sb = new StringBuilder();
         foreach (var bp in bodyParts)

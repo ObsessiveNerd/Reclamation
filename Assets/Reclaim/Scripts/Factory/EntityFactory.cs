@@ -88,7 +88,7 @@ public static class EntityFactory
     private static string kItemsPath = "Blueprints\\Items";
 #pragma warning restore 0414
 
-    public static IEntity CreateEntity(string blueprintName)
+    public static GameObject CreateEntity(string blueprintName)
     {
         return GetEntity(blueprintName);
     }
@@ -206,7 +206,7 @@ public static class EntityFactory
         return list[RecRandom.Instance.GetRandomValue(0, list.Count)];
     }
 
-    public static IEntity GetEntity(string blueprintName /*string path, string entityID = ""*/)
+    public static GameObject GetEntity(string blueprintName /*string path, string entityID = ""*/)
     {
         if(!s_InitializingBluePrints)
             InitBlueprints();
@@ -337,7 +337,7 @@ public static class EntityFactory
         };
     }
 
-    public static IEntity ParseEntityData(string entityData)
+    public static GameObject ParseEntityData(string entityData)
     {
         Actor a = null;
         using (var stream = new StringReader(entityData))
@@ -392,15 +392,15 @@ public static class EntityFactory
         return a;
     }
 
-    public static List<IEntity> GetEntitiesFromArray(string data)
+    public static List<GameObject> GetEntitiesFromArray(string data)
     {
         InitBlueprints();
         InitTempBlueprints();
 
         if (string.IsNullOrEmpty(data))
-            return new List<IEntity>();
+            return new List<GameObject>();
 
-        List<IEntity> result = new List<IEntity>();
+        List<GameObject> result = new List<GameObject>();
         data = data.Replace(" ", string.Empty).TrimStart('[').TrimEnd(']');
         string[] parameters = data.Split('&');
         foreach(string parameter in parameters)
@@ -422,7 +422,7 @@ public static class EntityFactory
         return result;
     }
 
-    public static string ConvertEntitiesToStringArrayWithId(List<IEntity> entities)
+    public static string ConvertEntitiesToStringArrayWithId(List<GameObject> entities)
     {
         StringBuilder sb = new StringBuilder();
         foreach (var entity in entities)
@@ -432,7 +432,7 @@ public static class EntityFactory
         return sb.ToString().TrimEnd('&');
     }
 
-    public static string ConvertEntitiesToStringArrayWithName(List<IEntity> entities)
+    public static string ConvertEntitiesToStringArrayWithName(List<GameObject> entities)
     {
         if (entities == null)
             return "";
@@ -478,7 +478,7 @@ public class DTO_Inherits
         foreach(string parameter in parameters)
         {
             string fullArchitypePath = $"{architypePath}/{parameter}.bp";
-            IEntity e = EntityFactory.GetEntity(parameter);
+            GameObject e = EntityFactory.GetEntity(parameter);
             retValue.AddRange(e.GetComponents());
         }
         return retValue;

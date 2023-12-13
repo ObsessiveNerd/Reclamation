@@ -23,7 +23,7 @@ public class Renderer : EntityComponent
                     .With(EventParameter.RenderSprite, gameEvent.Paramters[EventParameter.RenderSprite]));
 
             Point pos = Self.GetComponent<Position>().PositionPoint;
-            IEntity target = Services.WorldDataQuery.GetEntityOnTile(pos);
+            GameObject target = Services.WorldDataQuery.GetEntityOnTile(pos);
 
             target.FireEvent(checkForAlteredSprite);
 

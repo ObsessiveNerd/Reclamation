@@ -5,18 +5,18 @@ using UnityEngine;
 public class RangedPlayerAttackController : InputControllerBase
 {
     Point m_TileSelection;
-    IEntity m_Attack;
+    GameObject m_Attack;
 
-    public RangedPlayerAttackController(IEntity attack)
+    public RangedPlayerAttackController(GameObject attack)
     {
         m_Attack = attack;
     }
 
-    public override void Init(IEntity self)
+    public override void Init(GameObject self)
     {
         base.Init(self);
 
-        IEntity startingTarget = WorldUtility.GetClosestEnemyTo(Self);
+        GameObject startingTarget = WorldUtility.GetClosestEnemyTo(Self);
 
         //GameEvent isVisible = GameEventPool.Get(GameEventId.EntityVisibilityState)
         //                            .With(EventParameters.Entity, startingTarget.ID)
@@ -61,12 +61,12 @@ public class RangedPlayerAttackController : InputControllerBase
             if(Input.GetKeyDown(KeyCode.Return) || InputBinder.PerformRequestedAction(RequestedAction.FireRangedWeapon))
             {
                 //AttackType weaponType = CombatUtility.GetWeaponType(m_Attack);
-                IEntity target = WorldUtility.GetEntityAtPosition(m_TileSelection);
+                GameObject target = WorldUtility.GetEntityAtPosition(m_TileSelection);
 
                 GameEvent getAmmo = GameEventPool.Get(GameEventId.GetAmmo)
                     .With(EventParameter.Value, null);
 
-                IEntity attack = EntityQuery.GetEntity(FireEvent(m_Attack, getAmmo).GetValue<string>(EventParameter.Value));
+                GameObject attack = EntityQuery.GetEntity(FireEvent(m_Attack, getAmmo).GetValue<string>(EventParameter.Value));
 
                 CombatUtility.Attack(Self, target, attack, AttackType.Ranged);
 
@@ -97,7 +97,7 @@ public class DTO_RangedPlayerAttackController : IDataTransferComponent
 
     public void CreateComponent(string data)
     {
-        IEntity attack = EntityFactory.CreateEntity(data);
+        GameObject attack = EntityFactory.CreateEntity(data);
         Component = new RangedPlayerAttackController(attack);
     }
 

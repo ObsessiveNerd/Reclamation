@@ -6,19 +6,19 @@ public class EntityMap : GameService
 {
     public Dictionary<string, string> IDToNameMap = new Dictionary<string, string>();
 
-    public void AddEntity(IEntity e)
+    public void AddEntity(GameObject e)
     {
         m_EntityIdToEntityMap[e.ID] = e;
         AddEntityToNameMap(e);
     }
 
-    public void UpdateEntity(IEntity e)
+    public void UpdateEntity(GameObject e)
     {
         if (m_EntityIdToEntityMap.ContainsKey(e.ID))
             m_EntityIdToEntityMap[e.ID] = e;
     }
 
-    public void AddEntityToNameMap(IEntity e)
+    public void AddEntityToNameMap(GameObject e)
     {
         IDToNameMap[e.ID] = e.Name;
     }
@@ -34,7 +34,7 @@ public class EntityMap : GameService
             m_EntityIdToEntityMap[id] = null;
     }
 
-    public IEntity GetEntity(string id)
+    public GameObject GetEntity(string id)
     {
         if (!m_EntityIdToEntityMap.ContainsKey(id))
             return EntityFactory.CreateEntity(id);
@@ -44,7 +44,7 @@ public class EntityMap : GameService
         return null;
     }
 
-    public void RegisterEntity(IEntity entity)
+    public void RegisterEntity(GameObject entity)
     {
         m_EntityIdToEntityMap[entity.ID] = entity;
     }

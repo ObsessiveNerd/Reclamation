@@ -13,12 +13,12 @@ public class EnchantmentManagerMono : EscapeableMono
     public TMP_InputField NewAssetName;
 
     List<GameObject> m_Inventories;
-    IEntity m_Enchantment;
-    IEntity m_Source;
+    GameObject m_Enchantment;
+    GameObject m_Source;
 
     bool m_IsClearing = false;
 
-    public void Setup(IEntity source, IEntity enchantment)
+    public void Setup(GameObject source, GameObject enchantment)
     {
         View.SetActive(true);
         m_Inventories = UIUtility.CreatePlayerInventories(Inventories);
@@ -142,10 +142,10 @@ public class EnchantmentManagerMono : EscapeableMono
 
     void CreateEnchantment(InventoryItemMono itemMono)
     {
-        IEntity baseEntity = itemMono.ItemObject;
-        IEntity source = itemMono.Source;
+        GameObject baseEntity = itemMono.ItemObject;
+        GameObject source = itemMono.Source;
 
-        IEntity newObject = new Actor(baseEntity.Name);
+        GameObject newObject = new Actor(baseEntity.Name);
         foreach (var comp in baseEntity.GetComponents())
             newObject.AddComponent(comp);
 
@@ -157,7 +157,7 @@ public class EnchantmentManagerMono : EscapeableMono
 
         foreach (string id in enchantmentEntityIds)
         {
-            IEntity e = Services.EntityMapService.GetEntity(id);
+            GameObject e = Services.EntityMapService.GetEntity(id);
             foreach (var comp in e.GetComponents())
                 newObject.AddComponent(comp);
         }

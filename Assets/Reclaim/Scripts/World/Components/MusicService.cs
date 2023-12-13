@@ -8,7 +8,7 @@ public class MusicService : GameService
     AudioSource m_SoundEffectMusicSource;
     SoundSettings m_Settings;
 
-    public void PlaySoundClip(IEntity soundOrigin, string clipPath)
+    public void PlaySoundClip(GameObject soundOrigin, string clipPath)
     {
         if (m_SoundEffectMusicSource == null)
             m_SoundEffectMusicSource = GameObject.Find("SoundEffectsMusicSource").GetComponent<AudioSource>();

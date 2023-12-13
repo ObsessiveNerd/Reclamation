@@ -14,7 +14,7 @@ public class ApplyDamageOverTime : EntityComponent
         RemoveAfterTurns = removeAfterTurns;
     }
 
-    public override void Init(IEntity self)
+    public override void Init(GameObject self)
     {
         base.Init(self);
         RegisteredEvents.Add(GameEventId.CastSpellEffect);
@@ -24,7 +24,7 @@ public class ApplyDamageOverTime : EntityComponent
     {
         if(gameEvent.ID == GameEventId.CastSpellEffect)
         {
-            IEntity target = Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameter.Target));
+            GameObject target = Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameter.Target));
             target.AddComponent(new DamageOverTime(Amount, 0, RemoveAfterTurns));
         }
     }

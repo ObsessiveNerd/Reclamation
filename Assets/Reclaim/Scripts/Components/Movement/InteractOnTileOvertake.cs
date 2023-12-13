@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class InteractOnTileOvertake : EntityComponent
 {
-    public override void Init(IEntity self)
+    public override void Init(GameObject self)
     {
         base.Init(self);
         RegisteredEvents.Add(GameEventId.EntityOvertaking);
@@ -14,7 +14,7 @@ public class InteractOnTileOvertake : EntityComponent
     {
         if(gameEvent.ID == GameEventId.EntityOvertaking)
         {
-            IEntity source = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameter.Entity]);
+            GameObject source = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameter.Entity]);
             GameEvent ge = GameEventPool.Get(GameEventId.InteractWithTarget)
                 .With(EventParameter.Target, Self.ID);
             FireEvent(source, ge, true).Release();
