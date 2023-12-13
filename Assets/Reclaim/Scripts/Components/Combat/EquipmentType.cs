@@ -12,9 +12,9 @@ public class EquipmentType : EntityComponent
         EquipmentBodyPart = part;
     }
 
-    public override void Init(GameObject self)
+    public void Start()
     {
-        base.Init(self);
+        
         RegisteredEvents.Add(GameEventId.GetBodyPartType);
     }
 

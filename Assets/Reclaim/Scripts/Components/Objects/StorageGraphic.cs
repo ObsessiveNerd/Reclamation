@@ -29,10 +29,10 @@ public class StorageGraphic : EntityComponent
         EmptyGraphicPath = empty;
     }
 
-    public override void Init(GameObject self)
+    public void Start()
     {
         RegisteredEvents.Add(GameEventId.GetSprite);
-        base.Init(self);
+        
     }
 
     public override void HandleEvent(GameEvent gameEvent)

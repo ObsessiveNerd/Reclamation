@@ -19,9 +19,9 @@ public class BuffAfterTurns : EntityComponent
         DestroyAfterTurnCount = destroyAfterTurns;
     }
 
-    public override void Init(GameObject self)
+    public void Start()
     {
-        base.Init(self);
+        
         RegisteredEvents.Add(GameEventId.EndTurn);
     }
 

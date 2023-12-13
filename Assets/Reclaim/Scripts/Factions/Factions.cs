@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 public enum FactionId
 {
@@ -21,56 +22,22 @@ public class Faction : EntityComponent
 {
     public FactionId ID;
 
-    public Faction(string faction)
+    public void Start()
     {
-        ID = (FactionId)Enum.Parse(typeof(FactionId), faction);
-        RegisteredEvents.Add(GameEventId.GetFaction);
-        RegisteredEvents.Add(GameEventId.SetFaction);
+        RegisteredEvents.Add(GameEventId.GetFaction, GetFaction);
+        RegisteredEvents.Add(GameEventId.SetFaction, SetFaction);
     }
 
-    public override void HandleEvent(GameEvent gameEvent)
+    void GetFaction(GameEvent gameEvent)
     {
-        if (gameEvent.ID == GameEventId.GetFaction)
-            gameEvent.Paramters[EventParameter.Value] = this;
-
-        else if (gameEvent.ID == GameEventId.SetFaction)
-            ID = gameEvent.GetValue<FactionId>(EventParameter.Faction);
-    }
-}
-
-public class DTO_Faction : IDataTransferComponent
-{
-    public IComponent Component { get; set; }
-
-    public void CreateComponent(string data)
-    {
-        string[] kvp = data.Split('=');
-        if(kvp.Length == 2)
-        {
-            if(kvp[1].Contains("<"))
-            {
-                string name = kvp[1].Substring(kvp[1].IndexOf('<') + 1, kvp[1].IndexOf('>') - (kvp[1].IndexOf('<') + 1));
-                Component = new Faction(name);
-            }
-            else
-            {
-                Component = new Faction(kvp[1]);
-            }
-        }
-        else
-        {
-            string name = data.Substring(data.IndexOf('<') + 1, data.IndexOf('>') - (data.IndexOf('<') + 1));
-            Component = new Faction(name);
-        }
+        gameEvent.Paramters[EventParameter.Value] = this;
     }
 
-    public string CreateSerializableData(IComponent component)
+    void SetFaction(GameEvent gameEvent)
     {
-        Faction f = (Faction)component;
-        return $"{nameof(Faction)}:<{f.ID}>";
+        ID = gameEvent.GetValue<FactionId>(EventParameter.Faction);
     }
 }
-
 
 public enum Demeanor
 {

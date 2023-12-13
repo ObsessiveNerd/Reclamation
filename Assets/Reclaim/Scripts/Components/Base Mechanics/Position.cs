@@ -13,9 +13,9 @@ public class Position : EntityComponent
         PositionPoint = p;
     }
 
-    public override void Init(GameObject self)
+    public void Start()
     {
-        base.Init(self);
+        
         RegisteredEvents.Add(GameEventId.SetPoint);
         RegisteredEvents.Add(GameEventId.GetPoint);
     }

@@ -19,9 +19,9 @@ public class DamageOverTime : EntityComponent
         m_Dice = new Dice(dice);
     }
 
-    public override void Init(GameObject self)
+    public void Start()
     {
-        base.Init(self);
+        
         RegisteredEvents.Add(GameEventId.EndTurn);
     }
 

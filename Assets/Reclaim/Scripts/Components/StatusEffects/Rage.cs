@@ -4,33 +4,14 @@ using UnityEngine;
 
 public class Rage : EntityComponent
 {
-    public override void Init(GameObject self)
+    public void Start()
     {
-        base.Init(self);
-        RegisteredEvents.Add(GameEventId.AlterSprite);
+        RegisteredEvents.Add(GameEventId.AlterSprite, AlterSprite);
     }
 
-    public override void HandleEvent(GameEvent gameEvent)
+    void AlterSprite(GameEvent gameEvent)
     {
-        if(gameEvent.ID == GameEventId.AlterSprite)
-        {
-            var renderer = gameEvent.GetValue<SpriteRenderer>(EventParameter.Renderer);
-            renderer.color = Color.red;
-        }
+        var renderer = gameEvent.GetValue<SpriteRenderer>(EventParameter.Renderer);
+        renderer.color = Color.red;
     }
 }
-
-//public class DTO_Rage : IDataTransferComponent
-//{
-//    public IComponent Component { get; set; }
-
-//    public void CreateComponent(string data)
-//    {
-//        Component = new Rage();
-//    }
-
-//    public string CreateSerializableData(IComponent component)
-//    {
-//        return nameof(Rage);
-//    }
-//}

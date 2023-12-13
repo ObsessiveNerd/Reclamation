@@ -29,9 +29,9 @@ public static class WorldUtility
         return Services.WorldDataQuery.GetGameObject(Services.EntityMapService.GetPointWhereEntityIs(e));
     }
 
-    public static bool IsActivePlayer(string entityId)
+    public static bool IsActivePlayer(GameObject go)
     {
-        return Services.WorldDataQuery.GetActivePlayerId() == entityId;
+        return Services.WorldDataQuery.GetActivePlayer() == go;
     }
 
     public static void RegisterUI(IUpdatableUI ui)

@@ -10,9 +10,9 @@ public class Value : EntityComponent
         Amount = amount;
     }
 
-    public override void Init(GameObject self)
+    public void Start()
     {
-        base.Init(self);
+        
         RegisteredEvents.Add(GameEventId.GetValue);
     }
 

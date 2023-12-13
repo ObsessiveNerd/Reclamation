@@ -5,9 +5,9 @@ using UnityEngine;
 public class AIFOVHandler : EntityComponent
 {
     private List<Point> m_VisiblePoints = new List<Point>();
-    public override void Init(GameObject self)
+    public void Start()
     {
-        base.Init(self);
+        
         RegisteredEvents.Add(GameEventId.FOVRecalculated);
         RegisteredEvents.Add(GameEventId.GetVisibleTiles);
     }

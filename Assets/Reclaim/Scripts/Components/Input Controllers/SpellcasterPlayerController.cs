@@ -25,9 +25,9 @@ public class SpellcasterPlayerController : InputControllerBase
         getManaCost.Release();
     }
 
-    public override void Init(GameObject self)
+    public void Start()
     {
-        base.Init(self);
+        
         UIManager.Push(this);
 
         if(m_Attack == null)

@@ -12,9 +12,9 @@ public class HealMana : EntityComponent
         HealAmount = healAmount;
     }
 
-    public override void Init(GameObject self)
+    public void Start()
     {
-        base.Init(self);
+        
         RegisteredEvents.Add(GameEventId.ApplyEffectToTarget);
         RegisteredEvents.Add(GameEventId.CastSpellEffect);
         RegisteredEvents.Add(GameEventId.GetInfo);

@@ -23,9 +23,9 @@ public class Door : EntityComponent
         m_ClosedSprite = Resources.Load<Sprite>(ClosedSpritePath);
     }
 
-    public override void Init(GameObject self)
+    public void Start()
     {
-        base.Init(self);
+        
         RegisteredEvents.Add(GameEventId.Interact);
         RegisteredEvents.Add(GameEventId.ForceInteract);
         RegisteredEvents.Add(GameEventId.PathfindingData);

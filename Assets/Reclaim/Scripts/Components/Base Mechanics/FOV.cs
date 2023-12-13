@@ -10,9 +10,9 @@ public class FOV : EntityComponent
         FOVRange = visibleRange;
     }
 
-    public override void Init(GameObject self)
+    public void Start()
     {
-        base.Init(self);
+        
         RegisteredEvents.Add(GameEventId.AfterMoving);
         RegisteredEvents.Add(GameEventId.InitFOV);
         m_Fov = new Shadowcasting();

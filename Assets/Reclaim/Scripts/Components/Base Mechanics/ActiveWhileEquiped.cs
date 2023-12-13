@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class ActiveWhileEquiped : EntityComponent
 {
-    public override void Init(GameObject self)
+    public void Start()
     {
-        base.Init(self);
+        
         RegisteredEvents.Add(GameEventId.ItemEquipped);
         RegisteredEvents.Add(GameEventId.ItemUnequipped);
     }

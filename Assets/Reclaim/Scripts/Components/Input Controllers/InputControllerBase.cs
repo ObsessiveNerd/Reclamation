@@ -6,9 +6,9 @@ public abstract class InputControllerBase : EntityComponent, IEscapeableMono
 {
     public bool? AlternativeEscapeKeyPressed => false;
 
-    public override void Init(GameObject self)
+    public void Start()
     {
-        base.Init(self);
+        
         RegisteredEvents.Add(GameEventId.UpdateEntity);
     }
 

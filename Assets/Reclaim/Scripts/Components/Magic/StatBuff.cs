@@ -16,9 +16,9 @@ public class StatBuff : EntityComponent
         RemoveAfterTurns = removeAfterTurns;
     }
 
-    public override void Init(GameObject self)
+    public void Start()
     {
-        base.Init(self);
+        
         RegisteredEvents.Add(GameEventId.CastSpellEffect);
     }
 

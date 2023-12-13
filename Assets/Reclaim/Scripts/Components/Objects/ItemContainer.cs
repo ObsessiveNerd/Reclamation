@@ -14,9 +14,9 @@ public class ItemContainer : EntityComponent
             IDToEntityMap[item.InternalName] = item;
     }
 
-    public override void Init(GameObject self)
+    public void Start()
     {
-        base.Init(self);
+        
         RegisteredEvents.Add(GameEventId.GetItems);
         RegisteredEvents.Add(GameEventId.AddItem);
         RegisteredEvents.Add(GameEventId.AddItems);

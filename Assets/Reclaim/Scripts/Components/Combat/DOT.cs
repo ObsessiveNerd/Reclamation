@@ -8,68 +8,29 @@ public class DOT : EntityComponent
     public int RegenSpeed;
 
     int currentTurns = 0;
-    public DOT(int speed)
-    {
-        RegenSpeed = speed;
-    }
 
     public void Start()
     {
-        RegisteredEvents.Add(GameEventId.EndTurn);
-        RegisteredEvents.Add(GameEventId.GetInfo);
+        RegisteredEvents.Add(GameEventId.EndTurn, EndTurn);
+        RegisteredEvents.Add(GameEventId.GetInfo, GetInfo);
     }
 
-    public override void HandleEvent(GameEvent gameEvent)
+    void EndTurn(GameEvent gameEvent)
     {
-        if(gameEvent.ID == GameEventId.EndTurn)
-        {
-            GameObject target = gameEvent.HasParameter(EventParameter.Entity) ?
-                Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameter.Entity)) : Self;
+        GameObject target = gameEvent.HasParameter(EventParameter.Entity) ?
+                Services.EntityMapService.GetEntity(gameEvent.GetValue<GameObject>(EventParameter.Entity)) : gameEvent;
 
-            currentTurns++;
-            if(currentTurns >= RegenSpeed)
-            {
-                CombatUtility.Attack(gameObject, target, gameObject);
-                currentTurns = 0;
-            }
-        }
-
-        else if(gameEvent.ID == GameEventId.GetInfo)
+        currentTurns++;
+        if (currentTurns >= RegenSpeed)
         {
-            var dictionary = gameEvent.GetValue<Dictionary<string, string>>(EventParameter.Info);
-            dictionary.Add($"{nameof(DOT)}{Guid.NewGuid()}", $"Take damage every {RegenSpeed} turns.");
+            CombatUtility.Attack(gameObject, target, gameObject);
+            currentTurns = 0;
         }
+    }
+
+    void GetInfo(GameEvent gameEvent)
+    {
+        var dictionary = gameEvent.GetValue<Dictionary<string, string>>(EventParameter.Info);
+        dictionary.Add($"{nameof(DOT)}{Guid.NewGuid()}", $"Take damage every {RegenSpeed} turns.");
     }
 }
-
-//public class DTO_DOT : IDataTransferComponent
-//{
-//    public IComponent Component { get; set; }
-
-//    public void CreateComponent(string data)
-//    {
-//        int regen = 0;
-//        int speed = 0;
-
-//        var kvps = data.Split(',');
-//        foreach(var kvp in kvps)
-//        {
-//            var splitKvp = kvp.Split('=');
-//            var value = int.Parse(splitKvp[1]);
-//            if (splitKvp[0] == "RegenAmount")
-//                regen = value;
-//            else if (splitKvp[0] == "RegenSpeed")
-//                speed = value;
-//            else
-//                Debug.LogError("Unable to parse health regen value.");
-//        }
-
-//        Component = new DOT(speed);
-//    }
-
-//    public string CreateSerializableData(IComponent component)
-//    {
-//        DOT hr = (DOT)component;
-//        return $"{nameof(DOT)}: {nameof(hr.RegenSpeed)}={hr.RegenSpeed}";
-//    }
-//}

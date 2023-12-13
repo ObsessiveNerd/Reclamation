@@ -6,102 +6,67 @@ public class Energy : EntityComponent
 {
     public float EnergyRegineration;
     public float CurrentEnergy;
-    public bool HasHadTurnStarted;
+    public bool HasHadTurnStarted = false;
 
-    public Energy(float energyRegenValue, float currentEnergy = 0, bool turnStarted = false)
+    public void Start()
     {
-        RegisteredEvents.Add(GameEventId.StartTurn);
-        RegisteredEvents.Add(GameEventId.EndTurn);
-        RegisteredEvents.Add(GameEventId.CharacterRotated);
-        RegisteredEvents.Add(GameEventId.HasEnoughEnergyToTakeATurn);
-        RegisteredEvents.Add(GameEventId.UseEnergy);
-        RegisteredEvents.Add(GameEventId.SkipTurn);
-        RegisteredEvents.Add(GameEventId.GetEnergy);
-        EnergyRegineration = energyRegenValue;
-        CurrentEnergy = currentEnergy;
-        HasHadTurnStarted = turnStarted;
+        RegisteredEvents.Add(GameEventId.StartTurn, StartTurn);
+        RegisteredEvents.Add(GameEventId.EndTurn, EndTurn);
+        RegisteredEvents.Add(GameEventId.CharacterRotated, CharacterRotated);
+        RegisteredEvents.Add(GameEventId.HasEnoughEnergyToTakeATurn, HasEnoughEnergyToTakeATurn);
+        RegisteredEvents.Add(GameEventId.UseEnergy, UseEnergy);
+        RegisteredEvents.Add(GameEventId.SkipTurn, SkipTurn);
+        RegisteredEvents.Add(GameEventId.GetEnergy, GetEnergy);
     }
 
-    public override void HandleEvent(GameEvent gameEvent)
+    void StartTurn(GameEvent gameEvent)
+    {
+        if (!HasHadTurnStarted)
+        {
+            GameEvent data = default(GameEvent);
+            data = GameEventPool.Get(GameEventId.AlterEnergy).With(EventParameter.EnergyRegen, EnergyRegineration);
+            
+            gameObject.FireEvent(data);
+            CurrentEnergy += (float)data.Paramters[EventParameter.EnergyRegen];
+            HasHadTurnStarted = true;
+
+            data?.Release();
+        }
+    }
+
+    void EndTurn(GameEvent gameEvent)
+    {
+        HasHadTurnStarted = false;
+    }
+    void CharacterRotated(GameEvent gameEvent)
+    {
+        if (!HasHadTurnStarted)
+            gameObject.FireEvent(GameEventPool.Get(GameEventId.StartTurn)).Release();
+    }
+    void HasEnoughEnergyToTakeATurn(GameEvent gameEvent)
     {
         GameEvent data = default(GameEvent);
-        switch (gameEvent.ID)
-        {
-            case GameEventId.StartTurn:
-                if (!HasHadTurnStarted)
-                {
-                    data = GameEventPool.Get(GameEventId.AlterEnergy).With(EventParameter.EnergyRegen, EnergyRegineration);
-                    Self.HandleEvent(data);
-                    CurrentEnergy += (float)data.Paramters[EventParameter.EnergyRegen];
-                    HasHadTurnStarted = true;
-                }
-                break;
-            case GameEventId.HasEnoughEnergyToTakeATurn:
-                data = GameEventPool.Get(GameEventId.GetMinimumEnergyForAction).With(EventParameter.Value, 0f);
-                FireEvent(Self, data);
-                float minEnergy = (float)data.Paramters[EventParameter.Value];
-                bool takeTurn = (minEnergy == 0 || CurrentEnergy < minEnergy);
-                gameEvent.Paramters[EventParameter.TakeTurn] = takeTurn;
-                break;
-            case GameEventId.UseEnergy:
-                float energyUsed = (float)gameEvent.Paramters[EventParameter.Value];
-                CurrentEnergy -= energyUsed;
-                break;
-            case GameEventId.SkipTurn:
-                CurrentEnergy = 0;
-                HasHadTurnStarted = true;
-                break;
-            case GameEventId.GetEnergy:
-                gameEvent.Paramters[EventParameter.Value] = CurrentEnergy;
-                break;
-            case GameEventId.EndTurn:
-                HasHadTurnStarted = false;
-                break;
-            case GameEventId.CharacterRotated:
-                if(!HasHadTurnStarted)
-                    FireEvent(Self, GameEventPool.Get(GameEventId.StartTurn)).Release();
-                break;
-        };
-
+        data = GameEventPool.Get(GameEventId.GetMinimumEnergyForAction).With(EventParameter.Value, 0f);
+        
+        gameObject.FireEvent(data);
+        float minEnergy = (float)data.Paramters[EventParameter.Value];
+        bool takeTurn = (minEnergy == 0 || CurrentEnergy < minEnergy);
+        gameEvent.Paramters[EventParameter.TakeTurn] = takeTurn;
+        
         data?.Release();
     }
-}
-
-public class DTO_Energy : IDataTransferComponent
-{
-    public IComponent Component { get; set; }
-
-    public void CreateComponent(string data)
+    void UseEnergy(GameEvent gameEvent)
     {
-        string[] parameters = data.Split(',');
-        float energyRegen = 0;
-        float currentEnergy = 0;
-        bool turnStarted = false;
-        foreach(string param in parameters)
-        {
-            string[] values = param.Split('=');
-            switch(values[0])
-            {
-                case "EnergyRegineration":
-                case "Regen":
-                    energyRegen = float.Parse(values[1]);
-                    break;
-                case "CurrentEnergy":
-                case "Current":
-                    currentEnergy = float.Parse(values[1]);
-                    break;
-                case "HasHadTurnStarted":
-                case "TurnStarted":
-                    turnStarted = bool.Parse(values[1]);
-                    break;
-            }
-        }
-        Component = new Energy(energyRegen, currentEnergy, turnStarted);
+        float energyUsed = (float)gameEvent.Paramters[EventParameter.Value];
+        CurrentEnergy -= energyUsed;
     }
-
-    public string CreateSerializableData(IComponent component)
+    void SkipTurn(GameEvent gameEvent)
     {
-        Energy e = (Energy)component;
-        return $"{nameof(Energy)}:Regen={e.EnergyRegineration}, Current={e.CurrentEnergy}, TurnStarted={e.HasHadTurnStarted}";
+        CurrentEnergy = 0;
+        HasHadTurnStarted = true;
+    }
+    void GetEnergy(GameEvent gameEvent)
+    {
+        gameEvent.Paramters[EventParameter.Value] = CurrentEnergy;
     }
 }

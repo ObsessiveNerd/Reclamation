@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class SelfTargetingSpell : EntityComponent
 {
-    public override void Init(GameObject self)
+    public void Start()
     {
-        base.Init(self);
+        
         RegisteredEvents.Add(GameEventId.AmAttacking);
     }
 

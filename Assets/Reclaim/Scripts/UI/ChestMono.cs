@@ -69,7 +69,7 @@ public class ChestMono : EscapeableMono
 
             GameEvent addToInventory = GameEventPool.Get(GameEventId.AddToInventory)
                                                     .With(EventParameter.Entity, itemEntity.ID);
-            GameObject activePlayer = Services.EntityMapService.GetEntity(Services.WorldDataQuery.GetActivePlayerId());
+            GameObject activePlayer = Services.EntityMapService.GetEntity(Services.WorldDataQuery.GetActivePlayer());
             activePlayer.FireEvent(addToInventory);
             addToInventory.Release();
 

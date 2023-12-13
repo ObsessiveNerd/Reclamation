@@ -11,9 +11,9 @@ public class ActiveAbilities : EntityComponent
         ActiveAbilitiesList = entities;
     }
 
-    public override void Init(GameObject self)
+    public void Start()
     {
-        base.Init(self);
+        
         RegisteredEvents.Add(GameEventId.AddToActiveAbilities);
         RegisteredEvents.Add(GameEventId.RemoveFromActiveAbilities);
         RegisteredEvents.Add(GameEventId.GetActiveAbilities);

@@ -9,11 +9,11 @@ public class LookController : InputControllerBase
 
     Point m_TileSelection;
 
-    public override void Init(GameObject self)
+    public void Start()
     {
         m_Popup = Resources.Load<GameObject>("Prefabs/UI/ItemPopup");
 
-        base.Init(self);
+        
 
         Point p = WorldUtility.GetEntityPosition(Self);
         Services.TileSelectionService.SelectTile(p);

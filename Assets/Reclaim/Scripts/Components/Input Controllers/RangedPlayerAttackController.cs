@@ -12,9 +12,9 @@ public class RangedPlayerAttackController : InputControllerBase
         m_Attack = attack;
     }
 
-    public override void Init(GameObject self)
+    public void Start()
     {
-        base.Init(self);
+        
 
         GameObject startingTarget = WorldUtility.GetClosestEnemyTo(Self);
 

@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class PlayerInputController : InputControllerBase
 {
-    public override void Init(GameObject self)
+    public void Start()
     {
-        base.Init(self);
+        
         RegisteredEvents.Add(GameEventId.UpdateEntity);
         RegisteredEvents.Add(GameEventId.OpenUI);
         //RegisteredEvents.Add(GameEventId.GetSprite);

@@ -9,9 +9,9 @@ public class Fear : EntityComponent
     Point m_TargetLocation;
     //int m_FearMargin = 2;
 
-   public override void Init(GameObject self)
+   public void Start()
     {
-        base.Init(self);
+        
         RegisteredEvents.Add(GameEventId.GetActionToTake);
     }
 

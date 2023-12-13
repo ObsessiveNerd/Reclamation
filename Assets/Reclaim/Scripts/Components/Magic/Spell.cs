@@ -23,9 +23,9 @@ public class Spell : EntityComponent
         SpellType = spellType;
     }
 
-    public override void Init(GameObject self)
+    public void Start()
     {
-        base.Init(self);
+        
         RegisteredEvents.Add(GameEventId.GetSpells);
         RegisteredEvents.Add(GameEventId.ManaCost);
         RegisteredEvents.Add(GameEventId.GetInfo);

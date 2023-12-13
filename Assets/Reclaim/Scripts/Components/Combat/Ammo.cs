@@ -14,7 +14,7 @@ public class Ammo : EntityComponent
         Texture = Resources.Load<Sprite>(path);
     }
 
-    public override void Init(GameObject self)
+    public void Start()
     {
         RegisteredEvents.Add(GameEventId.FireRangedAttack);
     }

@@ -4,46 +4,28 @@ using UnityEngine;
 
 public class InteractsWithWorld : EntityComponent
 {
-    public InteractsWithWorld()
+    public void Start()
     {
-        RegisteredEvents.Add(GameEventId.InteractWithTarget);
+        RegisteredEvents.Add(GameEventId.InteractWithTarget, InteractWithTarget);
     }
 
-    public override void HandleEvent(GameEvent gameEvent)
+    void InteractWithTarget(GameEvent gameEvent)
     {
-        if (gameEvent.ID == GameEventId.InteractWithTarget)
+        GameObject target = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameter.Target]);
+        Demeanor demeanor = Factions.GetDemeanorForTarget(gameEvent, target);
+
+        switch (demeanor)
         {
-            GameObject target = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameter.Target]);
-            Demeanor demeanor = Factions.GetDemeanorForTarget(Self, target);
-
-            switch (demeanor)
-            {
-                case Demeanor.Friendly:
-                case Demeanor.None:
-                case Demeanor.Neutral:
-                    FireEvent(target, GameEventPool.Get(GameEventId.Interact).With(EventParameter.Entity, Self.ID), true).Release();
-                    break;
-                case Demeanor.Hostile:
-                    FireEvent(Self, GameEventPool.Get(GameEventId.PerformAttack)
-                            .With(EventParameter.Target, target.ID)
-                            .With(EventParameter.Melee, true), true).Release();
-                    break;
-            }
+            case Demeanor.Friendly:
+            case Demeanor.None:
+            case Demeanor.Neutral:
+                FireEvent(target, GameEventPool.Get(GameEventId.Interact).With(EventParameter.Entity, gameObject), true).Release();
+                break;
+            case Demeanor.Hostile:
+                FireEvent(gameObject, GameEventPool.Get(GameEventId.PerformAttack)
+                        .With(EventParameter.Target, target)
+                        .With(EventParameter.Melee, true), true).Release();
+                break;
         }
-    }
-}
-
-public class DTO_InteractsWithWorld : IDataTransferComponent
-{
-    public IComponent Component { get; set; }
-
-    public void CreateComponent(string data)
-    {
-        Component = new InteractsWithWorld();
-    }
-
-    public string CreateSerializableData(IComponent component)
-    {
-        return nameof(InteractsWithWorld);
     }
 }

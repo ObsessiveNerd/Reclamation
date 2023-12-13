@@ -12,9 +12,9 @@ public class Equipment : EntityComponent
         PreferredBodyPartWhenEquipped = preferredBodyPart;
     }
 
-    public override void Init(GameObject self)
+    public void Start()
     {
-        base.Init(self);
+        
         RegisteredEvents.Add(GameEventId.GetContextMenuActions);
         RegisteredEvents.Add(GameEventId.TryEquip);
         RegisteredEvents.Add(GameEventId.GetBodyPartType);
@@ -65,7 +65,7 @@ public class Equipment : EntityComponent
 
                     remove.Release();
 
-                    Services.EntityMapService.GetEntity(Services.WorldDataQuery.GetActivePlayerId()).FireEvent(equip, true).Release();
+                    Services.EntityMapService.GetEntity(Services.WorldDataQuery.GetActivePlayer()).FireEvent(equip, true).Release();
                     Services.WorldUIService.UpdateUI();
                 });
                 gameEvent.GetValue<List<ContextMenuButton>>(EventParameter.InventoryContextActions).Add(button);

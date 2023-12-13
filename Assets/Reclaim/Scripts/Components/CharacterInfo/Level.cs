@@ -21,9 +21,9 @@ public class Level : EntityComponent
         CurrentExp = currentExp;
     }
 
-    public override void Init(GameObject self)
+    public void Start()
     {
-        base.Init(self);
+        
         RegisteredEvents.Add(GameEventId.GainExperience);
         RegisteredEvents.Add(GameEventId.Died);
         RegisteredEvents.Add(GameEventId.GetExperience);

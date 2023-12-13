@@ -4,37 +4,19 @@ using UnityEngine;
 
 public class BlocksNonHostileMovement : EntityComponent
 {
-    public BlocksNonHostileMovement()
+    public void Start()
     {
-        RegisteredEvents.Add(GameEventId.EntityOvertaking);
+        RegisteredEvents.Add(GameEventId.EntityOvertaking, EntityOvertaking);
     }
 
-    public override void HandleEvent(GameEvent gameEvent)
+    void EntityOvertaking(GameEvent gameEvent)
     {
-        if (gameEvent.ID == GameEventId.EntityOvertaking)
-        {
-            GameObject overtakingEntity = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameter.Entity));
-            Demeanor getDemeanor = Factions.GetDemeanorForTarget(Self, overtakingEntity);
-            if (getDemeanor == Demeanor.Friendly || getDemeanor == Demeanor.Neutral)
-                if (WorldUtility.IsActivePlayer(overtakingEntity.ID) || overtakingEntity.HasComponent(typeof(NetworkController)))
-                    Spawner.Swap(Self, overtakingEntity);
-
-            FireEvent(overtakingEntity, GameEventPool.Get(GameEventId.StopMovement)).Release();
-        }
-    }
-}
-
-public class DTO_BlocksNonHostileMovement : IDataTransferComponent
-{
-    public IComponent Component { get; set; }
-
-    public void CreateComponent(string data)
-    {
-        Component = new BlocksNonHostileMovement();
-    }
-
-    public string CreateSerializableData(IComponent component)
-    {
-        return nameof(BlocksNonHostileMovement);
+        GameObject overtakingEntity = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameter.Entity));
+        Demeanor getDemeanor = Factions.GetDemeanorForTarget(gameObject, overtakingEntity);
+        if (getDemeanor == Demeanor.Friendly || getDemeanor == Demeanor.Neutral)
+            if (WorldUtility.IsActivePlayer(overtakingEntity) || overtakingEntity.HasComponent<NetworkController>())
+                Spawner.Swap(gameObject, overtakingEntity);
+        
+        gameObject.FireEvent(overtakingEntity, GameEventPool.Get(GameEventId.StopMovement)).Release();
     }
 }

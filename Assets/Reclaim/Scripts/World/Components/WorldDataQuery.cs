@@ -14,14 +14,14 @@ public class WorldDataQuery : GameService
         MapColumns = mapColumns;
     }
 
-    public string GetActivePlayerId()
+    public GameObject GetActivePlayer()
     {
-        return m_ActivePlayer?.Value.ID;
+        return m_ActivePlayer;
     }
 
     public Point GetEntityLocation(GameObject entity)
     {
-        if (m_EntityToPointMap.TryGetValue(entity.ID, out Point result))
+        if (m_EntityToPointMap.TryGetValue(entity, out Point result))
             return result;
         return Point.InvalidPoint;
     }

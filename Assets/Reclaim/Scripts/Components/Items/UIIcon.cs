@@ -11,7 +11,7 @@ public class UIIcon : EntityComponent
         IconPath = iconPath;
     }
 
-    public override void Init(GameObject self)
+    public void Start()
     {
         RegisteredEvents.Add(GameEventId.GetIcon);
     }

@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class DestroyOnDrop : EntityComponent
 {
-    public override void Init(GameObject self)
+    public void Start()
     {
         RegisteredEvents.Add(GameEventId.Drop);
-        base.Init(self);
+        
     }
 
     public override void HandleEvent(GameEvent gameEvent)

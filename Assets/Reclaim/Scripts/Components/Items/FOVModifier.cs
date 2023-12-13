@@ -11,37 +11,15 @@ public class FOVModifier : EntityComponent
         Modifier = mod;
     }
 
-    public override void Init(GameObject self)
+    public void Start()
     {
-        base.Init(self);
-        RegisteredEvents.Add(GameEventId.BeforeFOVRecalculated);
+        RegisteredEvents.Add(GameEventId.BeforeFOVRecalculated, BeforePOVCalculated);
     }
 
-    public override void HandleEvent(GameEvent gameEvent)
+    void BeforePOVCalculated(GameEvent gameEvent)
     {
-        if(gameEvent.ID == GameEventId.BeforeFOVRecalculated)
-        {
-            int currentMod = (int)gameEvent.Paramters[EventParameter.FOVRange];
-            currentMod += Modifier;
-            gameEvent.Paramters[EventParameter.FOVRange] = currentMod;
-        }
-    }
-}
-
-public class DTO_FOVModifier : IDataTransferComponent
-{
-    public IComponent Component { get; set; }
-
-    public void CreateComponent(string data)
-    {
-        string[] keyToValue = data.Split('=');
-        int value = int.Parse(keyToValue[1]);
-        Component = new FOVModifier(value);
-    }
-
-    public string CreateSerializableData(IComponent component)
-    {
-        FOVModifier mod = (FOVModifier)component;
-        return $"{nameof(FOVModifier)}: Modifier={mod.Modifier}";
+        int currentMod = (int)gameEvent.Paramters[EventParameter.FOVRange];
+        currentMod += Modifier;
+        gameEvent.Paramters[EventParameter.FOVRange] = currentMod;
     }
 }

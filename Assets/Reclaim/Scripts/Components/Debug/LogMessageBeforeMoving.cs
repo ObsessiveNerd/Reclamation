@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class LogMessageBeforeMoving : EntityComponent
 {
-    public LogMessageBeforeMoving()
+    public void Start()
     {
-        RegisteredEvents.Add(GameEventId.BeforeMoving);
+        RegisteredEvents.Add(GameEventId.BeforeMoving, BeforeMoving);
     }
 
-    public override void HandleEvent(GameEvent gameEvent)
+    public void BeforeMoving(GameEvent gameEvent)
     {
         RecLog.Log("something moved");
     }

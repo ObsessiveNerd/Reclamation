@@ -4,18 +4,14 @@ using UnityEngine;
 
 public class Poison : EntityComponent
 {
-    public override void Init(GameObject self)
+    public void Start()
     {
-        base.Init(self);
-        RegisteredEvents.Add(GameEventId.AlterSprite);
+        RegisteredEvents.Add(GameEventId.AlterSprite, AlterSprite);
     }
 
-    public override void HandleEvent(GameEvent gameEvent)
+    void AlterSprite(GameEvent gameEvent)
     {
-        if (gameEvent.ID == GameEventId.AlterSprite)
-        {
-            var renderer = gameEvent.GetValue<SpriteRenderer>(EventParameter.Renderer);
-            renderer.color = Color.green;
-        }
+        var renderer = gameEvent.GetValue<SpriteRenderer>(EventParameter.Renderer);
+        renderer.color = Color.green;
     }
 }

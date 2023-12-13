@@ -15,9 +15,9 @@ public class TileVisible : EntityComponent
         HasBeenVisited = hasBeenVisited;
     }
 
-    public override void Init(GameObject self)
+    public void Start()
     {
-        base.Init(self);
+        
         RegisteredEvents.Add(GameEventId.SetVisibility);
         RegisteredEvents.Add(GameEventId.SetHasBeenVisited);
         RegisteredEvents.Add(GameEventId.AlterSprite);

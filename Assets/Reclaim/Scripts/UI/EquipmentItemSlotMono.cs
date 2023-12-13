@@ -70,7 +70,7 @@ public class EquipmentItemSlotMono : MonoBehaviour, IDropHandler
             GameObject current = inventoryItem.Source;
             GameObject currentItem = inventoryItem.ItemObject;
 
-            if (current.ID == Services.WorldDataQuery.GetActivePlayerId())
+            if (current.ID == Services.WorldDataQuery.GetActivePlayer())
             { 
             Debug.Log($"Trying to unequip {item.Name}");
 

@@ -14,9 +14,9 @@ public class Sound : EntityComponent
         Key = key;
     }
 
-    public override void Init(GameObject self)
+    public void Start()
     {
-        base.Init(self);
+        
         RegisteredEvents.Add(GameEventId.Playsound);
     }
 

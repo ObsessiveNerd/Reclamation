@@ -45,10 +45,10 @@ public class SpawnRestrictor : EntityComponent
         Restrictions = restrictions;
     }
 
-    public override void Init(GameObject self)
+    public void Start()
     {
         RegisteredEvents.Add(GameEventId.GetSpawnRestrictions);
-        base.Init(self);
+        
     }
 
     public override void HandleEvent(GameEvent gameEvent)

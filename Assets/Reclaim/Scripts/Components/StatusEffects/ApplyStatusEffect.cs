@@ -14,9 +14,9 @@ public class ApplyStatusEffect : EntityComponent
         DestroyAfterTurns = destroyAfterTurns;
     }
 
-    public override void Init(GameObject self)
+    public void Start()
     {
-        base.Init(self);
+        
         RegisteredEvents.Add(GameEventId.ApplyEffectToTarget);
         RegisteredEvents.Add(GameEventId.CastSpellEffect);
     }

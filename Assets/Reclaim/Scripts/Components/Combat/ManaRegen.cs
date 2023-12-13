@@ -15,9 +15,9 @@ public class ManaRegen : EntityComponent
         RegenSpeed = speed;
     }
 
-    public override void Init(GameObject self)
+    public void Start()
     {
-        base.Init(self);
+        
         RegisteredEvents.Add(GameEventId.EndTurn);
         RegisteredEvents.Add(GameEventId.GetInfo);
     }

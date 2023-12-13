@@ -11,9 +11,9 @@ public class Resitance : EntityComponent
         Type = type;
     }
 
-    public override void Init(GameObject self)
+    public void Start()
     {
-        base.Init(self);
+        
         RegisteredEvents.Add(GameEventId.GetResistances);
         RegisteredEvents.Add(GameEventId.TakeDamage);
         RegisteredEvents.Add(GameEventId.GetInfo);

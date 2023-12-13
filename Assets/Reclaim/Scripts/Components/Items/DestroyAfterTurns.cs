@@ -17,9 +17,9 @@ public class DestroyAfterTurns : EntityComponent
         Active = isActive;
     }
 
-    public override void Init(GameObject self)
+    public void Start()
     {
-        base.Init(self);
+        
         RegisteredEvents.Add(GameEventId.ActivateObject);
         RegisteredEvents.Add(GameEventId.DeactivateObject);
         RegisteredEvents.Add(GameEventId.EndTurn);

@@ -12,10 +12,10 @@ public abstract class GameService //: Component
     protected static int m_Seed;
     protected static List<Tile> m_ChangedTiles = new List<Tile>();
 
-    protected static Dictionary<string, Point> m_EntityToPointMap = new Dictionary<string, Point>();
-    protected static Dictionary<string, Point> m_EntityToPreviousPointMap = new Dictionary<string, Point>();
+    protected static Dictionary<GameObject, Point> m_EntityToPointMap = new Dictionary<GameObject, Point>();
+    protected static Dictionary<GameObject, Point> m_EntityToPreviousPointMap = new Dictionary<GameObject, Point>();
     protected static LinkedList<GameObject> m_Players = new LinkedList<GameObject>();
-    protected static LinkedListNode<GameObject> m_ActivePlayer;
+    protected static GameObject m_ActivePlayer;
     protected static HashSet<Point> m_ValidDungeonPoints = new HashSet<Point>();
     protected static Dictionary<Point, UnityEngine.GameObject> m_GameObjectMap = new Dictionary<Point, UnityEngine.GameObject>();
     protected static Dictionary<int, DungeonGenerationResult> m_DungeonLevelMap = new Dictionary<int, DungeonGenerationResult>();

@@ -8,9 +8,9 @@ public class SelectedTile : EntityComponent
 
     public override int Priority { get { return 6; } }
 
-    public override void Init(GameObject self)
+    public void Start()
     {
-        base.Init(self);
+        
 
         m_SelectionSprite = Resources.Load<Sprite>("Textures/Effects/selection");
         RegisteredEvents.Add(GameEventId.AlterSprite);

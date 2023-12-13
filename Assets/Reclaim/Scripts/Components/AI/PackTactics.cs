@@ -20,9 +20,9 @@ public class PackTactics : EntityComponent
         Services.PartyService.LookingForGroup(Self);
     }
 
-    public override void Init(GameObject self)
+    public void Start()
     {
-        base.Init(self);
+        
         RegisteredEvents.Add(GameEventId.GetActionToTake);
         //RegisteredEvents.Add(GameEventId.GetCombatRating);
         RegisteredEvents.Add(GameEventId.BreakRank);

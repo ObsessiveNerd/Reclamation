@@ -4,28 +4,13 @@ using UnityEngine;
 
 public class Slow : EntityComponent
 {
-    public Slow()
+    public void Start()
     {
-        RegisteredEvents.Add(GameEventId.AlterEnergy);
+        RegisteredEvents.Add(GameEventId.AlterEnergy, AlterEnergy);
     }
 
-    public override void HandleEvent(GameEvent gameEvent)
+    public void AlterEnergy(GameEvent gameEvent)
     {
         gameEvent.Paramters[EventParameter.EnergyRegen] = ((float)gameEvent.Paramters[EventParameter.EnergyRegen]) / 2f;
-    }
-}
-
-public class DTO_Slow : IDataTransferComponent
-{
-    public IComponent Component { get; set; }
-
-    public void CreateComponent(string data)
-    {
-        Component = new Slow();
-    }
-
-    public string CreateSerializableData(IComponent comp)
-    {
-        return nameof(Slow);
     }
 }
