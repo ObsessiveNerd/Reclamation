@@ -29,47 +29,47 @@ public class EntityMovement : GameService
     //    return ret;
     //}
 
-    public void SetEntityPosition(GameObject entity, Point newPoint)
-    {
-        if (!m_EntityToPointMap.ContainsKey(entity.ID))
-            return;
-        Point currentPoint = m_EntityToPointMap[entity.ID];
-        GameEvent getEntityType = GameEventPool.Get(GameEventId.GetEntityType)
-                                    .With(EventParameter.EntityType, EntityType.None);
+    //public void SetEntityPosition(GameObject entity, Point newPoint)
+    //{
+    //    if (!m_EntityToPointMap.ContainsKey(entity.ID))
+    //        return;
+    //    Point currentPoint = m_EntityToPointMap[entity.ID];
+    //    GameEvent getEntityType = GameEventPool.Get(GameEventId.GetEntityType)
+    //                                .With(EventParameter.EntityType, EntityType.None);
 
-        EntityType entityType = entity.FireEvent(getEntityType).GetValue<EntityType>(EventParameter.EntityType);
-        getEntityType.Release();
+    //    EntityType entityType = entity.FireEvent(getEntityType).GetValue<EntityType>(EventParameter.EntityType);
+    //    getEntityType.Release();
 
-        GameEvent removeEntityFromTile = GameEventPool.Get(GameEventId.Despawn)
-                                            .With(EventParameter.Entity, entity.ID)
-                                            .With(EventParameter.EntityType, entityType);
-        m_Tiles[currentPoint].Despawn(removeEntityFromTile);
-        removeEntityFromTile.Release();
+    //    GameEvent removeEntityFromTile = GameEventPool.Get(GameEventId.Despawn)
+    //                                        .With(EventParameter.Entity, entity.ID)
+    //                                        .With(EventParameter.EntityType, entityType);
+    //    m_Tiles[currentPoint].Despawn(removeEntityFromTile);
+    //    removeEntityFromTile.Release();
 
-        m_EntityToPointMap[entity.ID] = newPoint;
-        GameEvent addEntityToTile = GameEventPool.Get(GameEventId.Spawn)
-                                        .With(EventParameter.Entity, entity.ID)
-                                        .With(EventParameter.EntityType, entityType);
-        m_Tiles[newPoint].Spawn(entity);
-        addEntityToTile.Release();
-        Services.WorldUpdateService.UpdateWorldView();
-    }
+    //    m_EntityToPointMap[entity.ID] = newPoint;
+    //    GameEvent addEntityToTile = GameEventPool.Get(GameEventId.Spawn)
+    //                                    .With(EventParameter.Entity, entity.ID)
+    //                                    .With(EventParameter.EntityType, entityType);
+    //    m_Tiles[newPoint].Spawn(entity);
+    //    addEntityToTile.Release();
+    //    Services.WorldUpdateService.UpdateWorldView();
+    //}
 
-    public void Move(GameObject entity, MoveDirection moveDirection)
-    {
-        if (!m_EntityToPointMap.ContainsKey(entity.ID))
-            return;
-        Point currentPoint = m_EntityToPointMap[entity.ID];
-        Point newPoint = GetTilePointInDirection(currentPoint, moveDirection);
+    //public void Move(GameObject entity, MoveDirection moveDirection)
+    //{
+    //    if (!m_EntityToPointMap.ContainsKey(entity.ID))
+    //        return;
+    //    Point currentPoint = m_EntityToPointMap[entity.ID];
+    //    Point newPoint = GetTilePointInDirection(currentPoint, moveDirection);
 
-        if (m_Tiles.ContainsKey(newPoint))
-        {
-            m_ChangedTiles.Add(m_Tiles[currentPoint]);
-            m_ChangedTiles.Add(m_Tiles[newPoint]);
+    //    if (m_Tiles.ContainsKey(newPoint))
+    //    {
+    //        m_ChangedTiles.Add(m_Tiles[currentPoint]);
+    //        m_ChangedTiles.Add(m_Tiles[newPoint]);
 
-            var pointEvent = FireEvent(entity, GameEventPool.Get(GameEventId.SetPoint).With(EventParameter.TilePosition, newPoint));
-            SetEntityPosition(entity, newPoint);
-            pointEvent.Release();
-        }
-    }
+    //        var pointEvent = FireEvent(entity, GameEventPool.Get(GameEventId.SetPoint).With(EventParameter.TilePosition, newPoint));
+    //        SetEntityPosition(entity, newPoint);
+    //        pointEvent.Release();
+    //    }
+    //}
 }

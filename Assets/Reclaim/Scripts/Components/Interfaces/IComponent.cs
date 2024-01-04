@@ -13,7 +13,16 @@ public interface IComponent
 
 public class EntityComponent : MonoBehaviour, IComponent
 {
-    public Dictionary<GameEventId, Action<GameEvent>> RegisteredEvents{ get; set; }
+    private Dictionary<GameEventId, Action<GameEvent>> m_RegisteredEvents;
+    public Dictionary<GameEventId, Action<GameEvent>> RegisteredEvents
+    {
+        get
+        {
+            if (m_RegisteredEvents == null)
+                m_RegisteredEvents = new Dictionary<GameEventId, Action<GameEvent>>();
+            return m_RegisteredEvents;
+        }
+    }
 
 
     //public GameEvent FireEvent(GameObject target, GameEvent gameEvent, bool logEvent = false)
@@ -37,6 +46,11 @@ public class EntityComponent : MonoBehaviour, IComponent
     {
         if (RegisteredEvents.ContainsKey(gameEvent.ID))
             RegisteredEvents[gameEvent.ID](gameEvent);
+    }
+
+    public GameEvent FireEvent(GameObject target, GameEvent gameEvent, bool logEvent = false)
+    {
+        return target.FireEvent(gameEvent, logEvent);
     }
 }
 

@@ -62,46 +62,12 @@ public class CharacterCreationMono : MonoBehaviour
 
     public string CreateEntityData()
     {
-        GameObject character = EntityFactory.CreateEntity("CharacterTemplate");
-
-        string name = string.IsNullOrEmpty(InputField.text) ? EntityFactory.GetRandomCharacterName() : InputField.text;
-
-        character.AddComponent(new Name(name));
-        character.AddComponent(new GraphicContainer("Textures/Sprites/Characters/" + m_CharacterImages[currentIndex].name));
-        character.AddComponent(new Portrait("Textures/Sprites/Characters/" + m_CharacterImages[currentIndex].name));
-        character.AddComponent(new Stats(m_CharacterArchitypes[currentClassIndex].Str,
-            m_CharacterArchitypes[currentClassIndex].Agi,
-            m_CharacterArchitypes[currentClassIndex].Con,
-            m_CharacterArchitypes[currentClassIndex].Wis,
-            m_CharacterArchitypes[currentClassIndex].Int,
-            m_CharacterArchitypes[currentClassIndex].Cha,
-            0, m_CharacterArchitypes[currentClassIndex].PrimaryStatType));
-        var ca = m_CharacterArchitypes[currentClassIndex];
-
-        character.AddComponent(new EquipmentSlot(ca.HeadEquip, BodyPart.Head));
-        character.AddComponent(new EquipmentSlot(ca.TorosEquip, BodyPart.Torso));
-        character.AddComponent(new EquipmentSlot(ca.ArmEquip1, BodyPart.Arm));
-        character.AddComponent(new EquipmentSlot(ca.ArmEquip2, BodyPart.Arm));
-        character.AddComponent(new EquipmentSlot(ca.LegEquip1, BodyPart.Leg));
-        character.AddComponent(new EquipmentSlot(ca.BackEquip, BodyPart.Back));
-        character.AddComponent(new EquipmentSlot(ca.NeckEquip, BodyPart.Neck));
-        character.AddComponent(new EquipmentSlot(ca.Finger1Equip, BodyPart.Finger));
-        character.AddComponent(new EquipmentSlot(ca.Finger2Equip, BodyPart.Finger));
-
-        character.CleanupComponents();
-        character.Start();
-        return character.Serialize();
+        return "";
     }
 
     public void Randomize()
     {
-        InputField.text = EntityFactory.GetRandomCharacterName();
-
-        currentIndex = RecRandom.Instance.GetRandomValue(0, m_CharacterImages.Count);
-        currentClassIndex = RecRandom.Instance.GetRandomValue(0, m_CharacterArchitypes.Count);
-
-        CharacterImage.sprite = m_CharacterImages[currentIndex];
-        CharacterClass.text = m_CharacterArchitypes[currentClassIndex].Name;
+       
     }
 
     public string GetClassReadout()

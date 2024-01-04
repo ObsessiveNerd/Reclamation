@@ -5,18 +5,18 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-public class PointComparer : IEqualityComparer<Point>
-{
-    public bool Equals(Point x, Point y)
-    {
-        return x == y;
-    }
+//public class PointComparer : IEqualityComparer<Point>
+//{
+//    public bool Equals(Point x, Point y)
+//    {
+//        return x == y;
+//    }
 
-    public int GetHashCode(Point obj)
-    {
-        return obj.GetHashCode();
-    }
-}
+//    public int GetHashCode(Point obj)
+//    {
+//        return obj.GetHashCode();
+//    }
+//}
 
 [Serializable]
 public struct Point
@@ -28,8 +28,8 @@ public struct Point
     [SerializeField]
     private int m_y;
 
-    public int x { get{ return m_x; } set { m_x = value; } }
-    public int y { get{ return m_y; } set { m_y = value; } }
+    public int x { get { return m_x; } set { m_x = value; } }
+    public int y { get { return m_y; } set { m_y = value; } }
 
     public Point(int _x, int _y)
     {
@@ -60,7 +60,7 @@ public struct Point
         }
     }
 
-    public static Point operator+(Point lhs, Point rhs)
+    public static Point operator +(Point lhs, Point rhs)
     {
         return new Point(lhs.x + rhs.x, lhs.y + rhs.y);
     }
@@ -72,7 +72,7 @@ public struct Point
 
     public override bool Equals(object obj)
     {
-        if(obj is Point)
+        if (obj is Point)
             return ((Point)obj).x == x && ((Point)obj).y == y;
         return false;
     }
@@ -105,244 +105,244 @@ public struct Point
 
 public class Tile
 {
-    public GameObject CreatureSlot;
-    public GameObject ObjectSlot;
-    public List<GameObject> Items = new List<GameObject>();
-    public bool BlocksMovement
-    {
-        get;
-        set;
-    }
-
-    List<GameObject> AllEntities
-    {
-        get
-        {
-            List<GameObject> entities = new List<GameObject>(Items);
-            entities.Add(CreatureSlot);
-            entities.Add(ObjectSlot);
-            return entities;
-        }
-    }
-    bool m_HasEntity { get { return CreatureSlot != null || ObjectSlot != null || Items.Count > 0; } }
-    bool m_IsVisible = false;
-    Point m_GridPoint;
-
-    //public Tile(GameObject self, Point gridPoint)
-    //{
-    //    Init(self);
-    //    m_GridPoint = gridPoint;
-
-    //    RegisteredEvents.Add(GameEventId.UpdateTile);
-    //    RegisteredEvents.Add(GameEventId.Spawn);
-    //    RegisteredEvents.Add(GameEventId.Despawn);
-    //    RegisteredEvents.Add(GameEventId.ShowTileInfo);
-    //    RegisteredEvents.Add(GameEventId.AddComponentToTile);
-    //    RegisteredEvents.Add(GameEventId.GetEntityOnTile);
-    //    RegisteredEvents.Add(GameEventId.BeforeMoving);
-    //    RegisteredEvents.Add(GameEventId.Pickup);
-    //    RegisteredEvents.Add(GameEventId.VisibilityUpdated);
-    //    RegisteredEvents.Add(GameEventId.BlocksMovement);
-    //    RegisteredEvents.Add(GameEventId.DestroyObject);
-    //    RegisteredEvents.Add(GameEventId.CleanTile);
-    //    RegisteredEvents.Add(GameEventId.PathfindingData);
-    //    RegisteredEvents.Add(GameEventId.GetValueOnTile);
-    //    RegisteredEvents.Add(GameEventId.GetInteractableObjects);
-    //    RegisteredEvents.Add(GameEventId.SerializeTile);
-    //}
-
-    public void GetPathFindingData(GameEvent gameEvent)
-    {
-        gameEvent.SetValue<bool>(EventParameter.BlocksMovement, BlocksMovement);
-        float weight = gameEvent.GetValue<float>(EventParameter.Weight);
-        foreach(var entity in AllEntities)
-            weight += entity.GetComponent<Weighted>().Weight;
-        gameEvent.SetValue<float>(EventParameter.Weight, weight);
-    }
-
-    public void CleanTile()
-    {
-        CreatureSlot = null;
-        ObjectSlot = null;
-        Items.Clear();
-    }
-
-    //public void VisibilityUpdated(GameEvent gameEvent)
-    //{
-    //    m_IsVisible = (bool)gameEvent.Paramters[EventParameter.Value];
-    //    Services.TileInteractionService.TileChanged(this);
-    //}
-
-    public void Spawn(GameObject entity)
-    {
-        GameEvent getType = GameEventPool.Get(GameEventId.GetEntityType)
-                            .With(EventParameter.EntityType, EntityType.None);
-
-        EntityType entityType = entity.FireEvent(getType).GetValue<EntityType>(EventParameter.EntityType);
-        getType.Release();
-
-        switch (entityType)
-        {
-            case EntityType.Creature:
-                CreatureSlot = entity;
-                break;
-            case EntityType.Object:
-                ObjectSlot = entity;
-                break;
-            case EntityType.Item:
-                Items.Add(entity);
-                break;
-        }
-        Services.TileInteractionService.TileChanged(this);
-    }
-
-    public void Pickup(GameEvent gameEvent)
-    {
-        GameObject entity = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameter.Entity]);
-        if (Items.Count > 0)
-        {
-            List<GameObject> itemsPickedup = new List<GameObject>();
-            foreach (var item in Items)
-            {
-                var pickupEvent = entity.FireEvent(entity, GameEventPool.Get(GameEventId.AddToInventory)
-                    .With(EventParameter.Entity, item.ID), true);
-                itemsPickedup.Add(item);
-                pickupEvent.Release();
-            }
-
-            foreach (var item in itemsPickedup)
-                Spawner.Despawn(item);
-        }
-        if (ObjectSlot != null)
-        {
-            entity.FireEvent(ObjectSlot, gameEvent, true);
-        }
-        Services.TileInteractionService.TileChanged(this);
-    }
-
-    public void Despawn(GameEvent gameEvent)
-    {
-        GameObject entity = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameter.Entity]);
-        EntityType entityType = gameEvent.GetValue<EntityType>(EventParameter.EntityType);
-        switch (entityType)
-        {
-            case EntityType.Creature:
-                CreatureSlot = null;
-                break;
-            case EntityType.Object:
-                ObjectSlot = null;
-                break;
-            case EntityType.Item:
-                Items.Remove(entity);
-                break;
-        }
-        Services.TileInteractionService.TileChanged(this);
-    }
-
-    public void ShowTileInfo(GameEvent gameEvent)
-    {
-        if(Items.Count > 1)
-        {
-            gameEvent.Paramters[EventParameter.Info] = "Multiple Items";
-            gameEvent.ContinueProcessing = false;
-        }
-        else
-        {
-            GameEvent showInfo = GameEventPool.Get(GameEventId.ShowInfo)
-                .With(EventParameter.Info, new StringBuilder());
-            foreach (var e in GetTarget())
-                e.FireEvent(showInfo);
-            gameEvent.Paramters[EventParameter.Info] = showInfo.GetValue<StringBuilder>(EventParameter.Info).ToString();
-            showInfo.Release();
-        }
-    }
-
-    public GameObject GetEntityOnTile(bool includeSelf = true)
-    {
-        var targets = GetTarget(includeSelf);
-        if (targets.Count == 0)
-            return null;
-        else
-            return GetTarget(includeSelf)[0];
-    }
-
-    //public bool IsTileBlocking
-    //{
-    //    get
+    //    public GameObject CreatureSlot;
+    //    public GameObject ObjectSlot;
+    //    public List<GameObject> Items = new List<GameObject>();
+    //    public bool BlocksMovement
     //    {
-    //        GameEvent isTileBlocking = GameEventPool.Get(GameEventId.BlocksMovement)
-    //                                    .With(EventParameter.BlocksMovement, false);
-    //        if (GetTarget()[0] != Self)
-    //        {
-    //            foreach (GameObject e in GetTarget())
-    //                FireEvent(e, isTileBlocking);
-    //        }
-    //        bool returnValue = isTileBlocking.GetValue<bool>(EventParameter.BlocksMovement);
-    //        isTileBlocking.Release();
-    //        return returnValue;
+    //        get;
+    //        set;
     //    }
-    //}
 
-    public bool BlocksVision
-    {
-        get;
-        //{
-        //    GameEvent isTileBlocking = GameEventPool.Get(GameEventId.BlocksVision)
-        //                                .With(EventParameter.Value, false);
-        //    if (GetTarget()[0] != Self)
-        //    {
-        //        foreach (GameObject e in GetTarget())
-        //            FireEvent(e, isTileBlocking);
-        //    }
-        //    bool returnValue = isTileBlocking.GetValue<bool>(EventParameter.Value);
-        //    isTileBlocking.Release();
-        //    return returnValue;
-        //}
-        set;
-    }
+    //    List<GameObject> AllEntities
+    //    {
+    //        get
+    //        {
+    //            List<GameObject> entities = new List<GameObject>(Items);
+    //            entities.Add(CreatureSlot);
+    //            entities.Add(ObjectSlot);
+    //            return entities;
+    //        }
+    //    }
+    //    bool m_HasEntity { get { return CreatureSlot != null || ObjectSlot != null || Items.Count > 0; } }
+    //    bool m_IsVisible = false;
+    //    Point m_GridPoint;
 
-    public void SerializeTile(GameEvent gameEvent)
-    {
-        DungeonGenerationResult levelData = gameEvent.GetValue<DungeonGenerationResult>(EventParameter.Value);
-        foreach (var target in AllEntities)
-            if (target != null)
-            {
-                if (target.HasComponent(typeof(Wall)) || target.HasComponent(typeof(BlocksVisibility)))
-                    levelData.Walls.Add(target.Serialize());
-                else
-                    levelData.Entities.Add(target.Serialize());
-            }
+    //    //public Tile(GameObject self, Point gridPoint)
+    //    //{
+    //    //    Init(self);
+    //    //    m_GridPoint = gridPoint;
 
-        GameEvent getVisibilityData = GameEventPool.Get(GameEventId.GetVisibilityData)
-                                            .With(EventParameter.HasBeenVisited, m_IsVisible);
+    //    //    RegisteredEvents.Add(GameEventId.UpdateTile);
+    //    //    RegisteredEvents.Add(GameEventId.Spawn);
+    //    //    RegisteredEvents.Add(GameEventId.Despawn);
+    //    //    RegisteredEvents.Add(GameEventId.ShowTileInfo);
+    //    //    RegisteredEvents.Add(GameEventId.AddComponentToTile);
+    //    //    RegisteredEvents.Add(GameEventId.GetEntityOnTile);
+    //    //    RegisteredEvents.Add(GameEventId.BeforeMoving);
+    //    //    RegisteredEvents.Add(GameEventId.Pickup);
+    //    //    RegisteredEvents.Add(GameEventId.VisibilityUpdated);
+    //    //    RegisteredEvents.Add(GameEventId.BlocksMovement);
+    //    //    RegisteredEvents.Add(GameEventId.DestroyObject);
+    //    //    RegisteredEvents.Add(GameEventId.CleanTile);
+    //    //    RegisteredEvents.Add(GameEventId.PathfindingData);
+    //    //    RegisteredEvents.Add(GameEventId.GetValueOnTile);
+    //    //    RegisteredEvents.Add(GameEventId.GetInteractableObjects);
+    //    //    RegisteredEvents.Add(GameEventId.SerializeTile);
+    //    //}
 
-        //var getVis = FireEvent(Self, getVisibilityData);
-        //levelData.TilePoints.Add(m_GridPoint);
-        //levelData.TileHasBeenVisited.Add(getVis.GetValue<bool>(EventParameter.HasBeenVisited));
-        //getVis.Release();
-    }
+    //    public void GetPathFindingData(GameEvent gameEvent)
+    //    {
+    //        gameEvent.SetValue<bool>(EventParameter.BlocksMovement, BlocksMovement);
+    //        float weight = gameEvent.GetValue<float>(EventParameter.Weight);
+    //        foreach(var entity in AllEntities)
+    //            weight += entity.GetComponent<Weighted>().Weight;
+    //        gameEvent.SetValue<float>(EventParameter.Weight, weight);
+    //    }
 
-    public void DestroyObject()
-    {
-        Spawner.Despawn(ObjectSlot);
-        //Services.TileInteractionService.TileChanged(this);
-    }
+    //    public void CleanTile()
+    //    {
+    //        CreatureSlot = null;
+    //        ObjectSlot = null;
+    //        Items.Clear();
+    //    }
 
-    List<GameObject> GetTarget(bool includeSelf = true)
-    {
-        //if (m_IsVisible)
-        {
-            if (CreatureSlot != null)
-                return new List<GameObject>() { CreatureSlot };
-            else if (ObjectSlot != null)
-                return new List<GameObject>() { ObjectSlot };
-            else if (Items.Count > 0)
-                return Items;
-        }
+    //    //public void VisibilityUpdated(GameEvent gameEvent)
+    //    //{
+    //    //    m_IsVisible = (bool)gameEvent.Paramters[EventParameter.Value];
+    //    //    Services.TileInteractionService.TileChanged(this);
+    //    //}
 
-        //if(includeSelf)
-        //    return new List<GameObject>() { Self };
+    //    public void Spawn(GameObject entity)
+    //    {
+    //        GameEvent getType = GameEventPool.Get(GameEventId.GetEntityType)
+    //                            .With(EventParameter.EntityType, EntityType.None);
 
-        return new List<GameObject>();
-    }
+    //        EntityType entityType = entity.FireEvent(getType).GetValue<EntityType>(EventParameter.EntityType);
+    //        getType.Release();
+
+    //        switch (entityType)
+    //        {
+    //            case EntityType.Creature:
+    //                CreatureSlot = entity;
+    //                break;
+    //            case EntityType.Object:
+    //                ObjectSlot = entity;
+    //                break;
+    //            case EntityType.Item:
+    //                Items.Add(entity);
+    //                break;
+    //        }
+    //        Services.TileInteractionService.TileChanged(this);
+    //    }
+
+    //    public void Pickup(GameEvent gameEvent)
+    //    {
+    //        GameObject entity = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameter.Entity]);
+    //        if (Items.Count > 0)
+    //        {
+    //            List<GameObject> itemsPickedup = new List<GameObject>();
+    //            foreach (var item in Items)
+    //            {
+    //                var pickupEvent = entity.FireEvent(entity, GameEventPool.Get(GameEventId.AddToInventory)
+    //                    .With(EventParameter.Entity, item.ID), true);
+    //                itemsPickedup.Add(item);
+    //                pickupEvent.Release();
+    //            }
+
+    //            foreach (var item in itemsPickedup)
+    //                Spawner.Despawn(item);
+    //        }
+    //        if (ObjectSlot != null)
+    //        {
+    //            entity.FireEvent(ObjectSlot, gameEvent, true);
+    //        }
+    //        Services.TileInteractionService.TileChanged(this);
+    //    }
+
+    //    public void Despawn(GameEvent gameEvent)
+    //    {
+    //        GameObject entity = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameter.Entity]);
+    //        EntityType entityType = gameEvent.GetValue<EntityType>(EventParameter.EntityType);
+    //        switch (entityType)
+    //        {
+    //            case EntityType.Creature:
+    //                CreatureSlot = null;
+    //                break;
+    //            case EntityType.Object:
+    //                ObjectSlot = null;
+    //                break;
+    //            case EntityType.Item:
+    //                Items.Remove(entity);
+    //                break;
+    //        }
+    //        Services.TileInteractionService.TileChanged(this);
+    //    }
+
+    //    public void ShowTileInfo(GameEvent gameEvent)
+    //    {
+    //        if(Items.Count > 1)
+    //        {
+    //            gameEvent.Paramters[EventParameter.Info] = "Multiple Items";
+    //            gameEvent.ContinueProcessing = false;
+    //        }
+    //        else
+    //        {
+    //            GameEvent showInfo = GameEventPool.Get(GameEventId.ShowInfo)
+    //                .With(EventParameter.Info, new StringBuilder());
+    //            foreach (var e in GetTarget())
+    //                e.FireEvent(showInfo);
+    //            gameEvent.Paramters[EventParameter.Info] = showInfo.GetValue<StringBuilder>(EventParameter.Info).ToString();
+    //            showInfo.Release();
+    //        }
+    //    }
+
+    //    public GameObject GetEntityOnTile(bool includeSelf = true)
+    //    {
+    //        var targets = GetTarget(includeSelf);
+    //        if (targets.Count == 0)
+    //            return null;
+    //        else
+    //            return GetTarget(includeSelf)[0];
+    //    }
+
+    //    //public bool IsTileBlocking
+    //    //{
+    //    //    get
+    //    //    {
+    //    //        GameEvent isTileBlocking = GameEventPool.Get(GameEventId.BlocksMovement)
+    //    //                                    .With(EventParameter.BlocksMovement, false);
+    //    //        if (GetTarget()[0] != Self)
+    //    //        {
+    //    //            foreach (GameObject e in GetTarget())
+    //    //                FireEvent(e, isTileBlocking);
+    //    //        }
+    //    //        bool returnValue = isTileBlocking.GetValue<bool>(EventParameter.BlocksMovement);
+    //    //        isTileBlocking.Release();
+    //    //        return returnValue;
+    //    //    }
+    //    //}
+
+    //    public bool BlocksVision
+    //    {
+    //        get;
+    //        //{
+    //        //    GameEvent isTileBlocking = GameEventPool.Get(GameEventId.BlocksVision)
+    //        //                                .With(EventParameter.Value, false);
+    //        //    if (GetTarget()[0] != Self)
+    //        //    {
+    //        //        foreach (GameObject e in GetTarget())
+    //        //            FireEvent(e, isTileBlocking);
+    //        //    }
+    //        //    bool returnValue = isTileBlocking.GetValue<bool>(EventParameter.Value);
+    //        //    isTileBlocking.Release();
+    //        //    return returnValue;
+    //        //}
+    //        set;
+    //    }
+
+    //    public void SerializeTile(GameEvent gameEvent)
+    //    {
+    //        DungeonGenerationResult levelData = gameEvent.GetValue<DungeonGenerationResult>(EventParameter.Value);
+    //        foreach (var target in AllEntities)
+    //            if (target != null)
+    //            {
+    //                if (target.HasComponent(typeof(Wall)) || target.HasComponent(typeof(BlocksVisibility)))
+    //                    levelData.Walls.Add(target.Serialize());
+    //                else
+    //                    levelData.Entities.Add(target.Serialize());
+    //            }
+
+    //        GameEvent getVisibilityData = GameEventPool.Get(GameEventId.GetVisibilityData)
+    //                                            .With(EventParameter.HasBeenVisited, m_IsVisible);
+
+    //        //var getVis = FireEvent(Self, getVisibilityData);
+    //        //levelData.TilePoints.Add(m_GridPoint);
+    //        //levelData.TileHasBeenVisited.Add(getVis.GetValue<bool>(EventParameter.HasBeenVisited));
+    //        //getVis.Release();
+    //    }
+
+    //    public void DestroyObject()
+    //    {
+    //        Spawner.Despawn(ObjectSlot);
+    //        //Services.TileInteractionService.TileChanged(this);
+    //    }
+
+    //    List<GameObject> GetTarget(bool includeSelf = true)
+    //    {
+    //        //if (m_IsVisible)
+    //        {
+    //            if (CreatureSlot != null)
+    //                return new List<GameObject>() { CreatureSlot };
+    //            else if (ObjectSlot != null)
+    //                return new List<GameObject>() { ObjectSlot };
+    //            else if (Items.Count > 0)
+    //                return Items;
+    //        }
+
+    //        //if(includeSelf)
+    //        //    return new List<GameObject>() { Self };
+
+    //        return new List<GameObject>();
+    //    }
 }

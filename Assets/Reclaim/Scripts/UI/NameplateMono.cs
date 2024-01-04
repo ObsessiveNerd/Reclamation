@@ -10,7 +10,7 @@ public class NameplateMono : MonoBehaviour
     public void Setup(GameObject entity)
     {
         m_Target = entity;
-        GetComponent<TextMeshProUGUI>().text = m_Target?.Name;
+        //GetComponent<TextMeshProUGUI>().text = m_Target?.Name;
     }
 
     // Update is called once per frame
@@ -22,18 +22,18 @@ public class NameplateMono : MonoBehaviour
             return;
         }
 
-        GameObject go = WorldUtility.GetGameObject(m_Target);
-        if(go == null)
-        {
-            Destroy(gameObject);
-            return;
-        }
+        //GameObject go = WorldUtility.GetGameObject(m_Target);
+        //if(go == null)
+        //{
+        //    Destroy(gameObject);
+        //    return;
+        //}
 
-        if (go.GetComponent<SpriteRenderer>().sprite != null)
-        {
-            Vector2 newPos = (Vector2)Camera.main.WorldToScreenPoint(go.transform.position);
-            newPos.y += (go.GetComponent<SpriteRenderer>().sprite.textureRect.height);
-            transform.position = newPos;
-        }
+        //if (go.GetComponent<SpriteRenderer>().sprite != null)
+        //{
+        //    Vector2 newPos = (Vector2)Camera.main.WorldToScreenPoint(go.transform.position);
+        //    newPos.y += (go.GetComponent<SpriteRenderer>().sprite.textureRect.height);
+        //    transform.position = newPos;
+        //}
     }
 }

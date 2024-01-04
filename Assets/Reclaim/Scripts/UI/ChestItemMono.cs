@@ -18,34 +18,35 @@ public class ChestItemMono : ItemMono, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (eventData.button == PointerEventData.InputButton.Left)
-        {
-            if (m_Chest == null || m_Character == null || m_Item == null) 
-                return;
+        //if (eventData.button == PointerEventData.InputButton.Left)
+        //{
+        //    if (m_Chest == null || m_Character == null || m_Item == null) 
+        //        return;
 
-            GameEvent remove = GameEventPool.Get(GameEventId.RemoveItem)
-                                    .With(EventParameter.Item, m_Item.ID);
-            m_Chest.FireEvent(remove).Release();
+        //    GameEvent remove = GameEventPool.Get(GameEventId.RemoveItem)
+        //                            .With(EventParameter.Item, m_Item.ID);
+        //    m_Chest.FireEvent(remove).Release();
 
-            GameEvent add = GameEventPool.Get(GameEventId.AddToInventory)
-                                .With(EventParameter.Entity, m_Item.ID);
-            m_Character.FireEvent(add).Release();
-            DestroyPopup();
-            //GameEvent getContextMenuActions = GameEventPool.Get(GameEventId.GetContextMenuActions)
-            //                        .With(EventParameters.Entity, m_Source.ID)
-            //                        .With(EventParameters.ChestContextActions , new List<ContextMenuButton>());
+        //    GameEvent add = GameEventPool.Get(GameEventId.AddToInventory)
+        //                        .With(EventParameter.Entity, m_Item.ID);
+        //    m_Character.FireEvent(add).Release();
+        //    DestroyPopup();
+        //    //GameEvent getContextMenuActions = GameEventPool.Get(GameEventId.GetContextMenuActions)
+        //    //                        .With(EventParameters.Entity, m_Source.ID)
+        //    //                        .With(EventParameters.ChestContextActions , new List<ContextMenuButton>());
 
-            //var result = m_Object.FireEvent(getContextMenuActions.CreateEvent()).GetValue<List<ContextMenuButton>>(EventParameters.ChestContextActions);
+        //    //var result = m_Object.FireEvent(getContextMenuActions.CreateEvent()).GetValue<List<ContextMenuButton>>(EventParameters.ChestContextActions);
 
-            //var contextMenu = FindObjectOfType<ContextMenuMono>();
+        //    //var contextMenu = FindObjectOfType<ContextMenuMono>();
 
-            //foreach (var action in result)
-            //    contextMenu.AddButton(action);
-        }
+        //    //foreach (var action in result)
+        //    //    contextMenu.AddButton(action);
+        //}
     }
 
     protected override string GetItemId()
     {
-        return m_Item?.ID;
+        return "";
+        //return m_Item?.ID;
     }
 }

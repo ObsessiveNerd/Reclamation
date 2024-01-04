@@ -3,46 +3,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-//This will need to be re-worked some as there should be armor (and weapon) slots instead of adding some of these components directly to the entity
 public class Armor : EntityComponent
 {
     public int ArmorAmount;
-    public Armor(int armor)
+    public void Start()
     {
-        ArmorAmount = armor;
-        RegisteredEvents.Add(GameEventId.AddArmorValue);
-        //RegisteredEvents.Add(GameEventId.GetCombatRating);
-        RegisteredEvents.Add(GameEventId.GetInfo);
+        RegisteredEvents.Add(GameEventId.AddArmorValue, AddArmorValue);
+        RegisteredEvents.Add(GameEventId.GetInfo, GetInfo);
     }
 
-    public override void HandleEvent(GameEvent gameEvent)
+    void AddArmorValue(GameEvent gameEvent)
     {
-        if (gameEvent.ID == GameEventId.AddArmorValue || gameEvent.ID == GameEventId.GetCombatRating)
-            gameEvent.Paramters[EventParameter.Value] = (int)gameEvent.Paramters[EventParameter.Value] + ArmorAmount;
-        else if (gameEvent.ID == GameEventId.GetInfo)
-        {
-            var dictionary = gameEvent.GetValue<Dictionary<string, string>>(EventParameter.Info);
-            dictionary.Add($"{nameof(Armor)}{Guid.NewGuid()}", $"Armor Value: {ArmorAmount}");
-        }
-    }
-}
-
-public class DTO_Armor : IDataTransferComponent
-{
-    public IComponent Component { get; set; }
-
-    public void CreateComponent(string data)
-    {
-        string value = data;
-        if (value.Contains("="))
-            value = value.Split('=')[1];
-        int armor = int.Parse(value);
-        Component = new Armor(armor);
+        gameEvent.Paramters[EventParameter.Value] = (int)gameEvent.Paramters[EventParameter.Value] + ArmorAmount;
     }
 
-    public string CreateSerializableData(IComponent component)
+    void GetInfo(GameEvent gameEvent)
     {
-        Armor a = (Armor)component;
-        return $"{nameof(Armor)}:{nameof(a.ArmorAmount)}={a.ArmorAmount}";
+        var dictionary = gameEvent.GetValue<Dictionary<string, string>>(EventParameter.Info);
+        dictionary.Add($"{nameof(Armor)}{Guid.NewGuid()}", $"Armor Value: {ArmorAmount}");
     }
 }

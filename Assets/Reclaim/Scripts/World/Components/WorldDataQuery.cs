@@ -45,64 +45,64 @@ public class WorldDataQuery : GameService
         //return retVal;
     }
 
-    public GameObject GetClosestEnemy(GameObject source)
-    {
-        GameObject closestEnemy = null;
-        Point sourcePoint = m_EntityToPointMap[source.ID];
-        foreach (var tile  in m_Tiles.Values)
-        {
-            GameObject e = tile.CreatureSlot;
-            if (e == null) continue;
+    //public GameObject GetClosestEnemy(GameObject source)
+    //{
+    //    GameObject closestEnemy = null;
+    //    Point sourcePoint = m_EntityToPointMap[source.ID];
+    //    foreach (var tile  in m_Tiles.Values)
+    //    {
+    //        GameObject e = tile.CreatureSlot;
+    //        if (e == null) continue;
 
-            Demeanor demeanor = Factions.GetDemeanorForTarget(source, e);
-            if (demeanor == Demeanor.Hostile)
-            {
-                if (closestEnemy == null)
-                    closestEnemy = e;
-                else
-                {
-                    if (Point.Distance(m_EntityToPointMap[e.ID], sourcePoint) < Point.Distance(m_EntityToPointMap[closestEnemy.ID], sourcePoint))
-                    {
-                        closestEnemy = e;
-                    }
-                }
-            }
-        }
+    //        Demeanor demeanor = Factions.GetDemeanorForTarget(source, e);
+    //        if (demeanor == Demeanor.Hostile)
+    //        {
+    //            if (closestEnemy == null)
+    //                closestEnemy = e;
+    //            else
+    //            {
+    //                if (Point.Distance(m_EntityToPointMap[e.ID], sourcePoint) < Point.Distance(m_EntityToPointMap[closestEnemy.ID], sourcePoint))
+    //                {
+    //                    closestEnemy = e;
+    //                }
+    //            }
+    //        }
+    //    }
 
-        return closestEnemy;
-    }
+    //    return closestEnemy;
+    //}
 
-    public GameObject GetClosestAlly(GameObject source)
-    {
-        GameObject ally = source;
-        Point sourcePoint = m_EntityToPointMap[source.ID];
-        foreach (var tile  in m_Tiles.Values)
-        {
-            GameObject e = tile.CreatureSlot;
-            if (e == null) continue;
+    //public GameObject GetClosestAlly(GameObject source)
+    //{
+    //    GameObject ally = source;
+    //    Point sourcePoint = m_EntityToPointMap[source.ID];
+    //    foreach (var tile  in m_Tiles.Values)
+    //    {
+    //        GameObject e = tile.CreatureSlot;
+    //        if (e == null) continue;
 
-            Demeanor demeanor = Factions.GetDemeanorForTarget(source, e);
-            if (demeanor == Demeanor.Friendly)
-            {
-                if (ally == null)
-                    ally = e;
-                else
-                {
-                    if (Point.Distance(m_EntityToPointMap[e.ID], sourcePoint) < Point.Distance(m_EntityToPointMap[ally.ID], sourcePoint))
-                    {
-                        ally = e;
-                    }
-                }
-            }
-        }
+    //        Demeanor demeanor = Factions.GetDemeanorForTarget(source, e);
+    //        if (demeanor == Demeanor.Friendly)
+    //        {
+    //            if (ally == null)
+    //                ally = e;
+    //            else
+    //            {
+    //                if (Point.Distance(m_EntityToPointMap[e.ID], sourcePoint) < Point.Distance(m_EntityToPointMap[ally.ID], sourcePoint))
+    //                {
+    //                    ally = e;
+    //                }
+    //            }
+    //        }
+    //    }
 
-        return ally;
-    }
+    //    return ally;
+    //}
 
-    public List<string> GetPlayableCharacters()
-    {
-        return m_Players.Select(e => e.ID).ToList();
-    }
+    //public List<string> GetPlayableCharacters()
+    //{
+    //    return m_Players.Select(e => e.ID).ToList();
+    //}
 
     public GameObject GetGameObject(Point p)
     {
@@ -112,15 +112,15 @@ public class WorldDataQuery : GameService
         return null;
     }
 
-    public GameObject GetEntityOnTile(Point currentTilePos)
-    {
-        if (m_Tiles.ContainsKey(currentTilePos))
-            return m_Tiles[currentTilePos].GetEntityOnTile();
-        return null;
-    }
+    //public GameObject GetEntityOnTile(Point currentTilePos)
+    //{
+    //    if (m_Tiles.ContainsKey(currentTilePos))
+    //        return m_Tiles[currentTilePos].GetEntityOnTile();
+    //    return null;
+    //}
 
-    public List<GameObject> GetEntities()
-    {
-        return m_EntityToPointMap.Keys.Select(e => m_EntityIdToEntityMap[e]).ToList();
-    }
+    //public List<GameObject> GetEntities()
+    //{
+    //    return m_EntityToPointMap.Keys.Select(e => m_EntityIdToEntityMap[e]).ToList();
+    //}
 }

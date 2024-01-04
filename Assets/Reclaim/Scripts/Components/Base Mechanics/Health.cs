@@ -20,181 +20,76 @@ public class Health : EntityComponent
         }
     }
 
-    public override int Priority { get { return 10; } }
-
-    private float PercentHealth {get{ return ((float)CurrentHealth / (float)TotalHealth) * 100f; } }
-
-    public Health(int maxHealth, int currentHealth = -1, int percentBoost = 0)
+    public void Start()
     {
-        MaxHealth = maxHealth;
-        //CurrentHealth = currentHealth > 0 ? currentHealth : maxHealth;
-        CurrentHealth = currentHealth;
-        PercentBoost = percentBoost;
+        RegisteredEvents.Add(GameEventId.TakeDamage, TakeDamage);
+        RegisteredEvents.Add(GameEventId.StatBoosted, StatBoosted);
+        RegisteredEvents.Add(GameEventId.AddMaxHealth, AddMaxHealth);
+        RegisteredEvents.Add(GameEventId.RemoveMaxHealth, RemoveMaxHealth);
 
-        RegisteredEvents.Add(GameEventId.TakeDamage);
-        RegisteredEvents.Add(GameEventId.RestoreHealth);
-        RegisteredEvents.Add(GameEventId.RegenHealth);
-        RegisteredEvents.Add(GameEventId.GetCombatRating);
-        RegisteredEvents.Add(GameEventId.GetHealth);
-        RegisteredEvents.Add(GameEventId.StatBoosted);
-        RegisteredEvents.Add(GameEventId.Rest);
-        RegisteredEvents.Add(GameEventId.AddMaxHealth);
-        RegisteredEvents.Add(GameEventId.RemoveMaxHealth);
+        //RegisteredEvents.Add(GameEventId.RestoreHealth);
+        //RegisteredEvents.Add(GameEventId.RegenHealth);
+        //RegisteredEvents.Add(GameEventId.GetCombatRating);
+        //RegisteredEvents.Add(GameEventId.GetHealth);
+        //RegisteredEvents.Add(GameEventId.Rest);
     }
 
-    public override void Start()
+    void TakeDamage(GameEvent gameEvent)
     {
-        base.Start();
-        CurrentHealth = CurrentHealth > 0 ? CurrentHealth : TotalHealth;
-    }
-
-    public override void HandleEvent(GameEvent gameEvent)
-    {
-        if (gameEvent.ID == GameEventId.TakeDamage)
+        foreach (var damage in (List<Damage>)gameEvent.Paramters[EventParameter.DamageList])
         {
-            foreach (var damage in (List<Damage>)gameEvent.Paramters[EventParameter.DamageList])
-            {
-                RecLog.Log($"{Self.Name} took {damage.DamageAmount} damage of type {damage.DamageType}");
-                CurrentHealth -= damage.DamageAmount;
+            RecLog.Log($"{gameObject.name} took {damage.DamageAmount} damage of type {damage.DamageType}");
+            CurrentHealth -= damage.DamageAmount;
 
-                GameObject weapon = Services.EntityMapService.GetEntity(gameEvent.GetValue<string>(EventParameter.Attack));
-                GameEvent dealtDamage = GameEventPool.Get(GameEventId.DealtDamage)
-                                        .With(EventParameter.DamageSource, gameEvent.GetValue<string>(EventParameter.DamageSource))
+            GameObject weapon = gameEvent.GetValue<GameObject>(EventParameter.Attack);
+            GameEvent dealtDamage = GameEventPool.Get(GameEventId.DealtDamage)
+                                        .With(EventParameter.DamageSource, gameEvent.GetValue<GameObject>(EventParameter.DamageSource))
                                         .With(EventParameter.Damage, damage);
-                weapon.FireEvent(dealtDamage).Release();
+            weapon.FireEvent(dealtDamage).Release();
 
-                GameEvent playTakeDamageClip = GameEventPool.Get(GameEventId.Playsound)
-                                                .With(EventParameter.SoundSource, Self.ID)
-                                                .With(EventParameter.Key, SoundKey.AttackHit);
-                weapon.FireEvent(playTakeDamageClip);
-                
-                playTakeDamageClip.Release();
+            //GameEvent playTakeDamageClip = GameEventPool.Get(GameEventId.Playsound)
+            //                                    .With(EventParameter.SoundSource, Self.ID)
+            //                                    .With(EventParameter.Key, SoundKey.AttackHit);
+            //weapon.FireEvent(playTakeDamageClip);
 
-                Services.WorldUIService.EntityTookDamage(Self, damage.DamageAmount);
+            //playTakeDamageClip.Release();
 
-                if (CurrentHealth <= 0)
-                {
-                    GameEvent playDeathSound = GameEventPool.Get(GameEventId.Playsound)
-                                                .With(EventParameter.SoundSource, Self.ID)
-                                                .With(EventParameter.Key, SoundKey.Died);
-                    FireEvent(Self, playDeathSound, true).Release();
+            //Services.WorldUIService.EntityTookDamage(gameObject, damage.DamageAmount);
 
-                    FireEvent(Self, GameEventPool.Get(GameEventId.Died)
-                        .With(EventParameter.DamageSource, gameEvent.GetValue<string>(EventParameter.DamageSource)), true).Release();
-                    Services.SpawnerService.RegisterForDespawn(Self);
-                    break;
-                }
-            }
-        }
-        else if (gameEvent.ID == GameEventId.StatBoosted)
-        {
-            Stats stats = gameEvent.GetValue<Stats>(EventParameter.Stats);
-            MaxHealth = 10 + Mathf.Max(0, stats.CalculateModifier(stats.Con) * modMultiplier);
-        }
+            //if (CurrentHealth <= 0)
+            //{
+            //    GameEvent playDeathSound = GameEventPool.Get(GameEventId.Playsound)
+            //                                    .With(EventParameter.SoundSource, gameObject)
+            //                                    .With(EventParameter.Key, SoundKey.Died);
+            //    gameObject.FireEvent(playDeathSound, true).Release();
 
-        else if(gameEvent.ID == GameEventId.AddMaxHealth)
-        {
-            int amount = gameEvent.GetValue<int>(EventParameter.MaxValue);
-            PercentBoost += amount;
-            Services.WorldUIService.UpdateUI();
-        }
-
-        else if(gameEvent.ID == GameEventId.RemoveMaxHealth)
-        {
-            int amount = gameEvent.GetValue<int>(EventParameter.MaxValue);
-            PercentBoost -= amount;
-            if(TotalHealth < CurrentHealth)
-                CurrentHealth = TotalHealth;
-            Services.WorldUIService.UpdateUI();
-        }
-
-        else if(gameEvent.ID == GameEventId.Rest)
-        {
-            int healAmount = (int)gameEvent.Paramters[EventParameter.Healing];
-            CurrentHealth = Mathf.Min(CurrentHealth + healAmount, TotalHealth);
-        }
-
-        else if(gameEvent.ID == GameEventId.RegenHealth)
-        {
-            int healAmount = (int)gameEvent.Paramters[EventParameter.Healing];
-            CurrentHealth = Mathf.Min(CurrentHealth + healAmount, TotalHealth);
-            Services.WorldUIService.EntityHealedDamage(Self, healAmount);
-        }
-
-        else if (gameEvent.ID == GameEventId.RestoreHealth)
-        {
-            int healAmount = (int)gameEvent.Paramters[EventParameter.Healing];
-            CurrentHealth = Mathf.Min(CurrentHealth + healAmount, TotalHealth);
-
-            Services.WorldUIService.EntityHealedDamage(Self, healAmount);
-        }
-
-        else if(gameEvent.ID == GameEventId.GetHealth)
-        {
-            gameEvent.Paramters[EventParameter.Value] = CurrentHealth;
-            gameEvent.Paramters[EventParameter.MaxValue] = TotalHealth;
-        }
-
-        else if(gameEvent.ID == GameEventId.GetCombatRating)
-        {
-            int startValue = (int)gameEvent.Paramters[EventParameter.Value];
-            int modifier = 0;
-            if (PercentHealth > 95)
-                modifier = 2;
-            else if (PercentHealth > 70 && PercentHealth < 95)
-                modifier = 1;
-            else if (PercentHealth < 50 && !(PercentHealth < 20))
-                modifier = -1;
-            else if (PercentHealth < 20)
-                modifier = -2;
-
-            gameEvent.Paramters[EventParameter.Value] = startValue + modifier;
+            //    gameObject.FireEvent(GameEventPool.Get(GameEventId.Died)
+            //        .With(EventParameter.DamageSource, gameEvent.GetValue<string>(EventParameter.DamageSource)), true).Release();
+            //    Services.SpawnerService.RegisterForDespawn(gameObject);
+            //    break;
+            //}
         }
     }
-}
 
-
-public class DTO_Health : IDataTransferComponent
-{
-    public IComponent Component { get; set; }
-    public void CreateComponent(string data)
+    void StatBoosted(GameEvent gameEvent)
     {
-        int maxHealth = 0;
-        int currentHealth = 0;
-        int percentBoost = 0;
-
-        string[] parameters = data.Split(',');
-        foreach(string param in parameters)
-        {
-            string[] value = param.Split('=');
-            if(value.Length == 2)
-            {
-                switch(value[0])
-                {
-                    case "MaxHealth":
-                        maxHealth = int.Parse(value[1]);
-                        break;
-                    case "CurrentHealth":
-                        currentHealth = int.Parse(value[1]);
-                        break;
-                    case "PercentBoost":
-                        if(!string.IsNullOrEmpty(value[1]))
-                            percentBoost = int.Parse(value[1]);
-                        break;
-                }
-            }
-            else
-            {
-                maxHealth = int.Parse(parameters[0]);
-                currentHealth = parameters.Length > 1 ? int.Parse(parameters[1]) : maxHealth;
-            }
-        }
-        Component = new Health(maxHealth, currentHealth, percentBoost);
+        Stats stats = gameEvent.GetValue<Stats>(EventParameter.Stats);
+        MaxHealth = 10 + Mathf.Max(0, stats.CalculateModifier(stats.Con) * modMultiplier);
     }
 
-    public string CreateSerializableData(IComponent component)
+    void AddMaxHealth(GameEvent gameEvent)
     {
-        Health health = (Health)component;
-        return $"{nameof(Health)}:{nameof(health.MaxHealth)}={health.MaxHealth},{nameof(health.CurrentHealth)}={health.CurrentHealth}, {nameof(health.PercentBoost)}={health.PercentBoost}";
+        int amount = gameEvent.GetValue<int>(EventParameter.MaxValue);
+        PercentBoost += amount;
+        //Services.WorldUIService.UpdateUI();
+    }
+
+    void RemoveMaxHealth(GameEvent gameEvent)
+    {
+        int amount = gameEvent.GetValue<int>(EventParameter.MaxValue);
+        PercentBoost -= amount;
+        if (TotalHealth < CurrentHealth)
+            CurrentHealth = TotalHealth;
+        //Services.WorldUIService.UpdateUI();
     }
 }

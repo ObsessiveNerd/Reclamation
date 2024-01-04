@@ -34,19 +34,19 @@ public class StatsUIMono : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
     public void SetData()
     {
-        GameObject source = Services.PlayerManagerService.GetActivePlayer();
+        //GameObject source = Services.PlayerManagerService.GetActivePlayer();
         
-        if (Text == null)
-            Text = GetComponent<TextMeshProUGUI>();
+        //if (Text == null)
+        //    Text = GetComponent<TextMeshProUGUI>();
 
-        m_Popup = Resources.Load<GameObject>("Prefabs/UI/ItemPopup");
-        GameEvent getStat = GameEventPool.Get(GameEventId.GetStatRaw)
-                                .With(EventParameter.StatType, ControlledStat)
-                                .With(EventParameter.Value, Stat.Str);
+        //m_Popup = Resources.Load<GameObject>("Prefabs/UI/ItemPopup");
+        //GameEvent getStat = GameEventPool.Get(GameEventId.GetStatRaw)
+        //                        .With(EventParameter.StatType, ControlledStat)
+        //                        .With(EventParameter.Value, Stat.Str);
 
-        int value = source.FireEvent(getStat).GetValue<int>(EventParameter.Value);
-        Text.text = $"{ControlledStat.ToString()}: {value}";
-        getStat.Release();
+        //int value = source.FireEvent(getStat).GetValue<int>(EventParameter.Value);
+        //Text.text = $"{ControlledStat.ToString()}: {value}";
+        //getStat.Release();
     }
 
     string GetFullStatName()

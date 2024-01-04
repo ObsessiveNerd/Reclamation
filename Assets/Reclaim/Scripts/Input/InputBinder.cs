@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
-public class InputBinder : EscapeableMono
+public class KeyInputBinder //: EscapeableMono
 {
     public GameObject UI;
 
@@ -35,20 +35,20 @@ public class InputBinder : EscapeableMono
         }
     }
 
-    protected override void OnEnable() { }
+    //protected override void OnEnable() { }
 
-    public void Open()
-    {
-        UI.SetActive(true);
-        UIManager.Push(this);
-        transform.SetAsLastSibling();
-    }
+    //public void Open()
+    //{
+    //    UI.SetActive(true);
+    //    UIManager.Push(this);
+    //    transform.SetAsLastSibling();
+    //}
 
-    public override void OnEscape()
-    {
-        UI.SetActive(false);
-        UIManager.ForcePop(this);
-    }
+    //public override void OnEscape()
+    //{
+    //    UI.SetActive(false);
+    //    UIManager.ForcePop(this);
+    //}
     
     private void Update()
     {
@@ -92,6 +92,9 @@ public class InputBinder : EscapeableMono
 
     public static KeyCode GetKeyCodeForAction(RequestedAction action)
     {
+        if (m_Data == null)
+            m_Data = new InputKeyBindData(InputKeyBindData.InputDefaultType.FullKeyboard);
+
         string actionName = action.ToString();
 
         var fieldInfo = typeof(InputKeyBindData).GetField(actionName, 

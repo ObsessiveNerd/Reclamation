@@ -4,39 +4,22 @@ using UnityEngine;
 
 public class Wall : EntityComponent
 {
-    public Wall()
+    public void Start()
     {
-        RegisteredEvents.Add(GameEventId.BeforeMoving);
-        RegisteredEvents.Add(GameEventId.PathfindingData);
+        RegisteredEvents.Add(GameEventId.BeforeMoving, BeforeMoving);
+        RegisteredEvents.Add(GameEventId.PathfindingData, PathfindingData);
     }
 
-    public override void HandleEvent(GameEvent gameEvent)
+    void BeforeMoving(GameEvent gameEvent)
     {
-        if (gameEvent.ID == GameEventId.BeforeMoving)
-        {
-            RecLog.Log("OUCH!  You bumped into a wall.");
-            gameEvent.Paramters[EventParameter.RequiredEnergy] = 0f;
-            gameEvent.Paramters[EventParameter.InputDirection] = MoveDirection.None;
-        }
-        else if(gameEvent.ID == GameEventId.PathfindingData)
-        {
-            gameEvent.Paramters[EventParameter.BlocksMovement] = true;
-            gameEvent.Paramters[EventParameter.Weight] = Pathfinder.ImpassableWeight;
-        }
-    }
-}
-
-public class DTO_Wall : IDataTransferComponent
-{
-    public IComponent Component { get; set; }
-
-    public void CreateComponent(string data)
-    {
-        Component = new Wall();
+        RecLog.Log("OUCH!  You bumped into a wall.");
+        gameEvent.Paramters[EventParameter.RequiredEnergy] = 0f;
+        gameEvent.Paramters[EventParameter.InputDirection] = MoveDirection.None;
     }
 
-    public string CreateSerializableData(IComponent component)
+    void PathfindingData(GameEvent gameEvent)
     {
-        return nameof(Wall);
+        gameEvent.Paramters[EventParameter.BlocksMovement] = true;
+        gameEvent.Paramters[EventParameter.Weight] = Pathfinder.ImpassableWeight;
     }
 }

@@ -6,7 +6,9 @@ public class EntityQuery
 {
     public static GameObject GetEntity(string id)
     {
-        return Services.EntityMapService.GetEntity(id);
+        return null;
+
+        //return Services.EntityMapService.GetEntity(id);
 
         //if (string.IsNullOrEmpty(id))
         //    return null;
@@ -27,6 +29,7 @@ public class EntityQuery
 
     public static string GetEntityName(string id)
     {
-        return Services.EntityMapService.GetEntity(id)?.Name;
+        return "NOT A REAL GAMEOBJECT";
+        //return Services.EntityMapService.GetEntity(id)?.Name;
     }
 }

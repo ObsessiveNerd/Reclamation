@@ -23,53 +23,40 @@ public class AIActionPriorityComparer : IComparer<AIAction>
 
 public class AIController : InputControllerBase
 {
-    public override void HandleEvent(GameEvent gameEvent)
+    private void Start()
     {
-        if (gameEvent.ID == GameEventId.UpdateEntity)
-        {
-            using (new DiagnosticsTimer("AI Controller"))
-            {
-                MoveDirection desiredDirection = MoveDirection.None; //InputUtility.GetRandomMoveDirection(); //obviously temp
+        RegisteredEvents.Add(GameEventId.UpdateEntity, UpdateEntity);
+    }
 
-                GameEvent getActionEventBuilder = GameEventPool.Get(GameEventId.GetActionToTake)
+    void UpdateEntity(GameEvent gameEvent)
+    {
+        using (new DiagnosticsTimer("AI Controller"))
+        {
+            MoveDirection desiredDirection = MoveDirection.None; //InputUtility.GetRandomMoveDirection(); //obviously temp
+
+            GameEvent getActionEventBuilder = GameEventPool.Get(GameEventId.GetActionToTake)
                                                         .With(EventParameter.AIActionList, new PriorityQueue<AIAction>(new AIActionPriorityComparer()));
 
-                PriorityQueue<AIAction> actions = FireEvent(Self, getActionEventBuilder).GetValue<PriorityQueue<AIAction>>(EventParameter.AIActionList);
-                if (actions.Count > 0)
-                    desiredDirection = actions[0].ActionToTake();
+            PriorityQueue<AIAction> actions = gameObject.FireEvent(getActionEventBuilder).GetValue<PriorityQueue<AIAction>>(EventParameter.AIActionList);
+            if (actions.Count > 0)
+                desiredDirection = actions[0].ActionToTake();
 
-                getActionEventBuilder.Release();
+            getActionEventBuilder.Release();
 
-                if (desiredDirection == MoveDirection.None)
-                    FireEvent(Self, GameEventPool.Get(GameEventId.SkipTurn)).Release();
-                else
-                    FireEvent(Self, GameEventPool.Get(GameEventId.MoveKeyPressed)
-                        .With(EventParameter.InputDirection, desiredDirection)).Release();
+            if (desiredDirection == MoveDirection.None)
+                gameObject.FireEvent(GameEventPool.Get(GameEventId.SkipTurn)).Release();
+            else
+                gameObject.FireEvent(GameEventPool.Get(GameEventId.MoveKeyPressed)
+                    .With(EventParameter.InputDirection, desiredDirection)).Release();
 
-                //if (desiredDirection == MoveDirection.None)
-                //    FireEvent(Self, GameEventPool.Get(GameEventId.SkipTurn));
+            //if (desiredDirection == MoveDirection.None)
+            //    FireEvent(Self, GameEventPool.Get(GameEventId.SkipTurn));
 
-                GameEvent checkForEnergy = GameEventPool.Get(GameEventId.HasEnoughEnergyToTakeATurn)
+            GameEvent checkForEnergy = GameEventPool.Get(GameEventId.HasEnoughEnergyToTakeATurn)
                     .With(EventParameter.TakeTurn, false);
-                FireEvent(Self, checkForEnergy);
-                gameEvent.Paramters[EventParameter.TakeTurn] = (bool)checkForEnergy.Paramters[EventParameter.TakeTurn];
-                checkForEnergy.Release();
-            }
+            gameObject.FireEvent(checkForEnergy);
+            gameEvent.Paramters[EventParameter.TakeTurn] = (bool)checkForEnergy.Paramters[EventParameter.TakeTurn];
+            checkForEnergy.Release();
         }
-    }
-}
-
-public class DTO_AIController : IDataTransferComponent
-{
-    public IComponent Component { get; set; }
-
-    public void CreateComponent(string data)
-    {
-        Component = new AIController();
-    }
-
-    public string CreateSerializableData(IComponent component)
-    {
-        return nameof(AIController);
     }
 }

@@ -10,21 +10,21 @@ public class PlayableCharacterSelector : MonoBehaviour
     private Dictionary<string, GameObject> m_CharacterIdToTabGameObject = new Dictionary<string, GameObject>();
     public void AddCharacterTab(string id)
     {
-        if (m_CharacterIdToTabGameObject.ContainsKey(id))
-            return;
+        //if (m_CharacterIdToTabGameObject.ContainsKey(id))
+        //    return;
 
-        GameObject entity = EntityQuery.GetEntity(id);
+        //GameObject entity = EntityQuery.GetEntity(id);
 
-        var newTab = Instantiate(CharacterButton);
-        newTab.transform.SetParent(transform);
-        newTab.GetComponent<CharacterTab>().Setup(entity);
+        //var newTab = Instantiate(CharacterButton);
+        //newTab.transform.SetParent(transform);
+        //newTab.GetComponent<CharacterTab>().Setup(entity);
 
-        newTab.AddComponent<Button>().onClick.AddListener(() =>
-        {
-            Services.PlayerManagerService.SetActiveCharacter(id);
-        });
+        //newTab.AddComponent<Button>().onClick.AddListener(() =>
+        //{
+        //    Services.PlayerManagerService.SetActiveCharacter(id);
+        //});
 
-        m_CharacterIdToTabGameObject.Add(id, newTab);
+        //m_CharacterIdToTabGameObject.Add(id, newTab);
     }
 
     public void RemoveCharacterTab(string id)

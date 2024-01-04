@@ -5,6 +5,7 @@ using UnityEngine;
 
 public enum RequestedAction
 {
+    None,
     MoveN,
     MoveNE,
     MoveE,

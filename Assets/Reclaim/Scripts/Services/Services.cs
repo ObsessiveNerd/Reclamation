@@ -26,24 +26,24 @@ public static class Services
         Ready = true;
     }
 
-    public static WorldSpawner SpawnerService { get { return GetInstance<WorldSpawner>(); } }
-    public static GameSaveSystem SaveAndLoadService { get { return GetInstance<GameSaveSystem>(); } }
-    public static DungeonManager DungeonService { get { return GetInstance<DungeonManager>(); } }
-    public static WorldUpdate WorldUpdateService { get { return GetInstance<WorldUpdate>(); } }
-    public static TileSelection TileSelectionService { get { return GetInstance<TileSelection>(); } }
-    public static TileInteractions TileInteractionService { get { return GetInstance<TileInteractions>(); } }
-    public static PlayerManager PlayerManagerService { get { return GetInstance<PlayerManager>(); } }
-    public static EntityMovement EntityMovementService { get { return GetInstance<EntityMovement>(); } }
-    public static WorldUIController WorldUIService { get { return GetInstance<WorldUIController>(); } }
-    public static WorldDataQuery WorldDataQuery { get { return GetInstance<WorldDataQuery>(); } }
-    public static WorldFov FOVService { get { return GetInstance<WorldFov>(); } }
-    public static EntityMap EntityMapService { get { return GetInstance<EntityMap>(); } }
-    public static Pathfinder PathfinderService { get { return GetInstance<Pathfinder>(); } }
-    public static CameraController CameraService { get { return GetInstance<CameraController>(); } }
-    public static StateManager StateManagerService { get { return GetInstance<StateManager>(); } }
-    public static PartyController PartyService { get { return GetInstance<PartyController>(); } }
-    public static MusicService Music { get { return GetInstance<MusicService>(); } }
-    public static EntityNetworkManager NetworkService { get { return GetInstance<EntityNetworkManager>(); } }
+    //public static WorldSpawner SpawnerService { get { return GetInstance<WorldSpawner>(); } }
+    //public static GameSaveSystem SaveAndLoadService { get { return GetInstance<GameSaveSystem>(); } }
+    //public static DungeonManager DungeonService { get { return GetInstance<DungeonManager>(); } }
+    //public static WorldUpdate WorldUpdateService { get { return GetInstance<WorldUpdate>(); } }
+    //public static TileSelection TileSelectionService { get { return GetInstance<TileSelection>(); } }
+    //public static TileInteractions TileInteractionService { get { return GetInstance<TileInteractions>(); } }
+    //public static PlayerManager PlayerManagerService { get { return GetInstance<PlayerManager>(); } }
+    //public static EntityMovement EntityMovementService { get { return GetInstance<EntityMovement>(); } }
+    //public static WorldUIController WorldUIService { get { return GetInstance<WorldUIController>(); } }
+    //public static WorldDataQuery WorldDataQuery { get { return GetInstance<WorldDataQuery>(); } }
+    //public static WorldFov FOVService { get { return GetInstance<WorldFov>(); } }
+    //public static EntityMap EntityMapService { get { return GetInstance<EntityMap>(); } }
+    //public static Pathfinder PathfinderService { get { return GetInstance<Pathfinder>(); } }
+    //public static CameraController CameraService { get { return GetInstance<CameraController>(); } }
+    //public static StateManager StateManagerService { get { return GetInstance<StateManager>(); } }
+    //public static PartyController PartyService { get { return GetInstance<PartyController>(); } }
+    //public static MusicService Music { get { return GetInstance<MusicService>(); } }
+    //public static EntityNetworkManager NetworkService { get { return GetInstance<EntityNetworkManager>(); } }
 
     public static IDictionary<Type, object> _instanceMap = new Dictionary<Type, object>();
 

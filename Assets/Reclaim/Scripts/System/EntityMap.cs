@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EntityMap : GameService
+public class EntityMap
 {
     //public Dictionary<string, string> IDToNameMap = new Dictionary<string, string>();
 

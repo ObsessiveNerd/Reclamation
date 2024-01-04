@@ -1,108 +1,29 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿//using System.Collections;
+//using System.Collections.Generic;
+//using UnityEngine;
 
-public class RangedPlayerAttackController : InputControllerBase
-{
-    Point m_TileSelection;
-    GameObject m_Attack;
+//public class RangedPlayerAttackController : InputControllerBase
+//{
+//    Point m_TileSelection;
+//    GameObject m_Attack;
 
-    public RangedPlayerAttackController(GameObject attack)
-    {
-        m_Attack = attack;
-    }
+//    public void Start()
+//    {
+//        GameObject startingTarget = WorldUtility.GetClosestEnemyTo(gameObject);
 
-    public void Start()
-    {
-        
+//        GameEvent isInFOV = GameEventPool.Get(GameEventId.IsInFOV)
+//                                .With(EventParameter.Entity, startingTarget)
+//                                .With(EventParameter.Value, false);
 
-        GameObject startingTarget = WorldUtility.GetClosestEnemyTo(Self);
+//        bool isInFoVResult = FireEvent(gameObject, isInFOV).GetValue<bool>(EventParameter.Value);
+//        if (!isInFoVResult)
+//            startingTarget = gameObject;
+//        isInFOV.Release();
 
-        //GameEvent isVisible = GameEventPool.Get(GameEventId.EntityVisibilityState)
-        //                            .With(EventParameters.Entity, startingTarget.ID)
-        //                            .With(EventParameters.Value, false);
+//        m_TileSelection = Services.WorldDataQuery.GetEntityLocation(startingTarget);
+//        Services.TileSelectionService.SelectTile(m_TileSelection);
+//        Services.WorldUpdateService.UpdateWorldView();
+//        UIManager.Push(this);
+//    }
 
-        //Here we can check isVisible to see if the target is invisible or something
-        //FireEvent(startingTarget, isVisible.CreateEvent());
-
-        GameEvent isInFOV = GameEventPool.Get(GameEventId.IsInFOV)
-                                .With(EventParameter.Entity, startingTarget.ID)
-                                .With(EventParameter.Value, false);
-
-        bool isInFoVResult = FireEvent(Self, isInFOV).GetValue<bool>(EventParameter.Value);
-        if (!isInFoVResult)
-            startingTarget = Self;
-        isInFOV.Release();
-
-        m_TileSelection = Services.WorldDataQuery.GetEntityLocation(startingTarget);
-        Services.TileSelectionService.SelectTile(m_TileSelection);
-        Services.WorldUpdateService.UpdateWorldView();
-        UIManager.Push(this);
-    }
-
-    public override void HandleEvent(GameEvent gameEvent)
-    {
-        if(gameEvent.ID == GameEventId.UpdateEntity)
-        {
-            if (m_Attack == null)
-            {
-                EndSelection(m_TileSelection);
-                return;
-            }
-
-            MoveDirection desiredDirection = InputUtility.GetMoveDirection();
-
-            if (desiredDirection != MoveDirection.None)
-            {
-                m_TileSelection = Services.TileSelectionService.SelectTileInNewDirection(m_TileSelection, desiredDirection);
-                Services.WorldUpdateService.UpdateWorldView();
-            }
-
-            if(Input.GetKeyDown(KeyCode.Return) || InputBinder.PerformRequestedAction(RequestedAction.FireRangedWeapon))
-            {
-                //AttackType weaponType = CombatUtility.GetWeaponType(m_Attack);
-                GameObject target = WorldUtility.GetEntityAtPosition(m_TileSelection);
-
-                GameEvent getAmmo = GameEventPool.Get(GameEventId.GetAmmo)
-                    .With(EventParameter.Value, null);
-
-                GameObject attack = EntityQuery.GetEntity(FireEvent(m_Attack, getAmmo).GetValue<string>(EventParameter.Value));
-
-                CombatUtility.Attack(Self, target, attack, AttackType.Ranged);
-
-                EndSelection(m_TileSelection);
-
-                //GameEvent fireRangedWeapon = GameEventPool.Get(GameEventId.FireRangedAttack)
-                //                                .With(EventParameters.Entity, WorldUtility.GetGameObject(Self).transform.position)
-                //                                .With(EventParameters.Target, WorldUtility.GetGameObject(target).transform.position);
-                //FireEvent(m_Attack, fireRangedWeapon.CreateEvent());
-
-                GameEvent checkForEnergy = GameEventPool.Get(GameEventId.HasEnoughEnergyToTakeATurn)
-                    .With(EventParameter.TakeTurn, false);
-                FireEvent(Self, checkForEnergy);
-                gameEvent.Paramters[EventParameter.TakeTurn] = (bool)checkForEnergy.Paramters[EventParameter.TakeTurn];
-                checkForEnergy.Release();
-                getAmmo.Release();
-            }
-
-            if (Input.GetKeyDown(KeyCode.Escape))
-                EndSelection(m_TileSelection);
-        }
-    }
-}
-
-public class DTO_RangedPlayerAttackController : IDataTransferComponent
-{
-    public IComponent Component { get; set; }
-
-    public void CreateComponent(string data)
-    {
-        GameObject attack = EntityFactory.CreateEntity(data);
-        Component = new RangedPlayerAttackController(attack);
-    }
-
-    public string CreateSerializableData(IComponent component)
-    {
-        return nameof(PlayerInputController);
-    }
-}
+//}

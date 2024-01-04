@@ -24,8 +24,8 @@ public class ContextMenuMono : EscapeableMono
         button.onClick.AddListener(() => UIManager.ForcePop(this));
         button.onClick.AddListener(() =>
         {
-            if (Services.Ready)
-                Services.WorldUIService.UpdateUI();
+            //if (Services.Ready)
+            //    Services.WorldUIService.UpdateUI();
         });
 
         if (afterClickCallback != null)
@@ -60,7 +60,7 @@ public class ContextMenuMono : EscapeableMono
     {
         foreach (string id in playerIds)
         {
-            ContextMenuButton button = new ContextMenuButton(EntityQuery.GetEntity(id).Name, () =>
+            ContextMenuButton button = new ContextMenuButton(EntityQuery.GetEntity(id).name, () =>
             {
                 actionForSelectedPlayer(id);
             });

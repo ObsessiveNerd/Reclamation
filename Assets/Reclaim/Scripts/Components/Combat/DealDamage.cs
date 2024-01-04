@@ -6,69 +6,25 @@ using UnityEngine;
 public class DealDamage : EntityComponent
 {
     public DamageType DamageType;
+    
+    [SerializeField]
     public Dice Dice;
 
-    public DealDamage()
+    public void Start()
     {
-        Dice = new Dice("1d1");
+        RegisteredEvents.Add(GameEventId.AmAttacking, AmAttacking);
+        RegisteredEvents.Add(GameEventId.GetInfo, GetInfo);
     }
 
-    public DealDamage(DamageType damageType, Dice dice)
+    void AmAttacking(GameEvent gameEvent)
     {
-        DamageType = damageType;
-        Dice = dice;
+        ((List<Damage>)gameEvent.Paramters[EventParameter.DamageList]).Add(new Damage(Dice.Roll(), DamageType));
 
-        RegisteredEvents.Add(GameEventId.AmAttacking);
-        //RegisteredEvents.Add(GameEventId.GetCombatRating);
-        RegisteredEvents.Add(GameEventId.GetInfo);
     }
 
-    public override void HandleEvent(GameEvent gameEvent)
+    void GetInfo(GameEvent gameEvent)
     {
-        if (gameEvent.ID == GameEventId.AmAttacking)
-        { 
-            ((List<Damage>)gameEvent.Paramters[EventParameter.DamageList]).Add(new Damage(Dice.Roll(), DamageType));
-        }
-        else if (gameEvent.ID == GameEventId.GetCombatRating)
-            gameEvent.Paramters[EventParameter.Value] = (int)gameEvent.Paramters[EventParameter.Value] + Dice.GetAverageRoll();
-        else if (gameEvent.ID == GameEventId.GetInfo)
-        {
-            var dictionary = gameEvent.GetValue<Dictionary<string, string>>(EventParameter.Info);
-            dictionary.Add($"{nameof(DealDamage)}{Guid.NewGuid()}", $"Damage Type: {DamageType}\nDamage: {Dice.GetNotation()}");
-        }
-    }
-}
-
-public class DTO_DealDamage : IDataTransferComponent
-{
-    public IComponent Component { get; set; }
-
-    public void CreateComponent(string data)
-    {
-        string damageDice = null;
-        DamageType type = 0;
-
-        string[] parameters = data.Split(',');
-        foreach(string parameter in parameters)
-        {
-            string[] value = parameter.Split('=');
-            switch(value[0])
-            {
-                case "DamageType":
-                    type = (DamageType)Enum.Parse(typeof(DamageType), value[1]);
-                    break;
-                case "Dice":
-                case "Damage":
-                    damageDice = value[1];
-                    break;
-            }
-        }
-        Component = new DealDamage(type, new Dice(damageDice));
-    }
-
-    public string CreateSerializableData(IComponent component)
-    {
-        DealDamage dd = (DealDamage)component;
-        return $"{nameof(DealDamage)}: DamageType={dd.DamageType}, Damage={dd.Dice.GetNotation()}";
+        var dictionary = gameEvent.GetValue<Dictionary<string, string>>(EventParameter.Info);
+        dictionary.Add($"{nameof(DealDamage)}{Guid.NewGuid()}", $"Damage Type: {DamageType}\nDamage: {Dice.GetNotation()}");
     }
 }

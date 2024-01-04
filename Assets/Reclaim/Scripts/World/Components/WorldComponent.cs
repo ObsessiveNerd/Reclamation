@@ -6,9 +6,9 @@ using UnityEngine;
 public abstract class GameService //: Component
 {
     //protected static Dictionary<GameObject, TimeProgression> m_PlayerToTimeProgressionMap = new Dictionary<GameObject, TimeProgression>();
-    protected static TimeProgression m_TimeProgression = new TimeProgression();
+    //protected static TimeProgression m_TimeProgression = new TimeProgression();
     protected static Dictionary<Point, Tile> m_Tiles = new Dictionary<Point, Tile>();
-    protected static Dictionary<Point, Actor> m_TileEntity = new Dictionary<Point, Actor>();
+    //protected static Dictionary<Point, Actor> m_TileEntity = new Dictionary<Point, Actor>();
     protected static int m_Seed;
     protected static List<Tile> m_ChangedTiles = new List<Tile>();
 
@@ -18,7 +18,7 @@ public abstract class GameService //: Component
     protected static GameObject m_ActivePlayer;
     protected static HashSet<Point> m_ValidDungeonPoints = new HashSet<Point>();
     protected static Dictionary<Point, UnityEngine.GameObject> m_GameObjectMap = new Dictionary<Point, UnityEngine.GameObject>();
-    protected static Dictionary<int, DungeonGenerationResult> m_DungeonLevelMap = new Dictionary<int, DungeonGenerationResult>();
+    //protected static Dictionary<int, DungeonGenerationResult> m_DungeonLevelMap = new Dictionary<int, DungeonGenerationResult>();
     protected static int m_CurrentLevel = 1;
     protected static Dictionary<string, GameObject> m_EntityIdToEntityMap = new Dictionary<string, GameObject>();
 
@@ -26,10 +26,10 @@ public abstract class GameService //: Component
     {
         foreach (var go in m_GameObjectMap.Values)
             GameObject.Destroy(go);
-        m_TimeProgression = new TimeProgression();
+        //m_TimeProgression = new TimeProgression();
         m_EntityToPointMap.Clear();
         m_Tiles.Clear();
-        m_TileEntity.Clear();
+        //m_TileEntity.Clear();
         m_Seed = 0;
         m_ChangedTiles.Clear();
         m_EntityToPreviousPointMap.Clear();
@@ -37,7 +37,7 @@ public abstract class GameService //: Component
         m_ActivePlayer = null;
         m_ValidDungeonPoints.Clear();
         m_GameObjectMap.Clear();
-        m_DungeonLevelMap.Clear();
+        //m_DungeonLevelMap.Clear();
         m_CurrentLevel = 1;
         m_EntityIdToEntityMap.Clear();
     }
@@ -52,14 +52,14 @@ public abstract class GameService //: Component
 
     public Point GetPointWhereEntityIs(GameObject e)
     {
-        if (m_EntityToPointMap.ContainsKey(e.ID))
-        {
-            return m_EntityToPointMap[e.ID];
-        }
-        if (m_EntityToPreviousPointMap.ContainsKey(e.ID))
-        {
-            return m_EntityToPreviousPointMap[e.ID];
-        }
+        //if (m_EntityToPointMap.ContainsKey(e.ID))
+        //{
+        //    return m_EntityToPointMap[e.ID];
+        //}
+        //if (m_EntityToPreviousPointMap.ContainsKey(e.ID))
+        //{
+        //    return m_EntityToPreviousPointMap[e.ID];
+        //}
 
         //Debug.LogError($"Could not find posiiton for {e.InternalName}");
         return new Point(-1, -1);
@@ -67,25 +67,25 @@ public abstract class GameService //: Component
 
     protected void Clean()
     {
-        m_TimeProgression = new TimeProgression();
-        m_Tiles.Clear();
+        //m_TimeProgression = new TimeProgression();
+        //m_Tiles.Clear();
 
-        var tempMap = new Dictionary<string, Point>(m_EntityToPointMap);
-        foreach(var e in tempMap.Keys)
-        {
-            if (Services.EntityMapService.GetEntity(e) != null && !Services.EntityMapService.GetEntity(e).HasComponent(typeof(Tile)))
-                m_EntityToPointMap.Remove(e);
-        }
+        //var tempMap = new Dictionary<string, Point>(m_EntityToPointMap);
+        //foreach(var e in tempMap.Keys)
+        //{
+        //    if (Services.EntityMapService.GetEntity(e) != null && !Services.EntityMapService.GetEntity(e).HasComponent(typeof(Tile)))
+        //        m_EntityToPointMap.Remove(e);
+        //}
 
-        m_EntityToPreviousPointMap.Clear();
-        m_Players.Clear();
-        m_ActivePlayer = null;
-        m_ValidDungeonPoints.Clear();
-        foreach (var go in m_GameObjectMap.Values)
-            GameObject.Destroy(go);
-        m_GameObjectMap.Clear();
-        m_DungeonLevelMap.Clear();
-        m_CurrentLevel = 1;
+        //m_EntityToPreviousPointMap.Clear();
+        //m_Players.Clear();
+        //m_ActivePlayer = null;
+        //m_ValidDungeonPoints.Clear();
+        //foreach (var go in m_GameObjectMap.Values)
+        //    GameObject.Destroy(go);
+        //m_GameObjectMap.Clear();
+        //m_DungeonLevelMap.Clear();
+        //m_CurrentLevel = 1;
     }
 
     public  Point GetTilePointInDirection(Point basePoint, MoveDirection direction)

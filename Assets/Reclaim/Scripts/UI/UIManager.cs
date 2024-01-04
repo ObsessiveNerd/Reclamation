@@ -90,60 +90,60 @@ public class UIManager : MonoBehaviour
 
     void Update()
     {
-        if (m_EscapePressedThisFrame)
-            return;
+        //if (m_EscapePressedThisFrame)
+        //    return;
 
-        if (EscapeForActiveUIPressed.HasValue && EscapeForActiveUIPressed.Value /*&& !UIClear*/)
-        {
-            if (UIMonoBehaviors.Count == 0)
-            {
-                var contextMenu = ContextMenuMono.CreateNewContextMenu().GetComponent<ContextMenuMono>();
-                if(Services.Ready)
-                {
-                    string returnToMenuText = Services.StateManagerService.GameEnded ? "Return to Main Menu" : "Save and Return to Menu";
-                    contextMenu.AddButton(new ContextMenuButton(returnToMenuText, () =>
-                    {
-                        if(!Services.StateManagerService.GameEnded)
-                            Services.SaveAndLoadService.Save();
+        //if (EscapeForActiveUIPressed.HasValue && EscapeForActiveUIPressed.Value /*&& !UIClear*/)
+        //{
+        //    if (UIMonoBehaviors.Count == 0)
+        //    {
+        //        var contextMenu = ContextMenuMono.CreateNewContextMenu().GetComponent<ContextMenuMono>();
+        //        if(Services.Ready)
+        //        {
+        //            string returnToMenuText = Services.StateManagerService.GameEnded ? "Return to Main Menu" : "Save and Return to Menu";
+        //            contextMenu.AddButton(new ContextMenuButton(returnToMenuText, () =>
+        //            {
+        //                if(!Services.StateManagerService.GameEnded)
+        //                    Services.SaveAndLoadService.Save();
 
-                        Services.StateManagerService.CleanGameObjects();
-                        SceneManager.LoadSceneAsync("Reclaim/Scenes/Title");
+        //                Services.StateManagerService.CleanGameObjects();
+        //                SceneManager.LoadSceneAsync("Reclaim/Scenes/Title");
 
-                    }), null);
+        //            }), null);
 
-                    if(!Services.StateManagerService.GameEnded)
-                    {
-                        contextMenu.AddButton(new ContextMenuButton("Save & Exit", () =>
-                        {
-                            Services.SaveAndLoadService.Save();
-                            Services.StateManagerService.CleanGameObjects();
-                            Application.Quit();
-                        }), null);
-                    }
-                }
-                contextMenu.AddButton(new ContextMenuButton("Controls", () =>
-                    {
-                        FindObjectOfType<InputBinder>().Open();
-                    }), null);
+        //            if(!Services.StateManagerService.GameEnded)
+        //            {
+        //                contextMenu.AddButton(new ContextMenuButton("Save & Exit", () =>
+        //                {
+        //                    Services.SaveAndLoadService.Save();
+        //                    Services.StateManagerService.CleanGameObjects();
+        //                    Application.Quit();
+        //                }), null);
+        //            }
+        //        }
+        //        contextMenu.AddButton(new ContextMenuButton("Controls", () =>
+        //            {
+        //                FindObjectOfType<InputBinder>().Open();
+        //            }), null);
 
-                contextMenu.AddButton(new ContextMenuButton("Sound", () =>
-                    {
-                        FindObjectOfType<SoundSettings>().Open();
+        //        contextMenu.AddButton(new ContextMenuButton("Sound", () =>
+        //            {
+        //                FindObjectOfType<SoundSettings>().Open();
 
-                    }), null);
+        //            }), null);
 
-                 contextMenu.AddButton(new ContextMenuButton("Display", () =>
-                    {
-                        FindObjectOfType<DisplaySettings>().Open();
-                    }), null);
-            }
-            else
-            {
-                var escapeMono = UIMonoBehaviors.Pop();
-                escapeMono?.OnEscape();
-            }
-            m_EscapePressedThisFrame = true;
-        }
+        //         contextMenu.AddButton(new ContextMenuButton("Display", () =>
+        //            {
+        //                FindObjectOfType<DisplaySettings>().Open();
+        //            }), null);
+        //    }
+        //    else
+        //    {
+        //        var escapeMono = UIMonoBehaviors.Pop();
+        //        escapeMono?.OnEscape();
+        //    }
+        //    m_EscapePressedThisFrame = true;
+        //}
     }
 
     private void LateUpdate()

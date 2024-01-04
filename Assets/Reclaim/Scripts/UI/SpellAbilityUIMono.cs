@@ -40,45 +40,45 @@ public class SpellAbilityUIMono : ItemMono, IPointerDownHandler
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        if (!m_CanSetActiveAbilities)
-            return;
+        //if (!m_CanSetActiveAbilities)
+        //    return;
 
-        if(m_Source == null)
-        {
-            string spellName = m_Spell == null ? "Null spell" : m_Spell.Name;
-            Debug.LogError($"{spellName} has a null source.  Unable to add/remove from abilities");
-            return;
-        }
+        //if(m_Source == null)
+        //{
+        //    string spellName = m_Spell == null ? "Null spell" : m_Spell.Name;
+        //    Debug.LogError($"{spellName} has a null source.  Unable to add/remove from abilities");
+        //    return;
+        //}
 
-        if (m_Spell == null)
-        {
-            Debug.LogError("A spell in SpellAbilityMono was null.");
-            return;
-        }
+        //if (m_Spell == null)
+        //{
+        //    Debug.LogError("A spell in SpellAbilityMono was null.");
+        //    return;
+        //}
 
 
-        if (eventData.clickCount == 1)
-        {
-            Debug.Log("Double clicked");
-            GameEvent activeAbility = GameEventPool.Get(GameEventId.AddToActiveAbilities)
-                                        .With(EventParameter.Entity, m_Spell.ID);
+        //if (eventData.clickCount == 1)
+        //{
+        //    Debug.Log("Double clicked");
+        //    GameEvent activeAbility = GameEventPool.Get(GameEventId.AddToActiveAbilities)
+        //                                .With(EventParameter.Entity, m_Spell.ID);
 
-            m_Source.FireEvent(activeAbility).Release();
-            GameEvent getSpells = GameEventPool.Get(GameEventId.GetActiveAbilities)
-                                    .With(EventParameter.Abilities, new List<GameObject>());
+        //    m_Source.FireEvent(activeAbility).Release();
+        //    GameEvent getSpells = GameEventPool.Get(GameEventId.GetActiveAbilities)
+        //                            .With(EventParameter.Abilities, new List<GameObject>());
 
-            var spellList = m_Source.FireEvent(getSpells).GetValue<List<GameObject>>(EventParameter.Abilities);
-            getSpells.Release();
+        //    var spellList = m_Source.FireEvent(getSpells).GetValue<List<GameObject>>(EventParameter.Abilities);
+        //    getSpells.Release();
 
-            if (spellList.Count == 0)
-            {
-                FindObjectOfType<SpellSelectorMono>(true).gameObject.SetActive(false);
-            }
-            else
-                FindObjectOfType<SpellSelectorMono>(true).gameObject.SetActive(true);
+        //    if (spellList.Count == 0)
+        //    {
+        //        FindObjectOfType<SpellSelectorMono>(true).gameObject.SetActive(false);
+        //    }
+        //    else
+        //        FindObjectOfType<SpellSelectorMono>(true).gameObject.SetActive(true);
 
-            Services.WorldUIService.UpdateUI();
-        }
+        //    Services.WorldUIService.UpdateUI();
+        //}
     }
 
     public void HideIndex()
@@ -94,6 +94,7 @@ public class SpellAbilityUIMono : ItemMono, IPointerDownHandler
 
     protected override string GetItemId()
     {
-        return m_Spell?.ID;
+        return "";
+        //return m_Spell?.ID;
     }
 }

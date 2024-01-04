@@ -8,86 +8,71 @@ public class Move : EntityComponent
     readonly float m_EnergyRequired = 1f;
     bool m_StopMovement = false;
 
-    public Move()
+    public void Start()
     {
-        RegisteredEvents.Add(GameEventId.MoveKeyPressed);
-        RegisteredEvents.Add(GameEventId.GetMinimumEnergyForAction);
-        RegisteredEvents.Add(GameEventId.StopMovement);
+        RegisteredEvents.Add(GameEventId.MoveKeyPressed, MoveKeyPressed);
+        RegisteredEvents.Add(GameEventId.GetMinimumEnergyForAction, GetMinimumEnergyForAction);
+        RegisteredEvents.Add(GameEventId.StopMovement, StopMovement);
     }
 
-    public override void HandleEvent(GameEvent gameEvent)
+    void MoveKeyPressed(GameEvent gameEvent)
     {
-        if (gameEvent.ID == GameEventId.MoveKeyPressed)
-        {
-            m_StopMovement = false;
-            MoveDirection direction;
-            if (gameEvent.Paramters[EventParameter.InputDirection] is string)
-                direction = (MoveDirection)Enum.Parse(typeof(MoveDirection), gameEvent.Paramters[EventParameter.InputDirection].ToString());
-            else
-                direction = (MoveDirection)gameEvent.Paramters[EventParameter.InputDirection];
+        //m_StopMovement = false;
+        MoveDirection direction = (MoveDirection)gameEvent.Paramters[EventParameter.InputDirection];
+        Debug.Log(direction.ToString());
 
-            Point startPosition = Services.EntityMapService.GetPointWhereEntityIs(Self);
-            if (startPosition == Point.InvalidPoint)
-                return;
+        //Point startPosition = Services.EntityMapService.GetPointWhereEntityIs(gameObject);
+        //if (startPosition == Point.InvalidPoint)
+        //    return;
 
-            GameEvent beforeMoving = GameEventPool.Get(GameEventId.BeforeMoving)
-                .With(EventParameter.Entity, Self.ID)
-                .With(EventParameter.InputDirection, direction)
-                .With(EventParameter.RequiredEnergy, m_EnergyRequired);
+        //GameEvent beforeMoving = GameEventPool.Get(GameEventId.BeforeMoving)
+        //        .With(EventParameter.Entity, gameObject)
+        //        .With(EventParameter.InputDirection, direction)
+        //        .With(EventParameter.RequiredEnergy, m_EnergyRequired);
 
-            FireEvent(Self, beforeMoving);
+        //gameObject.FireEvent(beforeMoving);
 
-            Point desiredTile = Services.TileInteractionService.GetTilePointInDirection(startPosition, direction);
-            Tile t = Services.TileInteractionService.GetTile(desiredTile);
+        //Point desiredTile = Services.TileInteractionService.GetTilePointInDirection(startPosition, direction);
 
-            t.BeforeMoving(beforeMoving);
+        ////Tile t = Services.TileInteractionService.GetTile(desiredTile);
+        ////t.BeforeMoving(beforeMoving);
 
-            float energyRequired = (float)beforeMoving.Paramters[EventParameter.RequiredEnergy];
+        //float energyRequired = (float)beforeMoving.Paramters[EventParameter.RequiredEnergy];
 
-            //Make sure we have enough energy;
-            GameEvent currentEnergyEvent = FireEvent(Self, GameEventPool.Get(GameEventId.GetEnergy)
-                .With(EventParameter.Value, 0.0f));
-            float currentEnergy = currentEnergyEvent.GetValue<float>(EventParameter.Value);
-            
-            if (energyRequired > 0f && currentEnergy >= energyRequired && !m_StopMovement)
-            {
-                Services.EntityMovementService.Move(Self, direction);
+        ////Make sure we have enough energy;
+        //GameEvent currentEnergyEvent = gameObject.FireEvent(GameEventPool.Get(GameEventId.GetEnergy)
+        //        .With(EventParameter.Value, 0.0f));
+        //float currentEnergy = currentEnergyEvent.GetValue<float>(EventParameter.Value);
 
-                //Check if there are any effects that need to occur after moving
-                GameEvent afterMoving = GameEventPool.Get(GameEventId.AfterMoving).With(beforeMoving.Paramters);
-                FireEvent(Self, afterMoving);
+        //if (energyRequired > 0f && currentEnergy >= energyRequired && !m_StopMovement)
+        //{
+        //    Services.EntityMovementService.Move(gameObject, direction);
 
-                //energyRequired = (float)afterMoving.Paramters[EventParameters.RequiredEnergy];
-                GameEvent useEnergy = GameEventPool.Get(GameEventId.UseEnergy).With(EventParameter.Value, m_EnergyRequired);
-                FireEvent(Self, useEnergy).Release();
+        //    //Check if there are any effects that need to occur after moving
+        //    GameEvent afterMoving = GameEventPool.Get(GameEventId.AfterMoving).With(beforeMoving.Paramters);
+        //    gameObject.FireEvent(afterMoving);
 
-                afterMoving.Release();
+        //    //energyRequired = (float)afterMoving.Paramters[EventParameters.RequiredEnergy];
+        //    GameEvent useEnergy = GameEventPool.Get(GameEventId.UseEnergy).With(EventParameter.Value, m_EnergyRequired);
+        //    gameObject.FireEvent(useEnergy).Release();
 
-            }
-            else if (m_StopMovement)
-                FireEvent(Self, GameEventPool.Get(GameEventId.SkipTurn)).Release();
+        //    afterMoving.Release();
 
-            currentEnergyEvent.Release();
-            beforeMoving.Release();
-        }
-        if (gameEvent.ID == GameEventId.GetMinimumEnergyForAction)
-            gameEvent.Paramters[EventParameter.Value] = Mathf.Min((float)gameEvent.Paramters[EventParameter.Value] > 0f ? (float)gameEvent.Paramters[EventParameter.Value] : m_EnergyRequired, m_EnergyRequired);
-        if (gameEvent.ID == GameEventId.StopMovement)
-            m_StopMovement = true;
-    }
-}
+        //}
+        //else if (m_StopMovement)
+        //    gameObject.FireEvent(GameEventPool.Get(GameEventId.SkipTurn)).Release();
 
-public class DTO_Move : IDataTransferComponent
-{
-    public IComponent Component { get; set; }
-
-    public void CreateComponent(string data)
-    {
-        Component = new Move();
+        //currentEnergyEvent.Release();
+        //beforeMoving.Release();
     }
 
-    public string CreateSerializableData(IComponent component)
+    void GetMinimumEnergyForAction(GameEvent gameEvent)
     {
-        return nameof(Move);
+        gameEvent.Paramters[EventParameter.Value] = Mathf.Min((float)gameEvent.Paramters[EventParameter.Value] > 0f ? (float)gameEvent.Paramters[EventParameter.Value] : m_EnergyRequired, m_EnergyRequired);
+    }
+
+    void StopMovement(GameEvent gameEvent)
+    {
+        m_StopMovement = true;
     }
 }

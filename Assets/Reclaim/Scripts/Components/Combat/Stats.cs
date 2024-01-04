@@ -16,8 +16,6 @@ public enum Stat
 [Serializable]
 public class Stats : EntityComponent
 {
-    public override int Priority => 3;
-
     public int Str;
     public int Agi;
     public int Con;
@@ -29,30 +27,17 @@ public class Stats : EntityComponent
 
     public int AttributePoints;
 
-    public override void Start()
+    public void Start()
     {
-        base.Start();
-        GameEvent init = GameEventPool.Get(GameEventId.BoostStat)
-                            .With(EventParameter.Stats, this);
-        Self.FireEvent(init);
-        init.Release();
-    }
-
-    public Stats(int Str, int Agi, int Con, int Wis, int Int, int Cha, int attributePoints, Stat primaryStatType)
-    {
-        SetStats(Str, Agi, Con, Wis, Int, Cha);
-        AttributePoints = attributePoints;
-        PrimaryStatType = primaryStatType;
-
-        RegisteredEvents.Add(GameEventId.RollToHit);
-        RegisteredEvents.Add(GameEventId.GetStat);
-        RegisteredEvents.Add(GameEventId.GetStatRaw);
-        RegisteredEvents.Add(GameEventId.LevelUp);
-        RegisteredEvents.Add(GameEventId.BoostStat);
-        RegisteredEvents.Add(GameEventId.GetAttributePoints);
-        RegisteredEvents.Add(GameEventId.GetSpellSaveDC);
-        RegisteredEvents.Add(GameEventId.SavingThrow);
-        RegisteredEvents.Add(GameEventId.GetPrimaryStatType);
+        //RegisteredEvents.Add(GameEventId.RollToHit);
+        //RegisteredEvents.Add(GameEventId.GetStat);
+        //RegisteredEvents.Add(GameEventId.GetStatRaw);
+        //RegisteredEvents.Add(GameEventId.LevelUp);
+        //RegisteredEvents.Add(GameEventId.BoostStat);
+        //RegisteredEvents.Add(GameEventId.GetAttributePoints);
+        //RegisteredEvents.Add(GameEventId.GetSpellSaveDC);
+        //RegisteredEvents.Add(GameEventId.SavingThrow);
+        //RegisteredEvents.Add(GameEventId.GetPrimaryStatType);
     }
 
     void SetStats(int Str, int Agi, int Con, int Wis, int Int, int Cha)
@@ -65,7 +50,7 @@ public class Stats : EntityComponent
         this.Cha = Cha;
     }
 
-    public override void HandleEvent(GameEvent gameEvent)
+    public void HandleEvent(GameEvent gameEvent)
     {
         if(gameEvent.ID == GameEventId.RollToHit)
         {
@@ -144,7 +129,7 @@ public class Stats : EntityComponent
             GameEvent statBoosted = GameEventPool.Get(GameEventId.StatBoosted)
                 .With(EventParameter.Stats, this);
 
-            FireEvent(Self, statBoosted, true).Release();
+            gameObject.FireEvent(statBoosted, true).Release();
 
             if(costAttributePoint)
                 AttributePoints = Mathf.Max(0, AttributePoints - 1);
@@ -294,63 +279,5 @@ public class Stats : EntityComponent
     public override string ToString()
     {
         return JsonUtility.ToJson(this);
-    }
-}
-
-public class DTO_Stats : IDataTransferComponent
-{
-    public IComponent Component { get; set; }
-
-    int Str;
-    int Agi;
-    int Wis;
-    int Con;
-    int Int;
-    int Cha;
-
-    int AttributePoints = 0;
-    Stat PrimaryStatType;
-
-    public void CreateComponent(string data)
-    {
-        string[] statsParse = data.Split(',');
-        foreach(var stat in statsParse)
-        {
-            string[] statValue = stat.Split('=');
-            switch(statValue[0])
-            {
-                case nameof(Str):
-                    Str = int.Parse(statValue[1]);
-                    break;
-                case nameof(Agi):
-                    Agi = int.Parse(statValue[1]);
-                    break;
-                case nameof(Wis):
-                    Wis = int.Parse(statValue[1]);
-                    break;
-                case nameof(Con):
-                    Con = int.Parse(statValue[1]);
-                    break;
-                case nameof(Int):
-                    Int = int.Parse(statValue[1]);
-                    break;
-                case nameof(Cha):
-                    Cha = int.Parse(statValue[1]);
-                    break;
-                case nameof(AttributePoints):
-                    AttributePoints = int.Parse(statValue[1]);
-                    break;
-                case nameof(PrimaryStatType):
-                    PrimaryStatType = (Stat)Enum.Parse(typeof(Stat), statValue[1]);
-                    break;
-            }
-        }
-        Component = new Stats(Str, Agi, Con, Wis, Int, Cha, AttributePoints, PrimaryStatType);
-    }
-
-    public string CreateSerializableData(IComponent component)
-    {
-        Stats stats = (Stats)component;
-        return $"{nameof(Stats)}: Str={stats.Str}, Agi={stats.Agi}, Con={stats.Con}, Wis={stats.Wis}, Int={stats.Int}, Cha={stats.Cha}, AttributePoints={stats.AttributePoints}, {nameof(stats.PrimaryStatType)}={stats.PrimaryStatType}";
     }
 }

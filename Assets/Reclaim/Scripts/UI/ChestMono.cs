@@ -34,11 +34,11 @@ public class ChestMono : EscapeableMono
         List<string> itemIds = m_Chest.FireEvent(getItems).GetValue<List<string>>(EventParameter.Items);
         getItems.Release();
 
-        foreach (var itemId in itemIds)
-        {
-            m_Items.Add(
-                UIUtility.CreateItemGameObject(m_Chest, Services.EntityMapService.GetEntity(itemId), ChestContent));
-        }
+        //foreach (var itemId in itemIds)
+        //{
+        //    m_Items.Add(
+        //        UIUtility.CreateItemGameObject(m_Chest, Services.EntityMapService.GetEntity(itemId), ChestContent));
+        //}
     }
 
     public void Cleanup()
@@ -59,21 +59,21 @@ public class ChestMono : EscapeableMono
     public void LootAll()
     {
         List<GameObject> items = new List<GameObject>(m_Items);
-        foreach(var item in items)
-        {
-            GameObject itemEntity = item.GetComponent<InventoryItemMono>().ItemObject;
-            GameEvent removeFromChest = GameEventPool.Get(GameEventId.RemoveFromInventory)
-                                        .With(EventParameter.Item, itemEntity.ID);
-            m_Chest.FireEvent(removeFromChest);
-            removeFromChest.Release();
+        //foreach(var item in items)
+        //{
+        //    GameObject itemEntity = item.GetComponent<InventoryItemMono>().ItemObject;
+        //    GameEvent removeFromChest = GameEventPool.Get(GameEventId.RemoveFromInventory)
+        //                                .With(EventParameter.Item, itemEntity.ID);
+        //    m_Chest.FireEvent(removeFromChest);
+        //    removeFromChest.Release();
 
-            GameEvent addToInventory = GameEventPool.Get(GameEventId.AddToInventory)
-                                                    .With(EventParameter.Entity, itemEntity.ID);
-            GameObject activePlayer = Services.EntityMapService.GetEntity(Services.WorldDataQuery.GetActivePlayer());
-            activePlayer.FireEvent(addToInventory);
-            addToInventory.Release();
+        //    GameEvent addToInventory = GameEventPool.Get(GameEventId.AddToInventory)
+        //                                            .With(EventParameter.Entity, itemEntity.ID);
+        //    GameObject activePlayer = Services.EntityMapService.GetEntity(Services.WorldDataQuery.GetActivePlayer());
+        //    activePlayer.FireEvent(addToInventory);
+        //    addToInventory.Release();
 
-            Services.WorldUIService.UpdateUI();
-        }
+        //    Services.WorldUIService.UpdateUI();
+        //}
     }
 }

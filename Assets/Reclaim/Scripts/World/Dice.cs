@@ -6,9 +6,9 @@ using UnityEngine;
 [Serializable]
 public class Dice
 {
-    int m_AmountOfDice;
-    int m_DAmount;
-    int m_Modifiers = 0;
+    public int m_AmountOfDice;
+    public int m_DAmount;
+    public int m_Modifiers = 0;
 
     public Dice(string diceNotation)
     {

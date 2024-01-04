@@ -17,22 +17,22 @@ public class InventoryItemMono : ItemMono, IPointerClickHandler
 
     public void Init(GameObject source, GameObject thisObject)
     {
-        Source = source;
-        ItemObject = thisObject;
+        //Source = source;
+        //ItemObject = thisObject;
 
-        if (ItemObject.HasComponent(typeof(Stackable)))
-        {
-            StackableView.SetActive(true);
-            var count = 1;
-            if (Source.HasComponent(typeof(Inventory)))
-                count = Source.GetComponent<Inventory>().InventoryItems.Where(item => item.Name == ItemObject.Name).Count();
-            else if (Source.HasComponent(typeof(ItemContainer)))
-                count = Source.GetComponent<ItemContainer>().IDToEntityMap.Values.Where(e => e.Name == ItemObject.Name).Count();
+        //if (ItemObject.HasComponent(typeof(Stackable)))
+        //{
+        //    StackableView.SetActive(true);
+        //    var count = 1;
+        //    if (Source.HasComponent(typeof(Inventory)))
+        //        count = Source.GetComponent<Inventory>().InventoryItems.Where(item => item.Name == ItemObject.Name).Count();
+        //    else if (Source.HasComponent(typeof(ItemContainer)))
+        //        count = Source.GetComponent<ItemContainer>().IDToEntityMap.Values.Where(e => e.Name == ItemObject.Name).Count();
 
-            ItemNumberText.text = $"x{count}";
-        }
-        else
-            StackableView.SetActive(false);
+        //    ItemNumberText.text = $"x{count}";
+        //}
+        //else
+        //    StackableView.SetActive(false);
     }
 
     public void OnPointerClick(PointerEventData eventData)
@@ -50,22 +50,23 @@ public class InventoryItemMono : ItemMono, IPointerClickHandler
     protected virtual void OnClick()
     {
         
-        GameEvent getContextMenuActions = GameEventPool.Get(GameEventId.GetContextMenuActions)
-            .With(EventParameter.Entity, Source.ID)
-            .With(EventParameter.InventoryContextActions , new List<ContextMenuButton>());
+        //GameEvent getContextMenuActions = GameEventPool.Get(GameEventId.GetContextMenuActions)
+        //    .With(EventParameter.Entity, Source.ID)
+        //    .With(EventParameter.InventoryContextActions , new List<ContextMenuButton>());
 
-        var result = ItemObject.FireEvent(getContextMenuActions).GetValue<List<ContextMenuButton>>(EventParameter.InventoryContextActions );
-        getContextMenuActions.Release();
+        //var result = ItemObject.FireEvent(getContextMenuActions).GetValue<List<ContextMenuButton>>(EventParameter.InventoryContextActions );
+        //getContextMenuActions.Release();
 
-        var contextMenu = ContextMenuMono.CreateNewContextMenu();
-        var cmm = contextMenu.GetComponent<ContextMenuMono>();
+        //var contextMenu = ContextMenuMono.CreateNewContextMenu();
+        //var cmm = contextMenu.GetComponent<ContextMenuMono>();
 
-        foreach (var action in result)
-            cmm.AddButton(action, Source);
+        //foreach (var action in result)
+        //    cmm.AddButton(action, Source);
     }
 
     protected override string GetItemId()
     {
-        return ItemObject?.ID;
+        return "";
+        //return ItemObject?.ID;
     }
 }

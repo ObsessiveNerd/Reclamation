@@ -16,22 +16,22 @@ public class CharacterCreationManager : MonoBehaviour
             Characters.Add(Instantiate(PlayerCreationObject, CharactersContent).GetComponent<CharacterCreationMono>());
     }
 
-    public void Play()
-    {
-        foreach(var cc in Characters)
-        {
-            string data = cc.CreateEntityData();
-            string name = EntityFactory.GetEntityNameFromBlueprintFormatting(data);
-            EntityFactory.CreateTemporaryBlueprint($"Characters/{name}", data);
-        }
+    //public void Play()
+    //{
+    //    foreach(var cc in Characters)
+    //    {
+    //        string data = cc.CreateEntityData();
+    //        string name = EntityFactory.GetEntityNameFromBlueprintFormatting(data);
+    //        EntityFactory.CreateTemporaryBlueprint($"Characters/{name}", data);
+    //    }
 
-        EntityFactory.ReloadTempBlueprints();
+    //    EntityFactory.ReloadTempBlueprints();
 
-        SceneManager.LoadSceneAsync("Reclaim/Scenes/Dungeon").completed += s =>
-        {
-            Services.DungeonService.GenerateDungeon(true, Services.SaveAndLoadService.CurrentSaveName);
-        };
-    }
+    //    SceneManager.LoadSceneAsync("Reclaim/Scenes/Dungeon").completed += s =>
+    //    {
+    //        Services.DungeonService.GenerateDungeon(true, Services.SaveAndLoadService.CurrentSaveName);
+    //    };
+    //}
 
     public void RandomizeAll()
     {

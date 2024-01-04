@@ -6,45 +6,21 @@ using UnityEngine;
 public class Info : EntityComponent
 {
     public string InfoMessage;
-    public override int Priority { get { return 10; } }
-
     public Info(string info)
     {
-        InfoMessage = info;
-        RegisteredEvents.Add(GameEventId.ShowInfo);
-        RegisteredEvents.Add(GameEventId.GetInfo);
+        RegisteredEvents.Add(GameEventId.ShowInfo, ShowInfo);
+        RegisteredEvents.Add(GameEventId.GetInfo, GetInfo);
     }
 
-    public override void HandleEvent(GameEvent gameEvent)
+    void GetInfo(GameEvent gameEvent)
     {
-        if(gameEvent.ID == GameEventId.ShowInfo)
-        {
-            gameEvent.GetValue<StringBuilder>(EventParameter.Info).AppendLine(InfoMessage);
-            RecLog.Log(InfoMessage);
-        }
-        else if(gameEvent.ID == GameEventId.GetInfo)
-        {
-            var dictionary = gameEvent.GetValue<Dictionary<string, string>>(EventParameter.Info);
-            dictionary.Add($"CustomText", InfoMessage);
-        }
-    }
-}
-
-public class DTO_Info : IDataTransferComponent
-{
-    public IComponent Component { get; set; }
-
-    public void CreateComponent(string data)
-    {
-        string value = data;
-        if(value.Contains("="))
-            value = data.Split('=')[1];
-        Component = new Info(value);
+        var dictionary = gameEvent.GetValue<Dictionary<string, string>>(EventParameter.Info);
+        dictionary.Add($"CustomText", InfoMessage);
     }
 
-    public string CreateSerializableData(IComponent component)
+    void ShowInfo(GameEvent gameEvent)
     {
-        Info info = (Info)component;
-        return $"{nameof(Info)}: {nameof(info.InfoMessage)}={info.InfoMessage}";
+        gameEvent.GetValue<StringBuilder>(EventParameter.Info).AppendLine(InfoMessage);
+        RecLog.Log(InfoMessage);
     }
 }

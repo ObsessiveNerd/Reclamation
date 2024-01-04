@@ -85,15 +85,15 @@ public class AStar : IPathfindingAlgorithm
                                     .With(EventParameter.BlocksMovement, false)
                                     .With(EventParameter.Weight, 1f);
 
-        Tile t = Services.TileInteractionService.GetTile(new Point(start.x, start.y));
+        Tile t = null; //Services.TileInteractionService.GetTile(new Point(start.x, start.y));
         if (t == null)
             return 0;
-        t.GetPathFindingData(getPathData);
+        //t.GetPathFindingData(getPathData);
 
         float weight = 0f;
         if (m_OnlyIncludeBlocksMovement && getPathData.GetValue<bool>(EventParameter.BlocksMovement))
             weight = Pathfinder.ImpassableWeight;
-        else if(!m_OnlyIncludeBlocksMovement)
+        else if (!m_OnlyIncludeBlocksMovement)
             weight = getPathData.GetValue<float>(EventParameter.Weight);
         getPathData.Release();
 
@@ -154,11 +154,12 @@ public class AStar : IPathfindingAlgorithm
 
     public bool IsValidNeighbor(Point pt)
     {
-        Tile t = Services.TileInteractionService.GetTile(pt);
-        if (t == null)
-            return false;
+        return false;
+        //Tile t = Services.TileInteractionService.GetTile(pt);
+        //if (t == null)
+        //    return false;
 
-        return !t.BlocksMovement;
+        //return !t.BlocksMovement;
     }
 
     private List<Point> Reconstruct(Point current)

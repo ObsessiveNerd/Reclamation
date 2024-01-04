@@ -9,13 +9,13 @@ public class DebugInput : EscapeableMono
 
     protected override void OnEnable()
     {
-        Services.StateManagerService.TimeProgress.Stop();
+        //Services.StateManagerService.TimeProgress.Stop();
         base.OnEnable();
     }
 
     protected override void OnDisable()
     {
-        Services.StateManagerService.TimeProgress.Resume();
+        //Services.StateManagerService.TimeProgress.Resume();
         base.OnDisable();
     }
 
@@ -27,31 +27,31 @@ public class DebugInput : EscapeableMono
 
     void Start()
     {
-        m_InputField = GetComponent<TMP_InputField>();
-        m_InputField.Select();
-        m_InputField.ActivateInputField();
-        m_InputField.onEndEdit.AddListener((str) =>
-        {
-            GameObject e = EntityFactory.CreateEntity(str);
-            if (e == null)
-            {
-                m_InputField.text = "";
-                m_InputField.Select();
-                m_InputField.ActivateInputField();
-                return;
-            }
+        //m_InputField = GetComponent<TMP_InputField>();
+        //m_InputField.Select();
+        //m_InputField.ActivateInputField();
+        //m_InputField.onEndEdit.AddListener((str) =>
+        //{
+        //    GameObject e = EntityFactory.CreateEntity(str);
+        //    if (e == null)
+        //    {
+        //        m_InputField.text = "";
+        //        m_InputField.Select();
+        //        m_InputField.ActivateInputField();
+        //        return;
+        //    }
 
-            GameEvent giveItem = GameEventPool.Get(GameEventId.AddToInventory)
-                                    .With(EventParameter.Entity, e.ID);
+        //    GameEvent giveItem = GameEventPool.Get(GameEventId.AddToInventory)
+        //                            .With(EventParameter.Entity, e.ID);
 
-            Services.PlayerManagerService.GetActivePlayer().FireEvent(giveItem);
-            giveItem.Release();
+        //    Services.PlayerManagerService.GetActivePlayer().FireEvent(giveItem);
+        //    giveItem.Release();
 
-            Services.WorldUIService.UpdateUI();
+        //    Services.WorldUIService.UpdateUI();
 
-            m_InputField.text = "";
-            m_InputField.Select();
-            m_InputField.ActivateInputField();
-        });
+        //    m_InputField.text = "";
+        //    m_InputField.Select();
+        //    m_InputField.ActivateInputField();
+        //});
     }
 }

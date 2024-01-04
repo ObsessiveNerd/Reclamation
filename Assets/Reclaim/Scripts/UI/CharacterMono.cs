@@ -40,6 +40,6 @@ public class CharacterMono : MonoBehaviour
                 AbilitiesView.SetActive(true);
                 break;
         }
-        Services.WorldUIService.UpdateUI();
+        //Services.WorldUIService.UpdateUI();
     }
 }

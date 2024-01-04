@@ -51,18 +51,20 @@ public static class UIUtility
 
     public static List<GameObject> CreatePlayerInventories(Transform parent)
     {
-        if (m_Inventories.Count > 0)
-            ClosePlayerInventory();
+        return new List<GameObject>();
 
-        m_Inventories = new List<GameObject>();
-        GameObject inventory = Resources.Load<GameObject>("Prefabs/UI/Inventory");
-        //foreach (string id in Services.WorldDataQuery.GetPlayableCharacters())
-        //{
-            GameObject go = GameObject.Instantiate(inventory);
-            go.GetComponent<InventoryManagerMono>().Setup(Services.PlayerManagerService.GetActivePlayer());
-            go.transform.SetParent(parent, false);
-            m_Inventories.Add(go);
-        //}
-        return m_Inventories;
+        //if (m_Inventories.Count > 0)
+        //    ClosePlayerInventory();
+
+        //m_Inventories = new List<GameObject>();
+        //GameObject inventory = Resources.Load<GameObject>("Prefabs/UI/Inventory");
+        ////foreach (string id in Services.WorldDataQuery.GetPlayableCharacters())
+        ////{
+        //    GameObject go = GameObject.Instantiate(inventory);
+        //    go.GetComponent<InventoryManagerMono>().Setup(Services.PlayerManagerService.GetActivePlayer());
+        //    go.transform.SetParent(parent, false);
+        //    m_Inventories.Add(go);
+        ////}
+        //return m_Inventories;
     }
 }

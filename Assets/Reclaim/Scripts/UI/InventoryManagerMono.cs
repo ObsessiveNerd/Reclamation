@@ -44,44 +44,44 @@ public class InventoryManagerMono : UpdatableUI, IDropHandler
 
     public override void UpdateUI()
     {
-        Cleanup();
-        Name.text = Source.Name;
+        //Cleanup();
+        //Name.text = Source.Name;
 
-        GameEvent getSprite = GameEventPool.Get(GameEventId.GetSprite)
-                                            .With(EventParameter.RenderSprite, null);
-        CharacterImage.sprite = Source.FireEvent(getSprite).GetValue<Sprite>(EventParameter.RenderSprite);
-        getSprite.Release();
+        //GameEvent getSprite = GameEventPool.Get(GameEventId.GetSprite)
+        //                                    .With(EventParameter.RenderSprite, null);
+        //CharacterImage.sprite = Source.FireEvent(getSprite).GetValue<Sprite>(EventParameter.RenderSprite);
+        //getSprite.Release();
 
-        List<GameObject> inventory = new List<GameObject>();
-        Dictionary<GameObject, GameObject> itemToPlayerSource = new Dictionary<GameObject, GameObject>();
-        foreach (var player in Services.PlayerManagerService.GetAllPlayers())
-        {
-            GameEvent getCurrentInventory = GameEventPool.Get(GameEventId.GetCurrentInventory)
-                                            .With(EventParameter.Value, new List<GameObject>());
+        //List<GameObject> inventory = new List<GameObject>();
+        //Dictionary<GameObject, GameObject> itemToPlayerSource = new Dictionary<GameObject, GameObject>();
+        //foreach (var player in Services.PlayerManagerService.GetAllPlayers())
+        //{
+        //    GameEvent getCurrentInventory = GameEventPool.Get(GameEventId.GetCurrentInventory)
+        //                                    .With(EventParameter.Value, new List<GameObject>());
 
-            var items = player.FireEvent(getCurrentInventory).GetValue<List<GameObject>>(EventParameter.Value);
-            foreach (var item in items)
-                itemToPlayerSource.Add(item, player);
-            inventory.AddRange(items);
-            getCurrentInventory.Release();
-        }
+        //    var items = player.FireEvent(getCurrentInventory).GetValue<List<GameObject>>(EventParameter.Value);
+        //    foreach (var item in items)
+        //        itemToPlayerSource.Add(item, player);
+        //    inventory.AddRange(items);
+        //    getCurrentInventory.Release();
+        //}
 
-        inventory = Filter(inventory);
-        inventory.Sort(new EntityComparer());
+        //inventory = Filter(inventory);
+        //inventory.Sort(new EntityComparer());
 
-        foreach (var item in inventory)
-        {
-            if (!m_Items.ContainsKey(item))
-            {
-                if(item.HasComponent(typeof(Stackable)))
-                {
-                    if(!m_Items.Keys.Any(k => k.Name == item.Name))
-                       m_Items.Add(item, UIUtility.CreateItemGameObject(itemToPlayerSource[item], item, InventoryView));
-                }
-                else
-                    m_Items.Add(item, UIUtility.CreateItemGameObject(itemToPlayerSource[item], item, InventoryView));
-            }
-        }
+        //foreach (var item in inventory)
+        //{
+        //    if (!m_Items.ContainsKey(item))
+        //    {
+        //        if(item.HasComponent(typeof(Stackable)))
+        //        {
+        //            if(!m_Items.Keys.Any(k => k.Name == item.Name))
+        //               m_Items.Add(item, UIUtility.CreateItemGameObject(itemToPlayerSource[item], item, InventoryView));
+        //        }
+        //        else
+        //            m_Items.Add(item, UIUtility.CreateItemGameObject(itemToPlayerSource[item], item, InventoryView));
+        //    }
+        //}
     }
 
     public void Close()
@@ -91,57 +91,57 @@ public class InventoryManagerMono : UpdatableUI, IDropHandler
 
     public void OnDrop(PointerEventData eventData)
     {
-        if (eventData.pointerDrag == null || eventData.pointerDrag.GetComponent<InventoryItemMono>() == null)
-            return;
+        //if (eventData.pointerDrag == null || eventData.pointerDrag.GetComponent<InventoryItemMono>() == null)
+        //    return;
 
-        eventData.pointerDrag.GetComponent<InventoryItemMono>().AllowConxtMenuOptions = true;
-        GameObject source = eventData.pointerDrag.GetComponent<InventoryItemMono>().Source;
-        GameObject item = eventData.pointerDrag.GetComponent<InventoryItemMono>().ItemObject;
+        //eventData.pointerDrag.GetComponent<InventoryItemMono>().AllowConxtMenuOptions = true;
+        //GameObject source = eventData.pointerDrag.GetComponent<InventoryItemMono>().Source;
+        //GameObject item = eventData.pointerDrag.GetComponent<InventoryItemMono>().ItemObject;
 
-        GameEvent getBodyPartForEquipment = GameEventPool.Get(GameEventId.GetBodyPartType)
-            .With(EventParameter.BodyPart, BodyPart.None);
-        item.FireEvent(getBodyPartForEquipment);
-        BodyPart equipmentBodyPart = getBodyPartForEquipment.GetValue<BodyPart>(EventParameter.BodyPart);
-        getBodyPartForEquipment.Release();
+        //GameEvent getBodyPartForEquipment = GameEventPool.Get(GameEventId.GetBodyPartType)
+        //    .With(EventParameter.BodyPart, BodyPart.None);
+        //item.FireEvent(getBodyPartForEquipment);
+        //BodyPart equipmentBodyPart = getBodyPartForEquipment.GetValue<BodyPart>(EventParameter.BodyPart);
+        //getBodyPartForEquipment.Release();
 
-        if (equipmentBodyPart != BodyPart.None)
-        {
-            GameEvent unEquip = GameEventPool.Get(GameEventId.Unequip)
-                .With(EventParameter.Entity, source.ID)
-                .With(EventParameter.EntityType, equipmentBodyPart)
-                .With(EventParameter.Item, item.ID);
+        //if (equipmentBodyPart != BodyPart.None)
+        //{
+        //    GameEvent unEquip = GameEventPool.Get(GameEventId.Unequip)
+        //        .With(EventParameter.Entity, source.ID)
+        //        .With(EventParameter.EntityType, equipmentBodyPart)
+        //        .With(EventParameter.Item, item.ID);
 
-            source.FireEvent(unEquip);
-            unEquip.Release();
-        }
+        //    source.FireEvent(unEquip);
+        //    unEquip.Release();
+        //}
 
-        if (source != Source)
-        {
-            GameEvent removeFromInventory = GameEventPool.Get(GameEventId.RemoveFromInventory)
-                                        .With(EventParameter.Item, item.ID);
-            source.FireEvent(removeFromInventory);
-            removeFromInventory.Release();
-            //Services.WorldUIService.UpdateUI(source.ID);
-        }
+        //if (source != Source)
+        //{
+        //    GameEvent removeFromInventory = GameEventPool.Get(GameEventId.RemoveFromInventory)
+        //                                .With(EventParameter.Item, item.ID);
+        //    source.FireEvent(removeFromInventory);
+        //    removeFromInventory.Release();
+        //    //Services.WorldUIService.UpdateUI(source.ID);
+        //}
 
-        GameEvent addToInventory = GameEventPool.Get(GameEventId.AddToInventory)
-                                    .With(EventParameter.Entity, item.ID);
-        Source.FireEvent(addToInventory);
-        addToInventory.Release();
+        //GameEvent addToInventory = GameEventPool.Get(GameEventId.AddToInventory)
+        //                            .With(EventParameter.Entity, item.ID);
+        //Source.FireEvent(addToInventory);
+        //addToInventory.Release();
 
-        if (!m_Items.ContainsKey(item))
-        {
-            Debug.Log($"Item {item.Name} is getting added to inventory");
-            m_Items.Add(item, eventData.pointerDrag);
-        }
-        else
-        {
-            Debug.Log($"Destroy {item.Name}");
-            Destroy(eventData.pointerDrag);
-        }
+        //if (!m_Items.ContainsKey(item))
+        //{
+        //    Debug.Log($"Item {item.Name} is getting added to inventory");
+        //    m_Items.Add(item, eventData.pointerDrag);
+        //}
+        //else
+        //{
+        //    Debug.Log($"Destroy {item.Name}");
+        //    Destroy(eventData.pointerDrag);
+        //}
 
-        ItemDropped?.Invoke();
-        Services.WorldUIService.UpdateUI();
+        //ItemDropped?.Invoke();
+        //Services.WorldUIService.UpdateUI();
     }
 
     public void FilterShownEquipment(string filter)
@@ -152,48 +152,48 @@ public class InventoryManagerMono : UpdatableUI, IDropHandler
 
     List<GameObject> Filter(List<GameObject> allEquipment)
     {
-        switch (m_ActiveFilter)
-        {
-            case "All":
-                //Do nothing
-                break;
-            case "Armor":
-                allEquipment = allEquipment.Where(e => e.HasComponent(typeof(Armor))).ToList();
-                break;
-            case "Weapons":
-                allEquipment = allEquipment.Where(e => e.HasComponent(typeof(WeaponType))).ToList();
-                break;
-            case "SpellEquipment":
-                allEquipment = allEquipment.Where(e => e.HasComponent(typeof(SpellContainer))).ToList();
-                break;
-            case "Trinkets":
-                allEquipment = allEquipment.Where(e =>
-                {
-                    if (e.HasComponent(typeof(Equipment)) && (e.GetComponent<Equipment>().PreferredBodyPartWhenEquipped == BodyPart.Finger || e.GetComponent<Equipment>().PreferredBodyPartWhenEquipped == BodyPart.Neck))
-                        return true;
-                    return false;
-                }).ToList();
-                break;
-            case "Cloaks":
-                allEquipment = allEquipment.Where(e =>
-                {
-                    if (e.HasComponent(typeof(Equipment)) && e.GetComponent<Equipment>().PreferredBodyPartWhenEquipped == BodyPart.Back)
-                        return true;
-                    return false;
-                }).ToList();
-                break;
-            case "Shields":
-                allEquipment = allEquipment.Where(e =>
-                {
-                    if (e.HasComponent(typeof(Armor)) && e.HasComponent(typeof(Equipment)) && e.GetComponent<Equipment>().PreferredBodyPartWhenEquipped == BodyPart.Arm)
-                        return true;
-                    return false;
-                }).ToList();
-                break;
-            case "Potions":
-                allEquipment = allEquipment.Where(e => e.HasComponent(typeof(Potion))).ToList();
-                break;
-        }
+        //switch (m_ActiveFilter)
+        //{
+        //    case "All":
+        //        //Do nothing
+        //        break;
+        //    case "Armor":
+        //        allEquipment = allEquipment.Where(e => e.HasComponent(typeof(Armor))).ToList();
+        //        break;
+        //    case "Weapons":
+        //        allEquipment = allEquipment.Where(e => e.HasComponent(typeof(WeaponType))).ToList();
+        //        break;
+        //    case "SpellEquipment":
+        //        allEquipment = allEquipment.Where(e => e.HasComponent(typeof(SpellContainer))).ToList();
+        //        break;
+        //    case "Trinkets":
+        //        allEquipment = allEquipment.Where(e =>
+        //        {
+        //            if (e.HasComponent(typeof(Equipment)) && (e.GetComponent<Equipment>().PreferredBodyPartWhenEquipped == BodyPart.Finger || e.GetComponent<Equipment>().PreferredBodyPartWhenEquipped == BodyPart.Neck))
+        //                return true;
+        //            return false;
+        //        }).ToList();
+        //        break;
+        //    case "Cloaks":
+        //        allEquipment = allEquipment.Where(e =>
+        //        {
+        //            if (e.HasComponent(typeof(Equipment)) && e.GetComponent<Equipment>().PreferredBodyPartWhenEquipped == BodyPart.Back)
+        //                return true;
+        //            return false;
+        //        }).ToList();
+        //        break;
+        //    case "Shields":
+        //        allEquipment = allEquipment.Where(e =>
+        //        {
+        //            if (e.HasComponent(typeof(Armor)) && e.HasComponent(typeof(Equipment)) && e.GetComponent<Equipment>().PreferredBodyPartWhenEquipped == BodyPart.Arm)
+        //                return true;
+        //            return false;
+        //        }).ToList();
+        //        break;
+        //    case "Potions":
+        //        allEquipment = allEquipment.Where(e => e.HasComponent(typeof(Potion))).ToList();
+        //        break;
+        //}
 
         return allEquipment;
     }
