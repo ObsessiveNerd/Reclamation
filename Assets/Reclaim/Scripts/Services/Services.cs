@@ -26,6 +26,8 @@ public static class Services
         Ready = true;
     }
 
+    public static Map Map { get { return GetInstance<Map>(); } }
+
     //public static WorldSpawner SpawnerService { get { return GetInstance<WorldSpawner>(); } }
     //public static GameSaveSystem SaveAndLoadService { get { return GetInstance<GameSaveSystem>(); } }
     //public static DungeonManager DungeonService { get { return GetInstance<DungeonManager>(); } }

@@ -21,6 +21,15 @@ public class Move : EntityComponent
         MoveDirection direction = (MoveDirection)gameEvent.Paramters[EventParameter.InputDirection];
         Debug.Log(direction.ToString());
 
+        var position = GetComponent<Position>();
+        var desiredPosition = Services.Map.GetTilePointInDirection(position.Point, direction);
+
+        //Do checks
+
+        var afterMoving = GameEventPool.Get(GameEventId.MoveEntity)
+            .With(EventParameter.TilePosition, desiredPosition);
+        gameObject.FireEvent(afterMoving).Release();
+
         //Point startPosition = Services.EntityMapService.GetPointWhereEntityIs(gameObject);
         //if (startPosition == Point.InvalidPoint)
         //    return;
