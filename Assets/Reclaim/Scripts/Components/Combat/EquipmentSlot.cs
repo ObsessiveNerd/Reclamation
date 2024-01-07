@@ -6,26 +6,28 @@ using UnityEngine;
 public class EquipmentSlot : EntityComponent
 {
     public GameObject Equipment;
+    public bool CanEquip = true;
+    public BodyPart BodyPart;
 
     public void Start()
     {
-        RegisteredEvents.Add(GameEventId.GetImmunity, PassEventToEquipment);
-        RegisteredEvents.Add(GameEventId.GetResistances, PassEventToEquipment);
-        RegisteredEvents.Add(GameEventId.AddArmorValue, PassEventToEquipment);
-        RegisteredEvents.Add(GameEventId.GetSpells, PassEventToEquipment);
-        RegisteredEvents.Add(GameEventId.GetWeapon, GetEquipment);
-        RegisteredEvents.Add(GameEventId.GetEquipment, GetEquipment);
-        RegisteredEvents.Add(GameEventId.ItemEquipped, ItemEquipped);
-        //RegisteredEvents.Add(GameEventId.Equip);
-        RegisteredEvents.Add(GameEventId.Unequip, Unequip);
-        //RegisteredEvents.Add(GameEventId.CheckEquipment);
-        //RegisteredEvents.Add(GameEventId.GetCombatRating);
-        RegisteredEvents.Add(GameEventId.PerformAttack, PerformAttack);
-        RegisteredEvents.Add(GameEventId.Drop, Drop);
-        RegisteredEvents.Add(GameEventId.Died, Died);
-        RegisteredEvents.Add(GameEventId.GetBodyPartType, GetBodyPartType);
-        RegisteredEvents.Add(GameEventId.CheckItemEquiped, CheckItemEquiped);
-        RegisteredEvents.Add(GameEventId.EndTurn, EndTurn);
+        //RegisteredEvents.Add(GameEventId.GetImmunity, PassEventToEquipment);
+        //RegisteredEvents.Add(GameEventId.GetResistances, PassEventToEquipment);
+        //RegisteredEvents.Add(GameEventId.AddArmorValue, PassEventToEquipment);
+        //RegisteredEvents.Add(GameEventId.GetSpells, PassEventToEquipment);
+        //RegisteredEvents.Add(GameEventId.GetWeapon, GetEquipment);
+        //RegisteredEvents.Add(GameEventId.GetEquipment, GetEquipment);
+        //RegisteredEvents.Add(GameEventId.ItemEquipped, ItemEquipped);
+        ////RegisteredEvents.Add(GameEventId.Equip);
+        //RegisteredEvents.Add(GameEventId.Unequip, Unequip);
+        ////RegisteredEvents.Add(GameEventId.CheckEquipment);
+        ////RegisteredEvents.Add(GameEventId.GetCombatRating);
+        ////RegisteredEvents.Add(GameEventId.PerformMeleeAttack, PerformMeleeAttack);
+        //RegisteredEvents.Add(GameEventId.Drop, Drop);
+        //RegisteredEvents.Add(GameEventId.Died, Died);
+        //RegisteredEvents.Add(GameEventId.GetBodyPartType, GetBodyPartType);
+        //RegisteredEvents.Add(GameEventId.CheckItemEquiped, CheckItemEquiped);
+        //RegisteredEvents.Add(GameEventId.EndTurn, EndTurn);
     }
 
     void PassEventToEquipment(GameEvent gameEvent)
@@ -86,9 +88,25 @@ public class EquipmentSlot : EntityComponent
             Equipment = null;
         }
     }
-    public void PerformAttack(GameEvent gameEvent)
+    public void PerformMeleeAttack(GameEvent gameEvent)
     {
-    
+        if(Equipment != null)
+        {
+            Dice d20 = new Dice("1d20");
+            var meleeDamage = Equipment.GetComponents<MeleeDamage>();
+            var damageTotals = gameEvent.GetValue<List<Damage>>(EventParameter.DamageList);
+            foreach (var melee in meleeDamage)
+            {
+                int roll = d20.Roll();
+                int amount = melee.DamageAmount.Roll();
+                damageTotals.Add(new Damage()
+                {
+                    RollToHit = roll,
+                    DamageAmount = amount,
+                    Type = melee.DamageType
+                });
+            }
+        }
     }
     public void Drop(GameEvent gameEvent)
     {

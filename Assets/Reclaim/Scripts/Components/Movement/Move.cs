@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 public class Move : EntityComponent
 {
+    public MovementBlockFlag MovementFlags;
     readonly float m_EnergyRequired = 1f;
     bool m_StopMovement = false;
 
@@ -22,13 +24,38 @@ public class Move : EntityComponent
         Debug.Log(direction.ToString());
 
         var position = GetComponent<Position>();
-        var desiredPosition = Services.Map.GetTilePointInDirection(position.Point, direction);
+        var desiredPosition = Services.Map.GetTilePointInDirection(position.Point.Value, direction);
 
-        //Do checks
+        var currentTile = Services.Map.GetTile(position.Point.Value);
+        var desiredTile = Services.Map.GetTile(desiredPosition);
 
-        var afterMoving = GameEventPool.Get(GameEventId.MoveEntity)
-            .With(EventParameter.TilePosition, desiredPosition);
-        gameObject.FireEvent(afterMoving).Release();
+        bool canMove = true;
+        if ((desiredTile.BlocksMovementFlags & MovementFlags) != 0)
+        {
+            //Attempt to interact
+            var interact = GameEventPool.Get(GameEventId.Interact)
+                .With(EventParameter.Source, gameObject);
+            desiredTile.FireEvent(interact);
+            canMove = false;
+            interact.Release();
+        }
+
+        //var beforeMoving = GameEventPool.Get(GameEventId.BeforeMoving)
+        //    .With(EventParameter.TileInSight, desiredPosition)
+        //    .With(EventParameter.CanMove, true);
+        //gameObject.FireEvent(beforeMoving);
+
+        var move = GameEventPool.Get(GameEventId.MoveEntity)
+                .With(EventParameter.TilePosition, desiredPosition)
+                .With(EventParameter.CanMove, canMove);
+        gameObject.FireEvent(move);
+        move.Release();
+
+        if(canMove)
+        {
+            currentTile.RemoveObject(gameObject);
+            desiredTile.AddObject(gameObject);
+        }
 
         //Point startPosition = Services.EntityMapService.GetPointWhereEntityIs(gameObject);
         //if (startPosition == Point.InvalidPoint)

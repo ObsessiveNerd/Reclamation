@@ -22,7 +22,7 @@ public class Health : EntityComponent
 
     public void Start()
     {
-        RegisteredEvents.Add(GameEventId.TakeDamage, TakeDamage);
+        RegisteredEvents.Add(GameEventId.ApplyDamage, ApplyDamage);
         RegisteredEvents.Add(GameEventId.StatBoosted, StatBoosted);
         RegisteredEvents.Add(GameEventId.AddMaxHealth, AddMaxHealth);
         RegisteredEvents.Add(GameEventId.RemoveMaxHealth, RemoveMaxHealth);
@@ -34,40 +34,20 @@ public class Health : EntityComponent
         //RegisteredEvents.Add(GameEventId.Rest);
     }
 
-    void TakeDamage(GameEvent gameEvent)
+    void ApplyDamage(GameEvent gameEvent)
     {
-        foreach (var damage in (List<Damage>)gameEvent.Paramters[EventParameter.DamageList])
+        StartCoroutine(FlickerRed());
+    }
+
+    IEnumerator FlickerRed()
+    {
+        var spriteRenderer = GetComponent<SpriteRenderer>();
+        for (int i = 0; i < 5; i++)
         {
-            RecLog.Log($"{gameObject.name} took {damage.DamageAmount} damage of type {damage.DamageType}");
-            CurrentHealth -= damage.DamageAmount;
-
-            GameObject weapon = gameEvent.GetValue<GameObject>(EventParameter.Attack);
-            GameEvent dealtDamage = GameEventPool.Get(GameEventId.DealtDamage)
-                                        .With(EventParameter.DamageSource, gameEvent.GetValue<GameObject>(EventParameter.DamageSource))
-                                        .With(EventParameter.Damage, damage);
-            weapon.FireEvent(dealtDamage).Release();
-
-            //GameEvent playTakeDamageClip = GameEventPool.Get(GameEventId.Playsound)
-            //                                    .With(EventParameter.SoundSource, Self.ID)
-            //                                    .With(EventParameter.Key, SoundKey.AttackHit);
-            //weapon.FireEvent(playTakeDamageClip);
-
-            //playTakeDamageClip.Release();
-
-            //Services.WorldUIService.EntityTookDamage(gameObject, damage.DamageAmount);
-
-            //if (CurrentHealth <= 0)
-            //{
-            //    GameEvent playDeathSound = GameEventPool.Get(GameEventId.Playsound)
-            //                                    .With(EventParameter.SoundSource, gameObject)
-            //                                    .With(EventParameter.Key, SoundKey.Died);
-            //    gameObject.FireEvent(playDeathSound, true).Release();
-
-            //    gameObject.FireEvent(GameEventPool.Get(GameEventId.Died)
-            //        .With(EventParameter.DamageSource, gameEvent.GetValue<string>(EventParameter.DamageSource)), true).Release();
-            //    Services.SpawnerService.RegisterForDespawn(gameObject);
-            //    break;
-            //}
+            spriteRenderer.color = Color.red;
+            yield return new WaitForSeconds(0.1f);
+            spriteRenderer.color = Color.white;
+            yield return new WaitForSeconds(0.1f);
         }
     }
 

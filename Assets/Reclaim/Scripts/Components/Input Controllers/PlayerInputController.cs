@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 public class PlayerInputController : InputControllerBase
@@ -16,6 +17,9 @@ public class PlayerInputController : InputControllerBase
 
     void Update()
     {
+        if (!IsOwner)
+            return;
+
         MoveDirection desiredDirection = InputUtility.GetMoveDirection();
         if (desiredDirection != MoveDirection.None)
         {

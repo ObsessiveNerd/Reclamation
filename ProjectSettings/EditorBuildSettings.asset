@@ -5,13 +5,16 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Reclaim/Scenes/Title.unity
     guid: 3c28f9d494aca654eb0e999dc0adb65d
-  - enabled: 1
+  - enabled: 0
     path: Assets/Reclaim/Scenes/Dungeon.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
-  - enabled: 1
+  - enabled: 0
     path: Assets/Reclaim/Scenes/CharacterCreation.unity
     guid: ae38d84d0ae55694fbffb61148dc21ee
+  - enabled: 1
+    path: Assets/Reclaim/Scenes/ContentCreation.unity
+    guid: e3b05073fcbea2c4abcce420aba80375
   m_configObjects: {}

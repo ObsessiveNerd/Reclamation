@@ -23,7 +23,7 @@ public class Dice
 
     public int Roll()
     {
-        int total = RecRandom.Instance.GetRandomValue(m_AmountOfDice, m_AmountOfDice * m_DAmount);
+        int total = UnityEngine.Random.Range(m_AmountOfDice, m_AmountOfDice * m_DAmount + 1); //RecRandom.Instance.GetRandomValue(m_AmountOfDice, m_AmountOfDice * m_DAmount);
         total += m_Modifiers;
         return total;
     }

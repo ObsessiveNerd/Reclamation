@@ -93,7 +93,7 @@ public class KeyInputBinder //: EscapeableMono
     public static KeyCode GetKeyCodeForAction(RequestedAction action)
     {
         if (m_Data == null)
-            m_Data = new InputKeyBindData(InputKeyBindData.InputDefaultType.FullKeyboard);
+            m_Data = new InputKeyBindData(InputKeyBindData.InputDefaultType.Laptop);
 
         string actionName = action.ToString();
 

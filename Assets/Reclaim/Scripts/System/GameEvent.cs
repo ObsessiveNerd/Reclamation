@@ -1,6 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
+using Unity.Netcode;
 using UnityEngine;
 
 public static class SoundKey
@@ -19,6 +22,8 @@ public static class SoundKey
 public enum GameEventId
 {
     None = 0,
+
+    CalculateTileFlags,
 
     //AI
     GetActionToTake,
@@ -185,9 +190,10 @@ public enum GameEventId
 
     //Combat
     AmAttacking,
-    PerformAttack,
+    PerformMeleeAttack,
     RollToHit,
-    TakeDamage,
+    ApplyDamage,
+    DamageTaken,
     DealtDamage,
     Died,
     RestoreHealth,
@@ -292,12 +298,14 @@ public enum GameEventId
 
 }
 
+[Serializable]
 public enum EventParameter
 {
     InputDirection,
     Flag,
     Faction,
     TakeTurn,
+    CanMove,
     UpdateWorldView,
     CleanupComponents,
     RemainingEnergy,
@@ -325,6 +333,7 @@ public enum EventParameter
     Attack,
     Color,
     Damage,
+    DamageAmount,
     SoundSource,
     Source,
     DamageSource,
@@ -349,7 +358,8 @@ public enum EventParameter
     VisibleTiles,
     HasBeenVisited,
     FOVRange,
-    BlocksMovement,
+    BlocksMovementFlags,
+    BlocksVision,
     Weight,
     StartPos,
     EndPos,
@@ -393,10 +403,8 @@ public enum EventParameter
 }
 
 [Serializable]
-public class GameEventSerializable
+public struct GameEventSerializable
 {
-    [SerializeField]
-    public string TargetEntityId;
     [SerializeField]
     public GameEventId Id;
     [SerializeField]
@@ -404,9 +412,9 @@ public class GameEventSerializable
     [SerializeField]
     public List<string> ParameterValues;
 
-    public GameEventSerializable(string targetId, GameEvent ge)
+    public GameEventSerializable(/*string targetId, */GameEvent ge)
     {
-        TargetEntityId = targetId;
+        //TargetEntityId = targetId;
         Id = ge.ID;
         ParameterKeys = new List<EventParameter>();
         ParameterValues = new List<string>();
@@ -428,20 +436,21 @@ public class GameEventSerializable
     }
 }
 
-public class GameEvent
+public class GameEvent : INetworkSerializable
 {
     public bool Locked = false;
-    public bool ContinueProcessing;
+    //public bool ContinueProcessing;
     public GameEventId ID { get { return m_ID; } }
     GameEventId m_ID { get; set; }
 
     public Dictionary<EventParameter, object> Paramters { get { return m_Parameters; } }
     Dictionary<EventParameter, object> m_Parameters = new Dictionary<EventParameter, object>();
 
+    GameEventSerializable m_GameEventSerializable = default;
     public GameEvent(GameEventId id)
     {
         m_ID = id;
-        ContinueProcessing = true;
+        //ContinueProcessing = true;
     }
 
     public GameEvent SetId(GameEventId id)
@@ -494,7 +503,7 @@ public class GameEvent
     public void SetValue<T>(EventParameter parameterId, T newValue)
     {
         if (m_Parameters.TryGetValue(parameterId, out object value))
-            m_Parameters[parameterId] = value;
+            m_Parameters[parameterId] = newValue;
     }
 
     public void Release()
@@ -508,8 +517,15 @@ public class GameEvent
 
     public void Clean()
     {
-        ContinueProcessing = true;
+        //ContinueProcessing = true;
         m_ID = GameEventId.None;
         m_Parameters.Clear();
+        m_GameEventSerializable = default;
+    }
+
+    public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
+    {
+        m_GameEventSerializable = new GameEventSerializable(this);
+        //serializer.SerializeValue(ref m_GameEventSerializable);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 public interface IComponent
@@ -11,7 +12,7 @@ public interface IComponent
     void HandleEvent(GameEvent gameEvent);
 }
 
-public class EntityComponent : MonoBehaviour, IComponent
+public class EntityComponent : NetworkBehaviour, IComponent
 {
     private Dictionary<GameEventId, Action<GameEvent>> m_RegisteredEvents;
     public Dictionary<GameEventId, Action<GameEvent>> RegisteredEvents

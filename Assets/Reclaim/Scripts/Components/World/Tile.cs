@@ -2,8 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
+using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 //public class PointComparer : IEqualityComparer<Point>
 //{
@@ -19,7 +22,7 @@ using UnityEngine;
 //}
 
 [Serializable]
-public struct Point
+public struct Point : INetworkSerializable
 {
     public static readonly Point InvalidPoint = new Point(-1, -1);
 
@@ -101,6 +104,12 @@ public struct Point
     {
         return $"{x},{y}";
     }
+
+    public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
+    {
+        serializer.SerializeValue(ref m_x);
+        serializer.SerializeValue(ref m_y);
+    }
 }
 
 public class Tile : MonoBehaviour
@@ -108,18 +117,43 @@ public class Tile : MonoBehaviour
     HashSet<GameObject> Objects = new HashSet<GameObject>();
 
     public float Weight;
-    public bool BlocksMovement;
+    public MovementBlockFlag BlocksMovementFlags;
     public bool BlocksVision;
 
     public void AddObject(GameObject obj)
     {
         Objects.Add(obj);
-        //Recheck Weight, Movement, and Vision
+        Debug.Log($"{obj.name} added to Tile!");
+        Recalculate();
     }
 
     public void RemoveObject(GameObject obj)
     {
         Objects.Remove(obj);
-        //Recheck Weight, Movement, and Vision
+        Debug.Log($"{obj.name} removed from Tile!");
+        Recalculate();
+    }
+
+    public void FireEvent(GameEvent gameEvent)
+    {
+        foreach (var go in Objects)
+            go.FireEvent(gameEvent);
+    }
+
+    void Recalculate()
+    {
+        var tileData = GameEventPool.Get(GameEventId.CalculateTileFlags)
+            .With(EventParameter.Weight, 1f)
+            .With(EventParameter.BlocksMovementFlags, MovementBlockFlag.None)
+            .With(EventParameter.BlocksVision, false);
+
+        foreach (var go in Objects)
+            go.FireEvent(tileData);
+
+        Weight = tileData.GetValue<float>(EventParameter.Weight);
+        BlocksMovementFlags = tileData.GetValue<MovementBlockFlag>(EventParameter.BlocksMovementFlags);
+        BlocksVision = tileData.GetValue<bool>(EventParameter.BlocksVision);
+
+        tileData.Release();
     }
 }

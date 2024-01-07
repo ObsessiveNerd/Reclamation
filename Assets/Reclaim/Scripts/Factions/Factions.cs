@@ -18,27 +18,6 @@ public enum FactionId
     Undead
 }
 
-public class Faction : EntityComponent
-{
-    public FactionId ID;
-
-    public void Start()
-    {
-        RegisteredEvents.Add(GameEventId.GetFaction, GetFaction);
-        RegisteredEvents.Add(GameEventId.SetFaction, SetFaction);
-    }
-
-    void GetFaction(GameEvent gameEvent)
-    {
-        gameEvent.Paramters[EventParameter.Value] = this;
-    }
-
-    void SetFaction(GameEvent gameEvent)
-    {
-        ID = gameEvent.GetValue<FactionId>(EventParameter.Faction);
-    }
-}
-
 public enum Demeanor
 {
     None = 0,

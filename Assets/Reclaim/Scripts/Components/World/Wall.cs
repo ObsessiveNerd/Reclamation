@@ -19,7 +19,9 @@ public class Wall : EntityComponent
 
     void PathfindingData(GameEvent gameEvent)
     {
-        gameEvent.Paramters[EventParameter.BlocksMovement] = true;
+        var flags = gameEvent.GetValue<MovementBlockFlag>(EventParameter.BlocksMovementFlags);
+        flags |= MovementBlockFlag.All;
+        gameEvent.SetValue<MovementBlockFlag>(EventParameter.BlocksMovementFlags, flags);
         gameEvent.Paramters[EventParameter.Weight] = Pathfinder.ImpassableWeight;
     }
 }

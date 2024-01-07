@@ -82,7 +82,7 @@ public class AStar : IPathfindingAlgorithm
 
         GameEvent getPathData = GameEventPool.Get(GameEventId.PathfindingData)
                                     //.With(EventParameters.TilePosition, new Point(start.x, start.y))
-                                    .With(EventParameter.BlocksMovement, false)
+                                    .With(EventParameter.BlocksMovementFlags, MovementBlockFlag.None)
                                     .With(EventParameter.Weight, 1f);
 
         Tile t = null; //Services.TileInteractionService.GetTile(new Point(start.x, start.y));
@@ -91,7 +91,7 @@ public class AStar : IPathfindingAlgorithm
         //t.GetPathFindingData(getPathData);
 
         float weight = 0f;
-        if (m_OnlyIncludeBlocksMovement && getPathData.GetValue<bool>(EventParameter.BlocksMovement))
+        if (m_OnlyIncludeBlocksMovement && getPathData.GetValue<bool>(EventParameter.BlocksMovementFlags))
             weight = Pathfinder.ImpassableWeight;
         else if (!m_OnlyIncludeBlocksMovement)
             weight = getPathData.GetValue<float>(EventParameter.Weight);
