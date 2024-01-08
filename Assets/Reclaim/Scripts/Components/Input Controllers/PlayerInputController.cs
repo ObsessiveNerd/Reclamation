@@ -5,16 +5,6 @@ using UnityEngine;
 
 public class PlayerInputController : InputControllerBase
 {
-    public void Start()
-    {
-        
-        //RegisteredEvents.Add(GameEventId.UpdateEntity, UpdateEntity);
-
-        //RegisteredEvents.Add(GameEventId.OpenUI);
-        //RegisteredEvents.Add(GameEventId.GetSprite);
-        //RegisteredEvents.Add(GameEventId.AlterSprite);
-    }
-
     void Update()
     {
         if (!IsOwner)
@@ -25,6 +15,16 @@ public class PlayerInputController : InputControllerBase
         {
             gameObject.FireEvent(GameEventPool.Get(GameEventId.MoveKeyPressed)
                         .With(EventParameter.InputDirection, desiredDirection), true).Release();
+        }
+
+        if(KeyInputBinder.PerformRequestedAction(RequestedAction.InteractWithCurrentTile))
+        {
+            Position pos = GetComponent<Position>();
+            Tile currentTile = Services.Map.GetTile(pos.Point.Value);
+            var interact = GameEventPool.Get(GameEventId.Interact)
+                .With(EventParameter.Source, gameObject);
+            currentTile.FireEvent(interact);
+            interact.Release();
         }
     }
 

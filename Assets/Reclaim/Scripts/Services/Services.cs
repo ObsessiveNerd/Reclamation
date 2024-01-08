@@ -8,23 +8,23 @@ public static class Services
 {
     public static bool Ready { get; set; }
 
-    public static void Reset()
-    {
-        Ready = false;
-        InitComplete = Completed;
-    }
+    //public static void Reset()
+    //{
+    //    Ready = false;
+    //    InitComplete = Completed;
+    //}
 
-    public static void Complete()
-    {
-        InitComplete.Invoke(null, null);
-        InitComplete = null;
-    }
+    //public static void Complete()
+    //{
+    //    InitComplete.Invoke(null, null);
+    //    InitComplete = null;
+    //}
 
-    public static event EventHandler InitComplete = Completed;
-    private static void Completed(object sender, EventArgs args)
-    {
-        Ready = true;
-    }
+    //public static event EventHandler InitComplete = Completed;
+    //private static void Completed(object sender, EventArgs args)
+    //{
+    //    Ready = true;
+    //}
 
     public static Map Map { get { return GetInstance<Map>(); } }
 

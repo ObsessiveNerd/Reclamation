@@ -90,7 +90,7 @@ public class EquipmentSlot : EntityComponent
     }
     public void PerformMeleeAttack(GameEvent gameEvent)
     {
-        if(Equipment != null)
+        if (Equipment != null)
         {
             Dice d20 = new Dice("1d20");
             var meleeDamage = Equipment.GetComponents<MeleeDamage>();
@@ -108,6 +108,7 @@ public class EquipmentSlot : EntityComponent
             }
         }
     }
+
     public void Drop(GameEvent gameEvent)
     {
     

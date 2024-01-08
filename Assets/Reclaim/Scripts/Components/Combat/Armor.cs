@@ -8,13 +8,7 @@ public class Armor : EntityComponent
     public int ArmorAmount;
     public void Start()
     {
-        RegisteredEvents.Add(GameEventId.AddArmorValue, AddArmorValue);
         RegisteredEvents.Add(GameEventId.GetInfo, GetInfo);
-    }
-
-    void AddArmorValue(GameEvent gameEvent)
-    {
-        gameEvent.Paramters[EventParameter.Value] = (int)gameEvent.Paramters[EventParameter.Value] + ArmorAmount;
     }
 
     void GetInfo(GameEvent gameEvent)

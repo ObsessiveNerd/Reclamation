@@ -3,6 +3,6 @@ using UnityEngine;
 
 public class MeleeDamage : EntityComponent
 {
-    public Dice DamageAmount;
-    public DamageType DamageType;
+    public Dice DamageAmount = new Dice("1d1");
+    public DamageType DamageType = DamageType.None;
 }

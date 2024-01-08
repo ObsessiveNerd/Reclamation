@@ -121,22 +121,52 @@ public class Tile : MonoBehaviour
     public bool BlocksVision;
 
     public void AddObject(GameObject obj)
+    //{
+    //    if (IsOwner)
+    //        AddObjectServerRpc(obj.GetComponent<NetworkObject>().NetworkObjectId);
+    //}
+
+    //[ServerRpc]
+    //void AddObjectServerRpc(ulong objectId)
+    //{
+    //    AddObjectClientRpc(objectId);
+    //}
+
+    //[ClientRpc]
+    //void AddObjectClientRpc(ulong objectId)
     {
-        Objects.Add(obj);
+        //var obj = NetworkManager.Singleton.SpawnManager.SpawnedObjects[objectId];
+        Objects.Add(obj.gameObject);
+        obj.gameObject.SetActive(true);
         Debug.Log($"{obj.name} added to Tile!");
         Recalculate();
     }
 
     public void RemoveObject(GameObject obj)
+    //{
+    //    RemoveObjectServerRpc(obj.GetComponent<NetworkObject>().NetworkObjectId);
+    //}
+
+    //[ServerRpc(RequireOwnership = false)]
+    //void RemoveObjectServerRpc(ulong objectId)
+    //{
+    //    RemoveObjectClientRpc(objectId);
+    //}
+
+    //[ClientRpc]
+    //void RemoveObjectClientRpc(ulong objectId)
     {
-        Objects.Remove(obj);
+        //var obj = NetworkManager.Singleton.SpawnManager.SpawnedObjects[objectId];
+        Objects.Remove(obj.gameObject);
+        obj.gameObject.SetActive(false);
         Debug.Log($"{obj.name} removed from Tile!");
         Recalculate();
     }
 
     public void FireEvent(GameEvent gameEvent)
     {
-        foreach (var go in Objects)
+        var objects = new HashSet<GameObject>(Objects);
+        foreach (var go in objects)
             go.FireEvent(gameEvent);
     }
 

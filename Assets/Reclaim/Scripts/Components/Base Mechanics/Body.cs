@@ -22,11 +22,11 @@ public class Body : EntityComponent
 {
     public void Start()
     {
-        RegisteredEvents.Add(GameEventId.PerformMeleeAttack, PerformBaseAttack);
+        RegisteredEvents.Add(GameEventId.PerformMeleeAttack, PerformMeleeAttack);
         RegisteredEvents.Add(GameEventId.DamageTaken, DamageTaken);
     }
 
-    void PerformBaseAttack(GameEvent gameEvent)
+    void PerformMeleeAttack(GameEvent gameEvent)
     {
         var target = gameEvent.GetValue<GameObject>(EventParameter.Target);
 
@@ -55,10 +55,22 @@ public class Body : EntityComponent
         int total = 0;
         foreach(var damage in damageList)
         {
-            total += damage.DamageAmount;
             Debug.LogError($"{source.name} did {damage.DamageAmount} of type {damage.Type}");
+            total += damage.DamageAmount;
         }
-        if(total > 0 )
+
+        List<Armor> armors = new List<Armor>();
+        GetComponents(armors);
+        foreach(var equipment in GetComponents<EquipmentSlot>())
+            armors.AddRange(equipment.GetComponents<Armor>());
+
+        int totalArmor = 0;
+        foreach (var armor in armors)
+            totalArmor += armor.ArmorAmount;
+
+        total = Math.Max(1, total -  totalArmor);
+
+        if (total > 0)
         {
             var applyDamage = GameEventPool.Get(GameEventId.ApplyDamage)
                 .With(EventParameter.DamageAmount, total);

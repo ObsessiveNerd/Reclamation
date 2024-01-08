@@ -14,13 +14,11 @@ public enum ItemRarity
 
 public class Item : EntityComponent
 {
-    public ItemRarity Rarity;
+    public ItemRarity Rarity = ItemRarity.Uncommon;
 
-    public Item(ItemRarity rarity)
+    public void Start()
     {
-        Rarity = rarity;
-
-        RegisteredEvents.Add(GameEventId.Pickup, Pickup);
+        RegisteredEvents.Add(GameEventId.Interact, Pickup);
         RegisteredEvents.Add(GameEventId.Drop, Drop);
         RegisteredEvents.Add(GameEventId.GetContextMenuActions, GetContextMenuActions);
         RegisteredEvents.Add(GameEventId.GetRarity, GetRarity);
@@ -28,9 +26,12 @@ public class Item : EntityComponent
 
     void Pickup(GameEvent gameEvent)
     {
-        GameObject entity = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameter.Entity]);
-        FireEvent(entity, GameEventPool.Get(GameEventId.AddToInventory)
-            .With(EventParameter.Entity, gameObject), true).Release();
+        GameObject source = gameEvent.GetValue<GameObject>(EventParameter.Source);
+        var inventory = source.GetComponent<Inventory>();
+        inventory.AddToInventory(gameObject);
+
+        Position pos = GetComponent<Position>();
+        Services.Map.GetTile(pos.Point.Value).RemoveObject(gameObject);
     }
 
     void Drop(GameEvent gameEvent)

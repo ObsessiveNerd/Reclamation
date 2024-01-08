@@ -12,13 +12,36 @@ public class Map : MonoBehaviour
 
     Tile[,] tiles;
 
-    public void Awake()
+    public void Start()
     {
         Services.Register(this);
         tiles = new Tile[Width, Height];
-        for (int i = 0; i < Width; i++)
-            for (int j = 0; j < Height; j++)
-                tiles[i, j] = Instantiate(Tile, new Vector3(i, j), Quaternion.identity, transform).GetComponent<Tile>();
+
+        //if(IsServer)
+        {
+            for (int i = 0; i < Width; i++)
+            {
+                for (int j = 0; j < Height; j++)
+                {
+                    tiles[i, j] = Instantiate(Tile, new Vector3(i, j), Quaternion.identity).GetComponent<Tile>();
+                    //tiles[i, j].GetComponent<NetworkObject>().Spawn();
+                    tiles[i, j].gameObject.transform.SetParent(transform);
+                }
+            }
+        }
+        //else
+        //{
+        //    var children = transform.GetComponentsInChildren<Tile>();
+        //    int k = 0;
+        //    for (int i = 0; i < Width; i++)
+        //    {
+        //        for (int j = 0; j < Height; j++)
+        //        {
+        //            tiles[i, j] = children[k];
+        //            k++;
+        //        }
+        //    }
+        //}
     }
 
     public Tile GetTile(Point point)

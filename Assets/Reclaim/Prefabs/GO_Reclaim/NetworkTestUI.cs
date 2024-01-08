@@ -22,12 +22,21 @@ namespace UI.Networking
 
         static void StartButtons()
         {
-            if (GUILayout.Button("Host")) NetworkManager.Singleton.StartHost();
-            if (GUILayout.Button("Client")) NetworkManager.Singleton.StartClient();
+            if (GUILayout.Button("Host"))
+            {
+                NetworkManager.Singleton.StartHost();
+                //Instantiate(Resources.Load<GameObject>("Map")).GetComponent<NetworkObject>().Spawn();
+            }
+            if (GUILayout.Button("Client"))
+            { 
+                NetworkManager.Singleton.StartClient();
+            }
+
             if (GUILayout.Button("Server")) NetworkManager.Singleton.StartServer();
 
         }
 
+        //static bool playerSpawned = false;
         static void StatusLabels()
         {
             var mode = NetworkManager.Singleton.IsHost ?
@@ -36,6 +45,13 @@ namespace UI.Networking
             GUILayout.Label("Transport: " +
                 NetworkManager.Singleton.NetworkConfig.NetworkTransport.GetType().Name);
             GUILayout.Label("Mode: " + mode);
+
+            //if(!playerSpawned && GUILayout.Button("Spawn Player"))
+            //{
+            //    Instantiate(Resources.Load<GameObject>("Character"), new Vector3(0f, 0f, 0f), Quaternion.identity)
+            //            .GetComponent<NetworkObject>().SpawnAsPlayerObject(NetworkManager.Singleton.LocalClientId);
+            //    playerSpawned = true;
+            //}
 
             if(GUILayout.Button("Spawn Monster"))
             {
@@ -48,7 +64,11 @@ namespace UI.Networking
 
             if(GUILayout.Button("Spawn Item"))
             {
-                //...
+                if (NetworkManager.Singleton.IsServer)
+                    Instantiate(Resources.Load<GameObject>("Axe"), new Vector3(Random.Range(0, 10), Random.Range(0, 10), 0f), Quaternion.identity)
+                        .GetComponent<NetworkObject>().Spawn();
+                else
+                    Debug.LogError("Attempting to spawn from a client.");
             }
         }
     }

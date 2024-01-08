@@ -37,6 +37,7 @@ public class Health : EntityComponent
     void ApplyDamage(GameEvent gameEvent)
     {
         StartCoroutine(FlickerRed());
+        CurrentHealth -= gameEvent.GetValue<int>(EventParameter.Damage);
     }
 
     IEnumerator FlickerRed()
