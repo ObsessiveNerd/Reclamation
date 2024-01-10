@@ -24,9 +24,9 @@ public class Move : EntityComponent
         Debug.Log(direction.ToString());
 
         var position = GetComponent<Position>();
-        var desiredPosition = Services.Map.GetTilePointInDirection(position.Point.Value, direction);
+        var desiredPosition = Services.Map.GetTilePointInDirection(position.Point, direction);
 
-        var currentTile = Services.Map.GetTile(position.Point.Value);
+        var currentTile = Services.Map.GetTile(position.Point);
         var desiredTile = Services.Map.GetTile(desiredPosition);
 
         bool canMove = true;

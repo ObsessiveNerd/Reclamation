@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -13,19 +14,43 @@ public class PlayerInputController : InputControllerBase
         MoveDirection desiredDirection = InputUtility.GetMoveDirection();
         if (desiredDirection != MoveDirection.None)
         {
-            gameObject.FireEvent(GameEventPool.Get(GameEventId.MoveKeyPressed)
-                        .With(EventParameter.InputDirection, desiredDirection), true).Release();
+            MoveServerRpc(desiredDirection);
         }
 
         if(KeyInputBinder.PerformRequestedAction(RequestedAction.InteractWithCurrentTile))
         {
             Position pos = GetComponent<Position>();
-            Tile currentTile = Services.Map.GetTile(pos.Point.Value);
+            InteractWithTileServerRpc(pos.Point);
+        }
+    }
+
+    [ServerRpc]
+    void MoveServerRpc(MoveDirection desiredDirection)
+    {
+        MoveClientRpc(desiredDirection);
+    }
+
+    [ClientRpc]
+    void MoveClientRpc(MoveDirection desiredDirection)
+    {
+        gameObject.FireEvent(GameEventPool.Get(GameEventId.MoveKeyPressed)
+                        .With(EventParameter.InputDirection, desiredDirection), true).Release();
+    }
+
+    [ServerRpc]
+    void InteractWithTileServerRpc(Point point)
+    {
+        InteractWithTileClientRpc(point);
+    }
+
+    [ClientRpc]
+    void InteractWithTileClientRpc(Point point)
+    {
+        Tile currentTile = Services.Map.GetTile(point);
             var interact = GameEventPool.Get(GameEventId.Interact)
                 .With(EventParameter.Source, gameObject);
             currentTile.FireEvent(interact);
             interact.Release();
-        }
     }
 
 //    public override void HandleEvent(GameEvent gameEvent)

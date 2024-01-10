@@ -31,7 +31,7 @@ public class Item : EntityComponent
         inventory.AddToInventory(gameObject);
 
         Position pos = GetComponent<Position>();
-        Services.Map.GetTile(pos.Point.Value).RemoveObject(gameObject);
+        Services.Map.GetTile(pos.Point).RemoveObject(gameObject);
     }
 
     void Drop(GameEvent gameEvent)
