@@ -17,7 +17,8 @@ public class Position : EntityComponent
 {
     public MovementBlockFlag BlockMovementOfFlag = MovementBlockFlag.None;
     public Point Point;
-    public float MoveSpeed;
+    
+    float TransitionTime = 20f;
 
     Vector3 destinationPosition;
 
@@ -25,15 +26,19 @@ public class Position : EntityComponent
     {
         RegisteredEvents.Add(GameEventId.MoveEntity, MoveEntity);
         RegisteredEvents.Add(GameEventId.CalculateTileFlags, CalculateTileFlags);
+        RegisteredEvents.Add(GameEventId.Died, Died);
 
         Point p = new Point((int)transform.position.x, (int)transform.position.y);
         SetGameObjectDestination(p);
 
-        //if(IsOwner)
-        //    SetGameObjectTransformPositionServerRpc(p);
-        
         Services.Map.GetTile(p).AddObject(gameObject);
         destinationPosition = transform.position;
+    }
+
+    void Died(GameEvent gameEvent)
+    {
+        Tile t = Services.Map.GetTile(Point);
+        t.RemoveObject(gameObject);
     }
 
     void CalculateTileFlags(GameEvent gameEvent)
@@ -45,30 +50,20 @@ public class Position : EntityComponent
 
     void MoveEntity(GameEvent gameEvent)
     {
-        //if (IsOwner)
-        {
-            bool canMove = gameEvent.GetValue<bool>(EventParameter.CanMove);
-            var newPos = gameEvent.GetValue<Point>(EventParameter.TilePosition);
+        bool canMove = gameEvent.GetValue<bool>(EventParameter.CanMove);
+        var newPos = gameEvent.GetValue<Point>(EventParameter.TilePosition);
 
-            if (canMove)
-            {
-                SetGameObjectDestination(newPos);
-            }
-            //SetGameObjectTransformPositionServerRpc(newPos);
-            else
-                StartCoroutine(FailedMoveTo(Point, newPos));
-        }
+        if (canMove)
+            SetGameObjectDestination(newPos);
+        else
+            StartCoroutine(FailedMoveTo(Point, newPos));
     }
 
     IEnumerator FailedMoveTo(Point startPoint, Point desiredPoint)
     {
-        //SetGameObjectTransformPositionServerRpc(desiredPoint);
-        
         SetGameObjectDestination(desiredPoint);
         yield return new WaitForSeconds(0.05f);
         SetGameObjectDestination(startPoint);
-
-        //SetGameObjectTransformPositionServerRpc(startPoint);
     }
 
     void SetGameObjectDestination(Point point)
@@ -80,23 +75,8 @@ public class Position : EntityComponent
 
     }
 
-    //[ServerRpc]
-    //void SetGameObjectTransformPositionServerRpc(Point tilePoint)
-    //{
-    //    Point.Value = tilePoint;
-    //    var tilePosition = Services.Map.GetTile(Point.Value).transform.position;
-    //    var newPosition = new Vector3(tilePosition.x, tilePosition.y, transform.position.z);
-    //    SetGameObjectTransformPositionClientRpc(newPosition);
-    //}
-
-    //[ClientRpc]
-    //void SetGameObjectTransformPositionClientRpc(Vector3 newPosition)
-    //{
-    //    destinationPosition = newPosition;
-    //}
-
     void Update()
     {
-        transform.position = Vector3.Lerp(transform.position, destinationPosition, MoveSpeed * Time.deltaTime);
+        transform.position = Vector3.Lerp(transform.position, destinationPosition, TransitionTime * Time.deltaTime);
     }
 }

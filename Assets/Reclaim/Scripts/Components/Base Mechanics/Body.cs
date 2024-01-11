@@ -59,16 +59,12 @@ public class Body : EntityComponent
             total += damage.DamageAmount;
         }
 
-        List<Armor> armors = new List<Armor>();
-        GetComponents(armors);
-        foreach(var equipment in GetComponents<EquipmentSlot>())
-            armors.AddRange(equipment.GetComponents<Armor>());
+        int armor = 0;
+        var getArmor = GameEventPool.Get(GameEventId.GetArmor)
+            .With(EventParameter.Armor, armor);
 
-        int totalArmor = 0;
-        foreach (var armor in armors)
-            totalArmor += armor.ArmorAmount;
-
-        total = Math.Max(1, total -  totalArmor);
+        total = Math.Max(1, total -  armor);
+        getArmor.Release();
 
         if (total > 0)
         {

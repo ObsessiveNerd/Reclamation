@@ -19,6 +19,8 @@ GameObject:
   - component: {fileID: -2662036439430639}
   - component: {fileID: 1614740528953592009}
   - component: {fileID: 9190453740901600429}
+  - component: {fileID: 5697547798364541766}
+  - component: {fileID: 3554405158137896349}
   m_Layer: 0
   m_Name: Goblin
   m_TagString: Untagged
@@ -167,7 +169,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 477f745d8a2a98347b7691491e272b49, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MovementFlags: 0
+  MovementFlags: 2
 --- !u!114 &-611971266181680567
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -182,10 +184,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BlockMovementOfFlag: 1
   Point:
-    m_InternalValue:
-      m_x: 0
-      m_y: 0
-  MoveSpeed: 0
+    m_x: 0
+    m_y: 0
 --- !u!114 &-5050989622989189952
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -213,9 +213,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6256700e4f862064290e6e4bbc221140, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  EnergyRegineration: 1
-  CurrentEnergy: 1
-  HasHadTurnStarted: 0
+  EnergyReginerationDelay: 1
+  CanTakeATurn: 1
 --- !u!114 &1614740528953592009
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -241,3 +240,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 878cd3393be5aaa4b9abdc5c1fc9a930, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &5697547798364541766
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2304895449595438703}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9904c384fbd75f74394ff2ae394a2038, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &3554405158137896349
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2304895449595438703}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 622907c88d5a8e0438fdc51487a75def, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  FOVRange: 5

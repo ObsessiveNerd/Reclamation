@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 public class Health : EntityComponent
@@ -34,14 +35,26 @@ public class Health : EntityComponent
         //RegisteredEvents.Add(GameEventId.Rest);
     }
 
+    bool m_IsFlickering = false;
     void ApplyDamage(GameEvent gameEvent)
     {
-        StartCoroutine(FlickerRed());
-        CurrentHealth -= gameEvent.GetValue<int>(EventParameter.Damage);
+        if (!m_IsFlickering)
+            Services.Coroutine.InvokeCoroutine(FlickerRed());
+
+        CurrentHealth -= gameEvent.GetValue<int>(EventParameter.DamageAmount);
+        if(CurrentHealth <= 0)
+        {
+            var died = GameEventPool.Get(GameEventId.Died);
+            gameObject.FireEvent(died);
+            died.Release();
+            NetworkObject.Despawn();
+            Destroy(gameObject);
+        }
     }
 
     IEnumerator FlickerRed()
     {
+        m_IsFlickering = true;
         var spriteRenderer = GetComponent<SpriteRenderer>();
         for (int i = 0; i < 5; i++)
         {
@@ -50,6 +63,8 @@ public class Health : EntityComponent
             spriteRenderer.color = Color.white;
             yield return new WaitForSeconds(0.1f);
         }
+        spriteRenderer.color = Color.white;
+        m_IsFlickering = false;
     }
 
     void StatBoosted(GameEvent gameEvent)

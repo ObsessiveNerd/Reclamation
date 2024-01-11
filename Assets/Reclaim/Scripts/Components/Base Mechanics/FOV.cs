@@ -1,28 +1,40 @@
-//using System.Collections.Generic;
+using System.Collections.Generic;
 
-//public class FOV : EntityComponent
-//{
-//    IFovAlgorithm m_Fov;
-//    public int FOVRange;
+public class FOV : EntityComponent
+{
+    IFovAlgorithm m_Fov;
+    public int FOVRange;
 
-//    public void Start()
-//    {
+    List<Point> m_VisibleTiles;
+
+    public void Start()
+    {
+        m_Fov = new Shadowcasting();
+
+        UpdateFOV();
+        RegisteredEvents.Add(GameEventId.AfterMoving, AfterMoving);
+        RegisteredEvents.Add(GameEventId.GetVisibleTiles, GetVisibleTiles);
+    }
+
+    void UpdateFOV()
+    {
+        int baseRange = FOVRange;
+        GameEvent beforeFOVCalculated = GameEventPool.Get(GameEventId.BeforeFOVRecalculated)
+                .With(EventParameter.FOVRange, FOVRange);
         
-//        RegisteredEvents.Add(GameEventId.AfterMoving, UpdateFoV);
-//        RegisteredEvents.Add(GameEventId.InitFOV, UpdateFoV);
-//        m_Fov = new Shadowcasting();
-//    }
+        m_VisibleTiles = m_Fov.GetVisibleTiles(gameObject, FOVRange);
 
-//    void UpdateFoV(GameEvent gameEvent)
-//    {
-//        int baseRange = FOVRange;
-//        GameEvent beforeFOVCalculated = GameEventPool.Get(GameEventId.BeforeFOVRecalculated)
-//                .With(EventParameter.FOVRange, FOVRange);
-//        gameObject.FireEvent(GameEventPool.Get(GameEventId.FOVRecalculated)
-//            .With(EventParameter.Entity, gameObject)
-//            .With(EventParameter.VisibleTiles, m_Fov.GetVisibleTiles(gameObject, FOVRange)), true).Release();
-//        FOVRange = baseRange;
+        FOVRange = baseRange;
+        beforeFOVCalculated.Release();
+    }
 
-//        beforeFOVCalculated.Release();
-//    }
-//}
+    void AfterMoving(GameEvent gameEvent)
+    {
+        UpdateFOV();
+    }
+
+    void GetVisibleTiles(GameEvent gameEvent)
+    {
+        gameEvent.SetValue<List<Point>>(EventParameter.VisibleTiles, m_VisibleTiles);
+    }
+}

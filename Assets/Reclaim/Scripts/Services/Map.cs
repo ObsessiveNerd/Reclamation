@@ -50,6 +50,9 @@ public class Map : MonoBehaviour
     }
     public Tile GetTile(int x, int y)
     {
+        if (x >= tiles.GetLength(0) || y >= tiles.GetLength(1) || x < 0 || y < 0)
+            return null;
+
         return tiles[x, y];
     }
 

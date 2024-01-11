@@ -13,9 +13,7 @@ public class AStar : IPathfindingAlgorithm
 
     Dictionary<Point, Point> nodeLinks = new Dictionary<Point, Point>();
 
-    bool m_OnlyIncludeBlocksMovement = false;
-
-    public void Clear()
+    void Clear()
     {
         closedSet.Clear();
         openSet.Clear();
@@ -24,10 +22,8 @@ public class AStar : IPathfindingAlgorithm
         nodeLinks.Clear();
     }
 
-    public AStar(int bufferSize, bool onlyIncludeBlocksMovement = false)
+    public AStar(int bufferSize)
     {
-        m_OnlyIncludeBlocksMovement = onlyIncludeBlocksMovement;
-
         closedSet = new Dictionary<Point, bool>(bufferSize);
         openSet = new Dictionary<Point, bool>(bufferSize);
 
@@ -39,6 +35,8 @@ public class AStar : IPathfindingAlgorithm
 
     public List<Point> CalculatePath(Point start, Point goal)
     {
+        Clear();
+
         openSet[start] = true;
         gScore[start] = 0;
         fScore[start] = Heuristic(start, goal);
@@ -80,22 +78,15 @@ public class AStar : IPathfindingAlgorithm
         var dy = goal.y - start.y;
         int distanceH = Math.Abs(dx) + Math.Abs(dy);
 
-        GameEvent getPathData = GameEventPool.Get(GameEventId.PathfindingData)
-                                    //.With(EventParameters.TilePosition, new Point(start.x, start.y))
-                                    .With(EventParameter.BlocksMovementFlags, MovementBlockFlag.None)
-                                    .With(EventParameter.Weight, 1f);
-
-        Tile t = null; //Services.TileInteractionService.GetTile(new Point(start.x, start.y));
+        Tile t = Services.Map.GetTile(start);
         if (t == null)
             return 0;
-        //t.GetPathFindingData(getPathData);
 
         float weight = 0f;
-        if (m_OnlyIncludeBlocksMovement && getPathData.GetValue<bool>(EventParameter.BlocksMovementFlags))
+        if (t.BlocksMovementFlags.HasFlag(MovementBlockFlag.All))
             weight = Pathfinder.ImpassableWeight;
-        else if (!m_OnlyIncludeBlocksMovement)
-            weight = getPathData.GetValue<float>(EventParameter.Weight);
-        getPathData.Release();
+        else
+            weight = t.Weight;
 
         return distanceH + (int)weight;
     }
@@ -154,12 +145,10 @@ public class AStar : IPathfindingAlgorithm
 
     public bool IsValidNeighbor(Point pt)
     {
-        return false;
-        //Tile t = Services.TileInteractionService.GetTile(pt);
-        //if (t == null)
-        //    return false;
-
-        //return !t.BlocksMovement;
+        Tile t = Services.Map.GetTile(pt);
+        if(t == null)
+            return false;
+        return !t.BlocksMovementFlags.HasFlag(MovementBlockFlag.All);
     }
 
     private List<Point> Reconstruct(Point current)

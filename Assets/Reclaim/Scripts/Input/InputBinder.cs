@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
-public class KeyInputBinder //: EscapeableMono
+public class GameKeyInputBinder //: EscapeableMono
 {
     public GameObject UI;
 
@@ -108,6 +108,14 @@ public class KeyInputBinder //: EscapeableMono
     {
         KeyCode matchingKeyCode = GetKeyCodeForAction(action);
         if (Input.GetKeyDown(matchingKeyCode))
+            return true;
+        return false;
+    }
+
+    public static bool PerformConsistentAction(RequestedAction action)
+    {
+        KeyCode matchingKeyCode = GetKeyCodeForAction(action);
+        if (Input.GetKey(matchingKeyCode))
             return true;
         return false;
     }

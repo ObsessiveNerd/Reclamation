@@ -135,6 +135,8 @@ public enum GameEventId
     InteractInDirection,
     InteractWithTarget,
 
+    TakeTurn,
+
     StopMovement,
 
     //Time progression
@@ -224,6 +226,7 @@ public enum GameEventId
     GetAmmo,
     GetResistances,
     GetImmunity,
+    GetArmor,
 
     //Stats
     GetPrimaryStatType,
@@ -376,6 +379,7 @@ public enum EventParameter
     Torso,
     LeftArm,
     RightArm,
+    Armor,
 
     Legs,
     Arms,

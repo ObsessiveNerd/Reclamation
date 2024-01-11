@@ -17,11 +17,11 @@ public class InputBinderButton : MonoBehaviour
 
     public void SetToMyKeyCode()
     {
-        KeyInputBinder.SetKeyBinder(RequestedAction);
+        GameKeyInputBinder.SetKeyBinder(RequestedAction);
     }
 
     void Update()
     {
-        m_Text.text = $"{RequestedAction}: {KeyInputBinder.GetKeyCodeForAction(RequestedAction)}";
+        m_Text.text = $"{RequestedAction}: {GameKeyInputBinder.GetKeyCodeForAction(RequestedAction)}";
     }
 }

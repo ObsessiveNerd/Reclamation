@@ -11,12 +11,12 @@ GameObject:
   - component: {fileID: 2950679966334358437}
   - component: {fileID: 2950679966334358438}
   - component: {fileID: 2890678327730852508}
+  - component: {fileID: 622030444844885652}
   - component: {fileID: 3472514901815361797}
   - component: {fileID: 2950679966334358432}
   - component: {fileID: 2950679966334358439}
   - component: {fileID: 2950679966334358433}
   - component: {fileID: 2950679966334358434}
-  - component: {fileID: 622030444844885652}
   - component: {fileID: -6266132786533736795}
   - component: {fileID: 3461757326392235232}
   - component: {fileID: 5867489400468836634}
@@ -116,6 +116,36 @@ MonoBehaviour:
   SpawnWithObservers: 1
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 1
+--- !u!114 &622030444844885652
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2950679966334358436}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e96cb6065543e43c4a752faaa1468eb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SyncPositionX: 1
+  SyncPositionY: 1
+  SyncPositionZ: 1
+  SyncRotAngleX: 1
+  SyncRotAngleY: 1
+  SyncRotAngleZ: 1
+  SyncScaleX: 1
+  SyncScaleY: 1
+  SyncScaleZ: 1
+  PositionThreshold: 0.001
+  RotAngleThreshold: 0.01
+  ScaleThreshold: 0.01
+  UseQuaternionSynchronization: 0
+  UseQuaternionCompression: 0
+  UseHalfFloatPrecision: 0
+  InLocalSpace: 0
+  Interpolate: 1
+  SlerpPosition: 0
 --- !u!114 &3472514901815361797
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -166,9 +196,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6256700e4f862064290e6e4bbc221140, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  EnergyRegineration: 1
-  CurrentEnergy: 1
-  HasHadTurnStarted: 0
+  EnergyReginerationDelay: 0.5
+  CanTakeATurn: 1
 --- !u!114 &2950679966334358434
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -183,40 +212,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BlockMovementOfFlag: 2
   Point:
-    m_InternalValue:
-      m_x: 0
-      m_y: 0
+    m_x: 0
+    m_y: 0
   MoveSpeed: 20
---- !u!114 &622030444844885652
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2950679966334358436}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e96cb6065543e43c4a752faaa1468eb1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  SyncPositionX: 1
-  SyncPositionY: 1
-  SyncPositionZ: 1
-  SyncRotAngleX: 1
-  SyncRotAngleY: 1
-  SyncRotAngleZ: 1
-  SyncScaleX: 1
-  SyncScaleY: 1
-  SyncScaleZ: 1
-  PositionThreshold: 0.001
-  RotAngleThreshold: 0.01
-  ScaleThreshold: 0.01
-  UseQuaternionSynchronization: 0
-  UseQuaternionCompression: 0
-  UseHalfFloatPrecision: 0
-  InLocalSpace: 0
-  Interpolate: 1
-  SlerpPosition: 0
 --- !u!114 &-6266132786533736795
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -8,18 +8,18 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-//public class PointComparer : IEqualityComparer<Point>
-//{
-//    public bool Equals(Point x, Point y)
-//    {
-//        return x == y;
-//    }
+public class PointComparer : IEqualityComparer<Point>
+{
+    public bool Equals(Point x, Point y)
+    {
+        return x == y;
+    }
 
-//    public int GetHashCode(Point obj)
-//    {
-//        return obj.GetHashCode();
-//    }
-//}
+    public int GetHashCode(Point obj)
+    {
+        return obj.GetHashCode();
+    }
+}
 
 [Serializable]
 public struct Point : INetworkSerializable
@@ -114,7 +114,7 @@ public struct Point : INetworkSerializable
 
 public class Tile : MonoBehaviour
 {
-    HashSet<GameObject> Objects = new HashSet<GameObject>();
+    public HashSet<GameObject> Objects = new HashSet<GameObject>();
 
     public float Weight;
     public MovementBlockFlag BlocksMovementFlags;

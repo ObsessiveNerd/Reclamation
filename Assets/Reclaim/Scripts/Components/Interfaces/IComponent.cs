@@ -7,7 +7,6 @@ using UnityEngine;
 public interface IComponent
 {
     Dictionary<GameEventId, Action<GameEvent>> RegisteredEvents { get; }
-    bool RespondsTo(GameEvent gameEvent);
     GameEvent FireEvent(GameObject target, GameEvent gameEvent, bool logEvent = false);
     void HandleEvent(GameEvent gameEvent);
 }
@@ -23,24 +22,6 @@ public class EntityComponent : NetworkBehaviour, IComponent
                 m_RegisteredEvents = new Dictionary<GameEventId, Action<GameEvent>>();
             return m_RegisteredEvents;
         }
-    }
-
-
-    //public GameEvent FireEvent(GameObject target, GameEvent gameEvent, bool logEvent = false)
-    //{
-    //    if(target != null)
-    //    {
-    //        foreach(var comp in target.GetComponents<EntityComponent>())
-    //            comp.HandleEvent(gameEvent);
-    //    }
-    //    return gameEvent;
-    //}
-
-    public bool RespondsTo(GameEvent gameEvent)
-    {
-        if (RegisteredEvents.ContainsKey(gameEvent.ID))
-            return true;
-        return false;
     }
 
     public void HandleEvent(GameEvent gameEvent) 

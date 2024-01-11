@@ -15,18 +15,20 @@ public class Inventory : EntityComponent
 
     public void AddToInventory(GameObject item)
     {
-        //GameObject item = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameter.Entity]);
-        //if (!InventoryItems.Contains(item))
-        
         InventoryItems.Add(item);
     }
 
-    void RemoveFromInventory(GameEvent gameEvent)
+    public void RemoveFromInventory(GameObject item)
     {
-        GameObject item = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameter.Item]);
-        if (InventoryItems.Contains(item))
-            InventoryItems.Remove(item);
+        InventoryItems.Remove(item);
     }
+
+    //void RemoveFromInventory(GameEvent gameEvent)
+    //{
+    //    GameObject item = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameter.Item]);
+    //    if (InventoryItems.Contains(item))
+    //        InventoryItems.Remove(item);
+    //}
 
     void Died(GameEvent gameEvent)
     {

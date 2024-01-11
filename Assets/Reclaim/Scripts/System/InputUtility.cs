@@ -10,21 +10,21 @@ public class InputUtility
         //Need to rework this so we can eventually re-map controlls but this works for now
         MoveDirection direction = MoveDirection.None;
 
-        if (KeyInputBinder.PerformRequestedAction(RequestedAction.MoveN))
+        if (GameKeyInputBinder.PerformConsistentAction(RequestedAction.MoveN))
             direction = MoveDirection.N;
-        else if (KeyInputBinder.PerformRequestedAction(RequestedAction.MoveNE))
+        else if (GameKeyInputBinder.PerformConsistentAction(RequestedAction.MoveNE))
             direction = MoveDirection.NE;
-        else if (KeyInputBinder.PerformRequestedAction(RequestedAction.MoveE))
+        else if (GameKeyInputBinder.PerformConsistentAction(RequestedAction.MoveE))
             direction = MoveDirection.E;
-        else if (KeyInputBinder.PerformRequestedAction(RequestedAction.MoveSE))
+        else if (GameKeyInputBinder.PerformConsistentAction(RequestedAction.MoveSE))
             direction = MoveDirection.SE;
-        else if (KeyInputBinder.PerformRequestedAction(RequestedAction.MoveS))
+        else if (GameKeyInputBinder.PerformConsistentAction(RequestedAction.MoveS))
             direction = MoveDirection.S;
-        else if (KeyInputBinder.PerformRequestedAction(RequestedAction.MoveSW))
+        else if (GameKeyInputBinder.PerformConsistentAction(RequestedAction.MoveSW))
             direction = MoveDirection.SW;
-        else if (KeyInputBinder.PerformRequestedAction(RequestedAction.MoveW))
+        else if (GameKeyInputBinder.PerformConsistentAction(RequestedAction.MoveW))
             direction = MoveDirection.W;
-        else if (KeyInputBinder.PerformRequestedAction(RequestedAction.MoveNW))
+        else if (GameKeyInputBinder.PerformConsistentAction(RequestedAction.MoveNW))
             direction = MoveDirection.NW;
 
         return direction;

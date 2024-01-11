@@ -21,7 +21,7 @@ public class CharacterManagerMono : EscapeableMono
     {
         get
         {
-            return Input.GetKeyDown(KeyInputBinder.GetKeyCodeForAction(RequestedAction.OpenInventory)) && !m_OpenedThisFrame;
+            return Input.GetKeyDown(GameKeyInputBinder.GetKeyCodeForAction(RequestedAction.OpenInventory)) && !m_OpenedThisFrame;
         }
     }
 
