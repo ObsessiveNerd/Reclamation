@@ -24,6 +24,10 @@ public class FOV : EntityComponent
         
         m_VisibleTiles = m_Fov.GetVisibleTiles(gameObject, FOVRange);
 
+        GameEvent afterFOVCalculated = GameEventPool.Get(GameEventId.FOVRecalculated)
+            .With(EventParameter.VisibleTiles, m_VisibleTiles);
+        gameObject.FireEvent(afterFOVCalculated).Release();
+
         FOVRange = baseRange;
         beforeFOVCalculated.Release();
     }

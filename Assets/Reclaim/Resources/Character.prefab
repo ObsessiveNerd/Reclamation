@@ -18,10 +18,11 @@ GameObject:
   - component: {fileID: 2950679966334358433}
   - component: {fileID: 2950679966334358434}
   - component: {fileID: -6266132786533736795}
-  - component: {fileID: 3461757326392235232}
   - component: {fileID: 5867489400468836634}
-  - component: {fileID: -5177745936493071087}
   - component: {fileID: 727960244311979987}
+  - component: {fileID: 2632900705406386382}
+  - component: {fileID: -960893388180495624}
+  - component: {fileID: -2486674862891613294}
   m_Layer: 0
   m_Name: Character
   m_TagString: Untagged
@@ -36,13 +37,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2950679966334358436}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &2950679966334358438
 SpriteRenderer:
@@ -214,7 +215,6 @@ MonoBehaviour:
   Point:
     m_x: 0
     m_y: 0
-  MoveSpeed: 20
 --- !u!114 &-6266132786533736795
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -228,18 +228,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ID: 1
---- !u!114 &3461757326392235232
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2950679966334358436}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 878cd3393be5aaa4b9abdc5c1fc9a930, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &5867489400468836634
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -255,22 +243,6 @@ MonoBehaviour:
   MaxHealth: 10
   CurrentHealth: 10
   PercentBoost: 0
---- !u!114 &-5177745936493071087
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2950679966334358436}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 452969ab27ba127439146751fe837c2b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Equipment: {fileID: 2249876947531943163, guid: 016e3bace150d894c864f296962d3ce2,
-    type: 3}
-  CanEquip: 1
-  BodyPart: 3
 --- !u!114 &727960244311979987
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -283,4 +255,50 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2481a4e4a8079504e99de911c2752831, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  InventoryItems: []
+  InventoryItems:
+  - Name: Arrow
+    Object: {fileID: 2249876947531943163, guid: c3aa449ad8a160e428a27d7c45915df0,
+      type: 3}
+--- !u!114 &2632900705406386382
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2950679966334358436}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df65fd2c096042245943ac6529722b0a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &-960893388180495624
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2950679966334358436}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 622907c88d5a8e0438fdc51487a75def, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  FOVRange: 5
+--- !u!114 &-2486674862891613294
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2950679966334358436}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 878cd3393be5aaa4b9abdc5c1fc9a930, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BodyParts:
+  - Equipment: {fileID: 2249876947531943163, guid: 61011159c25ef844aa465872c9126f77,
+      type: 3}
+    BodyPartType: 3
+  - Equipment: {fileID: 0}
+    BodyPartType: 3

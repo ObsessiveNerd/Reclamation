@@ -27,6 +27,7 @@ public class Health : EntityComponent
         RegisteredEvents.Add(GameEventId.StatBoosted, StatBoosted);
         RegisteredEvents.Add(GameEventId.AddMaxHealth, AddMaxHealth);
         RegisteredEvents.Add(GameEventId.RemoveMaxHealth, RemoveMaxHealth);
+        RegisteredEvents.Add(GameEventId.Died, Died);
 
         //RegisteredEvents.Add(GameEventId.RestoreHealth);
         //RegisteredEvents.Add(GameEventId.RegenHealth);
@@ -50,6 +51,12 @@ public class Health : EntityComponent
             NetworkObject.Despawn();
             Destroy(gameObject);
         }
+    }
+
+    void Died(GameEvent gameEvent)
+    {
+        Tile t = Services.Map.GetTile(GetComponent<Position>().Point);
+        t.RemoveObject(gameObject);
     }
 
     IEnumerator FlickerRed()

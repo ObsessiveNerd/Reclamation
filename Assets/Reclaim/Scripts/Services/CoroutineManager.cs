@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CoroutineManager : MonoBehaviour
 {
-    void Start()
+    void Awake()
     {
         Services.Register(this);    
     }

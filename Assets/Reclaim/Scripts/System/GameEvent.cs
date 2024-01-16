@@ -120,6 +120,9 @@ public enum GameEventId
     MoveUp,
     MoveDown,
 
+    Mouse1,
+    Mouse2,
+
     //Moving
     EntityOvertaking,
     BeforeMoving,
@@ -134,6 +137,7 @@ public enum GameEventId
     ForceInteract,
     InteractInDirection,
     InteractWithTarget,
+    HostileInteraction,
 
     TakeTurn,
 
@@ -191,8 +195,11 @@ public enum GameEventId
     GetEnergy,
 
     //Combat
-    AmAttacking,
+    PerformAttack,
     PerformMeleeAttack,
+    PerformRangedAttack,
+    ActiveWeapon1,
+    ActiveWeapon2,
     RollToHit,
     ApplyDamage,
     DamageTaken,
@@ -219,7 +226,7 @@ public enum GameEventId
     GetMana,
     ManaCost,
     Quaff,
-    FireRangedAttack,
+    FireProjectile,
     SavingThrow,
     SaveFailed,
     CastSpellEffect,
@@ -380,6 +387,7 @@ public enum EventParameter
     LeftArm,
     RightArm,
     Armor,
+    Ammo,
 
     Legs,
     Arms,

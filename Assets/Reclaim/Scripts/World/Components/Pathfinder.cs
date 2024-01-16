@@ -9,7 +9,7 @@ public class Pathfinder : MonoBehaviour //: GameService
     public int BufferSize;
     IPathfindingAlgorithm m_Pathfinder;
 
-    void Start()
+    void Awake()
     {
         Services.Register(this);
         m_Pathfinder = new AStar(BufferSize);

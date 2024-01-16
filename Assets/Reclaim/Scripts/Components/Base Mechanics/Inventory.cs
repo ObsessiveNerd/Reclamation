@@ -4,23 +4,36 @@ using UnityEngine;
 
 public class Inventory : EntityComponent
 {
-    public List<GameObject> InventoryItems = new List<GameObject>();
+    public List<ManagedItem> InventoryItems = new List<ManagedItem> ();
 
-    public Inventory()
+    Dictionary<ManagedItem, int> m_ManagedItemCount = new Dictionary<ManagedItem, int> ();
+
+    public void Start()
     {
-        //RegisteredEvents.Add(GameEventId.AddToInventory, AddToInventory);
-        //RegisteredEvents.Add(GameEventId.RemoveFromInventory, RemoveFromInventory);
+        RegisteredEvents.Add(GameEventId.GetAmmo, GetAmmo);
         RegisteredEvents.Add(GameEventId.Died, Died);
+
+        //Dictionary<GameObject, int> inventory = new Dictionary <GameObject, int>();
+        //foreach (var item in InventoryItems.Keys)
+        //    inventory.Add(Services.EntityFactory.Create(item), InventoryItems[item]);
+        //InventoryItems = inventory;
+    }   
+
+    void GetAmmo(GameEvent gameEvent)
+    {
+        
     }
 
     public void AddToInventory(GameObject item)
     {
-        InventoryItems.Add(item);
+        //InventoryItems.Add(item, 1);
     }
 
     public void RemoveFromInventory(GameObject item)
     {
-        InventoryItems.Remove(item);
+        //InventoryItems[item]--;
+        //if (InventoryItems[item] == 0)
+        //    InventoryItems.Remove(item);
     }
 
     //void RemoveFromInventory(GameEvent gameEvent)

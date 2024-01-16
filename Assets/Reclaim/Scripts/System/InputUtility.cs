@@ -7,25 +7,35 @@ public class InputUtility
 {
     public static MoveDirection GetMoveDirection()
     {
-        //Need to rework this so we can eventually re-map controlls but this works for now
         MoveDirection direction = MoveDirection.None;
 
-        if (GameKeyInputBinder.PerformConsistentAction(RequestedAction.MoveN))
+        bool moveNorth = GameKeyInputBinder.PerformConsistentAction(RequestedAction.MoveN);
+        bool moveSouth = GameKeyInputBinder.PerformConsistentAction(RequestedAction.MoveS);
+        bool moveEast = GameKeyInputBinder.PerformConsistentAction(RequestedAction.MoveE);
+        bool moveWest = GameKeyInputBinder.PerformConsistentAction(RequestedAction.MoveW);
+
+        if (moveNorth)
+        {
             direction = MoveDirection.N;
-        else if (GameKeyInputBinder.PerformConsistentAction(RequestedAction.MoveNE))
-            direction = MoveDirection.NE;
-        else if (GameKeyInputBinder.PerformConsistentAction(RequestedAction.MoveE))
-            direction = MoveDirection.E;
-        else if (GameKeyInputBinder.PerformConsistentAction(RequestedAction.MoveSE))
-            direction = MoveDirection.SE;
-        else if (GameKeyInputBinder.PerformConsistentAction(RequestedAction.MoveS))
+            if (moveEast)
+                direction = MoveDirection.NE;
+            else if (moveWest)
+                direction = MoveDirection.NW;
+        }
+
+        else if (moveSouth)
+        {
             direction = MoveDirection.S;
-        else if (GameKeyInputBinder.PerformConsistentAction(RequestedAction.MoveSW))
-            direction = MoveDirection.SW;
-        else if (GameKeyInputBinder.PerformConsistentAction(RequestedAction.MoveW))
+            if (moveEast)
+                direction = MoveDirection.SE;
+            else if (moveWest)
+                direction = MoveDirection.SW;
+        }
+
+        else if (moveEast)
+            direction = MoveDirection.E;
+        else if (moveWest)
             direction = MoveDirection.W;
-        else if (GameKeyInputBinder.PerformConsistentAction(RequestedAction.MoveNW))
-            direction = MoveDirection.NW;
 
         return direction;
     }

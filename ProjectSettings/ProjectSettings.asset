@@ -708,11 +708,11 @@ PlayerSettings:
   apiCompatibilityLevel: 6
   activeInputHandler: 0
   windowsGamepadBackendHint: 0
-  cloudProjectId: 
+  cloudProjectId: 5bea4642-0a5c-4dd2-8697-4c64866c04fe
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: 
-  organizationId: 
+  projectName: Reclamation
+  organizationId: thehaverhill
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
   playerDataPath: 

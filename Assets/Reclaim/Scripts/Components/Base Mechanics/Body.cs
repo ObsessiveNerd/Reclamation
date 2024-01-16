@@ -6,45 +6,45 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-public enum BodyPart
-{
-    None,
-    Head,
-    Torso,
-    Arm,
-    Leg,
-    Finger,
-    Back,
-    Neck
-}
-
 public class Body : EntityComponent
 {
+    public List<BodyPart> BodyParts = new List<BodyPart>();
+
     public void Start()
     {
-        RegisteredEvents.Add(GameEventId.PerformMeleeAttack, PerformMeleeAttack);
+        RegisteredEvents.Add(GameEventId.HostileInteraction, HostileInteraction);
         RegisteredEvents.Add(GameEventId.DamageTaken, DamageTaken);
+
+        foreach(var part in BodyParts)
+            part.Activate();
     }
 
-    void PerformMeleeAttack(GameEvent gameEvent)
+    void HostileInteraction(GameEvent gameEvent)
+    {
+        Attack(gameEvent);
+    }
+
+    void Attack(GameEvent gameEvent)
     {
         var target = gameEvent.GetValue<GameObject>(EventParameter.Target);
 
-        var equipmentSlots = GetComponents<EquipmentSlot>();
-        var meleeAttack = GameEventPool.Get(GameEventId.PerformMeleeAttack)
-            .With(EventParameter.DamageList, new List<Damage>());
-
-        foreach (var equipmentSlot in equipmentSlots)
-            equipmentSlot.PerformMeleeAttack(meleeAttack);
-
-        var takeDamage = GameEventPool.Get(GameEventId.DamageTaken)
-            .With(meleeAttack.Paramters)
+        var attack = GameEventPool.Get(GameEventId.PerformAttack)
+            .With(EventParameter.DamageList, new List<Damage>())
+            .With(EventParameter.Target, target)
             .With(EventParameter.Source, gameObject);
 
-        target.FireEvent(takeDamage);
+        foreach (var equipmentSlot in BodyParts)
+            equipmentSlot.PassEventToEquipment(attack);
 
-        meleeAttack.Release();
-        takeDamage.Release();
+        //var takeDamage = GameEventPool.Get(GameEventId.DamageTaken)
+        //    .With(attack.Paramters)
+        //    .With(EventParameter.Source, gameObject);
+
+        //target.FireEvent(takeDamage);
+
+        attack.Release();
+        
+        //takeDamage.Release();
     }
 
     void DamageTaken(GameEvent gameEvent)
@@ -56,7 +56,7 @@ public class Body : EntityComponent
         foreach(var damage in damageList)
         {
             Debug.LogError($"{source.name} did {damage.DamageAmount} of type {damage.Type}");
-            total += damage.DamageAmount;
+            //total += damage.DamageAmount;
         }
 
         int armor = 0;

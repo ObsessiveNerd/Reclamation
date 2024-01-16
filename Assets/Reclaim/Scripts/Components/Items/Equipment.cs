@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Equipment : EntityComponent
 {
-    public BodyPart EquipsTo;
+    public BodyPartType EquipsTo;
 
     void Start()
     {

@@ -4,9 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [Serializable]
-public struct Damage
+public class Damage : EntityComponent
 {
-    public int RollToHit;
-    public int DamageAmount;
+    public Dice DamageAmount;
     public DamageType Type;
 }

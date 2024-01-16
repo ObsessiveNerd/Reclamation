@@ -26,19 +26,12 @@ public class Position : EntityComponent
     {
         RegisteredEvents.Add(GameEventId.MoveEntity, MoveEntity);
         RegisteredEvents.Add(GameEventId.CalculateTileFlags, CalculateTileFlags);
-        RegisteredEvents.Add(GameEventId.Died, Died);
 
         Point p = new Point((int)transform.position.x, (int)transform.position.y);
         SetGameObjectDestination(p);
 
         Services.Map.GetTile(p).AddObject(gameObject);
         destinationPosition = transform.position;
-    }
-
-    void Died(GameEvent gameEvent)
-    {
-        Tile t = Services.Map.GetTile(Point);
-        t.RemoveObject(gameObject);
     }
 
     void CalculateTileFlags(GameEvent gameEvent)

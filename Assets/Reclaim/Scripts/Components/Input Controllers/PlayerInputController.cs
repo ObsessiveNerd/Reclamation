@@ -32,5 +32,18 @@ public class PlayerInputController : InputControllerBase
             Position pos = GetComponent<Position>();
             InteractWithTileServerRpc(pos.Point);
         }
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            var ray = GetComponentInChildren<Camera>().ScreenPointToRay(Input.mousePosition);
+            RaycastHit2D raycastHit2D = Physics2D.Raycast(ray.origin, ray.direction);
+            if(raycastHit2D.collider != null)
+            {
+                Debug.Log("HIT");
+                GameObject go = raycastHit2D.collider.gameObject;
+                if(go != null && go.GetComponent<Position>() != null)
+                    InteractWithTileServerRpc(go.GetComponent<Position>().Point);
+            }
+        }
     }
 }

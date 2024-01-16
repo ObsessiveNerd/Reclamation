@@ -29,6 +29,7 @@ public static class Services
     public static Map Map { get { return GetInstance<Map>(); } }
     public static Pathfinder Pathfinder { get { return GetInstance<Pathfinder>(); } }
     public static CoroutineManager Coroutine { get { return GetInstance<CoroutineManager>(); } }
+    public static EntityFactory EntityFactory { get { return GetInstance<EntityFactory>(); } }
 
     //public static WorldSpawner SpawnerService { get { return GetInstance<WorldSpawner>(); } }
     //public static GameSaveSystem SaveAndLoadService { get { return GetInstance<GameSaveSystem>(); } }

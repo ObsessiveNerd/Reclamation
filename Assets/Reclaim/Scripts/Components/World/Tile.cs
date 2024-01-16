@@ -120,47 +120,51 @@ public class Tile : MonoBehaviour
     public MovementBlockFlag BlocksMovementFlags;
     public bool BlocksVision;
 
-    public void AddObject(GameObject obj)
-    //{
-    //    if (IsOwner)
-    //        AddObjectServerRpc(obj.GetComponent<NetworkObject>().NetworkObjectId);
-    //}
+    bool m_IsVisible = false;
+    SpriteRenderer m_SpriteRenderer;
+    Color m_Grey;
+    Color m_Invisible;
 
-    //[ServerRpc]
-    //void AddObjectServerRpc(ulong objectId)
-    //{
-    //    AddObjectClientRpc(objectId);
-    //}
-
-    //[ClientRpc]
-    //void AddObjectClientRpc(ulong objectId)
+    void Start()
     {
-        //var obj = NetworkManager.Singleton.SpawnManager.SpawnedObjects[objectId];
-        Objects.Add(obj.gameObject);
-        obj.gameObject.SetActive(true);
-        Debug.Log($"{obj.name} added to Tile!");
-        Recalculate();
+        m_SpriteRenderer = GetComponent<SpriteRenderer>();
+        m_Grey = new Color(0.2f, 0.2f, 0.2f);
+        m_Invisible = new Color(1f, 1f, 1f, 0f);
+        m_SpriteRenderer.color = m_Grey;
+        m_IsVisible = false;
     }
 
-    public void RemoveObject(GameObject obj)
-    //{
-    //    RemoveObjectServerRpc(obj.GetComponent<NetworkObject>().NetworkObjectId);
-    //}
-
-    //[ServerRpc(RequireOwnership = false)]
-    //void RemoveObjectServerRpc(ulong objectId)
-    //{
-    //    RemoveObjectClientRpc(objectId);
-    //}
-
-    //[ClientRpc]
-    //void RemoveObjectClientRpc(ulong objectId)
+    public void AddObject(GameObject obj)
     {
-        //var obj = NetworkManager.Singleton.SpawnManager.SpawnedObjects[objectId];
+        Objects.Add(obj.gameObject);
+        obj.gameObject.SetActive(true);
+        Services.Coroutine.InvokeCoroutine(Recalculate());
+    }
+
+    public void SetVisibility(bool isVisible)
+    {
+        m_IsVisible = isVisible;
+
+        if (isVisible)
+        {
+            m_SpriteRenderer.color = Color.white;
+            foreach (var obj in Objects)
+                obj.GetComponent<SpriteRenderer>().color = Color.white;
+        }
+        else
+        {
+            m_SpriteRenderer.color = m_Grey;
+            foreach (var obj in Objects)
+                obj.GetComponent<SpriteRenderer>().color = m_Invisible;
+        }
+    }
+
+
+    public void RemoveObject(GameObject obj)
+    {
         Objects.Remove(obj.gameObject);
         obj.gameObject.SetActive(false);
-        Debug.Log($"{obj.name} removed from Tile!");
-        Recalculate();
+        Services.Coroutine.InvokeCoroutine(Recalculate());
     }
 
     public void FireEvent(GameEvent gameEvent)
@@ -170,8 +174,10 @@ public class Tile : MonoBehaviour
             go.FireEvent(gameEvent);
     }
 
-    void Recalculate()
+    IEnumerator Recalculate()
     {
+        yield return null;
+
         var tileData = GameEventPool.Get(GameEventId.CalculateTileFlags)
             .With(EventParameter.Weight, 1f)
             .With(EventParameter.BlocksMovementFlags, MovementBlockFlag.None)
@@ -185,5 +191,7 @@ public class Tile : MonoBehaviour
         BlocksVision = tileData.GetValue<bool>(EventParameter.BlocksVision);
 
         tileData.Release();
+
+        SetVisibility(m_IsVisible);
     }
 }

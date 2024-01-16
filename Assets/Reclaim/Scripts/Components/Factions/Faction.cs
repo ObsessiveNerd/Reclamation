@@ -42,7 +42,7 @@ public class Faction : EntityComponent
     {
         var interactionSource = NetworkManager.Singleton.SpawnManager.SpawnedObjects[sourceId];
 
-        var triggerAttack = GameEventPool.Get(GameEventId.PerformMeleeAttack)
+        var triggerAttack = GameEventPool.Get(GameEventId.HostileInteraction)
             .With(EventParameter.Target, gameObject);
         interactionSource.gameObject.FireEvent(triggerAttack);
 

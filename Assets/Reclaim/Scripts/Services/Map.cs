@@ -12,7 +12,7 @@ public class Map : MonoBehaviour
 
     Tile[,] tiles;
 
-    public void Start()
+    public void Awake()
     {
         Services.Register(this);
         tiles = new Tile[Width, Height];
