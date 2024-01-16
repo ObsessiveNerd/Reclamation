@@ -41,8 +41,8 @@ public class PlayerInputController : InputControllerBase
             {
                 Debug.Log("HIT");
                 GameObject go = raycastHit2D.collider.gameObject;
-                if(go != null && go.GetComponent<Position>() != null)
-                    InteractWithTileServerRpc(go.GetComponent<Position>().Point);
+                if(go != null)
+                    InteractWithTileServerRpc(new Point((int)go.transform.position.x, (int)go.transform.position.y));
             }
         }
     }

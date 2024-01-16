@@ -112,7 +112,7 @@ public struct Point : INetworkSerializable
     }
 }
 
-public class Tile : MonoBehaviour
+public class Tile : EntityComponent
 {
     public HashSet<GameObject> Objects = new HashSet<GameObject>();
 
@@ -127,11 +127,22 @@ public class Tile : MonoBehaviour
 
     void Start()
     {
+        RegisteredEvents.Add(GameEventId.Interact, Interact);
+
         m_SpriteRenderer = GetComponent<SpriteRenderer>();
         m_Grey = new Color(0.2f, 0.2f, 0.2f);
         m_Invisible = new Color(1f, 1f, 1f, 0f);
         m_SpriteRenderer.color = m_Grey;
         m_IsVisible = false;
+    }
+
+    void Interact(GameEvent gameEvent)
+    {
+        var source = gameEvent.GetValue<GameObject>(EventParameter.Source);
+        var attackMe = GameEventPool.Get(GameEventId.HostileInteraction)
+            .With(EventParameter.Target, gameObject);
+        source.FireEvent(attackMe);
+        attackMe.Release();
     }
 
     public void AddObject(GameObject obj)

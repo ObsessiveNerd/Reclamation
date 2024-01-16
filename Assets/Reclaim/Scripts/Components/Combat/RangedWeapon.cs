@@ -30,6 +30,8 @@ public class RangedWeapon : EntityComponent
     void FireProjectile(GameEvent gameEvent)
     {
         var source = gameEvent.GetValue<GameObject>(EventParameter.Source);
+        var target = gameEvent.GetValue<GameObject>(EventParameter.Target);
+
         var inventory = source.GetComponent<Inventory>();
         foreach (var item in inventory.InventoryItems)
         {
@@ -41,6 +43,7 @@ public class RangedWeapon : EntityComponent
                 var projectileInstance = Services.EntityFactory.Create(projectile.gameObject);
                 projectileInstance.transform.position = source.transform.position;
                 projectileInstance.Show();
+                projectile.Fire(target, gameEvent.GetValue<List<Damage>>(EventParameter.DamageList));
             }
         }
     }
