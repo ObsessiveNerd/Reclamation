@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 [Serializable]
-public class Dice
+public class Dice 
 {
     public int m_AmountOfDice;
     public int m_DAmount;
-    public int m_Modifiers = 0;
+    public int m_Modifiers;
 
     public Dice(string diceNotation)
     {
@@ -19,6 +20,8 @@ public class Dice
         m_DAmount = int.Parse(secondSplit[0]);
         if(secondSplit.Length == 2)
             m_Modifiers = int.Parse(secondSplit[1]);
+        else
+            m_Modifiers = 0;
     }
 
     public int Roll()

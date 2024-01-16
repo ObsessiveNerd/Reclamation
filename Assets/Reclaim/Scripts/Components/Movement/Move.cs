@@ -31,7 +31,7 @@ public class Move : EntityComponent
             //Attempt to interact
             var interact = GameEventPool.Get(GameEventId.Interact)
                 .With(EventParameter.Source, gameObject);
-            desiredTile.FireEvent(interact);
+            desiredTile.FireEvent(gameObject, interact);
             interact.Release();
             canMove = false;
         }

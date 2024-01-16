@@ -39,10 +39,16 @@ public class PlayerInputController : InputControllerBase
             RaycastHit2D raycastHit2D = Physics2D.Raycast(ray.origin, ray.direction);
             if(raycastHit2D.collider != null)
             {
-                Debug.Log("HIT");
                 GameObject go = raycastHit2D.collider.gameObject;
                 if(go != null)
-                    InteractWithTileServerRpc(new Point((int)go.transform.position.x, (int)go.transform.position.y));
+                {
+                    Point selectedPoint = new Point((int)go.transform.position.x, (int)go.transform.position.y);
+                    Tile t = Services.Map.GetTile(selectedPoint);
+                    var primaryAction = GameEventPool.Get(GameEventId.PrimaryInteraction)
+                        .With(EventParameter.Source, gameObject);
+                    t.FireEvent(gameObject, primaryAction);
+                    primaryAction.Release();
+                }
             }
         }
     }

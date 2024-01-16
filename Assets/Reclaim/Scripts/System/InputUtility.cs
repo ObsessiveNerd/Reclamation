@@ -37,6 +37,19 @@ public class InputUtility
         else if (moveWest)
             direction = MoveDirection.W;
 
+        if (direction == MoveDirection.None)
+        {
+            if (GameKeyInputBinder.PerformConsistentAction(RequestedAction.MoveNE))
+                direction = MoveDirection.NE;
+            else if (GameKeyInputBinder.PerformConsistentAction(RequestedAction.MoveSE))
+                direction = MoveDirection.SE;
+            else if (GameKeyInputBinder.PerformConsistentAction(RequestedAction.MoveNW))
+                direction = MoveDirection.NW;
+            else if (GameKeyInputBinder.PerformConsistentAction(RequestedAction.MoveSW))
+                direction = MoveDirection.SW;
+        }
+
+
         return direction;
     }
 

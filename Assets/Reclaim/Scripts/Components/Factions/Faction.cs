@@ -12,6 +12,7 @@ public class Faction : EntityComponent
         RegisteredEvents.Add(GameEventId.GetFaction, GetFaction);
         RegisteredEvents.Add(GameEventId.SetFaction, SetFaction);
         RegisteredEvents.Add(GameEventId.Interact, ResolveIncomingInteraction);
+        RegisteredEvents.Add(GameEventId.PrimaryInteraction, ResolveIncomingInteraction);
     }
 
     void ResolveIncomingInteraction(GameEvent gameEvent)

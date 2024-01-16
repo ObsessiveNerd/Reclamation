@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 using static System.TimeZoneInfo;
+using static UnityEngine.GraphicsBuffer;
 
 public enum ProjectileType
 {
@@ -14,26 +15,34 @@ public enum ProjectileType
 public class Projectile : EntityComponent
 {
     public ProjectileType Type;
-    Vector3 m_TargetPosition;
 
-    void Start()
+    GameObject m_Target;
+
+    bool m_ReadyForActivation = false;
+
+    private void Start()
     {
-        m_TargetPosition = transform.position;
+        m_ReadyForActivation = true;
     }
 
-    public void Fire(GameObject target, List<Damage> baseDamageList)
+    public void Fire(GameObject source, GameObject target)
     {
-        m_TargetPosition = target.transform.position;
+        transform.position = source.transform.position;
+        m_Target = target;
     }
 
     void Update()
     {
-        transform.position = Vector3.Lerp(transform.position, m_TargetPosition, 20f * Time.deltaTime);
+        if (m_ReadyForActivation && m_Target != null)
+        {
+            Point destinationPoint = new Point((int)m_Target.transform.position.x, (int)m_Target.transform.position.y);
 
-        //if (Vector3.Distance(transform.position, m_TargetPosition) < 0.1f)
-        //{
-        //    NetworkObject.Despawn();
-        //    Destroy(gameObject);
-        //}
+            GameEvent setDestination = GameEventPool.Get(GameEventId.MoveEntity)
+            .With(EventParameter.CanMove, true)
+            .With(EventParameter.TilePosition, destinationPoint);
+            gameObject.FireEvent(setDestination);
+            setDestination.Release();
+            m_ReadyForActivation = false;
+        }
     }
-} 
+}

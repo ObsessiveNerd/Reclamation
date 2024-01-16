@@ -11,7 +11,7 @@ public class MeleeWeapon : EntityComponent
 
     void PerformAttack(GameEvent gameEvent)
     {
-        var damages = GetComponents<Damage>().ToList();
+        var damages = GetComponents<Damage>();
         var damageTaken = GameEventPool.Get(GameEventId.DamageTaken)
             .With(gameEvent.Paramters)
             .With(EventParameter.DamageList, damages);

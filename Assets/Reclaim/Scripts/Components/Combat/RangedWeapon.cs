@@ -38,12 +38,11 @@ public class RangedWeapon : EntityComponent
             var projectile = item.Object.GetComponent<Projectile>();
             if(projectile != null && projectile.Type == RequiredAmmoType)
             {
-                Debug.LogError($"Firing {RequiredAmmoType}");
+                //Debug.LogError($"Firing {RequiredAmmoType}");
 
                 var projectileInstance = Services.EntityFactory.Create(projectile.gameObject);
-                projectileInstance.transform.position = source.transform.position;
                 projectileInstance.Show();
-                projectile.Fire(target, gameEvent.GetValue<List<Damage>>(EventParameter.DamageList));
+                projectileInstance.GetComponent<Projectile>().Fire(source, target);
             }
         }
     }

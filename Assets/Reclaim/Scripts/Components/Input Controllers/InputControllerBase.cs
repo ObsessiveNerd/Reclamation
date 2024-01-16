@@ -30,7 +30,7 @@ public abstract class InputControllerBase : EntityComponent
         Tile currentTile = Services.Map.GetTile(point);
         var interact = GameEventPool.Get(GameEventId.Interact)
                 .With(EventParameter.Source, gameObject);
-        currentTile.FireEvent(interact);
+        currentTile.FireEvent(gameObject, interact);
         interact.Release();
     }
 }

@@ -138,6 +138,7 @@ public enum GameEventId
     InteractInDirection,
     InteractWithTarget,
     HostileInteraction,
+    PrimaryInteraction,
 
     TakeTurn,
 
