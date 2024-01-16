@@ -15,15 +15,6 @@ public class RangedWeapon : EntityComponent
 
     void PerformAttack(GameEvent gameEvent)
     {
-        //var damages = GetComponents<Damage>();
-        //var damageTaken = GameEventPool.Get(GameEventId.DamageTaken)
-        //    .With(gameEvent.Paramters)
-        //    .With(EventParameter.DamageList, damages);
-
-        //gameEvent.GetValue<GameObject>(EventParameter.Target).FireEvent(damageTaken);
-
-        //damageTaken.Release();
-
         FireProjectile(gameEvent);
     }
 
@@ -35,14 +26,16 @@ public class RangedWeapon : EntityComponent
         var inventory = source.GetComponent<Inventory>();
         foreach (var item in inventory.InventoryItems)
         {
-            var projectile = item.Object.GetComponent<Projectile>();
+            var projectile = item.GetComponent<Projectile>();
             if(projectile != null && projectile.Type == RequiredAmmoType)
             {
-                //Debug.LogError($"Firing {RequiredAmmoType}");
 
-                var projectileInstance = Services.EntityFactory.Create(projectile.gameObject);
-                projectileInstance.Show();
-                projectileInstance.GetComponent<Projectile>().Fire(source, target);
+                var projectileInstance = Services.EntityFactory.Create(item);
+
+                var animatedProjectile = Instantiate(Resources.Load<GameObject>("AnimatedProjectile"));
+                animatedProjectile.GetComponent<SpriteRenderer>().sprite = projectile.GetComponent<SpriteRenderer>().sprite;
+                animatedProjectile.GetComponent<AnimatedProjectile>().Destination = target.transform.position;
+                animatedProjectile.GetComponent<AnimatedProjectile>().EntityInstance = projectileInstance;
             }
         }
     }

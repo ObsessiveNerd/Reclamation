@@ -25,6 +25,7 @@ public class Position : EntityComponent
     void Start()
     {
         RegisteredEvents.Add(GameEventId.MoveEntity, MoveEntity);
+        RegisteredEvents.Add(GameEventId.SetEntityPosition, SetEntityPosition);
         RegisteredEvents.Add(GameEventId.CalculateTileFlags, CalculateTileFlags);
 
         Point p = new Point((int)transform.position.x, (int)transform.position.y);
@@ -39,6 +40,18 @@ public class Position : EntityComponent
         var flags = gameEvent.GetValue<MovementBlockFlag>(EventParameter.BlocksMovementFlags);
         flags |= BlockMovementOfFlag;
         gameEvent.SetValue<MovementBlockFlag>(EventParameter.BlocksMovementFlags, flags);
+    }
+
+    void SetEntityPosition(GameEvent gameEvent)
+    {
+        var point = gameEvent.GetValue<Point>(EventParameter.Point);
+
+        Services.Map.GetTile(Point).RemoveObject(gameObject);
+        Point = point;
+        Services.Map.GetTile(Point).AddObject(gameObject);
+        
+        transform.position = Services.Map.GetTile(point).transform.position;
+        destinationPosition = transform.position;
     }
 
     void MoveEntity(GameEvent gameEvent)
@@ -61,7 +74,10 @@ public class Position : EntityComponent
 
     void SetGameObjectDestination(Point point)
     {
+        Services.Map.GetTile(Point).RemoveObject(gameObject);
         Point = point;
+        Services.Map.GetTile(Point).AddObject(gameObject);
+
         var tilePosition = Services.Map.GetTile(Point).transform.position;
         var newPosition = new Vector3(tilePosition.x, tilePosition.y, transform.position.z);
         destinationPosition = newPosition;

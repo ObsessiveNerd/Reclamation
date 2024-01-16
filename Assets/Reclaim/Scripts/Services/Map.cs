@@ -43,6 +43,11 @@ public class Map : MonoBehaviour
         //    }
         //}
     }
+    
+    public Tile GetTile(Vector3 position)
+    {
+        return GetTile(new Point((int)position.x, (int)position.y));
+    }
 
     public Tile GetTile(Point point)
     {

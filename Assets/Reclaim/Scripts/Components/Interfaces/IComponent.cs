@@ -24,6 +24,8 @@ public class EntityComponent : NetworkBehaviour, IComponent
         }
     }
 
+    public virtual void WakeUp() { }
+
     public void HandleEvent(GameEvent gameEvent) 
     {
         if (RegisteredEvents.ContainsKey(gameEvent.ID))

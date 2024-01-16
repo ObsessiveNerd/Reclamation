@@ -256,9 +256,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   InventoryItems:
-  - Name: Arrow
-    Object: {fileID: 2249876947531943163, guid: c3aa449ad8a160e428a27d7c45915df0,
-      type: 3}
+  - {fileID: 2249876947531943163, guid: c3aa449ad8a160e428a27d7c45915df0, type: 3}
 --- !u!114 &2632900705406386382
 MonoBehaviour:
   m_ObjectHideFlags: 0

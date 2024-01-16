@@ -40,6 +40,12 @@ public struct Point : INetworkSerializable
         m_y = _y;
     }
 
+    public Point(Vector3 vector3)
+    {
+        m_x = (int)vector3.x;
+        m_y = (int)vector3.y;
+    }
+
     public static Point Parse(string point)
     {
         var x = point.Split(',')[0];

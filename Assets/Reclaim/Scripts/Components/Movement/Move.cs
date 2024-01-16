@@ -22,7 +22,6 @@ public class Move : EntityComponent
         var position = GetComponent<Position>();
         var desiredPosition = Services.Map.GetTilePointInDirection(position.Point, direction);
 
-        var currentTile = Services.Map.GetTile(position.Point);
         var desiredTile = Services.Map.GetTile(desiredPosition);
 
         bool canMove = true;
@@ -51,8 +50,6 @@ public class Move : EntityComponent
         {
             var afterMoving = GameEventPool.Get(GameEventId.AfterMoving);
             gameObject.FireEvent(afterMoving).Release();
-            currentTile.RemoveObject(gameObject);
-            desiredTile.AddObject(gameObject);
         }
     }
 }

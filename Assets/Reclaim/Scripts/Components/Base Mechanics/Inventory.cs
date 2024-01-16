@@ -4,19 +4,19 @@ using UnityEngine;
 
 public class Inventory : EntityComponent
 {
-    public List<ManagedItem> InventoryItems = new List<ManagedItem> ();
+    public List<GameObject> InventoryItems = new List<GameObject> ();
 
-    Dictionary<ManagedItem, int> m_ManagedItemCount = new Dictionary<ManagedItem, int> ();
+    //Dictionary<ManagedItem, int> m_ManagedItemCount = new Dictionary<ManagedItem, int> ();
 
     public void Start()
     {
         RegisteredEvents.Add(GameEventId.GetAmmo, GetAmmo);
         RegisteredEvents.Add(GameEventId.Died, Died);
 
-        //Dictionary<GameObject, int> inventory = new Dictionary <GameObject, int>();
-        //foreach (var item in InventoryItems.Keys)
-        //    inventory.Add(Services.EntityFactory.Create(item), InventoryItems[item]);
-        //InventoryItems = inventory;
+        List<GameObject> inventory = new List<GameObject>();
+        foreach (var item in InventoryItems)
+            inventory.Add(Services.EntityFactory.Create(item));
+        InventoryItems = inventory;
     }   
 
     void GetAmmo(GameEvent gameEvent)
