@@ -10,7 +10,7 @@
 //    private List<Point> m_CurrentPath;
 //    private Point m_PreviousPosition;
 
-//    public void Start()
+//    public override void WakeUpIComponentData data = null()
 //    {
 //        RegisteredEvents.Add(GameEventId.GetActionToTake, GetActionToTake);
 

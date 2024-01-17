@@ -22,7 +22,7 @@ public class Mana : EntityComponent
 
     private int PercentMana {get{ return (CurrentMana / MaxMana) * 100; } }
 
-    public void Start()
+    public override void WakeUp(IComponentData data = null)
     {
         //RegisteredEvents.Add(GameEventId.RestoreMana);
         //RegisteredEvents.Add(GameEventId.DepleteMana);

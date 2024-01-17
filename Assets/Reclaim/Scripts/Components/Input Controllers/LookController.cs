@@ -9,7 +9,7 @@
 
 //    Point m_TileSelection;
 
-//    public void Start()
+//    public override void WakeUpIComponentData data = null()
 //    {
 //        //m_Popup = Resources.Load<GameObject>("Prefabs/UI/ItemPopup");
 

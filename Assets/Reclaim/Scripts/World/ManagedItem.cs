@@ -4,26 +4,29 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [Serializable]
-public class ManagedItem
+public class SerializableData
 {
-    public string Name;
-    public GameObject Object;
+    public Type ComponentType;
+    public string Data;
+}
 
-    bool m_ObjectActivated = false;
 
-    public GameObject GetItem()
+[Serializable]
+public class SerializableGameObject
+{
+    [SerializeField]
+    public List<SerializableData> Data;
+
+    public SerializableGameObject(GameObject go)
     {
-        if(!m_ObjectActivated)
+        Data = new List<SerializableData>();
+
+        foreach (var component in go.GetComponents<EntityComponent>())
         {
-            Object = Services.EntityFactory.Create(Object);
-            m_ObjectActivated = true;
+            SerializableData data = new SerializableData();
+            data.ComponentType = component.GetType();
+            data.Data = JsonUtility.ToJson(component);
+            Data.Add(data);
         }
-
-        return Object;
-    }
-
-    public void FireEvent(GameEvent gameEvent)
-    {
-        GetItem().FireEvent(gameEvent);
     }
 }

@@ -4,13 +4,20 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
-public class Move : EntityComponent
+public class MoveData : IComponentData
 {
     public MovementBlockFlag MovementFlags;
+}
 
-    public void Start()
+public class Move : EntityComponent
+{
+    public MoveData Data = new MoveData();
+
+    public override void WakeUp(IComponentData data = null)
     {
         RegisteredEvents.Add(GameEventId.MoveKeyPressed, MoveKeyPressed);
+        if(data != null)
+            Data = data as MoveData;
     }
 
     void MoveKeyPressed(GameEvent gameEvent)
@@ -20,12 +27,12 @@ public class Move : EntityComponent
         Debug.Log(direction.ToString());
 
         var position = GetComponent<Position>();
-        var desiredPosition = Services.Map.GetTilePointInDirection(position.Point, direction);
+        var desiredPosition = Services.Map.GetTilePointInDirection(position.Data.Point, direction);
 
         var desiredTile = Services.Map.GetTile(desiredPosition);
 
         bool canMove = true;
-        if ((desiredTile.BlocksMovementFlags & MovementFlags) != 0)
+        if ((desiredTile.BlocksMovementFlags & Data.MovementFlags) != 0)
         {
             //Attempt to interact
             var interact = GameEventPool.Get(GameEventId.Interact)

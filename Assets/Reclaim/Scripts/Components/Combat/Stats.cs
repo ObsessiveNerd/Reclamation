@@ -27,7 +27,7 @@ public class Stats : EntityComponent
 
     public int AttributePoints;
 
-    public void Start()
+    public override void WakeUp(IComponentData data = null)
     {
         //RegisteredEvents.Add(GameEventId.RollToHit);
         //RegisteredEvents.Add(GameEventId.GetStat);

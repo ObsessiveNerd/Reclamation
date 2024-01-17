@@ -25,7 +25,7 @@ public class AIController : InputControllerBase
 {
     Energy m_Energy;
 
-    private void Start()
+    public void Start()
     {
         m_Energy = GetComponent<Energy>();
     }
@@ -46,7 +46,7 @@ public class AIController : InputControllerBase
 
         getActionEventBuilder.Release();
 
-        if(desiredDirection != MoveDirection.None && m_Energy.CanTakeATurn)
+        if(desiredDirection != MoveDirection.None && m_Energy.Data.CanTakeATurn)
         {
             MoveServerRpc(desiredDirection);
             m_Energy.TakeTurn();

@@ -11,7 +11,7 @@ public class ActiveAbilities : EntityComponent
         ActiveAbilitiesList = entities;
     }
 
-    public void Start()
+    public override void WakeUp(IComponentData data = null)
     {
         //RegisteredEvents.Add(GameEventId.AddToActiveAbilities);
         //RegisteredEvents.Add(GameEventId.RemoveFromActiveAbilities);

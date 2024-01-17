@@ -7,7 +7,7 @@ public class PlayerFOVHandler : EntityComponent
 {
     private List<Point> m_VisiblePoints = new List<Point>();
 
-    public void Start()
+    public override void WakeUp(IComponentData data = null)
     {
         RegisteredEvents.Add(GameEventId.FOVRecalculated, FOVRecalculated);
     }

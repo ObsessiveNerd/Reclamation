@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MeleeWeapon : EntityComponent
 {
-    void Start()
+    public override void WakeUp(IComponentData data = null)
     {
         RegisteredEvents.Add(GameEventId.PerformAttack, PerformAttack);
     }

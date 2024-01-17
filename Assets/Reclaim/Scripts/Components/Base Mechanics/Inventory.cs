@@ -2,22 +2,32 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public class InventoryData : IComponentData
+{
+
+}
+
 public class Inventory : EntityComponent
 {
+    public InventoryData Data = new InventoryData();
+
     public List<GameObject> InventoryItems = new List<GameObject> ();
 
     //Dictionary<ManagedItem, int> m_ManagedItemCount = new Dictionary<ManagedItem, int> ();
 
-    public void Start()
+    public override void WakeUp(IComponentData data = null)
     {
         RegisteredEvents.Add(GameEventId.GetAmmo, GetAmmo);
         RegisteredEvents.Add(GameEventId.Died, Died);
 
-        List<GameObject> inventory = new List<GameObject>();
-        foreach (var item in InventoryItems)
-            inventory.Add(Services.EntityFactory.Create(item));
-        InventoryItems = inventory;
-    }   
+        if (data != null)
+            Data = data as InventoryData;
+    }
+
+    public override IComponentData GetData()
+    {
+        return Data;
+    }
 
     void GetAmmo(GameEvent gameEvent)
     {
@@ -26,6 +36,8 @@ public class Inventory : EntityComponent
 
     public void AddToInventory(GameObject item)
     {
+        InventoryItems.Add(item);
+
         //InventoryItems.Add(item, 1);
     }
 

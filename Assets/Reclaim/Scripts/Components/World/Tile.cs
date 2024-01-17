@@ -131,7 +131,7 @@ public class Tile : MonoBehaviour
     Color m_Grey;
     Color m_Invisible;
 
-    void Start()
+    public void Start()
     {
         m_SpriteRenderer = GetComponent<SpriteRenderer>();
         m_Grey = new Color(0.2f, 0.2f, 0.2f);
@@ -151,8 +151,8 @@ public class Tile : MonoBehaviour
 
     public void AddObject(GameObject obj)
     {
-        Objects.Add(obj.gameObject);
-        obj.gameObject.SetActive(true);
+        Objects.Add(obj);
+        //obj.gameObject.SetActive(true);
         Services.Coroutine.InvokeCoroutine(Recalculate());
     }
 
@@ -177,8 +177,8 @@ public class Tile : MonoBehaviour
 
     public void RemoveObject(GameObject obj)
     {
-        Objects.Remove(obj.gameObject);
-        obj.gameObject.SetActive(false);
+        Objects.Remove(obj);
+        //obj.gameObject.SetActive(false);
         Services.Coroutine.InvokeCoroutine(Recalculate());
     }
 

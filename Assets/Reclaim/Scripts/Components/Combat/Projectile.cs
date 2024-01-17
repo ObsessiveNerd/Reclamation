@@ -20,7 +20,7 @@ public class Projectile : EntityComponent
 
     //bool m_ReadyForActivation = false;
 
-    //void Start()
+    //public override void WakeUpIComponentData data = null()
     //{
     //    m_ReadyForActivation = true;
     //}

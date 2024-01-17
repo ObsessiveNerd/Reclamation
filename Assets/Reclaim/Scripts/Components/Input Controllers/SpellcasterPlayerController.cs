@@ -11,7 +11,7 @@
 //    Point m_TileSelection = Point.InvalidPoint;
 //    GameObject m_Attack;
 
-//    public void Start(GameObject spell)
+//    public override void WakeUpIComponentData data = null(GameObject spell)
 //    {
 //        m_Attack = spell;
 //        GameEvent getManaCost = GameEventPool.Get(GameEventId.ManaCost)
@@ -20,7 +20,7 @@
 //        getManaCost.Release();
 //    }
 
-//    //public void Start()
+//    //public override void WakeUpIComponentData data = null()
 //    //{
         
 //    //    UIManager.Push(this);

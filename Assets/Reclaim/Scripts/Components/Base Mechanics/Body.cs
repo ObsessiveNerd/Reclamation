@@ -6,22 +6,35 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-public class Body : EntityComponent
+public class BodyData : IComponentData
 {
     public List<BodyPart> BodyParts = new List<BodyPart>();
+}
 
-    public void Start()
+
+public class Body : EntityComponent
+{
+    public BodyData Data = new BodyData();
+
+    public override void WakeUp(IComponentData data = null)
     {
         RegisteredEvents.Add(GameEventId.HostileInteraction, HostileInteraction);
         RegisteredEvents.Add(GameEventId.DamageTaken, DamageTaken);
 
-        foreach(var part in BodyParts)
+        if(data != null)
+            Data = data as BodyData;
+
+        foreach(var part in Data.BodyParts)
             part.Activate();
     }
 
     void HostileInteraction(GameEvent gameEvent)
     {
         Attack(gameEvent);
+    }
+    public override IComponentData GetData()
+    {
+        return Data;
     }
 
     void Attack(GameEvent gameEvent)
@@ -33,7 +46,7 @@ public class Body : EntityComponent
             .With(EventParameter.Target, target)
             .With(EventParameter.Source, gameObject);
 
-        foreach (var equipmentSlot in BodyParts)
+        foreach (var equipmentSlot in Data.BodyParts)
             equipmentSlot.PassEventToEquipment(attack);
 
         //var takeDamage = GameEventPool.Get(GameEventId.DamageTaken)
@@ -55,7 +68,7 @@ public class Body : EntityComponent
         int total = 0;
         foreach(var damage in damageList)
         {
-            Debug.LogError($"{source.name} did {damage.DamageAmount} of type {damage.Type}");
+            Debug.LogError($"{source.name} did {damage.Data.DamageAmount} of type {damage.Data.Type}");
             //total += damage.DamageAmount;
         }
 

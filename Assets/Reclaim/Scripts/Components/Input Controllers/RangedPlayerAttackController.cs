@@ -7,7 +7,7 @@
 //    Point m_TileSelection;
 //    GameObject m_Attack;
 
-//    public void Start()
+//    public override void WakeUpIComponentData data = null()
 //    {
 //        GameObject startingTarget = WorldUtility.GetClosestEnemyTo(gameObject);
 

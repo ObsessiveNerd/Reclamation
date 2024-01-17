@@ -4,9 +4,25 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
-[Serializable]
-public class Damage : EntityComponent
+public class DamageData : IComponentData
 {
     public Dice DamageAmount;
     public DamageType Type;
+}
+
+[Serializable]
+public class Damage : EntityComponent
+{
+    public DamageData Data = new DamageData();
+
+    public override void WakeUp(IComponentData data = null)
+    {
+        if(data != null) 
+            Data = data as DamageData;
+    }
+
+    public override IComponentData GetData()
+    {
+        return Data;
+    }
 }

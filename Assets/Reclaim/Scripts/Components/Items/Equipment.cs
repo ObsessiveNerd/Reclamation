@@ -2,12 +2,24 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public class EquipmentData : IComponentData
+{ 
+    public BodyPartType EquipsTo;
+}
+
+
 public class Equipment : EntityComponent
 {
-    public BodyPartType EquipsTo;
+    public EquipmentData Data = new EquipmentData();
 
-    void Start()
+    public override void WakeUp(IComponentData data = null)
     {
-        
+        if (data != null)
+            Data = data as EquipmentData;
+    }
+
+    public override IComponentData GetData()
+    {
+        return Data;
     }
 }

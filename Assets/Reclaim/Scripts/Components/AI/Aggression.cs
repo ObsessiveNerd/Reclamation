@@ -3,21 +3,34 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+public class AgressionData : IComponentData
+{
+    public Point CurrentLocation;
+    public Point TargetLocation;
+}
+
+
 public class Aggression : EntityComponent
 {
-    Point m_CurrentLocation;
-    Point m_TargetLocation;
+    public AgressionData Data;
+
     Position m_Position;
 
-    public void Start()
+    public override void WakeUp(IComponentData data = null)
     {
         m_Position = GetComponent<Position>();
+        
+        if(data == null)
+            data = new AgressionData();
+        else
+            Data = data as AgressionData;
+
         RegisteredEvents.Add(GameEventId.GetActionToTake, GetActionToTake);
     }
 
     void GetActionToTake(GameEvent gameEvent)
     {
-        m_CurrentLocation = m_Position.Point;
+         Data.CurrentLocation = m_Position.Data.Point;
         GameEvent getVisiblePoints = GameEventPool.Get(GameEventId.GetVisibleTiles)
                                             .With(EventParameter.VisibleTiles, new List<Point>());
         List<Point> visiblePoints = gameObject.FireEvent(getVisiblePoints).GetValue<List<Point>>(EventParameter.VisibleTiles);
@@ -25,7 +38,7 @@ public class Aggression : EntityComponent
 
         foreach (var point in visiblePoints)
         {
-            if (point == m_CurrentLocation)
+            if (point == Data.CurrentLocation)
                 continue;
 
             HashSet<GameObject> targets = Services.Map.GetTile(point).Objects;
@@ -35,7 +48,7 @@ public class Aggression : EntityComponent
                 if (Factions.GetDemeanorForTarget(gameObject, target) != Demeanor.Hostile)
                     continue;
 
-                m_TargetLocation = point;
+                Data.TargetLocation = point;
                 AIAction attackAction = new AIAction()
                 {
                     Priority = 2,
@@ -49,10 +62,10 @@ public class Aggression : EntityComponent
 
     MoveDirection MakeAttack()
     {
-        var path = Services.Pathfinder.GetPath(m_CurrentLocation, m_TargetLocation);
+        var path = Services.Pathfinder.GetPath(Data.CurrentLocation, Data.TargetLocation);
         if (path.Count == 0)
             return MoveDirection.None;
 
-        return Services.Pathfinder.GetDirectionTo(m_CurrentLocation, path[0]);
+        return Services.Pathfinder.GetDirectionTo(Data.CurrentLocation, path[0]);
     }
 }

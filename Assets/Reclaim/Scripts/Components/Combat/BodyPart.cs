@@ -26,8 +26,7 @@ public class BodyPart
 
     public void Activate()
     {
-        if (Equipment != null)
-            Equipment = Services.EntityFactory.Create(Equipment);
+        
     }
 
     public void PassEventToEquipment(GameEvent gameEvent)

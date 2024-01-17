@@ -20,7 +20,7 @@ using UnityEngine;
 //    string ID { get; }
 //    bool NeedsCleanup { get; }
 //    string Serialize();
-//    void Start();
+//    public override void WakeUpIComponentData data = null();
 //    //Action<GameObject> Destroyed { get; set; }
 //}
 

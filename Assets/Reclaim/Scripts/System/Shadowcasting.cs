@@ -20,7 +20,7 @@ public class Shadowcasting : IFovAlgorithm
             octants = m_VisibleOctants;
 
         m_Range = range;
-        m_SourcePoint = source.GetComponent<Position>().Point;
+        m_SourcePoint = source.GetComponent<Position>().Data.Point;
 
         m_VisiblePoints = new List<Point>();
         m_VisiblePoints.Add(m_SourcePoint);

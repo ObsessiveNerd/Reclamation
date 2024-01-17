@@ -8,7 +8,7 @@ public class Sound : EntityComponent
     public AudioClip SoundClip;
     public string Key;
 
-    public void Start()
+    public override void WakeUp(IComponentData data = null)
     {
         RegisteredEvents.Add(GameEventId.Playsound, PlaySound);
     }

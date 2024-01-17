@@ -13,33 +13,19 @@ public enum MovementBlockFlag
     All = 4
 }
 
-public class Position : EntityComponent
+public class PositionData : ComponentData
 {
     public MovementBlockFlag BlockMovementOfFlag = MovementBlockFlag.None;
     public Point Point;
-    
-    float TransitionTime = 20f;
+    public float TransitionTime = 20f;
 
-    Vector3 destinationPosition;
-
-    void Start()
+    public override void WakeUp()
     {
         RegisteredEvents.Add(GameEventId.MoveEntity, MoveEntity);
         RegisteredEvents.Add(GameEventId.SetEntityPosition, SetEntityPosition);
         RegisteredEvents.Add(GameEventId.CalculateTileFlags, CalculateTileFlags);
 
-        Point p = new Point((int)transform.position.x, (int)transform.position.y);
-        SetGameObjectDestination(p);
 
-        Services.Map.GetTile(p).AddObject(gameObject);
-        destinationPosition = transform.position;
-    }
-
-    void CalculateTileFlags(GameEvent gameEvent)
-    {
-        var flags = gameEvent.GetValue<MovementBlockFlag>(EventParameter.BlocksMovementFlags);
-        flags |= BlockMovementOfFlag;
-        gameEvent.SetValue<MovementBlockFlag>(EventParameter.BlocksMovementFlags, flags);
     }
 
     void SetEntityPosition(GameEvent gameEvent)
@@ -49,7 +35,7 @@ public class Position : EntityComponent
         Services.Map.GetTile(Point).RemoveObject(gameObject);
         Point = point;
         Services.Map.GetTile(Point).AddObject(gameObject);
-        
+
         transform.position = Services.Map.GetTile(point).transform.position;
         destinationPosition = transform.position;
     }
@@ -84,8 +70,48 @@ public class Position : EntityComponent
 
     }
 
+    void CalculateTileFlags(GameEvent gameEvent)
+    {
+        var flags = gameEvent.GetValue<MovementBlockFlag>(EventParameter.BlocksMovementFlags);
+        flags |= BlockMovementOfFlag;
+        gameEvent.SetValue<MovementBlockFlag>(EventParameter.BlocksMovementFlags, flags);
+    }
+}
+
+
+public class Position : EntityComponent
+{
+    public PositionData Data = new PositionData();
+    Vector3 destinationPosition;
+
+    public override void WakeUp(IComponentData data = null)
+    {
+        if (data != null)
+            Data = data as PositionData;
+
+        Data.WakeUp();
+
+        //RegisteredEvents.Add(GameEventId.MoveEntity, MoveEntity);
+        //RegisteredEvents.Add(GameEventId.SetEntityPosition, SetEntityPosition);
+        //RegisteredEvents.Add(GameEventId.CalculateTileFlags, CalculateTileFlags);
+
+        //Point p = new Point((int)transform.position.x, (int)transform.position.y);
+        //SetGameObjectDestination(p);
+
+        //Services.Map.GetTile(p).AddObject(gameObject);
+
+        destinationPosition = transform.position;
+
+
+    }
+
+    public override IComponentData GetData()
+    {
+        return Data;
+    }
+
     void Update()
     {
-        transform.position = Vector3.Lerp(transform.position, destinationPosition, TransitionTime * Time.deltaTime);
+        transform.position = Vector3.Lerp(transform.position, destinationPosition, Data.TransitionTime * Time.deltaTime);
     }
 }

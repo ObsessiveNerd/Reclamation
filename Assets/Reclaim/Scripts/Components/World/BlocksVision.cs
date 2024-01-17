@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BlocksVision : EntityComponent
 {
-    void Start()
+    public override void WakeUp(IComponentData data = null)
     {
         RegisteredEvents.Add(GameEventId.CalculateTileFlags, CalculateTileFlags);
     }
@@ -16,7 +16,6 @@ public class BlocksVision : EntityComponent
         flags |= MovementBlockFlag.All;
         gameEvent.SetValue<MovementBlockFlag>(EventParameter.BlocksMovementFlags, flags);
 
-        
         gameEvent.SetValue(EventParameter.BlocksVision, true);
     }
 }

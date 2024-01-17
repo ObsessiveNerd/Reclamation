@@ -4,15 +4,20 @@ using System.Drawing;
 using Unity.Netcode;
 using UnityEngine;
 
+
 [RequireComponent(typeof(Energy))]
 [RequireComponent(typeof(Position))]
 public class PlayerInputController : InputControllerBase
 {
     Energy m_Energy;
 
-    void Start()
+    public void Start()
     {
-        m_Energy = GetComponent<Energy>();    
+        m_Energy = GetComponent<Energy>();
+        gameObject.WakeUp();
+
+        var data = gameObject.Serialize();
+        Debug.Log(data);
     }
 
     void Update()
@@ -21,7 +26,7 @@ public class PlayerInputController : InputControllerBase
             return;
 
         MoveDirection desiredDirection = InputUtility.GetMoveDirection();
-        if (desiredDirection != MoveDirection.None && m_Energy.CanTakeATurn)
+        if (desiredDirection != MoveDirection.None && m_Energy.Data.CanTakeATurn)
         {
             MoveServerRpc(desiredDirection);
             m_Energy.TakeTurn();
@@ -30,7 +35,7 @@ public class PlayerInputController : InputControllerBase
         if (GameKeyInputBinder.PerformRequestedAction(RequestedAction.InteractWithCurrentTile))
         {
             Position pos = GetComponent<Position>();
-            InteractWithTileServerRpc(pos.Point);
+            InteractWithTileServerRpc(pos.Data.Point);
         }
 
         if (Input.GetMouseButtonDown(0))

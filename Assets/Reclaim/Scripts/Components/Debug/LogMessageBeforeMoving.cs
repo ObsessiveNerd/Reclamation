@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class LogMessageBeforeMoving : EntityComponent
 {
-    public void Start()
+    public override void WakeUp(IComponentData data = null)
     {
         RegisteredEvents.Add(GameEventId.BeforeMoving, BeforeMoving);
     }

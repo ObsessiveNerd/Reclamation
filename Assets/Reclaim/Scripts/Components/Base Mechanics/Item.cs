@@ -12,16 +12,24 @@ public enum ItemRarity
     Mythic = 20
 }
 
-public class Item : EntityComponent
+public class ItemData : IComponentData
 {
     public ItemRarity Rarity = ItemRarity.Uncommon;
+}
 
-    public void Start()
+public class Item : EntityComponent
+{
+    public ItemData Data = new ItemData();
+
+    public override void WakeUp(IComponentData data = null)
     {
         RegisteredEvents.Add(GameEventId.Interact, Pickup);
         RegisteredEvents.Add(GameEventId.Drop, Drop);
         RegisteredEvents.Add(GameEventId.GetContextMenuActions, GetContextMenuActions);
         RegisteredEvents.Add(GameEventId.GetRarity, GetRarity);
+
+        if (data != null)
+            Data = data as ItemData;
     }
 
     void Pickup(GameEvent gameEvent)
@@ -31,7 +39,12 @@ public class Item : EntityComponent
         inventory.AddToInventory(gameObject);
 
         Position pos = GetComponent<Position>();
-        Services.Map.GetTile(pos.Point).RemoveObject(gameObject);
+        Services.Map.GetTile(pos.Data.Point).RemoveObject(gameObject);
+        Destroy(gameObject);
+    }
+    public override IComponentData GetData()
+    {
+        return Data;
     }
 
     void Drop(GameEvent gameEvent)
@@ -70,6 +83,6 @@ public class Item : EntityComponent
 
     void GetRarity(GameEvent gameEvent)
     {
-        gameEvent.Paramters[EventParameter.Rarity] = Rarity;
+        gameEvent.Paramters[EventParameter.Rarity] = Data.Rarity;
     }
 }

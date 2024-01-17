@@ -7,7 +7,7 @@ public class Faction : EntityComponent
 {
     public FactionId ID;
 
-    public void Start()
+    public override void WakeUp(IComponentData data = null)
     {
         RegisteredEvents.Add(GameEventId.GetFaction, GetFaction);
         RegisteredEvents.Add(GameEventId.SetFaction, SetFaction);
