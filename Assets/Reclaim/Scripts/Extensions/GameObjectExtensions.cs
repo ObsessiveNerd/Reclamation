@@ -65,7 +65,7 @@ public static class GameObjectExtensions
     {
         var components = source.GetComponents<EntityComponent>();
         foreach (var component in components)
-            component.WakeUp();
+            component.GetData()?.WakeUp();
     }
 
     public static void Hide(this GameObject source)

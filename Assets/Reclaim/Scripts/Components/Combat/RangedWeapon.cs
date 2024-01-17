@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
-public class RangedWeaponData : IComponentData
+public class RangedWeaponData : ComponentData
 {
     public ProjectileType RequiredAmmoType;
 }

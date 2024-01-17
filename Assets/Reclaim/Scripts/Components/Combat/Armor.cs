@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ArmorData : IComponentData
+public class ArmorData : ComponentData
 { 
     public int ArmorAmount;
 }

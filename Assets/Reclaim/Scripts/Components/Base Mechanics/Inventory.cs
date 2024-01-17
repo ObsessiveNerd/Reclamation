@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InventoryData : IComponentData
+public class InventoryData : ComponentData
 {
 
 }

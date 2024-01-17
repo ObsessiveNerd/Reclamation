@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
-public class DamageData : IComponentData
+public class DamageData : ComponentData
 {
     public Dice DamageAmount;
     public DamageType Type;

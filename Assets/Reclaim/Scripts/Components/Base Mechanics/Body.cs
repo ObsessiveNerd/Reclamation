@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-public class BodyData : IComponentData
+public class BodyData : ComponentData
 {
     public List<BodyPart> BodyParts = new List<BodyPart>();
 }

@@ -15,9 +15,6 @@ public class PlayerInputController : InputControllerBase
     {
         m_Energy = GetComponent<Energy>();
         gameObject.WakeUp();
-
-        var data = gameObject.Serialize();
-        Debug.Log(data);
     }
 
     void Update()

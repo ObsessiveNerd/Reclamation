@@ -1,9 +1,11 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
-public class EnergyData : IComponentData
+[Serializable]
+public class EnergyData : ComponentData
 {
     public float EnergyReginerationDelay;
     public bool CanTakeATurn = true;
@@ -15,10 +17,10 @@ public class Energy : EntityComponent
 
     public override void WakeUp(IComponentData data = null)
     {
-        //RegisteredEvents.Add(GameEventId.TakeTurn, TakeTurn);
         if(data != null)
             Data = data as EnergyData;
     }
+
     public override IComponentData GetData()
     {
         return Data;

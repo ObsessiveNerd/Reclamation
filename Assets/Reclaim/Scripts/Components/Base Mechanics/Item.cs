@@ -12,7 +12,7 @@ public enum ItemRarity
     Mythic = 20
 }
 
-public class ItemData : IComponentData
+public class ItemData : ComponentData
 {
     public ItemRarity Rarity = ItemRarity.Uncommon;
 }

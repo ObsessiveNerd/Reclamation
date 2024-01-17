@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
-public class MoveData : IComponentData
+public class MoveData : ComponentData
 {
     public MovementBlockFlag MovementFlags;
 }
@@ -13,9 +13,13 @@ public class Move : EntityComponent
 {
     public MoveData Data = new MoveData();
 
-    public override void WakeUp(IComponentData data = null)
+    void Start()
     {
         RegisteredEvents.Add(GameEventId.MoveKeyPressed, MoveKeyPressed);
+    }
+
+    public override void WakeUp(IComponentData data = null)
+    {
         if(data != null)
             Data = data as MoveData;
     }

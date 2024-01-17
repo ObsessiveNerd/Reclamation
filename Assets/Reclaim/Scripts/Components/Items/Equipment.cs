@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EquipmentData : IComponentData
+public class EquipmentData : ComponentData
 { 
     public BodyPartType EquipsTo;
 }

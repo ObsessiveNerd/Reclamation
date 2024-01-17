@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
-public class HealthData : IComponentData
+public class HealthData : ComponentData
 {
     public int MaxHealth;
     public int CurrentHealth;

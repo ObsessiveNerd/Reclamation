@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 
-public class FOVData : IComponentData
+[Serializable]
+public class FOVData : ComponentData
 { 
     public int FOVRange;
 }
@@ -11,15 +13,19 @@ public class FOV : EntityComponent
     IFovAlgorithm m_Fov;
     List<Point> m_VisibleTiles;
 
-    public override void WakeUp(IComponentData data = null)
+    void Start()
     {
         m_Fov = new Shadowcasting();
-        if(data != null)
-            Data = data as FOVData;
 
         UpdateFOV();
         RegisteredEvents.Add(GameEventId.AfterMoving, AfterMoving);
         RegisteredEvents.Add(GameEventId.GetVisibleTiles, GetVisibleTiles);
+    }
+
+    public override void WakeUp(IComponentData data = null)
+    {
+        if(data != null)
+            Data = data as FOVData;
     }
 
     public override IComponentData GetData()

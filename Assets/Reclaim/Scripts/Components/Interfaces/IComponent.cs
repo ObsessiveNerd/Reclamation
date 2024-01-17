@@ -20,8 +20,11 @@ public interface IComponentData
     void WakeUp();
 }
 
+[Serializable]
 public class ComponentData : IComponentData
 {
+    public EntityData Entity;
+
     private Dictionary<GameEventId, Action<GameEvent>> m_RegisteredEvents;
     public Dictionary<GameEventId, Action<GameEvent>> RegisteredEvents
     {
@@ -68,6 +71,13 @@ public class EntityComponent : NetworkBehaviour, IComponent
     {
         if (RegisteredEvents.ContainsKey(gameEvent.ID))
             RegisteredEvents[gameEvent.ID](gameEvent);
+
+        IComponentData data = GetData();
+        if(data != null)
+        {
+            if (data.RegisteredEvents.ContainsKey(gameEvent.ID))
+                data.RegisteredEvents[gameEvent.ID](gameEvent);
+        }
     }
 
     public GameEvent FireEvent(GameObject target, GameEvent gameEvent, bool logEvent = false)
