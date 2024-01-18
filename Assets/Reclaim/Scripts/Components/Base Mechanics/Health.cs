@@ -1,31 +1,30 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
-public class HealthData : ComponentData
+public class HealthData : EntityComponent
 {
     public int MaxHealth;
     public int CurrentHealth;
     public int ModMultiplier = 5;
     public int PercentBoost;
-}
 
-public class Health : EntityComponent
-{
-    public HealthData Data = new HealthData();
+    public Action OnDamaged;
+    public Action OnDied;
 
     public int TotalHealth
     {
         get
         {
-            float percent = (float)Data.PercentBoost / 100f;
-            int boostAmount = (int)(Data.MaxHealth * percent);
-            return Data.MaxHealth + boostAmount;
+            float percent = (float)PercentBoost / 100f;
+            int boostAmount = (int)(MaxHealth * percent);
+            return MaxHealth + boostAmount;
         }
     }
 
-    public override void WakeUp(IComponentData data = null)
+    public override void WakeUp()
     {
         RegisteredEvents.Add(GameEventId.ApplyDamage, ApplyDamage);
         RegisteredEvents.Add(GameEventId.StatBoosted, StatBoosted);
@@ -33,8 +32,6 @@ public class Health : EntityComponent
         RegisteredEvents.Add(GameEventId.RemoveMaxHealth, RemoveMaxHealth);
         RegisteredEvents.Add(GameEventId.Died, Died);
 
-        if (data != null)
-            Data = data as HealthData;
 
         //RegisteredEvents.Add(GameEventId.RestoreHealth);
         //RegisteredEvents.Add(GameEventId.RegenHealth);
@@ -43,31 +40,83 @@ public class Health : EntityComponent
         //RegisteredEvents.Add(GameEventId.Rest);
     }
 
-    bool m_IsFlickering = false;
     void ApplyDamage(GameEvent gameEvent)
     {
-        if (!m_IsFlickering)
-            Services.Coroutine.InvokeCoroutine(FlickerRed());
+        CurrentHealth -= gameEvent.GetValue<int>(EventParameter.DamageAmount);
+        OnDamaged();
 
-        Data.CurrentHealth -= gameEvent.GetValue<int>(EventParameter.DamageAmount);
-        if(Data.CurrentHealth <= 0)
+        if (CurrentHealth <= 0)
         {
             var died = GameEventPool.Get(GameEventId.Died);
-            gameObject.FireEvent(died);
+            Entity.FireEvent(died);
             died.Release();
-            NetworkObject.Despawn();
-            Destroy(gameObject);
+            OnDied();
         }
     }
-    public override IComponentData GetData()
+    void StatBoosted(GameEvent gameEvent)
     {
-        return Data;
+        Stats stats = gameEvent.GetValue<Stats>(EventParameter.Stats);
+        MaxHealth = 10 + Mathf.Max(0, stats.CalculateModifier(stats.Con) * ModMultiplier);
+    }
+
+    void AddMaxHealth(GameEvent gameEvent)
+    {
+        int amount = gameEvent.GetValue<int>(EventParameter.MaxValue);
+        PercentBoost += amount;
+        //Services.WorldUIService.UpdateUI();
+    }
+
+    void RemoveMaxHealth(GameEvent gameEvent)
+    {
+        int amount = gameEvent.GetValue<int>(EventParameter.MaxValue);
+        PercentBoost -= amount;
+        if (TotalHealth < CurrentHealth)
+            CurrentHealth = TotalHealth;
+        //Services.WorldUIService.UpdateUI();
     }
 
     void Died(GameEvent gameEvent)
     {
-        Tile t = Services.Map.GetTile(GetComponent<Position>().Data.Point);
-        t.RemoveObject(gameObject);
+        Tile t = Services.Map.GetTile(Entity.GetComponent<PositionData>().Point);
+        t.RemoveObject(Entity.GameObject);
+    }
+}
+
+public class Health : EntityComponentBehavior
+{
+    public HealthData Data = new HealthData();
+
+    private void Start()
+    {
+        Data.OnDamaged += Flicker;
+        Data.OnDied += Died;
+    }
+
+    public override void OnDestroy()
+    {
+        base.OnDestroy();
+        Data.OnDamaged -= Flicker;
+        Data.OnDied -= Died;
+    }
+
+    bool m_IsFlickering = false;
+
+    void Flicker()
+    {
+        if (!m_IsFlickering)
+            Services.Coroutine.InvokeCoroutine(FlickerRed());
+    }
+
+    void Died()
+    {
+        NetworkObject.Despawn();
+        Destroy(gameObject);
+    }
+
+
+    public override IComponent GetData()
+    {
+        return Data;
     }
 
     IEnumerator FlickerRed()
@@ -83,27 +132,5 @@ public class Health : EntityComponent
         }
         spriteRenderer.color = Color.white;
         m_IsFlickering = false;
-    }
-
-    void StatBoosted(GameEvent gameEvent)
-    {
-        Stats stats = gameEvent.GetValue<Stats>(EventParameter.Stats);
-        Data.MaxHealth = 10 + Mathf.Max(0, stats.CalculateModifier(stats.Con) * Data.ModMultiplier);
-    }
-
-    void AddMaxHealth(GameEvent gameEvent)
-    {
-        int amount = gameEvent.GetValue<int>(EventParameter.MaxValue);
-        Data.PercentBoost += amount;
-        //Services.WorldUIService.UpdateUI();
-    }
-
-    void RemoveMaxHealth(GameEvent gameEvent)
-    {
-        int amount = gameEvent.GetValue<int>(EventParameter.MaxValue);
-        Data.PercentBoost -= amount;
-        if (TotalHealth < Data.CurrentHealth)
-            Data.CurrentHealth = TotalHealth;
-        //Services.WorldUIService.UpdateUI();
     }
 }

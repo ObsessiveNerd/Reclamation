@@ -1,12 +1,15 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 
-public class Info : EntityComponent
+[Serializable]
+public class InfoData : EntityComponent
 {
     public string InfoMessage;
-    public Info(string info)
+
+    public override void WakeUp()
     {
         RegisteredEvents.Add(GameEventId.ShowInfo, ShowInfo);
         RegisteredEvents.Add(GameEventId.GetInfo, GetInfo);
@@ -22,5 +25,15 @@ public class Info : EntityComponent
     {
         gameEvent.GetValue<StringBuilder>(EventParameter.Info).AppendLine(InfoMessage);
         RecLog.Log(InfoMessage);
+    }
+}
+
+public class Info : EntityComponentBehavior
+{
+    InfoData Data = new InfoData();
+
+    public override IComponent GetData()
+    {
+        return Data;
     }
 }

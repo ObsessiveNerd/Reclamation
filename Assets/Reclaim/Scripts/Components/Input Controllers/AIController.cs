@@ -49,7 +49,7 @@ public class AIController : InputControllerBase
         if(desiredDirection != MoveDirection.None && m_Energy.Data.CanTakeATurn)
         {
             MoveServerRpc(desiredDirection);
-            m_Energy.TakeTurn();
+            m_Energy.Data.TakeTurn();
         }
     }
 }

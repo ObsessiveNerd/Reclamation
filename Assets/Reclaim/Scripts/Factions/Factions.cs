@@ -58,6 +58,6 @@ public static class Factions
         if (sourceFaction == null || targetFaction == null)
             return Demeanor.None;
 
-        return (Demeanor)FactionRelation[(int)sourceFaction.ID, (int)targetFaction.ID];
+        return (Demeanor)FactionRelation[(int)sourceFaction.Data.ID, (int)targetFaction.Data.ID];
     }
 }

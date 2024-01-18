@@ -1,13 +1,15 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
-public class Faction : EntityComponent
+[Serializable]
+public class FactionData : EntityComponent
 {
     public FactionId ID;
 
-    public override void WakeUp(IComponentData data = null)
+    public override void WakeUp()
     {
         RegisteredEvents.Add(GameEventId.GetFaction, GetFaction);
         RegisteredEvents.Add(GameEventId.SetFaction, SetFaction);
@@ -18,7 +20,7 @@ public class Faction : EntityComponent
     void ResolveIncomingInteraction(GameEvent gameEvent)
     {
         GameObject source = gameEvent.GetValue<GameObject>(EventParameter.Source);
-        Demeanor demeanor = Factions.GetDemeanorForTarget(source, gameObject);
+        Demeanor demeanor = Factions.GetDemeanorForTarget(source, Entity.GameObject);
 
         switch (demeanor)
         {
@@ -44,7 +46,7 @@ public class Faction : EntityComponent
         var interactionSource = NetworkManager.Singleton.SpawnManager.SpawnedObjects[sourceId];
 
         var triggerAttack = GameEventPool.Get(GameEventId.HostileInteraction)
-            .With(EventParameter.Target, gameObject);
+            .With(EventParameter.Target, Entity.GameObject);
         interactionSource.gameObject.FireEvent(triggerAttack);
 
         triggerAttack.Release();
@@ -58,5 +60,15 @@ public class Faction : EntityComponent
     void SetFaction(GameEvent gameEvent)
     {
         ID = gameEvent.GetValue<FactionId>(EventParameter.Faction);
+    }
+}
+
+public class Faction : EntityComponentBehavior
+{
+    public FactionData Data = new FactionData();
+
+    public override IComponent GetData()
+    {
+        return Data;
     }
 }

@@ -2,18 +2,14 @@ using System;
 using System.Collections.Generic;
 
 [Serializable]
-public class FOVData : ComponentData
+public class FOVData : EntityComponent
 { 
     public int FOVRange;
-}
-
-public class FOV : EntityComponent
-{
-    public FOVData Data = new FOVData();
+    
     IFovAlgorithm m_Fov;
     List<Point> m_VisibleTiles;
 
-    void Start()
+    public override void WakeUp()
     {
         m_Fov = new Shadowcasting();
 
@@ -21,31 +17,19 @@ public class FOV : EntityComponent
         RegisteredEvents.Add(GameEventId.AfterMoving, AfterMoving);
         RegisteredEvents.Add(GameEventId.GetVisibleTiles, GetVisibleTiles);
     }
-
-    public override void WakeUp(IComponentData data = null)
-    {
-        if(data != null)
-            Data = data as FOVData;
-    }
-
-    public override IComponentData GetData()
-    {
-        return Data;
-    }
-
     void UpdateFOV()
     {
-        int baseRange = Data.FOVRange;
+        int baseRange = FOVRange;
         GameEvent beforeFOVCalculated = GameEventPool.Get(GameEventId.BeforeFOVRecalculated)
-                .With(EventParameter.FOVRange, Data.FOVRange);
+                .With(EventParameter.FOVRange, FOVRange);
         
-        m_VisibleTiles = m_Fov.GetVisibleTiles(gameObject, Data.FOVRange);
+        m_VisibleTiles = m_Fov.GetVisibleTiles(Entity.GameObject, FOVRange);
 
         GameEvent afterFOVCalculated = GameEventPool.Get(GameEventId.FOVRecalculated)
             .With(EventParameter.VisibleTiles, m_VisibleTiles);
-        gameObject.FireEvent(afterFOVCalculated).Release();
+        Entity.FireEvent(afterFOVCalculated).Release();
 
-        Data.FOVRange = baseRange;
+        FOVRange = baseRange;
         beforeFOVCalculated.Release();
     }
 
@@ -57,5 +41,15 @@ public class FOV : EntityComponent
     void GetVisibleTiles(GameEvent gameEvent)
     {
         gameEvent.SetValue<List<Point>>(EventParameter.VisibleTiles, m_VisibleTiles);
+    }
+}
+
+public class FOV : EntityComponentBehavior
+{
+    public FOVData Data = new FOVData();
+
+    public override IComponent GetData()
+    {
+        return Data;
     }
 }

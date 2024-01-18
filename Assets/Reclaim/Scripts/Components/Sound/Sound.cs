@@ -3,15 +3,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Sound : EntityComponent
+public class Sound : EntityComponentBehavior
 {
     public AudioClip SoundClip;
     public string Key;
 
-    public override void WakeUp(IComponentData data = null)
-    {
-        RegisteredEvents.Add(GameEventId.Playsound, PlaySound);
-    }
+    //public override void WakeUp(IComponent data = null)
+    //{
+    //    RegisteredEvents.Add(GameEventId.Playsound, PlaySound);
+    //}
 
     void PlaySound(GameEvent gameEvent)
     {

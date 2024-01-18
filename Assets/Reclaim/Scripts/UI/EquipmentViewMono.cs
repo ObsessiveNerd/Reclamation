@@ -41,7 +41,7 @@ public class EquipmentViewMono : UpdatableUI//, IUpdatableUI
         }
     }
 
-    void SetEquipment(GameObject source, List<EntityComponent> components, List<GameObject> slots)
+    void SetEquipment(GameObject source, List<EntityComponentBehavior> components, List<GameObject> slots)
     {
         if (components == null || components.Count == 0)
             return;

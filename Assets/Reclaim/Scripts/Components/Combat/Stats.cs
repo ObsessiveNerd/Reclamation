@@ -14,7 +14,7 @@ public enum Stat
 }
 
 [Serializable]
-public class Stats : EntityComponent
+public class Stats : EntityComponentBehavior
 {
     public int Str;
     public int Agi;
@@ -27,7 +27,7 @@ public class Stats : EntityComponent
 
     public int AttributePoints;
 
-    public override void WakeUp(IComponentData data = null)
+    public void Start()
     {
         //RegisteredEvents.Add(GameEventId.RollToHit);
         //RegisteredEvents.Add(GameEventId.GetStat);

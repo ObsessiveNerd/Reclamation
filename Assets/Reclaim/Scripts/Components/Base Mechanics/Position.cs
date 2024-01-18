@@ -14,30 +14,85 @@ public enum MovementBlockFlag
     All = 4
 }
 
-public class PositionData : ComponentData
+public class PositionData : EntityComponent
 {
+    [HideInInspector]
+    public Type BehaviorType;
+    [HideInInspector]
+    public Vector3 DestinationPosition;
+
     public MovementBlockFlag BlockMovementOfFlag = MovementBlockFlag.None;
     public Point Point;
     public float TransitionTime = 20f;
-    public Vector3 DestinationPosition;
-}
 
+    public Action<GameEvent> MoveEntity;
+    public Action<GameEvent> SetEntityPosition;
 
-public class Position : EntityComponent
-{
-    public PositionData Data = new PositionData();
-
-    public void Start()
+    public override void WakeUp()
     {
-        RegisteredEvents.Add(GameEventId.MoveEntity, MoveEntity);
-        RegisteredEvents.Add(GameEventId.SetEntityPosition, SetEntityPosition);
+        RegisteredEvents.Add(GameEventId.MoveEntity, OnMoveEntity);
+        RegisteredEvents.Add(GameEventId.SetEntityPosition, OnSetEntityPosition);
         RegisteredEvents.Add(GameEventId.CalculateTileFlags, CalculateTileFlags);
     }
 
-    public override void WakeUp(IComponentData data = null)
+    void OnMoveEntity(GameEvent gameEvent)
     {
-        if (data != null)
-            Data = data as PositionData;
+        if (MoveEntity != null)
+            MoveEntity(gameEvent);
+    }
+
+    void OnSetEntityPosition(GameEvent gameEvent)
+    {
+        if (SetEntityPosition != null)
+            SetEntityPosition(gameEvent);
+    }
+
+    void CalculateTileFlags(GameEvent gameEvent)
+    {
+        var flags = gameEvent.GetValue<MovementBlockFlag>(EventParameter.BlocksMovementFlags);
+        flags |= BlockMovementOfFlag;
+        gameEvent.SetValue<MovementBlockFlag>(EventParameter.BlocksMovementFlags, flags);
+    }
+}
+
+
+public class Position : EntityComponentBehavior
+{
+    public PositionData Data = new PositionData();
+
+    void Start()
+    {
+        Data.MoveEntity += MoveEntity;
+        Data.SetEntityPosition += SetEntityPosition;
+    }
+
+    void MoveEntity(GameEvent gameEvent)
+    {
+        bool canMove = gameEvent.GetValue<bool>(EventParameter.CanMove);
+        var newPos = gameEvent.GetValue<Point>(EventParameter.TilePosition);
+
+        if (canMove)
+            SetGameObjectDestination(newPos);
+        else
+            Services.Coroutine.InvokeCoroutine(FailedMoveTo(Data.Point, newPos));
+    }
+
+    IEnumerator FailedMoveTo(Point startPoint, Point desiredPoint)
+    {
+        SetGameObjectDestination(desiredPoint);
+        yield return new WaitForSeconds(0.05f);
+        SetGameObjectDestination(startPoint);
+    }
+
+    void SetGameObjectDestination(Point point)
+    {
+        Services.Map.GetTile(Data.Point).RemoveObject(gameObject);
+        Data.Point = point;
+        Services.Map.GetTile(Data.Point).AddObject(gameObject);
+
+        var tilePosition = Services.Map.GetTile(Data.Point).transform.position;
+        var newPosition = new Vector3(tilePosition.x, tilePosition.y, transform.position.z);
+        Data.DestinationPosition = newPosition;
     }
 
     void SetEntityPosition(GameEvent gameEvent)
@@ -52,43 +107,7 @@ public class Position : EntityComponent
         Data.DestinationPosition = transform.position;
     }
 
-    void MoveEntity(GameEvent gameEvent)
-    {
-        bool canMove = gameEvent.GetValue<bool>(EventParameter.CanMove);
-        var newPos = gameEvent.GetValue<Point>(EventParameter.TilePosition);
-
-        if (canMove)
-            SetGameObjectDestination(newPos);
-        else
-            Services.Coroutine.InvokeCoroutine(FailedMoveTo(Data.Point, newPos));
-    }
-
-    void SetGameObjectDestination(Point point)
-    {
-        Services.Map.GetTile(Data.Point).RemoveObject(gameObject);
-        Data.Point = point;
-        Services.Map.GetTile(Data.Point).AddObject(gameObject);
-
-        var tilePosition = Services.Map.GetTile(Data.Point).transform.position;
-        var newPosition = new Vector3(tilePosition.x, tilePosition.y, transform.position.z);
-        Data.DestinationPosition = newPosition;
-    }
-
-    IEnumerator FailedMoveTo(Point startPoint, Point desiredPoint)
-    {
-        SetGameObjectDestination(desiredPoint);
-        yield return new WaitForSeconds(0.05f);
-        SetGameObjectDestination(startPoint);
-    }
-
-    void CalculateTileFlags(GameEvent gameEvent)
-    {
-        var flags = gameEvent.GetValue<MovementBlockFlag>(EventParameter.BlocksMovementFlags);
-        flags |= Data.BlockMovementOfFlag;
-        gameEvent.SetValue<MovementBlockFlag>(EventParameter.BlocksMovementFlags, flags);
-    }
-
-    public override IComponentData GetData()
+    public override IComponent GetData()
     {
         return Data;
     }

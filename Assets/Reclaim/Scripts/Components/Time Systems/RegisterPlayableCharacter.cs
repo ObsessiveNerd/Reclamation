@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RegisterPlayableCharacter : EntityComponent
+public class RegisterPlayableCharacter : EntityComponentBehavior
 {
     //public override int Priority => 10;
     //public RegisterPlayableCharacter()

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ActiveAbilities : EntityComponent
+public class ActiveAbilities : EntityComponentBehavior
 {
     public List<GameObject> ActiveAbilitiesList = new List<GameObject>();
 
@@ -11,7 +11,7 @@ public class ActiveAbilities : EntityComponent
         ActiveAbilitiesList = entities;
     }
 
-    public override void WakeUp(IComponentData data = null)
+    public void Start()
     {
         //RegisteredEvents.Add(GameEventId.AddToActiveAbilities);
         //RegisteredEvents.Add(GameEventId.RemoveFromActiveAbilities);

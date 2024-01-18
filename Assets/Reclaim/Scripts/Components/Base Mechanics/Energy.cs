@@ -5,34 +5,23 @@ using Unity.Netcode;
 using UnityEngine;
 
 [Serializable]
-public class EnergyData : ComponentData
+public class EnergyData : EntityComponent
 {
     public float EnergyReginerationDelay;
     public bool CanTakeATurn = true;
-}
 
-public class Energy : EntityComponent
-{
-    public EnergyData Data = new EnergyData();
-
-    public override void WakeUp(IComponentData data = null)
+    public override void WakeUp()
     {
-        if(data != null)
-            Data = data as EnergyData;
-    }
-
-    public override IComponentData GetData()
-    {
-        return Data;
+        
     }
 
     public void TakeTurn()
     {
-        if (!Data.CanTakeATurn)
+        if (!CanTakeATurn)
             return;
 
-        Data.CanTakeATurn = false;
-        gameObject.FireEvent(GameEventPool.Get(GameEventId.TakeTurn)).Release();
+        CanTakeATurn = false;
+        Entity.FireEvent(GameEventPool.Get(GameEventId.TakeTurn)).Release();
 
         Services.Coroutine.InvokeCoroutine(RegerateEnergyDelay());
         //GetComponent<NetworkObject>().StartCoroutine(RegerateEnergyDelay());
@@ -41,8 +30,17 @@ public class Energy : EntityComponent
 
     IEnumerator RegerateEnergyDelay()
     {
-        yield return new WaitForSeconds(Data.EnergyReginerationDelay);
-        Data.CanTakeATurn = true;
+        yield return new WaitForSeconds(EnergyReginerationDelay);
+        CanTakeATurn = true;
     }
-    
+}
+
+public class Energy : EntityComponentBehavior
+{
+    public EnergyData Data = new EnergyData();
+
+    public override IComponent GetData()
+    {
+        return Data;
+    }
 }

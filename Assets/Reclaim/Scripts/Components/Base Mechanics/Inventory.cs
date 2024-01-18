@@ -1,46 +1,38 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InventoryData : ComponentData
+[Serializable]
+public class InventoryData : EntityComponent
 {
+    [SerializeField]
+    List<GameObject> InventoryItems = new List<GameObject> ();
 
-}
+    public List<Entity> InventoryEntities = new List<Entity>();
 
-public class Inventory : EntityComponent
-{
-    public InventoryData Data = new InventoryData();
-
-    public List<GameObject> InventoryItems = new List<GameObject> ();
-
-    //Dictionary<ManagedItem, int> m_ManagedItemCount = new Dictionary<ManagedItem, int> ();
-
-    public override void WakeUp(IComponentData data = null)
+    public override void WakeUp()
     {
         RegisteredEvents.Add(GameEventId.GetAmmo, GetAmmo);
         RegisteredEvents.Add(GameEventId.Died, Died);
-
-        if (data != null)
-            Data = data as InventoryData;
     }
-
-    public override IComponentData GetData()
-    {
-        return Data;
-    }
-
     void GetAmmo(GameEvent gameEvent)
     {
         
     }
 
+    public void AddToInventory(Entity item)
+    {
+        InventoryEntities.Add(item);
+    }
+    
     public void AddToInventory(GameObject item)
     {
         InventoryItems.Add(item);
+        InventoryEntities.Add(item.GetComponent<Entity>());
 
         //InventoryItems.Add(item, 1);
     }
-
     public void RemoveFromInventory(GameObject item)
     {
         //InventoryItems[item]--;
@@ -48,17 +40,20 @@ public class Inventory : EntityComponent
         //    InventoryItems.Remove(item);
     }
 
-    //void RemoveFromInventory(GameEvent gameEvent)
-    //{
-    //    GameObject item = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameter.Item]);
-    //    if (InventoryItems.Contains(item))
-    //        InventoryItems.Remove(item);
-    //}
-
     void Died(GameEvent gameEvent)
     {
         //foreach (GameObject item in InventoryItems)
         //    Services.TileInteractionService.Drop(Self, item);
         //InventoryItems.Clear();
+    }
+}
+
+public class Inventory : EntityComponentBehavior
+{
+    public InventoryData Data = new InventoryData();
+
+    public override IComponent GetData()
+    {
+        return Data;
     }
 }

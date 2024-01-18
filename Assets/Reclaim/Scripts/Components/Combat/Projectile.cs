@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
@@ -12,9 +13,20 @@ public enum ProjectileType
     Rock
 }
 
-public class Projectile : EntityComponent
+[Serializable]
+public class ProjectileData : EntityComponent
 {
     public ProjectileType Type;
+}
+
+public class Projectile : EntityComponentBehavior
+{
+    public ProjectileData Data = new ProjectileData();
+
+    public override IComponent GetData()
+    {
+        return Data;
+    }
 
     //GameObject m_Target;
 
@@ -40,7 +52,7 @@ public class Projectile : EntityComponent
     //        GameEvent setDestination = GameEventPool.Get(GameEventId.MoveEntity)
     //            .With(EventParameter.CanMove, true)
     //            .With(EventParameter.TilePosition, destinationPoint);
-            
+
     //        gameObject.FireEvent(setDestination);
     //        setDestination.Release();
     //        m_ReadyForActivation = false;

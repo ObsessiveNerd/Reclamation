@@ -20,7 +20,6 @@ public class EntityFactory : MonoBehaviour
         if(parent != null)
             go.transform.SetParent(parent.transform, false);
         
-        go.WakeUp();
         go.Hide();
         return go;
     }

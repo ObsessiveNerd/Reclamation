@@ -3,25 +3,14 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
-public class RangedWeaponData : ComponentData
+public class RangedWeaponData : EntityComponent
 {
     public ProjectileType RequiredAmmoType;
-}
 
-public class RangedWeapon : EntityComponent
-{
-    public RangedWeaponData Data = new RangedWeaponData();
-
-    public override void WakeUp(IComponentData data = null)
+    public override void WakeUp()
     {
         RegisteredEvents.Add(GameEventId.PerformAttack, PerformAttack);
         RegisteredEvents.Add(GameEventId.FireProjectile, FireProjectile);
-        if (data != null)
-            Data = data as RangedWeaponData;
-    }
-    public override IComponentData GetData()
-    {
-        return Data;
     }
 
     void PerformAttack(GameEvent gameEvent)
@@ -31,23 +20,23 @@ public class RangedWeapon : EntityComponent
 
     void FireProjectile(GameEvent gameEvent)
     {
-        var source = gameEvent.GetValue<GameObject>(EventParameter.Source);
-        var target = gameEvent.GetValue<GameObject>(EventParameter.Target);
+        var source = gameEvent.GetValue<Entity>(EventParameter.Source);
+        var target = gameEvent.GetValue<Entity>(EventParameter.Target);
 
-        var inventory = source.GetComponent<Inventory>();
-        foreach (var item in inventory.InventoryItems)
+        var inventory = source.GetComponent<InventoryData>();
+        foreach (var item in inventory.InventoryEntities)
         {
-            var projectile = item.GetComponent<Projectile>();
-            if(projectile != null && projectile.Type == Data.RequiredAmmoType)
+            var projectile = item.GetComponent<ProjectileData>();
+            if(projectile != null && projectile.Type == RequiredAmmoType)
             {
 
-                var projectileInstance = Services.EntityFactory.Create(item, source.transform.position);
-                projectileInstance.Show();
-                var setDestination = GameEventPool.Get(GameEventId.MoveEntity)
-                    .With(EventParameter.CanMove, true)
-                    .With(EventParameter.TilePosition, new Point(target.transform.position));
-                projectileInstance.FireEvent(setDestination);
-                setDestination.Release();
+                //var projectileInstance = Services.EntityFactory.Create(item, source.transform.position);
+                //projectileInstance.Show();
+                //var setDestination = GameEventPool.Get(GameEventId.MoveEntity)
+                //    .With(EventParameter.CanMove, true)
+                //    .With(EventParameter.TilePosition, new Point(target.transform.position));
+                //projectileInstance.FireEvent(setDestination);
+                //setDestination.Release();
 
                 //var animatedProjectile = Instantiate(Resources.Load<GameObject>("AnimatedProjectile"));
                 //animatedProjectile.GetComponent<SpriteRenderer>().sprite = projectile.GetComponent<SpriteRenderer>().sprite;
@@ -55,5 +44,17 @@ public class RangedWeapon : EntityComponent
                 //animatedProjectile.GetComponent<AnimatedProjectile>().EntityInstance = projectileInstance;
             }
         }
+    }
+
+}
+
+public class RangedWeapon : EntityComponentBehavior
+{
+    public RangedWeaponData Data = new RangedWeaponData();
+
+    
+    public override IComponent GetData()
+    {
+        return Data;
     }
 }

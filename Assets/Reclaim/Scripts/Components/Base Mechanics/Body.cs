@@ -4,37 +4,26 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using UnityEditor;
 using UnityEngine;
 
-public class BodyData : ComponentData
+[Serializable]
+public class BodyData : EntityComponent
 {
     public List<BodyPart> BodyParts = new List<BodyPart>();
-}
 
-
-public class Body : EntityComponent
-{
-    public BodyData Data = new BodyData();
-
-    public override void WakeUp(IComponentData data = null)
+    public override void WakeUp()
     {
         RegisteredEvents.Add(GameEventId.HostileInteraction, HostileInteraction);
         RegisteredEvents.Add(GameEventId.DamageTaken, DamageTaken);
 
-        if(data != null)
-            Data = data as BodyData;
-
-        foreach(var part in Data.BodyParts)
+        foreach(var part in BodyParts)
             part.Activate();
     }
 
     void HostileInteraction(GameEvent gameEvent)
     {
         Attack(gameEvent);
-    }
-    public override IComponentData GetData()
-    {
-        return Data;
     }
 
     void Attack(GameEvent gameEvent)
@@ -44,9 +33,9 @@ public class Body : EntityComponent
         var attack = GameEventPool.Get(GameEventId.PerformAttack)
             .With(EventParameter.DamageList, new List<Damage>())
             .With(EventParameter.Target, target)
-            .With(EventParameter.Source, gameObject);
+            .With(EventParameter.Source, Entity.GameObject);
 
-        foreach (var equipmentSlot in Data.BodyParts)
+        foreach (var equipmentSlot in BodyParts)
             equipmentSlot.PassEventToEquipment(attack);
 
         //var takeDamage = GameEventPool.Get(GameEventId.DamageTaken)
@@ -83,7 +72,18 @@ public class Body : EntityComponent
         {
             var applyDamage = GameEventPool.Get(GameEventId.ApplyDamage)
                 .With(EventParameter.DamageAmount, total);
-            gameObject.FireEvent(applyDamage).Release();
+            Entity.FireEvent(applyDamage).Release();
         }
+    }
+}
+
+
+public class Body : EntityComponentBehavior
+{
+    public BodyData Data = new BodyData();
+
+    public override IComponent GetData()
+    {
+        return Data;
     }
 }

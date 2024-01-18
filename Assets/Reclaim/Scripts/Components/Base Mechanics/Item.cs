@@ -12,39 +12,29 @@ public enum ItemRarity
     Mythic = 20
 }
 
-public class ItemData : ComponentData
+[Serializable]
+public class ItemData : EntityComponent
 {
     public ItemRarity Rarity = ItemRarity.Uncommon;
-}
 
-public class Item : EntityComponent
-{
-    public ItemData Data = new ItemData();
-
-    public override void WakeUp(IComponentData data = null)
+    public override void WakeUp()
     {
         RegisteredEvents.Add(GameEventId.Interact, Pickup);
         RegisteredEvents.Add(GameEventId.Drop, Drop);
         RegisteredEvents.Add(GameEventId.GetContextMenuActions, GetContextMenuActions);
         RegisteredEvents.Add(GameEventId.GetRarity, GetRarity);
-
-        if (data != null)
-            Data = data as ItemData;
     }
 
     void Pickup(GameEvent gameEvent)
     {
-        GameObject source = gameEvent.GetValue<GameObject>(EventParameter.Source);
-        var inventory = source.GetComponent<Inventory>();
-        inventory.AddToInventory(gameObject);
+        Entity source = gameEvent.GetValue<GameObject>(EventParameter.Source).GetComponent<EntityBehavior>().Entity;
+        var inventory = source.GetComponent<InventoryData>();
+        inventory.AddToInventory(Entity);
 
-        Position pos = GetComponent<Position>();
-        Services.Map.GetTile(pos.Data.Point).RemoveObject(gameObject);
-        Destroy(gameObject);
-    }
-    public override IComponentData GetData()
-    {
-        return Data;
+        //Probably move this to an event
+        //PositionData pos = Entity.GetComponent<PositionData>();
+        //Services.Map.GetTile(pos.Data.Point).RemoveObject(gameObject);
+        //Destroy(gameObject);
     }
 
     void Drop(GameEvent gameEvent)
@@ -54,11 +44,11 @@ public class Item : EntityComponent
 
         GameEvent unequip = GameEventPool.Get(GameEventId.Unequip)
                                 .With(EventParameter.Entity, droppingEntity)
-                                .With(EventParameter.Item, gameObject);
+                                .With(EventParameter.Item, Entity.GameObject);
 
-        FireEvent(droppingEntity, unequip, true);
-        FireEvent(droppingEntity, GameEventPool.Get(GameEventId.RemoveFromInventory)
-            .With(EventParameter.Item, gameObject), true).Release();
+        Entity.FireEvent(unequip);
+        Entity.FireEvent(GameEventPool.Get(GameEventId.RemoveFromInventory)
+            .With(EventParameter.Item, Entity.GameObject)).Release();
         unequip.Release();
     }
 
@@ -83,6 +73,17 @@ public class Item : EntityComponent
 
     void GetRarity(GameEvent gameEvent)
     {
-        gameEvent.Paramters[EventParameter.Rarity] = Data.Rarity;
+        gameEvent.Paramters[EventParameter.Rarity] = Rarity;
+    }
+
+}
+
+public class Item : EntityComponentBehavior
+{
+    public ItemData Data = new ItemData();
+    
+    public override IComponent GetData()
+    {
+        return Data;
     }
 }

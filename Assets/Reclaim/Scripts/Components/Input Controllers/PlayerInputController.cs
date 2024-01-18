@@ -14,7 +14,6 @@ public class PlayerInputController : InputControllerBase
     public void Start()
     {
         m_Energy = GetComponent<Energy>();
-        gameObject.WakeUp();
     }
 
     void Update()
@@ -26,7 +25,7 @@ public class PlayerInputController : InputControllerBase
         if (desiredDirection != MoveDirection.None && m_Energy.Data.CanTakeATurn)
         {
             MoveServerRpc(desiredDirection);
-            m_Energy.TakeTurn();
+            m_Energy.Data.TakeTurn();
         }
 
         if (GameKeyInputBinder.PerformRequestedAction(RequestedAction.InteractWithCurrentTile))

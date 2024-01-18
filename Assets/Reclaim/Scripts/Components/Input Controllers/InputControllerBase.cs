@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
-public abstract class InputControllerBase : EntityComponent
+public abstract class InputControllerBase : EntityComponentBehavior
 {
     [ServerRpc]
     protected void MoveServerRpc(MoveDirection desiredDirection)

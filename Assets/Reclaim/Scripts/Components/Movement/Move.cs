@@ -4,24 +4,14 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
-public class MoveData : ComponentData
+[Serializable]
+public class MoveData : EntityComponent
 {
     public MovementBlockFlag MovementFlags;
-}
 
-public class Move : EntityComponent
-{
-    public MoveData Data = new MoveData();
-
-    void Start()
+    public override void WakeUp()
     {
         RegisteredEvents.Add(GameEventId.MoveKeyPressed, MoveKeyPressed);
-    }
-
-    public override void WakeUp(IComponentData data = null)
-    {
-        if(data != null)
-            Data = data as MoveData;
     }
 
     void MoveKeyPressed(GameEvent gameEvent)
@@ -30,18 +20,21 @@ public class Move : EntityComponent
         MoveDirection direction = (MoveDirection)gameEvent.Paramters[EventParameter.InputDirection];
         Debug.Log(direction.ToString());
 
-        var position = GetComponent<Position>();
-        var desiredPosition = Services.Map.GetTilePointInDirection(position.Data.Point, direction);
+        var position = Entity.GetComponent<PositionData>();
+        var desiredPosition = Services.Map.GetTilePointInDirection(position.Point, direction);
 
         var desiredTile = Services.Map.GetTile(desiredPosition);
 
         bool canMove = true;
-        if ((desiredTile.BlocksMovementFlags & Data.MovementFlags) != 0)
+        if ((desiredTile.BlocksMovementFlags & MovementFlags) != 0)
         {
             //Attempt to interact
             var interact = GameEventPool.Get(GameEventId.Interact)
-                .With(EventParameter.Source, gameObject);
-            desiredTile.FireEvent(gameObject, interact);
+                .With(EventParameter.Source, Entity.GameObject);
+            
+            Debug.LogWarning("Fix this later, don't just pass in the gameobject");
+            desiredTile.FireEvent(Entity.GameObject, interact);
+            
             interact.Release();
             canMove = false;
         }
@@ -54,13 +47,23 @@ public class Move : EntityComponent
         var move = GameEventPool.Get(GameEventId.MoveEntity)
                 .With(EventParameter.TilePosition, desiredPosition)
                 .With(EventParameter.CanMove, canMove);
-        gameObject.FireEvent(move);
+        Entity.FireEvent(move);
         move.Release();
 
         if(canMove)
         {
             var afterMoving = GameEventPool.Get(GameEventId.AfterMoving);
-            gameObject.FireEvent(afterMoving).Release();
+            Entity.FireEvent(afterMoving).Release();
         }
+    }
+}
+
+public class Move : EntityComponentBehavior
+{
+    public MoveData Data = new MoveData();
+
+    public override IComponent GetData()
+    {
+        return Data;
     }
 }

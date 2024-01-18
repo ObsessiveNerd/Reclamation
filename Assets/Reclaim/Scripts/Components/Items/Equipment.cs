@@ -1,24 +1,20 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EquipmentData : ComponentData
+[Serializable]
+public class EquipmentData : EntityComponent
 { 
     public BodyPartType EquipsTo;
 }
 
 
-public class Equipment : EntityComponent
+public class Equipment : EntityComponentBehavior
 {
     public EquipmentData Data = new EquipmentData();
 
-    public override void WakeUp(IComponentData data = null)
-    {
-        if (data != null)
-            Data = data as EquipmentData;
-    }
-
-    public override IComponentData GetData()
+    public override IComponent GetData()
     {
         return Data;
     }

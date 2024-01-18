@@ -1,17 +1,19 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class MeleeWeapon : EntityComponent
+[Serializable]
+public class MeleeWeaponData : EntityComponent
 {
-    public override void WakeUp(IComponentData data = null)
+    public override void WakeUp()
     {
         RegisteredEvents.Add(GameEventId.PerformAttack, PerformAttack);
     }
 
     void PerformAttack(GameEvent gameEvent)
     {
-        var damages = GetComponents<Damage>();
+        var damages = Entity.GetComponents<Damage>();
         var damageTaken = GameEventPool.Get(GameEventId.DamageTaken)
             .With(gameEvent.Paramters)
             .With(EventParameter.DamageList, damages);
@@ -19,5 +21,14 @@ public class MeleeWeapon : EntityComponent
         gameEvent.GetValue<GameObject>(EventParameter.Target).FireEvent(damageTaken);
 
         damageTaken.Release();
+    }
+}
+
+public class MeleeWeapon : EntityComponentBehavior
+{
+    MeleeWeaponData Data = new MeleeWeaponData();
+    public override IComponent GetData()
+    {
+        return Data;
     }
 }

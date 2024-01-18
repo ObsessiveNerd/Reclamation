@@ -21,7 +21,7 @@ public class SerializableGameObject
     {
         Data = new List<SerializableData>();
 
-        foreach (var component in go.GetComponents<EntityComponent>())
+        foreach (var component in go.GetComponents<EntityComponentBehavior>())
         {
             SerializableData data = new SerializableData();
             data.ComponentType = component.GetType();

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Mana : EntityComponent
+public class Mana : EntityComponentBehavior
 {
     public int MaxMana;
     public int CurrentMana;
@@ -22,7 +22,7 @@ public class Mana : EntityComponent
 
     private int PercentMana {get{ return (CurrentMana / MaxMana) * 100; } }
 
-    public override void WakeUp(IComponentData data = null)
+    public void Start()
     {
         //RegisteredEvents.Add(GameEventId.RestoreMana);
         //RegisteredEvents.Add(GameEventId.DepleteMana);
