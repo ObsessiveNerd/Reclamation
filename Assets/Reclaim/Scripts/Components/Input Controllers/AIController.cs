@@ -46,10 +46,10 @@ public class AIController : InputControllerBase
 
         getActionEventBuilder.Release();
 
-        if(desiredDirection != MoveDirection.None && m_Energy.Data.CanTakeATurn)
+        if(desiredDirection != MoveDirection.None && m_Energy.component.CanTakeATurn)
         {
             MoveServerRpc(desiredDirection);
-            m_Energy.Data.TakeTurn();
+            m_Energy.component.TakeTurn();
         }
     }
 }

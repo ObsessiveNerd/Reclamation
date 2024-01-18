@@ -1,8 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using static UnityEngine.EventSystems.EventTrigger;
 
+[Serializable]
 public class Entity
 {
     [SerializeField]
@@ -24,6 +26,26 @@ public class Entity
                 components.Add(item as T);
         }
         return components;
+    }
+
+    public void SpawnGameObject(Point p)
+    {
+        if(GameObject == null)
+        {
+            GameObject = new GameObject("Entity {new name}");
+            GameObject.AddComponent<SpriteRenderer>();
+            GameObject.AddComponent<BoxCollider2D>();
+
+            foreach(var item in Components)
+            {
+                IComponentBehavior monoBehavior = GameObject.AddComponent(item.MonobehaviorType) as IComponentBehavior;
+                monoBehavior.SetComponent(item);
+            }
+        }
+
+        var instance = GameObject.Instantiate(GameObject, Services.Map.GetTile(p).transform.position, Quaternion.identity);
+        GameObject.Destroy(GameObject);
+        GameObject = instance;
     }
 
     public void AddComponent(IComponent component)
@@ -81,15 +103,10 @@ public class EntityBehavior : MonoBehaviour
     public Entity ComposeEntityData()
     {
         var componentsToActivate = new List<IComponent>();
-        foreach (var component in GetComponents<EntityComponentBehavior>())
+        foreach (var component in GetComponents<IComponentBehavior>())
         {
-            var compData = component.GetData();
-            Entity.AddComponentWithoutAwake(compData);
-            componentsToActivate.Add(compData);
+            Entity.AddComponent(component.GetComponent());
         }
-        foreach (var compData in componentsToActivate)
-            compData?.WakeUp();
-
 
         return Entity;
     }

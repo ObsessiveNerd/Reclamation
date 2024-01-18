@@ -9,6 +9,7 @@ public class InfoData : EntityComponent
 {
     public string InfoMessage;
 
+    public override Type MonobehaviorType => typeof(Info);
     public override void WakeUp()
     {
         RegisteredEvents.Add(GameEventId.ShowInfo, ShowInfo);
@@ -28,12 +29,7 @@ public class InfoData : EntityComponent
     }
 }
 
-public class Info : EntityComponentBehavior
+public class Info : ComponentBehavior<InfoData>
 {
-    InfoData Data = new InfoData();
 
-    public override IComponent GetData()
-    {
-        return Data;
-    }
 }

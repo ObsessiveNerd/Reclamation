@@ -22,16 +22,16 @@ public class PlayerInputController : InputControllerBase
             return;
 
         MoveDirection desiredDirection = InputUtility.GetMoveDirection();
-        if (desiredDirection != MoveDirection.None && m_Energy.Data.CanTakeATurn)
+        if (desiredDirection != MoveDirection.None && m_Energy.component.CanTakeATurn)
         {
             MoveServerRpc(desiredDirection);
-            m_Energy.Data.TakeTurn();
+            m_Energy.component.TakeTurn();
         }
 
         if (GameKeyInputBinder.PerformRequestedAction(RequestedAction.InteractWithCurrentTile))
         {
             Position pos = GetComponent<Position>();
-            InteractWithTileServerRpc(pos.Data.Point);
+            InteractWithTileServerRpc(pos.component.Point);
         }
 
         if (Input.GetMouseButtonDown(0))
@@ -51,6 +51,15 @@ public class PlayerInputController : InputControllerBase
                     primaryAction.Release();
                 }
             }
+        }
+
+        if (Input.GetMouseButtonDown(1))
+        {
+            var e = GetComponent<Inventory>().component.InventoryEntities[0];
+            var drop = GameEventPool.Get(GameEventId.Drop)
+                .With(EventParameter.Source, GetComponent<EntityBehavior>().Entity);
+            e.FireEvent(drop);
+            drop.Release();
         }
     }
 }

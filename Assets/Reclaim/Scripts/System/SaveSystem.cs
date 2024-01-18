@@ -32,7 +32,7 @@
 //    {
 //        get
 //        {
-//            return $"{m_LoadPath}/data.save";
+//            return $"{m_LoadPath}/component.save";
 //        }
 //    }
 
@@ -45,7 +45,7 @@
 //        if (File.Exists(CurrentSavePath))
 //        {
 //            m_Data = JsonUtility.FromJson<SaveData>(File.ReadAllText(CurrentSavePath));
-//            RecRandom.InitRecRandom(m_Data.Seed);
+//            RecRandom.InitRecRandom(m_component.Seed);
 //        }
 //        else
 //            RecRandom.InitRecRandom(DateTime.Now.Millisecond);
@@ -61,33 +61,33 @@
 //    {
 //        Directory.CreateDirectory(LoadPath);
 
-//        if (!string.IsNullOrEmpty(data.SaveFile))
+//        if (!string.IsNullOrEmpty(component.SaveFile))
 //        {
-//            var save = JsonUtility.FromJson<SaveData>(data.SaveFile);
+//            var save = JsonUtility.FromJson<SaveData>(component.SaveFile);
 //            RecRandom.InitRecRandom(save.Seed);
-//            File.WriteAllText(CurrentSavePath, data.SaveFile);
+//            File.WriteAllText(CurrentSavePath, component.SaveFile);
 //        }
 
-//        for (int i = 0; i < data.LevelDatas.Count; i++)
+//        for (int i = 0; i < component.LevelDatas.Count; i++)
 //        {
-//            if (string.IsNullOrEmpty(data.LevelDatas[i]))
+//            if (string.IsNullOrEmpty(component.LevelDatas[i]))
 //                continue;
 
-//            string levelDir =$"{m_LoadPath}/{data.LevelsToUpdate[i]}";
+//            string levelDir =$"{m_LoadPath}/{component.LevelsToUpdate[i]}";
 //            Directory.CreateDirectory(levelDir);
-//            if (File.Exists($"{levelDir}/data.dat"))
+//            if (File.Exists($"{levelDir}/component.dat"))
 //            {
-//                var remoteDateModified = DateTime.Parse(data.FileDateModified[i]);
+//                var remoteDateModified = DateTime.Parse(component.FileDateModified[i]);
 
 //                //Local file is newer, so don't overwrite
-//                if (File.GetLastWriteTime($"{levelDir}/data.dat") >= remoteDateModified)
+//                if (File.GetLastWriteTime($"{levelDir}/component.dat") >= remoteDateModified)
 //                    continue;
 //            }
 
-//            File.WriteAllText($"{levelDir}/data.dat", data.LevelDatas[i]);
+//            File.WriteAllText($"{levelDir}/component.dat", component.LevelDatas[i]);
 //        }
 
-//        foreach (var bp in data.TempBlueprints)
+//        foreach (var bp in component.TempBlueprints)
 //        {
 //            string name = EntityFactory.GetEntityNameFromBlueprintFormatting(bp);
 //            EntityFactory.CreateTemporaryBlueprint(name.Split(',')[1], bp);
@@ -122,12 +122,12 @@
 //        if (m_Data == null)
 //            m_Data = new SaveData(m_Seed);
 
-//        m_Data.CurrentDungeonLevel = m_CurrentLevel;
-//        m_Data.SaveName = CurrentSaveName = saveName;
+//        m_component.CurrentDungeonLevel = m_CurrentLevel;
+//        m_component.SaveName = CurrentSaveName = saveName;
 
 //        SaveCurrentLevel();
 //        Directory.CreateDirectory($"{kSaveDataPath}/{saveName}");
-//        File.WriteAllText($"{kSaveDataPath}/{saveName}/data.save", JsonUtility.ToJson(m_Data));
+//        File.WriteAllText($"{kSaveDataPath}/{saveName}/component.save", JsonUtility.ToJson(m_Data));
 //    }
 
 //    public void WriteData(string subPath, string data)
@@ -144,7 +144,7 @@
 //            Directory.Delete(path, true);
 
 //        Directory.CreateDirectory(path);
-//        File.WriteAllText($"{path}/data.dat", JsonUtility.ToJson(levelData));
+//        File.WriteAllText($"{path}/component.dat", JsonUtility.ToJson(levelData));
 //    }
 
 //    public DungeonGenerationResult LoadLevel(int level)
@@ -152,7 +152,7 @@
 //        string path = $"{kSaveDataPath}/{CurrentSaveName}/{level}";
 //        if (!Directory.Exists(path))
 //            return null;
-//        return JsonUtility.FromJson<DungeonGenerationResult>(File.ReadAllText($"{path}/data.dat"));
+//        return JsonUtility.FromJson<DungeonGenerationResult>(File.ReadAllText($"{path}/component.dat"));
 //    }
 
 //    void SaveCurrentLevel()
@@ -184,7 +184,7 @@
 //            return;
 
 //        foreach (Room room in Services.DungeonService.DungeonGenerator.Rooms)
-//            level.RoomData.Add(room);
+//            level.Roomcomponent.Add(room);
 
 //        SaveLevel(level, m_CurrentLevel);
 //    }
@@ -200,9 +200,9 @@
 //    {
 //        SaveData data = JsonUtility.FromJson<SaveData>(File.ReadAllText(path));
 //        if (overrideCurrentSaveName)
-//            CurrentSaveName = data.SaveName;
+//            CurrentSaveName = component.SaveName;
 //        else
-//            data.SaveName = CurrentSaveName;
-//        Services.DungeonService.GenerateDungeon(data.CurrentDungeonLevel, false);
+//            component.SaveName = CurrentSaveName;
+//        Services.DungeonService.GenerateDungeon(component.CurrentDungeonLevel, false);
 //    }
 //}

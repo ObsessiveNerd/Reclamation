@@ -1,13 +1,17 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using UnityEngine;
 
 public class PlayerFOVHandlerData : EntityComponent
 {
-    public Action<GameEvent> OnFOVRecalculated;
+    public Action OnFOVRecalculated;
+    public List<Point> VisiblePoints = new List<Point>();
+    
+    public override Type MonobehaviorType => typeof(PlayerFOVHandler);
 
     public override void WakeUp()
     {
@@ -16,33 +20,33 @@ public class PlayerFOVHandlerData : EntityComponent
 
     void FOVRecalculated(GameEvent gameEvent)
     {
-        OnFOVRecalculated(gameEvent);
+        VisiblePoints = gameEvent.GetValue<List<Point>>(EventParameter.VisibleTiles);
+        if(OnFOVRecalculated != null)
+            OnFOVRecalculated();
     }
 }
 
-public class PlayerFOVHandler : EntityComponentBehavior
+public class PlayerFOVHandler : ComponentBehavior<PlayerFOVHandlerData>
 {
-    public PlayerFOVHandlerData Data = new PlayerFOVHandlerData();
-
     private List<Point> m_VisiblePoints = new List<Point>();
 
     void Start()
     {
-        Data.OnFOVRecalculated += FOVRecalculated;
+        component.OnFOVRecalculated += FOVRecalculated;
+        FOVRecalculated();
     }
 
     public override void OnDestroy()
     {
-        Data.OnFOVRecalculated -= FOVRecalculated;
+        component.OnFOVRecalculated -= FOVRecalculated;
     }
 
-    void FOVRecalculated(GameEvent gameEvent)
+    void FOVRecalculated()
     {
         if(!IsOwner) 
             return;
 
-        var newVisibleTiles = gameEvent.GetValue<List<Point>>(EventParameter.VisibleTiles);
-
+        var newVisibleTiles = component.VisiblePoints;
         var visibleTileDifference = m_VisiblePoints.Except(newVisibleTiles);
         foreach (var tilePoint in visibleTileDifference)
             Services.Map.GetTile(tilePoint).SetVisibility(false);
@@ -51,10 +55,5 @@ public class PlayerFOVHandler : EntityComponentBehavior
             Services.Map.GetTile(tilePoint).SetVisibility(true);
 
         m_VisiblePoints = newVisibleTiles;
-    }
-
-    public override IComponent GetData()
-    {
-        return Data;
     }
 }

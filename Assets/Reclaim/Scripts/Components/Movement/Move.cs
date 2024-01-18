@@ -9,6 +9,7 @@ public class MoveData : EntityComponent
 {
     public MovementBlockFlag MovementFlags;
 
+    public override Type MonobehaviorType => typeof(Move);
     public override void WakeUp()
     {
         RegisteredEvents.Add(GameEventId.MoveKeyPressed, MoveKeyPressed);
@@ -58,12 +59,7 @@ public class MoveData : EntityComponent
     }
 }
 
-public class Move : EntityComponentBehavior
+public class Move : ComponentBehavior<MoveData>
 {
-    public MoveData Data = new MoveData();
-
-    public override IComponent GetData()
-    {
-        return Data;
-    }
+    
 }

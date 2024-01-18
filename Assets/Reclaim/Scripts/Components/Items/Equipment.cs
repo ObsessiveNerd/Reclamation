@@ -7,15 +7,11 @@ using UnityEngine;
 public class EquipmentData : EntityComponent
 { 
     public BodyPartType EquipsTo;
+    public override Type MonobehaviorType => typeof(Equipment);
 }
 
 
-public class Equipment : EntityComponentBehavior
+public class Equipment : ComponentBehavior<EquipmentData>
 {
-    public EquipmentData Data = new EquipmentData();
 
-    public override IComponent GetData()
-    {
-        return Data;
-    }
 }

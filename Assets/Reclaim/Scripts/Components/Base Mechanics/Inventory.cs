@@ -11,6 +11,8 @@ public class InventoryData : EntityComponent
 
     public List<Entity> InventoryEntities = new List<Entity>();
 
+    public override Type MonobehaviorType => typeof(InventoryData);
+
     public override void WakeUp()
     {
         RegisteredEvents.Add(GameEventId.GetAmmo, GetAmmo);
@@ -48,12 +50,7 @@ public class InventoryData : EntityComponent
     }
 }
 
-public class Inventory : EntityComponentBehavior
+public class Inventory : ComponentBehavior<InventoryData>
 {
-    public InventoryData Data = new InventoryData();
-
-    public override IComponent GetData()
-    {
-        return Data;
-    }
+    
 }

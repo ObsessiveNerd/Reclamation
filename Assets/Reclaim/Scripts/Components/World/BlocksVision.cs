@@ -6,6 +6,7 @@ using UnityEngine;
 [Serializable]
 public class BlocksVisionData : EntityComponent
 {
+    public override Type MonobehaviorType => typeof(BlocksVision);
     public override void WakeUp()
     {
         RegisteredEvents.Add(GameEventId.CalculateTileFlags, CalculateTileFlags);
@@ -22,12 +23,7 @@ public class BlocksVisionData : EntityComponent
     }
 }
 
-public class BlocksVision : EntityComponentBehavior
+public class BlocksVision : ComponentBehavior<BlocksVisionData>
 {
-    BlocksVisionData Data = new BlocksVisionData();
-
-    public override IComponent GetData()
-    {
-        return Data;
-    }
+    
 }

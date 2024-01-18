@@ -17,16 +17,16 @@ public class SerializableGameObject
     [SerializeField]
     public List<SerializableData> Data;
 
-    public SerializableGameObject(GameObject go)
-    {
-        Data = new List<SerializableData>();
+    //public SerializableGameObject(GameObject go)
+    //{
+    //    Data = new List<SerializableData>();
 
-        foreach (var component in go.GetComponents<EntityComponentBehavior>())
-        {
-            SerializableData data = new SerializableData();
-            data.ComponentType = component.GetType();
-            data.Data = JsonUtility.ToJson(component);
-            Data.Add(data);
-        }
-    }
+    //    foreach (var component in go.GetComponents<ComponentBehavior>())
+    //    {
+    //        SerializableData data = new SerializableData();
+    //        component.ComponentType = component.GetType();
+    //        component.Data = JsonUtility.ToJson(component);
+    //        component.Add(data);
+    //    }
+    //}
 }

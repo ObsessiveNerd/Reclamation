@@ -13,8 +13,14 @@ public enum Stat
     Cha
 }
 
+public class StatData : EntityComponent
+{ 
+    public override Type MonobehaviorType => typeof(Stats);
+}
+
+
 [Serializable]
-public class Stats : EntityComponentBehavior
+public class Stats : ComponentBehavior<StatData>
 {
     public int Str;
     public int Agi;

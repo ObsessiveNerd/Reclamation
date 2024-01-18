@@ -9,6 +9,8 @@ public class AgressionData : EntityComponent
 {
     public Point CurrentLocation;
     public Point TargetLocation;
+
+    public override Type MonobehaviorType => typeof(Aggression);
     public override void WakeUp()
     {
         RegisteredEvents.Add(GameEventId.GetActionToTake, GetActionToTake);
@@ -57,12 +59,7 @@ public class AgressionData : EntityComponent
 }
 
 
-public class Aggression : EntityComponentBehavior
+public class Aggression : ComponentBehavior<AgressionData>
 {
-    public AgressionData Data = new AgressionData();
-
-    public override IComponent GetData()
-    {
-        return Data;
-    }
+    
 }

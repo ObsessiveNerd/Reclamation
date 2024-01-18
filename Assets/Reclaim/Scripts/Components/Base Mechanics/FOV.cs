@@ -9,6 +9,8 @@ public class FOVData : EntityComponent
     IFovAlgorithm m_Fov;
     List<Point> m_VisibleTiles;
 
+    public override Type MonobehaviorType => typeof(FOV);
+
     public override void WakeUp()
     {
         m_Fov = new Shadowcasting();
@@ -44,12 +46,7 @@ public class FOVData : EntityComponent
     }
 }
 
-public class FOV : EntityComponentBehavior
+public class FOV : ComponentBehavior<FOVData>
 {
-    public FOVData Data = new FOVData();
-
-    public override IComponent GetData()
-    {
-        return Data;
-    }
+    
 }

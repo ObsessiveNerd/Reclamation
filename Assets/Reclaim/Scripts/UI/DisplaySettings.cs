@@ -24,8 +24,8 @@ public class DisplaySettings : EscapeableMono
             Resolution.options.Add(new TMP_Dropdown.OptionData(resolution.ToString()));
         Resolution.onValueChanged.AddListener(ChangeResolution);
 
-        WindowType.value = (int)MetaData.Data.ScreenMode;
-        Resolution.value = MetaData.Data.GameResolutionIndex;
+        //WindowType.value = (int)MetaData.component.ScreenMode;
+        //Resolution.value = MetaData.component.GameResolutionIndex;
     }
 
     protected override void OnEnable() { }
@@ -48,15 +48,15 @@ public class DisplaySettings : EscapeableMono
     public void ChangeScreenMode(int newIndex)
     {
         Screen.fullScreenMode = (FullScreenMode)newIndex;
-        MetaData.Data.ScreenMode = (FullScreenMode)newIndex;
-        MetaData.Data.Save();
+        //MetaData.component.ScreenMode = (FullScreenMode)newIndex;
+        //MetaData.component.Save();
     }
 
     public void ChangeResolution(int newIndex)
     {
         Resolution reso = Screen.resolutions[newIndex];
         Screen.SetResolution(reso.width, reso.height, Screen.fullScreenMode);
-        MetaData.Data.GameResolutionIndex = newIndex;
-        MetaData.Data.Save();
+        //MetaData.component.GameResolutionIndex = newIndex;
+        //MetaData.component.Save();
     }
 }

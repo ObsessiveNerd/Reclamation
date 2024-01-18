@@ -185,8 +185,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 477f745d8a2a98347b7691491e272b49, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Data:
-    MovementFlags: 0
+  m_Component:
+    MovementFlags: 1
 --- !u!114 &2950679966334358433
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -199,8 +199,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6256700e4f862064290e6e4bbc221140, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Data:
-    EnergyReginerationDelay: 0.7
+  m_Component:
+    EnergyReginerationDelay: 0.5
     CanTakeATurn: 1
 --- !u!114 &2950679966334358434
 MonoBehaviour:
@@ -214,6 +214,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe62473dd13498845b2899513e7cbfa5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_Component:
+    DestinationPosition: {x: 0, y: 0, z: 0}
+    Point:
+      m_x: 0
+      m_y: 0
+    TransitionTime: 20
+    BlockMovementOfFlag: 2
 --- !u!114 &-6266132786533736795
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -226,7 +233,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de53d55856ad7634a845f7edac05fc00, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Data:
+  m_Component:
     ID: 1
 --- !u!114 &5867489400468836634
 MonoBehaviour:
@@ -240,6 +247,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d31fa45d88ef6f44aa76798ad81f99f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_Component:
+    MaxHealth: 10
+    CurrentHealth: 10
+    ModMultiplier: 0
+    PercentBoost: 0
 --- !u!114 &727960244311979987
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -252,7 +264,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2481a4e4a8079504e99de911c2752831, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Data:
+  m_Component:
     InventoryItems: []
 --- !u!114 &2632900705406386382
 MonoBehaviour:
@@ -278,7 +290,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 622907c88d5a8e0438fdc51487a75def, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Data:
+  m_Component:
     FOVRange: 5
 --- !u!114 &-2486674862891613294
 MonoBehaviour:
@@ -292,8 +304,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 878cd3393be5aaa4b9abdc5c1fc9a930, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Data:
-    BodyParts: []
+  m_Component:
+    BodyParts:
+    - Equipment: {fileID: 0}
+      BodyPartType: 3
 --- !u!114 &340925460888084830
 MonoBehaviour:
   m_ObjectHideFlags: 0

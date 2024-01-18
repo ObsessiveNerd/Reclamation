@@ -6,6 +6,7 @@ using UnityEngine;
 [Serializable]
 public class MeleeWeaponData : EntityComponent
 {
+    public override Type MonobehaviorType => typeof(MeleeWeapon);
     public override void WakeUp()
     {
         RegisteredEvents.Add(GameEventId.PerformAttack, PerformAttack);
@@ -24,11 +25,7 @@ public class MeleeWeaponData : EntityComponent
     }
 }
 
-public class MeleeWeapon : EntityComponentBehavior
+public class MeleeWeapon : ComponentBehavior<MeleeWeaponData>
 {
-    MeleeWeaponData Data = new MeleeWeaponData();
-    public override IComponent GetData()
-    {
-        return Data;
-    }
+   
 }

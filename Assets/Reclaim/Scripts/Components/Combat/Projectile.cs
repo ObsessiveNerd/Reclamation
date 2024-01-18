@@ -17,17 +17,12 @@ public enum ProjectileType
 public class ProjectileData : EntityComponent
 {
     public ProjectileType Type;
+
+    public override Type MonobehaviorType => typeof(Projectile);
 }
 
-public class Projectile : EntityComponentBehavior
+public class Projectile : ComponentBehavior<ProjectileData>
 {
-    public ProjectileData Data = new ProjectileData();
-
-    public override IComponent GetData()
-    {
-        return Data;
-    }
-
     //GameObject m_Target;
 
     //bool m_ReadyForActivation = false;

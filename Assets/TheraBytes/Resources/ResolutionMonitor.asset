@@ -9,9 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e9594bfd1a6e5c144a7b3cd550101403, type: 3}
+  m_Script: {fileID: 0}
   m_Name: ResolutionMonitor
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier: Assembly-CSharp:TheraBytes.BetterUi:ResolutionMonitor
   optimizedResolutionFallback: {x: 1080, y: 1920}
   optimizedDpiFallback: 96
   fallbackName: Portrait

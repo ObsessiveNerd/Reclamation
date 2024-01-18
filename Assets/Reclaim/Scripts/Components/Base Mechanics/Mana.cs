@@ -1,8 +1,15 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Mana : EntityComponentBehavior
+[Serializable]
+public class ManaData : EntityComponent
+{
+    public override Type MonobehaviorType => typeof(Mana);
+}
+
+public class Mana : ComponentBehavior<ManaData>
 {
     public int MaxMana;
     public int CurrentMana;

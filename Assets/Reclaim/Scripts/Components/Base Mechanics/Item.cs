@@ -17,6 +17,10 @@ public class ItemData : EntityComponent
 {
     public ItemRarity Rarity = ItemRarity.Uncommon;
 
+    public Action OnPickup;
+
+    public override Type MonobehaviorType => typeof(Item);
+
     public override void WakeUp()
     {
         RegisteredEvents.Add(GameEventId.Interact, Pickup);
@@ -30,26 +34,28 @@ public class ItemData : EntityComponent
         Entity source = gameEvent.GetValue<GameObject>(EventParameter.Source).GetComponent<EntityBehavior>().Entity;
         var inventory = source.GetComponent<InventoryData>();
         inventory.AddToInventory(Entity);
-
-        //Probably move this to an event
-        //PositionData pos = Entity.GetComponent<PositionData>();
-        //Services.Map.GetTile(pos.Data.Point).RemoveObject(gameObject);
-        //Destroy(gameObject);
+        
+        if(OnPickup != null)
+            OnPickup();
     }
 
     void Drop(GameEvent gameEvent)
     {
-        GameObject droppingEntity = EntityQuery.GetEntity((string)gameEvent.Paramters[EventParameter.Entity]);
-        //Services.TileInteractionService.Drop(droppingEntity, gameObject);
+        Entity source = gameEvent.GetValue<Entity>(EventParameter.Source);
 
-        GameEvent unequip = GameEventPool.Get(GameEventId.Unequip)
-                                .With(EventParameter.Entity, droppingEntity)
-                                .With(EventParameter.Item, Entity.GameObject);
+        //GameEvent unequip = GameEventPool.Get(GameEventId.Unequip)
+        //                        .With(EventParameter.Entity, souce)
+        //                        .With(EventParameter.Item, Entity.GameObject);
 
-        Entity.FireEvent(unequip);
-        Entity.FireEvent(GameEventPool.Get(GameEventId.RemoveFromInventory)
-            .With(EventParameter.Item, Entity.GameObject)).Release();
-        unequip.Release();
+        //Entity.FireEvent(unequip);
+        //unequip.Release();
+
+        Entity.SpawnGameObject(source.GetComponent<PositionData>().Point);
+
+        source.FireEvent(GameEventPool.Get(GameEventId.RemoveFromInventory)
+            .With(EventParameter.Item, Entity)).Release();
+        
+
     }
 
     void GetContextMenuActions(GameEvent gameEvent)
@@ -78,12 +84,23 @@ public class ItemData : EntityComponent
 
 }
 
-public class Item : EntityComponentBehavior
+public class Item : ComponentBehavior<ItemData>
 {
-    public ItemData Data = new ItemData();
-    
-    public override IComponent GetData()
+    void Start()
     {
-        return Data;
+        component.OnPickup += PickedUp;    
+    }
+
+    public override void OnDestroy()
+    {
+        base.OnDestroy();
+        component.OnPickup -= PickedUp;
+    }
+
+    void PickedUp()
+    {
+        PositionData pos = gameObject.GetComponent<Position>().component;
+        Services.Map.GetTile(pos.Point).RemoveObject(gameObject);
+        Destroy(gameObject);
     }
 }

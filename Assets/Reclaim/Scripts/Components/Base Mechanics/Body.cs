@@ -12,6 +12,7 @@ public class BodyData : EntityComponent
 {
     public List<BodyPart> BodyParts = new List<BodyPart>();
 
+    public override Type MonobehaviorType => typeof(Body);
     public override void WakeUp()
     {
         RegisteredEvents.Add(GameEventId.HostileInteraction, HostileInteraction);
@@ -57,7 +58,7 @@ public class BodyData : EntityComponent
         int total = 0;
         foreach(var damage in damageList)
         {
-            Debug.LogError($"{source.name} did {damage.Data.DamageAmount} of type {damage.Data.Type}");
+            Debug.LogError($"{source.name} did {damage.component.DamageAmount} of type {damage.component.Type}");
             //total += damage.DamageAmount;
         }
 
@@ -78,12 +79,7 @@ public class BodyData : EntityComponent
 }
 
 
-public class Body : EntityComponentBehavior
+public class Body : ComponentBehavior<BodyData>
 {
-    public BodyData Data = new BodyData();
 
-    public override IComponent GetData()
-    {
-        return Data;
-    }
 }

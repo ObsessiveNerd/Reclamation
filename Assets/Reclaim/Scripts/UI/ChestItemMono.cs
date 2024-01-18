@@ -18,7 +18,7 @@ public class ChestItemMono : ItemMono, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        //if (eventData.button == PointerEventData.InputButton.Left)
+        //if (eventData.button == PointereventData.InputButton.Left)
         //{
         //    if (m_Chest == null || m_Character == null || m_Item == null) 
         //        return;

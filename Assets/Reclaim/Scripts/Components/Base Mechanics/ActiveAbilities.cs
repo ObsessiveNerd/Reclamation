@@ -1,8 +1,15 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ActiveAbilities : EntityComponentBehavior
+[Serializable]
+public class ActiveAbilitiesData : EntityComponent
+{
+    public override Type MonobehaviorType => typeof(ActiveAbilities);
+}
+
+public class ActiveAbilities : ComponentBehavior<ActiveAbilitiesData>
 {
     public List<GameObject> ActiveAbilitiesList = new List<GameObject>();
 

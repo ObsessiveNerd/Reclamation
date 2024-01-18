@@ -24,8 +24,8 @@ public class SoundSettings : EscapeableMono
 
         if (MetaData.Data != null)
         { 
-            MasterVolumeSlider.value = MetaData.Data.Volume;
-            SoundEffectsVolumeSlider.value = MetaData.Data.SoundEffectsVolume;
+            //MasterVolumeSlider.value = MetaData.component.Volume;
+            //SoundEffectsVolumeSlider.value = MetaData.component.SoundEffectsVolume;
         }
     }
 
@@ -52,8 +52,8 @@ public class SoundSettings : EscapeableMono
         {
             MasterVolumePercentText.text = (int)(value * 100) + "%";
             MusicVolume.volume = value;
-            MetaData.Data.Volume = value;
-            MetaData.Data.Save();
+            //MetaData.component.Volume = value;
+            //MetaData.component.Save();
         }
     }
 
@@ -63,8 +63,8 @@ public class SoundSettings : EscapeableMono
         {
             SoundEffectsVolumePercentText.text = (int)(value * 100) + "%";
             SoundEffectsVolume.volume = value;
-            MetaData.Data.SoundEffectsVolume = value;
-            MetaData.Data.Save();
+            //MetaData.component.SoundEffectsVolume = value;
+            //MetaData.component.Save();
         }
     }
 }

@@ -14,19 +14,24 @@ public enum MovementBlockFlag
     All = 4
 }
 
+[Serializable]
 public class PositionData : EntityComponent
 {
     [HideInInspector]
     public Type BehaviorType;
     [HideInInspector]
     public Vector3 DestinationPosition;
+    [HideInInspector]
+    public Point Point;
+    [HideInInspector]
+    public float TransitionTime = 20f;
 
     public MovementBlockFlag BlockMovementOfFlag = MovementBlockFlag.None;
-    public Point Point;
-    public float TransitionTime = 20f;
 
     public Action<GameEvent> MoveEntity;
     public Action<GameEvent> SetEntityPosition;
+
+    public override Type MonobehaviorType => typeof(Position);
 
     public override void WakeUp()
     {
@@ -56,14 +61,20 @@ public class PositionData : EntityComponent
 }
 
 
-public class Position : EntityComponentBehavior
+public class Position : ComponentBehavior<PositionData>
 {
-    public PositionData Data = new PositionData();
-
     void Start()
     {
-        Data.MoveEntity += MoveEntity;
-        Data.SetEntityPosition += SetEntityPosition;
+        component.MoveEntity += MoveEntity;
+        component.SetEntityPosition += SetEntityPosition;
+        SetEntityPosition(new Point(transform.position));
+    }
+
+    public override void OnDestroy()
+    {
+        base.OnDestroy();
+        component.MoveEntity -= MoveEntity;
+        component.SetEntityPosition -= SetEntityPosition;
     }
 
     void MoveEntity(GameEvent gameEvent)
@@ -74,7 +85,7 @@ public class Position : EntityComponentBehavior
         if (canMove)
             SetGameObjectDestination(newPos);
         else
-            Services.Coroutine.InvokeCoroutine(FailedMoveTo(Data.Point, newPos));
+            Services.Coroutine.InvokeCoroutine(FailedMoveTo(component.Point, newPos));
     }
 
     IEnumerator FailedMoveTo(Point startPoint, Point desiredPoint)
@@ -86,34 +97,33 @@ public class Position : EntityComponentBehavior
 
     void SetGameObjectDestination(Point point)
     {
-        Services.Map.GetTile(Data.Point).RemoveObject(gameObject);
-        Data.Point = point;
-        Services.Map.GetTile(Data.Point).AddObject(gameObject);
+        Services.Map.GetTile(component.Point).RemoveObject(gameObject);
+        component.Point = point;
+        Services.Map.GetTile(component.Point).AddObject(gameObject);
 
-        var tilePosition = Services.Map.GetTile(Data.Point).transform.position;
+        var tilePosition = Services.Map.GetTile(component.Point).transform.position;
         var newPosition = new Vector3(tilePosition.x, tilePosition.y, transform.position.z);
-        Data.DestinationPosition = newPosition;
+        component.DestinationPosition = newPosition;
     }
 
     void SetEntityPosition(GameEvent gameEvent)
     {
         var point = gameEvent.GetValue<Point>(EventParameter.Point);
-
-        Services.Map.GetTile(Data.Point).RemoveObject(gameObject);
-        Data.Point = point;
-        Services.Map.GetTile(Data.Point).AddObject(gameObject);
-
-        transform.position = Services.Map.GetTile(point).transform.position;
-        Data.DestinationPosition = transform.position;
+        SetEntityPosition(point);
     }
 
-    public override IComponent GetData()
+    void SetEntityPosition(Point point)
     {
-        return Data;
+        Services.Map.GetTile(component.Point).RemoveObject(gameObject);
+        component.Point = point;
+        Services.Map.GetTile(component.Point).AddObject(gameObject);
+
+        transform.position = Services.Map.GetTile(point).transform.position;
+        component.DestinationPosition = transform.position;
     }
 
     void Update()
     {
-        transform.position = Vector3.Lerp(transform.position, Data.DestinationPosition, Data.TransitionTime * Time.deltaTime);
+        transform.position = Vector3.Lerp(transform.position, component.DestinationPosition, component.TransitionTime * Time.deltaTime);
     }
 }

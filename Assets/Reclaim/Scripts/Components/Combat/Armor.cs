@@ -8,6 +8,7 @@ public class ArmorData : EntityComponent
 { 
     public int ArmorAmount;
 
+    public override Type MonobehaviorType => typeof(Armor);
     public override void WakeUp()
     {
         RegisteredEvents.Add(GameEventId.GetInfo, GetInfo);
@@ -21,12 +22,7 @@ public class ArmorData : EntityComponent
 }
 
 
-public class Armor : EntityComponentBehavior
+public class Armor : ComponentBehavior<ArmorData>
 {
-    public ArmorData Data = new ArmorData();
-    
-    public override IComponent GetData()
-    {
-        return Data;
-    }
+
 }

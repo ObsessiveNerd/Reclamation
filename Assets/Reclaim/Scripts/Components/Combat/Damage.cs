@@ -10,18 +10,15 @@ public class DamageData : EntityComponent
     public Dice DamageAmount;
     public DamageType Type;
 
+    public override Type MonobehaviorType => typeof(Damage);
+
     public override void WakeUp()
     {
 
     }
 }
 
-public class Damage : EntityComponentBehavior
+public class Damage : ComponentBehavior<DamageData>
 {
-    public DamageData Data = new DamageData();
-
-    public override IComponent GetData()
-    {
-        return Data;
-    }
+    
 }

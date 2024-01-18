@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
@@ -7,6 +8,7 @@ public class RangedWeaponData : EntityComponent
 {
     public ProjectileType RequiredAmmoType;
 
+    public override Type MonobehaviorType => typeof(RangedWeapon);
     public override void WakeUp()
     {
         RegisteredEvents.Add(GameEventId.PerformAttack, PerformAttack);
@@ -48,13 +50,7 @@ public class RangedWeaponData : EntityComponent
 
 }
 
-public class RangedWeapon : EntityComponentBehavior
+public class RangedWeapon : ComponentBehavior<RangedWeaponData>
 {
-    public RangedWeaponData Data = new RangedWeaponData();
 
-    
-    public override IComponent GetData()
-    {
-        return Data;
-    }
 }

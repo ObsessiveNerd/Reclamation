@@ -9,6 +9,8 @@ public class FactionData : EntityComponent
 {
     public FactionId ID;
 
+    public override Type MonobehaviorType => typeof(Faction);
+
     public override void WakeUp()
     {
         RegisteredEvents.Add(GameEventId.GetFaction, GetFaction);
@@ -63,12 +65,7 @@ public class FactionData : EntityComponent
     }
 }
 
-public class Faction : EntityComponentBehavior
+public class Faction : ComponentBehavior<FactionData>
 {
-    public FactionData Data = new FactionData();
 
-    public override IComponent GetData()
-    {
-        return Data;
-    }
 }

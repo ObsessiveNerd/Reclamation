@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RegisterWithTimeSystem : EntityComponentBehavior
-{
+//public class RegisterWithTimeSystem : ComponentBehavior
+//{
 
-}
+//}

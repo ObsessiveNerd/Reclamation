@@ -6,12 +6,15 @@ using UnityEngine;
 
 public interface IComponentBehavior
 {
+    EntityComponent GetComponent();
+    void SetComponent(IComponent component);
     void HandleEvent(GameEvent gameEvent);
 }
 
 public interface IComponent
 {
     Entity Entity { get; set; }
+    Type MonobehaviorType { get; }
     Dictionary<GameEventId, Action<GameEvent>> RegisteredEvents { get; }
     //GameEvent FireEvent(GameObject target, GameEvent gameEvent, bool logEvent = false);
     void HandleEvent(GameEvent gameEvent);
@@ -22,6 +25,7 @@ public interface IComponent
 public class EntityComponent : IComponent
 {
     public Entity Entity { get; set; }
+    public virtual Type MonobehaviorType { get; }
 
     public virtual void WakeUp() { }
 
@@ -35,7 +39,8 @@ public class EntityComponent : IComponent
             return m_RegisteredEvents;
         }
     }
-    
+
+
     public void HandleEvent(GameEvent gameEvent) 
     {
         if (RegisteredEvents.ContainsKey(gameEvent.ID))
@@ -44,37 +49,38 @@ public class EntityComponent : IComponent
 }
 
 [RequireComponent(typeof(EntityBehavior))]
-public class EntityComponentBehavior : NetworkBehaviour, IComponentBehavior
+public class ComponentBehavior<T> : NetworkBehaviour, IComponentBehavior where T : EntityComponent, new()
 {
-    public virtual IComponent GetData() { return null; }
+    [SerializeField]
+    T m_Component;
 
-    //private Dictionary<GameEventId, Action<GameEvent>> m_RegisteredEvents;
-    //public Dictionary<GameEventId, Action<GameEvent>> RegisteredEvents
-    //{
-    //    get
-    //    {
-    //        if (m_RegisteredEvents == null)
-    //            m_RegisteredEvents = new Dictionary<GameEventId, Action<GameEvent>>();
-    //        return m_RegisteredEvents;
-    //    }
-    //}
-
-    public void HandleEvent(GameEvent gameEvent) 
-    {
-        //if (RegisteredEvents.ContainsKey(gameEvent.ID))
-        //    RegisteredEvents[gameEvent.ID](gameEvent);
-
-        IComponent data = GetData();
-        if(data != null)
+    public T component 
+    { 
+        get
         {
-            if (data.RegisteredEvents.ContainsKey(gameEvent.ID))
-                data.RegisteredEvents[gameEvent.ID](gameEvent);
+            if (m_Component == null)
+                m_Component = new T();
+            return m_Component;
         }
     }
 
-    //public GameEvent FireEvent(GameObject target, GameEvent gameEvent, bool logEvent = false)
-    //{
-    //    return target.FireEvent(gameEvent, logEvent);
-    //}
+    public void SetComponent(IComponent comp)
+    {
+        m_Component = comp as T;
+    }
+
+    public EntityComponent GetComponent()
+    {
+        return component;
+    }
+
+    public void HandleEvent(GameEvent gameEvent) 
+    {
+        if(component != null)
+        {
+            if (component.RegisteredEvents.ContainsKey(gameEvent.ID))
+                component.RegisteredEvents[gameEvent.ID](gameEvent);
+        }
+    }
 }
 

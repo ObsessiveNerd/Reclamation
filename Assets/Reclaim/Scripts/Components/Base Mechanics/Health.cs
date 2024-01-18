@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
+[Serializable]
 public class HealthData : EntityComponent
 {
     public int MaxHealth;
@@ -23,6 +24,8 @@ public class HealthData : EntityComponent
             return MaxHealth + boostAmount;
         }
     }
+
+    public override Type MonobehaviorType => typeof(Health);
 
     public override void WakeUp()
     {
@@ -82,21 +85,19 @@ public class HealthData : EntityComponent
     }
 }
 
-public class Health : EntityComponentBehavior
+public class Health : ComponentBehavior<HealthData>
 {
-    public HealthData Data = new HealthData();
-
     private void Start()
     {
-        Data.OnDamaged += Flicker;
-        Data.OnDied += Died;
+        component.OnDamaged += Flicker;
+        component.OnDied += Died;
     }
 
     public override void OnDestroy()
     {
         base.OnDestroy();
-        Data.OnDamaged -= Flicker;
-        Data.OnDied -= Died;
+        component.OnDamaged -= Flicker;
+        component.OnDied -= Died;
     }
 
     bool m_IsFlickering = false;
@@ -111,12 +112,6 @@ public class Health : EntityComponentBehavior
     {
         NetworkObject.Despawn();
         Destroy(gameObject);
-    }
-
-
-    public override IComponent GetData()
-    {
-        return Data;
     }
 
     IEnumerator FlickerRed()

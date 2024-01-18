@@ -41,45 +41,45 @@ public class EquipmentViewMono : UpdatableUI//, IUpdatableUI
         }
     }
 
-    void SetEquipment(GameObject source, List<EntityComponentBehavior> components, List<GameObject> slots)
-    {
-        if (components == null || components.Count == 0)
-            return;
+    //void SetEquipment(GameObject source, List<ComponentBehavior> components, List<GameObject> slots)
+    //{
+    //    if (components == null || components.Count == 0)
+    //        return;
 
-        for(int i = 0; i < components.Count; i++)
-        {
-            if (i >= slots.Count)
-                break;
+    //    for(int i = 0; i < components.Count; i++)
+    //    {
+    //        if (i >= slots.Count)
+    //            break;
 
-            GameEvent builder = GameEventPool.Get(GameEventId.GetEquipment)
-                                    .With(EventParameter.Equipment, "");
-            components[i].HandleEvent(builder);
+    //        GameEvent builder = GameEventPool.Get(GameEventId.GetEquipment)
+    //                                .With(EventParameter.Equipment, "");
+    //        components[i].HandleEvent(builder);
 
-            string equipmentId = builder.GetValue<string>(EventParameter.Equipment);
-            builder.Release();
-            if (!string.IsNullOrEmpty(equipmentId))
-            {
-                GameObject equipment = EntityQuery.GetEntity(equipmentId);
+    //        string equipmentId = builder.GetValue<string>(EventParameter.Equipment);
+    //        builder.Release();
+    //        if (!string.IsNullOrEmpty(equipmentId))
+    //        {
+    //            GameObject equipment = EntityQuery.GetEntity(equipmentId);
 
-                //TODO, we should probably not assume that the current equipment object is what we're trying to equip
-                for (int j = 0; j < slots[i].transform.childCount; j++)
-                    if (slots[i].GetComponent<InventoryItemMono>() != null)
-                        Destroy(slots[i].transform.GetChild(j).gameObject);
-                    else
-                        slots[i].transform.GetChild(j).gameObject.SetActive(false);
+    //            //TODO, we should probably not assume that the current equipment object is what we're trying to equip
+    //            for (int j = 0; j < slots[i].transform.childCount; j++)
+    //                if (slots[i].GetComponent<InventoryItemMono>() != null)
+    //                    Destroy(slots[i].transform.GetChild(j).gameObject);
+    //                else
+    //                    slots[i].transform.GetChild(j).gameObject.SetActive(false);
 
-                UIUtility.CreateItemGameObject(source, equipment, slots[i].transform);
-            }
-            else
-            {
-                foreach (var inventoryItem in slots[i].GetComponentsInChildren<InventoryItemMono>(true))
-                    Destroy(inventoryItem.gameObject);
+    //            UIUtility.CreateItemGameObject(source, equipment, slots[i].transform);
+    //        }
+    //        else
+    //        {
+    //            foreach (var inventoryItem in slots[i].GetComponentsInChildren<InventoryItemMono>(true))
+    //                Destroy(inventoryItem.gameObject);
 
-                for (int j = 0; j < slots[i].transform.childCount; j++)
-                    slots[i].transform.GetChild(j).gameObject.SetActive(true);
-            }
-        }
-    }
+    //            for (int j = 0; j < slots[i].transform.childCount; j++)
+    //                slots[i].transform.GetChild(j).gameObject.SetActive(true);
+    //        }
+    //    }
+    //}
     
     public override void UpdateUI()
     {
