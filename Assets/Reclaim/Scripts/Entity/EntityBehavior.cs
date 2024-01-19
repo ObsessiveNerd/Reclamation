@@ -103,6 +103,7 @@ public class Entity //: ISerializationCallbackReceiver
         {
             Type type = Type.GetType(componentTypes[i]);
             EntityComponent component = (EntityComponent)JsonUtility.FromJson(componentData[i], type);
+            component.DeSerialzie();
             AddComponent(component);
         }
         componentData.Clear();
@@ -113,6 +114,7 @@ public class Entity //: ISerializationCallbackReceiver
     {
         foreach (var component in Components)
         {
+            component.Serialzie();
             componentTypes.Add(component.GetType().ToString());
             componentData.Add(JsonUtility.ToJson(component));
         }

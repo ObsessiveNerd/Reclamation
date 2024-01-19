@@ -2,23 +2,53 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.XR;
 
 [Serializable]
 public class VisualData : EntityComponent
 {
     public int RenderLayer;
-    public Sprite MapSprite;
-    public Sprite Portrait;
+    public Texture2D MapSprite;
+    public Texture2D Portrait;
+
+    [SerializeField]
+    private byte[] MapSpriteData;
+    [SerializeField]
+    private byte[] PortraitSpriteData;
 
     public Type MonobehaviorType = typeof(Visual);
+
+    public override void Serialzie()
+    {
+        MapSpriteData = MapSprite.GetRawTextureData();
+        //PortraitSpriteData = Portrait.GetRawTextureData();
+    }
+
+    public override void DeSerialzie()
+    {
+        if(MapSprite == null)
+        {
+            Texture2D mapTexture = new Texture2D(16, 16);
+            mapTexture.LoadImage(MapSpriteData);
+            MapSprite = mapTexture;
+        }
+        //Texture2D portrait = new Texture2D(16, 16);
+        //mapTexture.LoadImage(MapSpriteData);
+    }
 }
 
 public class Visual : ComponentBehavior<VisualData>
 {
     void Start()
     {
+        var spriteRenderer = GetComponent<SpriteRenderer>();
+        component.DeSerialzie();
+
         //Will have to redo this later
-        GetComponent<SpriteRenderer>().sortingOrder = component.RenderLayer;
-        GetComponent<SpriteRenderer>().sprite = component.MapSprite;
+        spriteRenderer.sortingOrder = component.RenderLayer;
+        spriteRenderer.sprite = Sprite.Create(component.MapSprite,
+            new Rect(0f, 0f, component.MapSprite.width, component.MapSprite.height),
+            new Vector2(0.5f, 0.5f),
+            16f);
     }
 }

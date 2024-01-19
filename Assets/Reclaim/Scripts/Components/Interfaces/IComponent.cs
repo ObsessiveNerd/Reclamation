@@ -40,11 +40,14 @@ public class EntityComponent : IComponent
     }
 
 
-    public void HandleEvent(GameEvent gameEvent) 
+    public void HandleEvent(GameEvent gameEvent)
     {
         if (RegisteredEvents.ContainsKey(gameEvent.ID))
             RegisteredEvents[gameEvent.ID](gameEvent);
     }
+
+    public virtual void Serialzie() { }
+    public virtual void DeSerialzie() { }
 }
 
 [RequireComponent(typeof(EntityBehavior))]
