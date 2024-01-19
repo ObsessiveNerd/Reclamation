@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 public enum ItemRarity
@@ -15,11 +16,13 @@ public enum ItemRarity
 [Serializable]
 public class ItemData : EntityComponent
 {
+    [SerializeField]
     public ItemRarity Rarity = ItemRarity.Uncommon;
 
     public Action OnPickup;
 
-    public override Type MonobehaviorType => typeof(Item);
+    [SerializeField]
+    public Type MonobehaviorType = typeof(Item);
 
     public override void WakeUp()
     {
@@ -50,7 +53,7 @@ public class ItemData : EntityComponent
         //Entity.FireEvent(unequip);
         //unequip.Release();
 
-        Entity.SpawnGameObject(source.GetComponent<PositionData>().Point);
+        Services.Spawner.SpawnGameObject(Entity, source.GetComponent<PositionData>().Point);
 
         source.FireEvent(GameEventPool.Get(GameEventId.RemoveFromInventory)
             .With(EventParameter.Item, Entity)).Release();
@@ -60,21 +63,21 @@ public class ItemData : EntityComponent
 
     void GetContextMenuActions(GameEvent gameEvent)
     {
-        GameObject source = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameter.Entity));
-        ContextMenuButton dropButton = new ContextMenuButton("Drop", () =>
-            {
-                //GameEvent drop = GameEventPool.Get(GameEventId.Drop)
-                //                        .With(EventParameter.Entity, source.ID);
+        //GameObject source = EntityQuery.GetEntity(gameEvent.GetValue<string>(EventParameter.Entity));
+        //ContextMenuButton dropButton = new ContextMenuButton("Drop", () =
+        //    {
+        //        //GameEvent drop = GameEventPool.Get(GameEventId.Drop)
+        //        //                        .With(EventParameter.Entity, source.ID);
 
-                //FireEvent(Self, drop, true).Release();
-            });
-        gameEvent.GetValue<List<ContextMenuButton>>(EventParameter.InventoryContextActions).Add(dropButton);
+        //        //FireEvent(Self, drop, true).Release();
+        //    });
+        //gameEvent.GetValue<List<ContextMenuButton>>(EventParameter.InventoryContextActions).Add(dropButton);
 
-        ContextMenuButton giveTo = new ContextMenuButton("Give to...", () =>
-            {
-                //Services.WorldUIService.PromptToGiveItem(source,Self);
-            });
-        gameEvent.GetValue<List<ContextMenuButton>>(EventParameter.InventoryContextActions).Add(giveTo);
+        //ContextMenuButton giveTo = new ContextMenuButton("Give to...", () =
+        //    {
+        //        //Services.WorldUIService.PromptToGiveItem(source,Self);
+        //    });
+        //gameEvent.GetValue<List<ContextMenuButton>>(EventParameter.InventoryContextActions).Add(giveTo);
     }
 
     void GetRarity(GameEvent gameEvent)
@@ -101,6 +104,6 @@ public class Item : ComponentBehavior<ItemData>
     {
         PositionData pos = gameObject.GetComponent<Position>().component;
         Services.Map.GetTile(pos.Point).RemoveObject(gameObject);
-        Destroy(gameObject);
+        Services.Spawner.DestroyGameObjectServerRpc(gameObject.GetComponent<NetworkObject>().NetworkObjectId);
     }
 }

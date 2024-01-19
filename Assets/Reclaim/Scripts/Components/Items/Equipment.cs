@@ -6,8 +6,10 @@ using UnityEngine;
 [Serializable]
 public class EquipmentData : EntityComponent
 { 
+    [SerializeField]
     public BodyPartType EquipsTo;
-    public override Type MonobehaviorType => typeof(Equipment);
+    [SerializeField]
+    public Type MonobehaviorType = typeof(Equipment);
 }
 
 

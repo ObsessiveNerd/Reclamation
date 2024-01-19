@@ -56,8 +56,7 @@ namespace UI.Networking
             if(GUILayout.Button("Spawn Monster"))
             {
                 if (NetworkManager.Singleton.IsServer)
-                    Instantiate(Resources.Load<GameObject>("Goblin"), new Vector3(Random.Range(0, 10), Random.Range(0, 10), 0f), Quaternion.identity)
-                        .GetComponent<NetworkObject>().Spawn();
+                    Services.Spawner.SpawnGameObject(Resources.Load<GameObject>("Goblin"), new Vector3(Random.Range(0, 10), Random.Range(0, 10), 0f));
                 else
                     Debug.LogError("Attempting to spawn from a client.");
             }
@@ -65,8 +64,7 @@ namespace UI.Networking
             if(GUILayout.Button("Spawn Item"))
             {
                 if (NetworkManager.Singleton.IsServer)
-                    Instantiate(Resources.Load<GameObject>("Axe"), new Vector3(Random.Range(0, 10), Random.Range(0, 10), 0f), Quaternion.identity)
-                        .GetComponent<NetworkObject>().Spawn();
+                    Services.Spawner.SpawnGameObject(Resources.Load<GameObject>("Axe"), new Vector3(Random.Range(0, 10), Random.Range(0, 10), 0f));
                 else
                     Debug.LogError("Attempting to spawn from a client.");
             }

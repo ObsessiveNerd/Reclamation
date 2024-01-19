@@ -7,10 +7,13 @@ using UnityEngine;
 [Serializable]
 public class AgressionData : EntityComponent
 {
+    [SerializeField]
     public Point CurrentLocation;
+    [SerializeField]
     public Point TargetLocation;
+    [SerializeField]
+    public Type MonobehaviorType = typeof(Aggression);
 
-    public override Type MonobehaviorType => typeof(Aggression);
     public override void WakeUp()
     {
         RegisteredEvents.Add(GameEventId.GetActionToTake, GetActionToTake);

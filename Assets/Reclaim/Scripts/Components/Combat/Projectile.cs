@@ -16,9 +16,10 @@ public enum ProjectileType
 [Serializable]
 public class ProjectileData : EntityComponent
 {
+    [SerializeField]
     public ProjectileType Type;
-
-    public override Type MonobehaviorType => typeof(Projectile);
+    [SerializeField]
+    public Type MonobehaviorType = typeof(Projectile);
 }
 
 public class Projectile : ComponentBehavior<ProjectileData>

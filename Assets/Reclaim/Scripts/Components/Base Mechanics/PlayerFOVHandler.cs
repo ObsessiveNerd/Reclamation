@@ -11,7 +11,7 @@ public class PlayerFOVHandlerData : EntityComponent
     public Action OnFOVRecalculated;
     public List<Point> VisiblePoints = new List<Point>();
     
-    public override Type MonobehaviorType => typeof(PlayerFOVHandler);
+    Type MonobehaviorType = typeof(PlayerFOVHandler);
 
     public override void WakeUp()
     {

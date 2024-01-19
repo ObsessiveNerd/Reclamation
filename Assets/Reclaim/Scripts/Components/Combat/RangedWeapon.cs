@@ -6,9 +6,11 @@ using UnityEngine;
 
 public class RangedWeaponData : EntityComponent
 {
+    [SerializeField]
     public ProjectileType RequiredAmmoType;
 
-    public override Type MonobehaviorType => typeof(RangedWeapon);
+    [SerializeField]
+    public Type MonobehaviorType = typeof(RangedWeapon);
     public override void WakeUp()
     {
         RegisteredEvents.Add(GameEventId.PerformAttack, PerformAttack);

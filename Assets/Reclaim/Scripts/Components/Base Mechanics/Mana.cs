@@ -6,7 +6,7 @@ using UnityEngine;
 [Serializable]
 public class ManaData : EntityComponent
 {
-    public override Type MonobehaviorType => typeof(Mana);
+    Type MonobehaviorType = typeof(Mana);
 }
 
 public class Mana : ComponentBehavior<ManaData>

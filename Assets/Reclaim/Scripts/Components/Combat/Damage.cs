@@ -7,10 +7,12 @@ using UnityEngine;
 [Serializable]
 public class DamageData : EntityComponent
 {
+    [SerializeField]
     public Dice DamageAmount;
+    [SerializeField]
     public DamageType Type;
 
-    public override Type MonobehaviorType => typeof(Damage);
+    public Type MonobehaviorType = typeof(Damage);
 
     public override void WakeUp()
     {

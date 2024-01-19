@@ -30,6 +30,8 @@ public static class Services
     public static Pathfinder Pathfinder { get { return GetInstance<Pathfinder>(); } }
     public static CoroutineManager Coroutine { get { return GetInstance<CoroutineManager>(); } }
     public static EntityFactory EntityFactory { get { return GetInstance<EntityFactory>(); } }
+    public static Spawner Spawner { get { return GetInstance<Spawner>(); } }
+    public static Serialization Serialization { get { return GetInstance<Serialization>(); } }
 
     //public static WorldSpawner SpawnerService { get { return GetInstance<WorldSpawner>(); } }
     //public static GameSaveSystem SaveAndLoadService { get { return GetInstance<GameSaveSystem>(); } }

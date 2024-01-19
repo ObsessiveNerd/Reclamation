@@ -6,9 +6,10 @@ using UnityEngine;
 [Serializable]
 public class ArmorData : EntityComponent
 { 
+    [SerializeField]
     public int ArmorAmount;
-
-    public override Type MonobehaviorType => typeof(Armor);
+    [SerializeField]
+    public Type MonobehaviorType = typeof(Armor);
     public override void WakeUp()
     {
         RegisteredEvents.Add(GameEventId.GetInfo, GetInfo);

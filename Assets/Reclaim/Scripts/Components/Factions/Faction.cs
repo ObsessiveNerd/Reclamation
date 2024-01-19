@@ -7,9 +7,10 @@ using UnityEngine;
 [Serializable]
 public class FactionData : EntityComponent
 {
+    [SerializeField]
     public FactionId ID;
-
-    public override Type MonobehaviorType => typeof(Faction);
+    [SerializeField]
+    public Type MonobehaviorType = typeof(Faction);
 
     public override void WakeUp()
     {

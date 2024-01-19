@@ -25,7 +25,7 @@ public class HealthData : EntityComponent
         }
     }
 
-    public override Type MonobehaviorType => typeof(Health);
+    Type MonobehaviorType = typeof(Health);
 
     public override void WakeUp()
     {

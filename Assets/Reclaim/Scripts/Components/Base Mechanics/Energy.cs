@@ -10,7 +10,7 @@ public class EnergyData : EntityComponent
     public float EnergyReginerationDelay;
     public bool CanTakeATurn = true;
 
-    public override Type MonobehaviorType => typeof(Energy);
+    Type MonobehaviorType = typeof(Energy);
     public override void WakeUp()
     {
         

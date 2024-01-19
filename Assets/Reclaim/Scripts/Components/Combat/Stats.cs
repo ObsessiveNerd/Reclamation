@@ -15,7 +15,7 @@ public enum Stat
 
 public class StatData : EntityComponent
 { 
-    public override Type MonobehaviorType => typeof(Stats);
+    //public override Type MonobehaviorType => typeof(Stats);
 }
 
 

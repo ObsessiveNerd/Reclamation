@@ -11,8 +11,9 @@ public class PlayerInputController : InputControllerBase
 {
     Energy m_Energy;
 
-    public void Start()
+    protected override void Start()
     {
+        base.Start();
         m_Energy = GetComponent<Energy>();
     }
 
@@ -44,22 +45,14 @@ public class PlayerInputController : InputControllerBase
                 if(go != null)
                 {
                     Point selectedPoint = new Point((int)go.transform.position.x, (int)go.transform.position.y);
-                    Tile t = Services.Map.GetTile(selectedPoint);
-                    var primaryAction = GameEventPool.Get(GameEventId.PrimaryInteraction)
-                        .With(EventParameter.Source, gameObject);
-                    t.FireEvent(gameObject, primaryAction);
-                    primaryAction.Release();
+                    PrimaryActionServerRpc(selectedPoint);
                 }
             }
         }
 
         if (Input.GetMouseButtonDown(1))
         {
-            var e = GetComponent<Inventory>().component.InventoryEntities[0];
-            var drop = GameEventPool.Get(GameEventId.Drop)
-                .With(EventParameter.Source, GetComponent<EntityBehavior>().Entity);
-            e.FireEvent(drop);
-            drop.Release();
+            SecondaryActionServerRpc(GetComponent<Position>().component.Point);
         }
     }
 }

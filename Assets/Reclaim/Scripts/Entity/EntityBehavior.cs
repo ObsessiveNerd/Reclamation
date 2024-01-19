@@ -1,20 +1,49 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
-using static UnityEngine.EventSystems.EventTrigger;
 
 [Serializable]
-public class Entity
+public class Entity : ISerializationCallbackReceiver
 {
-    [SerializeField]
-    List<IComponent> Components = new List<IComponent>();
+    [NonSerialized]
+    public bool IsActive = false;
+
+    PositionData m_PositionData;
+    public Point position
+    {
+        get
+        {
+            if(m_PositionData == null) 
+                m_PositionData = GetComponent<PositionData>();
+            return m_PositionData.Point;
+        }
+    }
+
+    //NameData m_NameData;
+    //public string name
+    //{
+    //    get
+    //    {
+    //        if(m_NameData == null) 
+    //            m_NameData = GetComponent<NameData>();
+    //        return m_NameData.Name;
+    //    }
+    //}
+
+    List<EntityComponent> Components = new List<EntityComponent>();
  
     public GameObject GameObject;
+
+    [SerializeField]
+    private List<string> componentTypes = new List<string>();
+    [SerializeField]
+    private List<string> componentData = new List<string>();
     
-    public List<IComponent> GetComponents()
+    public List<EntityComponent> GetComponents()
     {
-        return new List<IComponent>(Components);
+        return new List<EntityComponent>(Components);
     }
 
     public List<T> GetComponents<T>() where T : Component
@@ -28,27 +57,7 @@ public class Entity
         return components;
     }
 
-    public void SpawnGameObject(Point p)
-    {
-        if(GameObject == null)
-        {
-            GameObject = new GameObject("Entity {new name}");
-            GameObject.AddComponent<SpriteRenderer>();
-            GameObject.AddComponent<BoxCollider2D>();
-
-            foreach(var item in Components)
-            {
-                IComponentBehavior monoBehavior = GameObject.AddComponent(item.MonobehaviorType) as IComponentBehavior;
-                monoBehavior.SetComponent(item);
-            }
-        }
-
-        var instance = GameObject.Instantiate(GameObject, Services.Map.GetTile(p).transform.position, Quaternion.identity);
-        GameObject.Destroy(GameObject);
-        GameObject = instance;
-    }
-
-    public void AddComponent(IComponent component)
+    public void AddComponent(EntityComponent component)
     {
         if (component != null)
         {
@@ -57,7 +66,7 @@ public class Entity
             component.WakeUp();
         }
     }
-    public void AddComponentWithoutAwake(IComponent component)
+    public void AddComponentWithoutAwake(EntityComponent component)
     {
         if (component != null)
         {
@@ -66,7 +75,7 @@ public class Entity
         }
     }
 
-    public void RemoveComponent(IComponent component)
+    public void RemoveComponent(EntityComponent component)
     {
         Components.Remove(component);
     }
@@ -87,27 +96,76 @@ public class Entity
                 comp.HandleEvent(gameEvent);
         return gameEvent;
     }
+
+    bool m_EnableCustomSerialization = false;
+
+    public void EnableCustomSerialization()
+    {
+        m_EnableCustomSerialization = true;
+    }
+
+    public void ClearSerializedData()
+    {
+        componentData.Clear();
+        componentTypes.Clear();
+    }
+
+    public void OnBeforeSerialize()
+    {
+        if (m_EnableCustomSerialization)
+        {
+            Debug.Log("Customization is being called");
+            m_EnableCustomSerialization = false;
+
+            foreach (var component in Components)
+            {
+                componentTypes.Add(component.GetType().ToString());
+                componentData.Add(JsonUtility.ToJson(component));
+            }
+        }
+    }
+
+    public void OnAfterDeserialize()
+    {
+        for(int i = 0; i < componentTypes.Count; i++)
+        {
+            Type type = Type.GetType(componentTypes[i]);
+            EntityComponent component = (EntityComponent)JsonUtility.FromJson(componentData[i], type);
+            AddComponent(component);
+        }
+        componentData.Clear();
+        componentTypes.Clear();
+    }
 }
 
 public class EntityBehavior : MonoBehaviour
 {
-    public Entity Entity = new Entity();
+    public Entity Entity;
 
-    // Start is called before the first frame update
-    void Awake()
+    //// Start is called before the first frame update
+    void Start()
     {
+        if (Entity.IsActive)
+            return;
+
         Entity.GameObject = gameObject;
         ComposeEntityData();
     }
 
+    public void Activate(Entity entity = null)
+    {
+        if (entity != null)
+            Entity = entity;
+        Entity.GameObject = gameObject;
+        if (!Entity.IsActive)
+            ComposeEntityData();
+    }
+
     public Entity ComposeEntityData()
     {
-        var componentsToActivate = new List<IComponent>();
         foreach (var component in GetComponents<IComponentBehavior>())
-        {
             Entity.AddComponent(component.GetComponent());
-        }
-
+        Entity.IsActive = true;
         return Entity;
     }
 }

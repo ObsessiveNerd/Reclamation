@@ -7,9 +7,11 @@ using UnityEngine;
 [Serializable]
 public class MoveData : EntityComponent
 {
+    [SerializeField]
     public MovementBlockFlag MovementFlags;
+    [SerializeField]
+    public Type MonobehaviorType = typeof(Move);
 
-    public override Type MonobehaviorType => typeof(Move);
     public override void WakeUp()
     {
         RegisteredEvents.Add(GameEventId.MoveKeyPressed, MoveKeyPressed);
@@ -25,6 +27,8 @@ public class MoveData : EntityComponent
         var desiredPosition = Services.Map.GetTilePointInDirection(position.Point, direction);
 
         var desiredTile = Services.Map.GetTile(desiredPosition);
+        if (desiredTile == null)
+            return;
 
         bool canMove = true;
         if ((desiredTile.BlocksMovementFlags & MovementFlags) != 0)

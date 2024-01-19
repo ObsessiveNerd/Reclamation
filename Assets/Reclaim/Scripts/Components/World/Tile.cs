@@ -42,8 +42,8 @@ public struct Point : INetworkSerializable
 
     public Point(Vector3 vector3)
     {
-        m_x = (int)vector3.x;
-        m_y = (int)vector3.y;
+        m_x = (int)Math.Round(vector3.x);
+        m_y = (int)Math.Round(vector3.y);
     }
 
     public static Point Parse(string point)
@@ -52,6 +52,11 @@ public struct Point : INetworkSerializable
         var y = point.Split(',')[1];
 
         return new Point(int.Parse(x), int.Parse(y));
+    }
+
+    public Vector3 ToVector()
+    {
+        return new Vector3(m_x, m_y, 0f);
     }
 
     public static bool TryParse(string point, out Point result)
@@ -152,6 +157,8 @@ public class Tile : MonoBehaviour
     public void AddObject(GameObject obj)
     {
         Objects.Add(obj);
+        Debug.LogError($"{obj.name} added to tile {transform.position.x}, {transform.position.y}");
+        SetVisibility(m_IsVisible);
         //obj.gameObject.SetActive(true);
         Services.Coroutine.InvokeCoroutine(Recalculate());
     }

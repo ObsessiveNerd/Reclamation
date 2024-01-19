@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -14,7 +15,6 @@ public interface IComponentBehavior
 public interface IComponent
 {
     Entity Entity { get; set; }
-    Type MonobehaviorType { get; }
     Dictionary<GameEventId, Action<GameEvent>> RegisteredEvents { get; }
     //GameEvent FireEvent(GameObject target, GameEvent gameEvent, bool logEvent = false);
     void HandleEvent(GameEvent gameEvent);
@@ -25,7 +25,6 @@ public interface IComponent
 public class EntityComponent : IComponent
 {
     public Entity Entity { get; set; }
-    public virtual Type MonobehaviorType { get; }
 
     public virtual void WakeUp() { }
 

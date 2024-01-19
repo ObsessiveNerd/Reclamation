@@ -11,7 +11,7 @@ public class InventoryData : EntityComponent
 
     public List<Entity> InventoryEntities = new List<Entity>();
 
-    public override Type MonobehaviorType => typeof(InventoryData);
+    Type MonobehaviorType = typeof(InventoryData);
 
     public override void WakeUp()
     {

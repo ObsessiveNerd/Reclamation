@@ -18,6 +18,7 @@ GameObject:
   - component: {fileID: 2958336828201774149}
   - component: {fileID: -4166682872789522707}
   - component: {fileID: -6653508235515107131}
+  - component: {fileID: 2256169449586745585}
   m_Layer: 0
   m_Name: Bow
   m_TagString: Untagged
@@ -199,7 +200,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2733ddc10c3638242839fec05be1d134, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Rarity: 1
+  m_Component:
+    Rarity: 3
 --- !u!114 &2249876947531943686
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -212,7 +214,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b79887fc7387744884253b135c156b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  EquipsTo: 3
+  m_Component:
+    EquipsTo: 0
 --- !u!114 &2958336828201774149
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -225,10 +228,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe62473dd13498845b2899513e7cbfa5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BlockMovementOfFlag: 0
-  Point:
-    m_x: 0
-    m_y: 0
+  m_Component:
+    DestinationPosition: {x: 0, y: 0, z: 0}
+    Point:
+      m_x: 0
+      m_y: 0
+    TransitionTime: 20
+    Scale: {x: 0.75, y: 0.75, z: 0.75}
+    BlockMovementOfFlag: 0
 --- !u!114 &-4166682872789522707
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -255,4 +262,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9172179059a7fda4db023e0b3d7e6ad7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  RequiredAmmoType: 0
+--- !u!114 &2256169449586745585
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2249876947531943163}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b8633b44d9b34a49ac890019d4af0ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Entity:
+    GameObject: {fileID: 0}

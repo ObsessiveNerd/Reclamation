@@ -25,8 +25,9 @@ public class AIController : InputControllerBase
 {
     Energy m_Energy;
 
-    public void Start()
+    protected override void Start()
     {
+        base.Start();
         m_Energy = GetComponent<Energy>();
     }
 

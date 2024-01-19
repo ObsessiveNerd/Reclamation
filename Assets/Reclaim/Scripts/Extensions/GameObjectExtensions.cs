@@ -1,8 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using Mono.Cecil;
 using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
 
 public static class GameObjectExtensions
 {
@@ -21,9 +19,13 @@ public static class GameObjectExtensions
     {
         if(source != null)
         {
-            var entity = source.GetComponent<EntityBehavior>().Entity;
-            foreach(var comp in entity.GetComponents())
-                comp.HandleEvent(gameEvent);
+            var entity = source.GetComponent<EntityBehavior>()?.Entity;
+            if (entity != null)
+            {
+
+                foreach (var comp in entity.GetComponents())
+                    comp.HandleEvent(gameEvent);
+            }
         }
         return gameEvent;
     }

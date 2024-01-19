@@ -9,7 +9,7 @@ public class InfoData : EntityComponent
 {
     public string InfoMessage;
 
-    public override Type MonobehaviorType => typeof(Info);
+    Type MonobehaviorType = typeof(Info);
     public override void WakeUp()
     {
         RegisteredEvents.Add(GameEventId.ShowInfo, ShowInfo);

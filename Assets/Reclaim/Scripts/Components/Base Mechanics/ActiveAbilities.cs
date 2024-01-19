@@ -6,7 +6,7 @@ using UnityEngine;
 [Serializable]
 public class ActiveAbilitiesData : EntityComponent
 {
-    public override Type MonobehaviorType => typeof(ActiveAbilities);
+    Type MonobehaviorType = typeof(ActiveAbilities);
 }
 
 public class ActiveAbilities : ComponentBehavior<ActiveAbilitiesData>

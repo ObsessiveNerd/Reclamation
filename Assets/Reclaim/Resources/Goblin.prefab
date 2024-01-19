@@ -22,6 +22,8 @@ GameObject:
   - component: {fileID: 9190453740901600429}
   - component: {fileID: 5697547798364541766}
   - component: {fileID: 3554405158137896349}
+  - component: {fileID: 2126710852692725926}
+  - component: {fileID: -3563525876226502257}
   m_Layer: 0
   m_Name: Goblin
   m_TagString: Untagged
@@ -215,7 +217,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 477f745d8a2a98347b7691491e272b49, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MovementFlags: 2
+  m_Component:
+    MovementFlags: 2
 --- !u!114 &-611971266181680567
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -228,10 +231,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe62473dd13498845b2899513e7cbfa5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BlockMovementOfFlag: 1
-  Point:
-    m_x: 0
-    m_y: 0
+  m_Component:
+    DestinationPosition: {x: 0, y: 0, z: 0}
+    Point:
+      m_x: 0
+      m_y: 0
+    TransitionTime: 20
+    Scale: {x: 1, y: 1, z: 1}
+    BlockMovementOfFlag: 3
 --- !u!114 &-5050989622989189952
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -244,9 +251,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d31fa45d88ef6f44aa76798ad81f99f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MaxHealth: 13
-  CurrentHealth: 13
-  PercentBoost: 0
+  m_Component:
+    MaxHealth: 10
+    CurrentHealth: 10
+    ModMultiplier: 5
+    PercentBoost: 0
 --- !u!114 &-2662036439430639
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -259,8 +268,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6256700e4f862064290e6e4bbc221140, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  EnergyReginerationDelay: 1
-  CanTakeATurn: 1
+  m_Component:
+    EnergyReginerationDelay: 0.7
+    CanTakeATurn: 1
 --- !u!114 &1614740528953592009
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -273,7 +283,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de53d55856ad7634a845f7edac05fc00, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ID: 3
+  m_Component:
+    ID: 3
 --- !u!114 &9190453740901600429
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -286,7 +297,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 878cd3393be5aaa4b9abdc5c1fc9a930, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BodyParts: []
+  m_Component:
+    BodyParts: []
 --- !u!114 &5697547798364541766
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -299,6 +311,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9904c384fbd75f74394ff2ae394a2038, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_Component:
+    CurrentLocation:
+      m_x: 0
+      m_y: 0
+    TargetLocation:
+      m_x: 0
+      m_y: 0
 --- !u!114 &3554405158137896349
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -311,4 +330,35 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 622907c88d5a8e0438fdc51487a75def, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  FOVRange: 5
+  m_Component:
+    FOVRange: 5
+--- !u!114 &2126710852692725926
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2304895449595438703}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b8633b44d9b34a49ac890019d4af0ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Entity:
+    GameObject: {fileID: 0}
+--- !u!114 &-3563525876226502257
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2304895449595438703}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f73ac1b29992c88418db7d942b392748, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Component:
+    RenderLayer: 2
+    MapSprite: {fileID: 21300000, guid: ba7f42dfde1eb7f488216fe8369dd194, type: 3}
+    Portrait: {fileID: 0}

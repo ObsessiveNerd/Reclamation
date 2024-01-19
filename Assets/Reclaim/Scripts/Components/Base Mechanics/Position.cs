@@ -25,13 +25,14 @@ public class PositionData : EntityComponent
     public Point Point;
     [HideInInspector]
     public float TransitionTime = 20f;
-
+    
+    public Vector3 Scale = new Vector3(1f, 1f, 1f);
     public MovementBlockFlag BlockMovementOfFlag = MovementBlockFlag.None;
 
     public Action<GameEvent> MoveEntity;
     public Action<GameEvent> SetEntityPosition;
 
-    public override Type MonobehaviorType => typeof(Position);
+    public Type MonobehaviorType = typeof(Position);
 
     public override void WakeUp()
     {
@@ -65,9 +66,15 @@ public class Position : ComponentBehavior<PositionData>
 {
     void Start()
     {
+        SetEntityPosition(new Point(transform.position));
+
+        //var afterMoving = GameEventPool.Get(GameEventId.AfterMoving);
+        //component.Entity.FireEvent(afterMoving).Release();
+
+        transform.localScale = component.Scale;
+
         component.MoveEntity += MoveEntity;
         component.SetEntityPosition += SetEntityPosition;
-        SetEntityPosition(new Point(transform.position));
     }
 
     public override void OnDestroy()

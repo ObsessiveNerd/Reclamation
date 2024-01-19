@@ -9,7 +9,7 @@ public class FOVData : EntityComponent
     IFovAlgorithm m_Fov;
     List<Point> m_VisibleTiles;
 
-    public override Type MonobehaviorType => typeof(FOV);
+    Type MonobehaviorType = typeof(FOV);
 
     public override void WakeUp()
     {

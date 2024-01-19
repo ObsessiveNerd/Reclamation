@@ -12,7 +12,7 @@ public class BodyData : EntityComponent
 {
     public List<BodyPart> BodyParts = new List<BodyPart>();
 
-    public override Type MonobehaviorType => typeof(Body);
+    Type MonobehaviorType = typeof(Body);
     public override void WakeUp()
     {
         RegisteredEvents.Add(GameEventId.HostileInteraction, HostileInteraction);
@@ -39,11 +39,11 @@ public class BodyData : EntityComponent
         foreach (var equipmentSlot in BodyParts)
             equipmentSlot.PassEventToEquipment(attack);
 
-        //var takeDamage = GameEventPool.Get(GameEventId.DamageTaken)
-        //    .With(attack.Paramters)
-        //    .With(EventParameter.Source, gameObject);
+        var takeDamage = GameEventPool.Get(GameEventId.DamageTaken)
+            .With(attack.Paramters)
+            .With(EventParameter.Source, Entity.GameObject);
 
-        //target.FireEvent(takeDamage);
+        target.FireEvent(takeDamage);
 
         attack.Release();
         

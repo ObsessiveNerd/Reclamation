@@ -6,7 +6,8 @@ using UnityEngine;
 [Serializable]
 public class BlocksVisionData : EntityComponent
 {
-    public override Type MonobehaviorType => typeof(BlocksVision);
+    [SerializeField]
+    public Type MonobehaviorType = typeof(BlocksVision);
     public override void WakeUp()
     {
         RegisteredEvents.Add(GameEventId.CalculateTileFlags, CalculateTileFlags);

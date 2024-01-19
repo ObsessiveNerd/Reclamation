@@ -449,7 +449,7 @@ public struct GameEventSerializable
     }
 }
 
-public class GameEvent : INetworkSerializable
+public class GameEvent
 {
     public bool Locked = false;
     //public bool ContinueProcessing;
@@ -534,11 +534,5 @@ public class GameEvent : INetworkSerializable
         m_ID = GameEventId.None;
         m_Parameters.Clear();
         m_GameEventSerializable = default;
-    }
-
-    public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
-    {
-        m_GameEventSerializable = new GameEventSerializable(this);
-        //serializer.SerializeValue(ref m_GameEventSerializable);
     }
 }

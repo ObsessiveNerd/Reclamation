@@ -10,7 +10,7 @@ public class VisualData : EntityComponent
     public Sprite MapSprite;
     public Sprite Portrait;
 
-    public override Type MonobehaviorType => typeof(Visual);
+    public Type MonobehaviorType = typeof(Visual);
 }
 
 public class Visual : ComponentBehavior<VisualData>
