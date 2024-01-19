@@ -12,14 +12,14 @@ public class Serialization : MonoBehaviour
 
     public string SerializeEntity(Entity entity)
     {
-        entity.EnableCustomSerialization();
+        entity.Serialize();
         return JsonUtility.ToJson(entity);
     }
 
     public Entity GetEntity(string json)
     {
         Entity entity = JsonUtility.FromJson<Entity>(json);
-        entity.ClearSerializedData();
+        entity.DeSerialize();
         return entity;
     }
 }

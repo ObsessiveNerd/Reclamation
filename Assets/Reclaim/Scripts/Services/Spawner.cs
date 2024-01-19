@@ -34,11 +34,18 @@ public struct Test : INetworkSerializable, IEquatable<Test>
 
 public class Spawner : NetworkBehaviour
 {
-    NetworkList<Test> m_NetorkEntityMap = new NetworkList<Test>();
+    NetworkList<Test> m_NetorkEntityMap; // = new NetworkList<Test>();
 
     void Awake()
     {
         Services.Register(this);    
+        m_NetorkEntityMap = new NetworkList<Test>();
+    }
+
+    public override void OnDestroy()
+    {
+        base.OnDestroy();
+        m_NetorkEntityMap.Dispose();
     }
 
     public GameObject SpawnGameObject(GameObject go, Vector3 position)

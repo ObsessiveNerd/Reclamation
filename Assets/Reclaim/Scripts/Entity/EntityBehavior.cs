@@ -5,7 +5,7 @@ using Unity.Netcode;
 using UnityEngine;
 
 [Serializable]
-public class Entity : ISerializationCallbackReceiver
+public class Entity //: ISerializationCallbackReceiver
 {
     [NonSerialized]
     public bool IsActive = false;
@@ -97,35 +97,7 @@ public class Entity : ISerializationCallbackReceiver
         return gameEvent;
     }
 
-    bool m_EnableCustomSerialization = false;
-
-    public void EnableCustomSerialization()
-    {
-        m_EnableCustomSerialization = true;
-    }
-
-    public void ClearSerializedData()
-    {
-        componentData.Clear();
-        componentTypes.Clear();
-    }
-
-    public void OnBeforeSerialize()
-    {
-        if (m_EnableCustomSerialization)
-        {
-            Debug.Log("Customization is being called");
-            m_EnableCustomSerialization = false;
-
-            foreach (var component in Components)
-            {
-                componentTypes.Add(component.GetType().ToString());
-                componentData.Add(JsonUtility.ToJson(component));
-            }
-        }
-    }
-
-    public void OnAfterDeserialize()
+    public void DeSerialize()
     {
         for(int i = 0; i < componentTypes.Count; i++)
         {
@@ -135,6 +107,16 @@ public class Entity : ISerializationCallbackReceiver
         }
         componentData.Clear();
         componentTypes.Clear();
+    }
+
+    public void Serialize()
+    {
+        foreach (var component in Components)
+        {
+            componentTypes.Add(component.GetType().ToString());
+            componentData.Add(JsonUtility.ToJson(component));
+        }
+        Components.Clear();
     }
 }
 

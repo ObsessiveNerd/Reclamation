@@ -53,11 +53,10 @@ public class ItemData : EntityComponent
         //Entity.FireEvent(unequip);
         //unequip.Release();
 
-        Services.Spawner.SpawnGameObject(Entity, source.GetComponent<PositionData>().Point);
-
         source.FireEvent(GameEventPool.Get(GameEventId.RemoveFromInventory)
             .With(EventParameter.Item, Entity)).Release();
-        
+
+        Services.Spawner.SpawnGameObject(Entity, source.GetComponent<PositionData>().Point);
 
     }
 

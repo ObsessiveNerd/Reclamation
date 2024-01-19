@@ -17,8 +17,6 @@ public class ActivatedNetworkObject : NetworkBehaviour
     public void Activate()
     {
         Services.Spawner.GetEntityFromNetworkId(GetComponent<NetworkObject>().NetworkObjectId, out Entity entity);
-        if (entity.IsActive)
-            return;
 
         gameObject.AddComponent<SpriteRenderer>();
         gameObject.AddComponent<BoxCollider2D>();

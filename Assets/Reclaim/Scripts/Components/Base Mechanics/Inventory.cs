@@ -17,6 +17,7 @@ public class InventoryData : EntityComponent
     {
         RegisteredEvents.Add(GameEventId.GetAmmo, GetAmmo);
         RegisteredEvents.Add(GameEventId.Died, Died);
+        RegisteredEvents.Add(GameEventId.RemoveFromInventory, RemoveFromInventory);
     }
     void GetAmmo(GameEvent gameEvent)
     {
@@ -35,6 +36,13 @@ public class InventoryData : EntityComponent
 
         //InventoryItems.Add(item, 1);
     }
+
+    public void RemoveFromInventory(GameEvent gameEvent) 
+    {
+        var item = gameEvent.GetValue<Entity>(EventParameter.Item);
+        InventoryEntities.Remove(item);
+    }
+
     public void RemoveFromInventory(GameObject item)
     {
         //InventoryItems[item]--;
