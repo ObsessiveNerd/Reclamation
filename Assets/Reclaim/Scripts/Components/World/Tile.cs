@@ -171,13 +171,21 @@ public class Tile : MonoBehaviour
         {
             m_SpriteRenderer.color = Color.white;
             foreach (var obj in Objects)
+            {
+                if (obj == null)
+                    continue;
                 obj.GetComponent<SpriteRenderer>().color = Color.white;
+            }
         }
         else
         {
             m_SpriteRenderer.color = m_Grey;
             foreach (var obj in Objects)
+            {
+                if (obj == null)
+                    continue;
                 obj.GetComponent<SpriteRenderer>().color = m_Invisible;
+            }
         }
     }
 

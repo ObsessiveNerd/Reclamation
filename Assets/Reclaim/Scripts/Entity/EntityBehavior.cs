@@ -112,6 +112,7 @@ public class Entity //: ISerializationCallbackReceiver
 
     public void Serialize()
     {
+        GameObject = null;
         foreach (var component in Components)
         {
             component.Serialzie();

@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 4715292854147266466}
   - component: {fileID: 5872688771206195504}
   - component: {fileID: 6139673541529956909}
-  - component: {fileID: -3220036950419571654}
   - component: {fileID: 5506253764506251729}
+  - component: {fileID: 9033248843740309408}
   m_Layer: 0
   m_Name: SimpleNetworkObject
   m_TagString: Untagged
@@ -85,18 +85,6 @@ MonoBehaviour:
   InLocalSpace: 0
   Interpolate: 1
   SlerpPosition: 0
---- !u!114 &-3220036950419571654
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9129385938250492292}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 979327c0f9278fa4980e52bd9f350bd6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &5506253764506251729
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -111,3 +99,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Entity:
     GameObject: {fileID: 0}
+    componentTypes: []
+    componentData: []
+--- !u!114 &9033248843740309408
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9129385938250492292}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 979327c0f9278fa4980e52bd9f350bd6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ActivateOnSpawn: 0

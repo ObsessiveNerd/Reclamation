@@ -7,16 +7,19 @@ using static UnityEngine.EventSystems.EventTrigger;
 
 public class ActivatedNetworkObject : NetworkBehaviour
 {
-    public bool ActivateOnSpawn = true;
+    public NetworkVariable<bool> ActivateOnSpawn = new NetworkVariable<bool>(false);
     public override void OnNetworkSpawn()
     {
-        if (ActivateOnSpawn)
+        if (ActivateOnSpawn.Value)
             Activate();
     }
 
     public void Activate()
     {
         Services.Spawner.GetEntityFromNetworkId(GetComponent<NetworkObject>().NetworkObjectId, out Entity entity);
+
+        if (entity == null)
+            return;
 
         gameObject.AddComponent<SpriteRenderer>();
         gameObject.AddComponent<BoxCollider2D>();
