@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -19,8 +20,8 @@ public class ItemData : EntityComponent
     [SerializeField]
     public ItemRarity Rarity = ItemRarity.Uncommon;
 
-    public Action OnPickup;
-    public Action OnDrop;
+    public Action<ulong> OnPickup;
+    public Action<Entity> OnDrop;
 
     [SerializeField]
     public Type MonobehaviorType = typeof(Item);
@@ -35,12 +36,13 @@ public class ItemData : EntityComponent
 
     void Pickup(GameEvent gameEvent)
     {
-        Entity source = gameEvent.GetValue<GameObject>(EventParameter.Source).GetComponent<EntityBehavior>().Entity;
+        var sourceGo = gameEvent.GetValue<GameObject>(EventParameter.Source);
+        var source = sourceGo.GetComponent<EntityBehavior>().Entity;
         var inventory = source.GetComponent<InventoryData>();
         inventory.AddToInventory(Entity);
         
         if(OnPickup != null)
-            OnPickup();
+            OnPickup(sourceGo.GetComponent<NetworkObject>().NetworkObjectId);
     }
 
     void Drop(GameEvent gameEvent)
@@ -57,8 +59,14 @@ public class ItemData : EntityComponent
         source.FireEvent(GameEventPool.Get(GameEventId.RemoveFromInventory)
             .With(EventParameter.Item, Entity)).Release();
 
-        if(OnDrop != null) 
-            OnDrop();
+        if (source.GameObject.GetComponent<NetworkObject>().IsOwner)
+        {
+            Point p =  source.GetComponent<PositionData>().Point;
+            Services.Spawner.SpawnGameObject(Entity, p);
+        }
+
+        //if(OnDrop != null) 
+        //    OnDrop(source);
     }
 
     void GetContextMenuActions(GameEvent gameEvent)
@@ -99,15 +107,18 @@ public class Item : ComponentBehavior<ItemData>
     {
         base.OnDestroy();
         component.OnPickup -= PickedUp;
+        component.OnDrop -= Dropped;
     }
 
-    void Dropped()
+    void Dropped(Entity source)
     {
-        Point p =  component.Entity.GetComponent<PositionData>().Point;
-        Services.Spawner.SpawnGameObject(component.Entity, p);
+        if (!IsOwner)
+            return;
+
+        
     }
 
-    void PickedUp()
+    void PickedUp(ulong ownerNetworkId)
     {
         PositionData pos = gameObject.GetComponent<Position>().component;
         Services.Map.GetTile(pos.Point).RemoveObject(gameObject);
