@@ -129,7 +129,7 @@ public class EntityBehavior : NetworkBehaviour
 {
     public Entity Entity;
     public NetworkVariable<FixedString4096Bytes> EntityJson;
-
+    
     public override void OnNetworkSpawn()
     {
         if (string.IsNullOrEmpty(EntityJson.Value.ToString()))

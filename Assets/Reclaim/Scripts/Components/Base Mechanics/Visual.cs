@@ -5,11 +5,25 @@ using UnityEngine;
 using UnityEngine.XR;
 
 [Serializable]
+public class NetworkedByteData
+{
+    [SerializeField]
+    public byte[] Data;
+
+    public NetworkedByteData(byte[] data)
+    {
+        Data = data;
+    }
+}
+
+
+[Serializable]
 public class VisualData : EntityComponent
 {
     public int RenderLayer;
     public Texture2D MapSprite;
     public Texture2D Portrait;
+    public TextureFormat MapTextureFormat;
 
     [SerializeField]
     private byte[] MapSpriteData;
@@ -20,20 +34,21 @@ public class VisualData : EntityComponent
 
     public override void Serialzie()
     {
-        //MapSpriteData = MapSprite.GetRawTextureData();
-        //PortraitSpriteData = Portrait.GetRawTextureData();
+        MapTextureFormat = MapSprite.format;
+        MapSpriteData = MapSprite.GetRawTextureData();
     }
 
     public override void DeSerialzie()
     {
-        //if (MapSprite == null)
-        //{
-        //    Texture2D mapTexture = new Texture2D(16, 16, TextureFormat.RGBA32, false);
-        //    mapTexture.LoadRawTextureData(MapSpriteData);
-        //    mapTexture.Apply();
+        if (MapSprite == null)
+        {
+            Texture2D mapTexture = new Texture2D(16, 16, MapTextureFormat, false);
+            mapTexture.LoadRawTextureData(MapSpriteData);
+            mapTexture.filterMode = FilterMode.Point;
+            mapTexture.Apply();
 
-        //    MapSprite = mapTexture;
-        //}
+            MapSprite = mapTexture;
+        }
         //Texture2D portrait = new Texture2D(16, 16);
         //mapTexture.LoadImage(MapSpriteData);
     }
@@ -48,9 +63,9 @@ public class Visual : ComponentBehavior<VisualData>
 
         //Will have to redo this later
         spriteRenderer.sortingOrder = component.RenderLayer;
-        //spriteRenderer.sprite = Sprite.Create(component.MapSprite,
-        //    new Rect(0f, 0f, component.MapSprite.width, component.MapSprite.height),
-        //    new Vector2(0.5f, 0.5f),
-        //    16f);
+        spriteRenderer.sprite = Sprite.Create(component.MapSprite,
+            new Rect(0f, 0f, component.MapSprite.width, component.MapSprite.height),
+            new Vector2(0.5f, 0.5f),
+            16f);
     }
 }
