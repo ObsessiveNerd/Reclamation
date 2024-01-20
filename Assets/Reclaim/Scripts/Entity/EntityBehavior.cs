@@ -1,8 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
+using static UnityEngine.EventSystems.EventTrigger;
 
 [Serializable]
 public class Entity //: ISerializationCallbackReceiver
@@ -123,9 +125,29 @@ public class Entity //: ISerializationCallbackReceiver
     }
 }
 
-public class EntityBehavior : MonoBehaviour
+public class EntityBehavior : NetworkBehaviour
 {
     public Entity Entity;
+    public NetworkVariable<FixedString4096Bytes> EntityJson;
+
+    public override void OnNetworkSpawn()
+    {
+        if (string.IsNullOrEmpty(EntityJson.Value.ToString()))
+            return;
+
+        Entity = Services.Serialization.GetEntity(EntityJson.Value.ToString());
+        Entity.GameObject = gameObject;
+
+        foreach (var item in Entity.GetComponents())
+        {
+            var monoType = item.GetType().GetField("MonobehaviorType")?.GetValue(item) as Type;
+            if (monoType == null)
+                Debug.LogWarning($"{item.GetType()} does not have MonobehaviorType");
+            IComponentBehavior monoBehavior = gameObject.AddComponent(monoType) as IComponentBehavior;
+            monoBehavior.SetComponent(item);
+        }
+        Entity.IsActive = true;
+    }
 
     //// Start is called before the first frame update
     void Start()
@@ -133,14 +155,11 @@ public class EntityBehavior : MonoBehaviour
         if (Entity.IsActive)
             return;
 
-        Entity.GameObject = gameObject;
-        ComposeEntityData();
+        Activate();
     }
 
-    public void Activate(Entity entity = null)
+    public void Activate()
     {
-        if (entity != null)
-            Entity = entity;
         Entity.GameObject = gameObject;
         if (!Entity.IsActive)
             ComposeEntityData();

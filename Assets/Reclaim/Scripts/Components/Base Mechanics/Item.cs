@@ -20,6 +20,7 @@ public class ItemData : EntityComponent
     public ItemRarity Rarity = ItemRarity.Uncommon;
 
     public Action OnPickup;
+    public Action OnDrop;
 
     [SerializeField]
     public Type MonobehaviorType = typeof(Item);
@@ -56,8 +57,8 @@ public class ItemData : EntityComponent
         source.FireEvent(GameEventPool.Get(GameEventId.RemoveFromInventory)
             .With(EventParameter.Item, Entity)).Release();
 
-        Services.Spawner.SpawnGameObject(Entity, source.GetComponent<PositionData>().Point);
-
+        if(OnDrop != null) 
+            OnDrop();
     }
 
     void GetContextMenuActions(GameEvent gameEvent)
@@ -90,13 +91,20 @@ public class Item : ComponentBehavior<ItemData>
 {
     void Start()
     {
-        component.OnPickup += PickedUp;    
+        component.OnPickup += PickedUp;
+        component.OnDrop += Dropped;
     }
 
     public override void OnDestroy()
     {
         base.OnDestroy();
         component.OnPickup -= PickedUp;
+    }
+
+    void Dropped()
+    {
+        Point p =  component.Entity.GetComponent<PositionData>().Point;
+        Services.Spawner.SpawnGameObject(component.Entity, p);
     }
 
     void PickedUp()

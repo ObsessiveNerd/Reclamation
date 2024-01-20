@@ -51,7 +51,8 @@ public class Spawner : NetworkBehaviour
         var entity = instance.GetComponent<EntityBehavior>().Entity;
         m_NetorkEntityMap.Add(new Test(instance.GetComponent<NetworkObject>().NetworkObjectId, Services.Serialization.SerializeEntity(entity)));
 
-        //instance.AddComponent<ActivatedNetworkObject>().Activate();
+        //instance.GetComponent<ActivatedNetworkObject>().Activate();
+        //instance.GetComponent<ActivatedNetworkObject>().ActivateOnSpawn.Value = true;
         return instance;
     }
 
@@ -76,10 +77,10 @@ public class Spawner : NetworkBehaviour
 
     public void SpawnGameObject(Entity entity, Point p)
     {
-        if (entity.GameObject == null)
+        //if (entity.GameObject == null)
             SpawnGameObjectServerRpc(Services.Serialization.SerializeEntity(entity), p);
-        else
-            SpawnGameObject(entity.GameObject, p.ToVector());
+        //else
+        //    SpawnGameObject(entity.GameObject, p.ToVector());
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -87,31 +88,39 @@ public class Spawner : NetworkBehaviour
     {
         GameObject temp = Resources.Load<GameObject>("SimpleNetworkObject");
         var instance = Instantiate(temp, Services.Map.GetTile(p).transform.position, Quaternion.identity);
+        instance.GetComponent<EntityBehavior>().EntityJson.Value = entityJson;
         instance.GetComponent<NetworkObject>().Spawn();
-        
         ulong networkId = instance.GetComponent<NetworkObject>().NetworkObjectId;
         m_NetorkEntityMap.Add(new Test(networkId, entityJson));
-        SpawnGameObjectClientRpc(networkId, entityJson);
+
+        //instance.GetComponent<ActivatedNetworkObject>().ActivateOnSpawn.Value = true;
+        //SpawnGameObjectClientRpc(networkId);
+        //SpawnGameObjectClientRpc(networkId, entityJson);
         
     }
 
-    [ClientRpc]
-    void SpawnGameObjectClientRpc(ulong networkId, string entityJson)
-    {
-        NetworkObject netObject;
-        GameObject instance;
+    //[ClientRpc]
+    //public void SpawnGameObjectClientRpc(string entityJson, Point p)
+    //{
 
-        if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(networkId, out netObject))
-        {
-            Debug.LogError($"No gameobject for networkId {networkId} found!");
-            return;
-        }
-        else
-            instance = netObject.gameObject;
+    //}
 
-        instance.GetComponent<ActivatedNetworkObject>().Activate();
-        instance.GetComponent<ActivatedNetworkObject>().ActivateOnSpawn = true;
-    }
+    //[ClientRpc]
+    //void SpawnGameObjectClientRpc(ulong networkId)
+    //{
+    //    NetworkObject netObject;
+    //    GameObject instance;
+
+    //    if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(networkId, out netObject))
+    //    {
+    //        Debug.LogError($"No gameobject for networkId {networkId} found!");
+    //        return;
+    //    }
+    //    else
+    //        instance = netObject.gameObject;
+
+    //    //instance.GetComponent<ActivatedNetworkObject>().Activate();
+    //}
 
     [ServerRpc(RequireOwnership = false)]
     public void DestroyGameObjectServerRpc(ulong networkId)

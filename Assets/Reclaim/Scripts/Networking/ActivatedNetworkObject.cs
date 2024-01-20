@@ -33,10 +33,10 @@ public class ActivatedNetworkObject : NetworkBehaviour
             monoBehavior.SetComponent(item);
         }
 
-        entity.IsActive = true;
-        var entityBehavior = gameObject.GetComponent<EntityBehavior>();
-        if (entityBehavior == null)
-            entityBehavior = gameObject.AddComponent<EntityBehavior>();
-        entityBehavior.Activate(entity);
+        //entity.IsActive = true;
+        //var entityBehavior = gameObject.GetComponent<EntityBehavior>();
+        //if (entityBehavior == null)
+        //    entityBehavior = gameObject.AddComponent<EntityBehavior>();
+        //entityBehavior.Activate(entity);
     }
 }
