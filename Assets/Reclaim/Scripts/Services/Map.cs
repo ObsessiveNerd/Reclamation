@@ -61,7 +61,7 @@ public class Map : MonoBehaviour
         return tiles[x, y];
     }
 
-    public  Point GetTilePointInDirection(Point basePoint, MoveDirection direction)
+    public Point GetTilePointInDirection(Point basePoint, MoveDirection direction)
     {
         if (direction == MoveDirection.None)
             return basePoint;

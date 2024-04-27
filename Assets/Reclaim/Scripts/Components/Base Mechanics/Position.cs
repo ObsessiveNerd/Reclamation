@@ -24,7 +24,7 @@ public class PositionData : EntityComponent
     [HideInInspector]
     public Point Point;
     [HideInInspector]
-    public float TransitionTime = 20f;
+    public float TransitionTime = 0.1f;
     
     public Vector3 Scale = new Vector3(1f, 1f, 1f);
     public MovementBlockFlag BlockMovementOfFlag = MovementBlockFlag.None;
@@ -86,6 +86,8 @@ public class Position : ComponentBehavior<PositionData>
 
     void MoveEntity(GameEvent gameEvent)
     {
+      
+        return;
         bool canMove = gameEvent.GetValue<bool>(EventParameter.CanMove);
         var newPos = gameEvent.GetValue<Point>(EventParameter.TilePosition);
 
@@ -121,16 +123,23 @@ public class Position : ComponentBehavior<PositionData>
 
     void SetEntityPosition(Point point)
     {
-        Services.Map.GetTile(component.Point).RemoveObject(gameObject);
-        component.Point = point;
-        Services.Map.GetTile(component.Point).AddObject(gameObject);
+        if (component.Point != point)
+        {
+            Services.Map.GetTile(component.Point).RemoveObject(gameObject);
+            component.Point = point;
+            Services.Map.GetTile(component.Point).AddObject(gameObject);
 
-        transform.position = Services.Map.GetTile(point).transform.position;
-        component.DestinationPosition = transform.position;
+            var afterMoving = GameEventPool.Get(GameEventId.AfterMoving);
+            component.Entity.FireEvent(afterMoving).Release();
+
+            //transform.position = Services.Map.GetTile(point).transform.position;
+            //component.DestinationPosition = transform.position;
+        }
     }
 
     void Update()
     {
-        transform.position = Vector3.Lerp(transform.position, component.DestinationPosition, component.TransitionTime * Time.deltaTime);
+        //transform.position = Vector3.Lerp(transform.position, component.DestinationPosition, component.TransitionTime * Time.deltaTime);
+        SetEntityPosition(transform.position);
     }
 }

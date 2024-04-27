@@ -6,7 +6,7 @@ using UnityEngine;
 
 
 [RequireComponent(typeof(Energy))]
-[RequireComponent(typeof(Position))]
+//[RequireComponent(typeof(Position))]
 public class PlayerInputController : InputControllerBase
 {
     Energy m_Energy;
@@ -22,12 +22,17 @@ public class PlayerInputController : InputControllerBase
         if (!IsOwner)
             return;
 
+        float inputX = Input.GetAxis("Horizontal");
+        float inputY = Input.GetAxis("Vertical");
+
         MoveDirection desiredDirection = InputUtility.GetMoveDirection();
-        if (desiredDirection != MoveDirection.None && m_Energy.component.CanTakeATurn)
-        {
-            MoveServerRpc(desiredDirection);
-            m_Energy.component.TakeTurn();
-        }
+        MoveServerRpc(desiredDirection, inputX, inputY);
+
+        //if (desiredDirection != MoveDirection.None && m_Energy.component.CanTakeATurn)
+        //{
+        //    MoveServerRpc(desiredDirection, inputX, inputY);
+        //m_Energy.component.TakeTurn();
+        //}
 
         if (GameKeyInputBinder.PerformRequestedAction(RequestedAction.InteractWithCurrentTile))
         {

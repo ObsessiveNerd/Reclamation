@@ -13,22 +13,24 @@ public abstract class InputControllerBase : ComponentBehavior<EntityComponent>
     }
 
     [ServerRpc]
-    protected void MoveServerRpc(MoveDirection desiredDirection)
+    protected void MoveServerRpc(MoveDirection desiredDirection, float inputX, float inputY)
     {
         if (entity == null || !entity.IsActive)
             return;
 
-        MoveClientRpc(desiredDirection);
+        MoveClientRpc(desiredDirection, inputX, inputY);
     }
 
     [ClientRpc]
-    protected void MoveClientRpc(MoveDirection desiredDirection)
+    protected void MoveClientRpc(MoveDirection desiredDirection, float inputX, float inputY)
     {
         if (entity == null || !entity.IsActive)
             return;
 
         gameObject.FireEvent(GameEventPool.Get(GameEventId.MoveKeyPressed)
-                        .With(EventParameter.InputDirection, desiredDirection), true).Release();
+                        .With(EventParameter.InputDirection, desiredDirection)
+                        .With(EventParameter.InputX, inputX)
+                        .With(EventParameter.InputY, inputY)).Release();
     }
 
     [ServerRpc]

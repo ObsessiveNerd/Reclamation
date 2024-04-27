@@ -313,6 +313,8 @@ public enum GameEventId
 public enum EventParameter
 {
     InputDirection,
+    InputX,
+    InputY,
     Flag,
     Faction,
     TakeTurn,

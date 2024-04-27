@@ -59,6 +59,9 @@ public struct Point : INetworkSerializable
         return new Vector3(m_x, m_y, 0f);
     }
 
+    public static implicit operator Vector3(Point point) { return new Vector3(point.x, point.y, 0f); }
+    public static implicit operator Point(Vector3 vector) { return new Point((int)vector.x, (int)vector.y); }
+
     public static bool TryParse(string point, out Point result)
     {
         try
