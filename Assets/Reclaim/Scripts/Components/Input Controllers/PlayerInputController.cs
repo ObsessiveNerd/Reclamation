@@ -28,12 +28,6 @@ public class PlayerInputController : InputControllerBase
         MoveDirection desiredDirection = InputUtility.GetMoveDirection();
         MoveServerRpc(desiredDirection, inputX, inputY);
 
-        //if (desiredDirection != MoveDirection.None && m_Energy.component.CanTakeATurn)
-        //{
-        //    MoveServerRpc(desiredDirection, inputX, inputY);
-        //m_Energy.component.TakeTurn();
-        //}
-
         if (GameKeyInputBinder.PerformRequestedAction(RequestedAction.InteractWithCurrentTile))
         {
             Position pos = GetComponent<Position>();
@@ -57,7 +51,17 @@ public class PlayerInputController : InputControllerBase
 
         if (Input.GetMouseButtonDown(1))
         {
-            SecondaryActionServerRpc(GetComponent<Position>().component.Point);
+            var ray = GetComponentInChildren<Camera>().ScreenPointToRay(Input.mousePosition);
+            RaycastHit2D raycastHit2D = Physics2D.Raycast(ray.origin, ray.direction);
+            if(raycastHit2D.collider != null)
+            {
+                GameObject go = raycastHit2D.collider.gameObject;
+                if(go != null)
+                {
+                    Point selectedPoint = new Point((int)go.transform.position.x, (int)go.transform.position.y);
+                    SecondaryActionClientRpc(selectedPoint);
+                }
+            }
         }
     }
 }

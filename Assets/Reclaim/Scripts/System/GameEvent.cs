@@ -139,6 +139,7 @@ public enum GameEventId
     InteractWithTarget,
     HostileInteraction,
     PrimaryInteraction,
+    SecondaryInteraction,
 
     TakeTurn,
 
@@ -379,6 +380,7 @@ public enum EventParameter
     Path,
     Range,
     AIActionList,
+    ActionList,
     IsPartyLeader,
     StatType,
     SpellList,

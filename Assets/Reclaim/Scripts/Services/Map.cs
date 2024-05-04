@@ -9,6 +9,10 @@ public class Map : MonoBehaviour
     public int Width;
     public int Height;
     public GameObject Tile;
+    public Transform Grid;
+
+    //Temp
+    public GameObject Room;
 
     Tile[,] tiles;
 
@@ -42,6 +46,8 @@ public class Map : MonoBehaviour
         //        }
         //    }
         //}
+
+        Instantiate(Room, new Vector3(1, 1), Quaternion.identity, Grid);
     }
     
     public Tile GetTile(Vector3 position)

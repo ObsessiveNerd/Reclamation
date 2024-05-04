@@ -86,10 +86,16 @@ public abstract class InputControllerBase : ComponentBehavior<EntityComponent>
     [ClientRpc]
     protected void SecondaryActionClientRpc(Point point)
     {
-        var e = GetComponent<Inventory>().component.InventoryEntities[0];
-        var drop = GameEventPool.Get(GameEventId.Drop)
-                .With(EventParameter.Source, GetComponent<EntityBehavior>().Entity);
-        e.FireEvent(drop);
-        drop.Release();
+        Tile t = Services.Map.GetTile(point);
+        if (t == null)
+        {
+            Debug.LogError("NULL TILE BRUH");
+            return;
+        }
+
+        var secondaryAction = GameEventPool.Get(GameEventId.SecondaryInteraction)
+                        .With(EventParameter.Source, gameObject);
+        t.FireEvent(gameObject, secondaryAction);
+        secondaryAction.Release();
     }
 }
