@@ -56,25 +56,31 @@ public abstract class InputControllerBase : ComponentBehavior<EntityComponent>
     }
 
     [ServerRpc]
-    protected void PrimaryActionServerRpc(Point point)
+    protected void PrimaryActionServerRpc(Vector3 point)
     {
         PrimaryActionClientRpc(point);
     }
 
     [ClientRpc]
-    protected void PrimaryActionClientRpc(Point point)
+    protected void PrimaryActionClientRpc(Vector3 point)
     {
-        Tile t = Services.Map.GetTile(point);
-        if (t == null)
-        {
-            Debug.LogError("NULL TILE BRUH");
-            return;
-        }
+        var attack = GameEventPool.Get(GameEventId.PerformAttack)
+                        .With(EventParameter.Source, transform.position)
+                        .With(EventParameter.Position, point);
+        gameObject.FireEvent(attack);
+        attack.Release();
 
-        var primaryAction = GameEventPool.Get(GameEventId.PrimaryInteraction)
-                        .With(EventParameter.Source, gameObject);
-        t.FireEvent(gameObject, primaryAction);
-        primaryAction.Release();
+        //Tile t = Services.Map.GetTile(point);
+        //if (t == null)
+        //{
+        //    Debug.LogError("NULL TILE BRUH");
+        //    return;
+        //}
+
+        //var primaryAction = GameEventPool.Get(GameEventId.PrimaryInteraction)
+        //                .With(EventParameter.Source, gameObject);
+        //t.FireEvent(gameObject, primaryAction);
+        //primaryAction.Release();
     }
 
     [ServerRpc]

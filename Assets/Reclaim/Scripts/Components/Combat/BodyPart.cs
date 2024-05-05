@@ -26,7 +26,8 @@ public class BodyPart
 
     public void Activate()
     {
-        
+        if (Equipment != null)
+            Equipment.GetComponent<EntityBehavior>().Activate();
     }
 
     public void PassEventToEquipment(GameEvent gameEvent)

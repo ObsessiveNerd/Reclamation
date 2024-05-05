@@ -10,16 +10,23 @@ using UnityEngine;
 [Serializable]
 public class BodyData : EntityComponent
 {
-    public List<BodyPart> BodyParts = new List<BodyPart>();
+    public BodyPart MainHand;
+    public BodyPart Offhand;
+
+    //List<BodyPart> BodyParts = new List<BodyPart>();
 
     Type MonobehaviorType = typeof(Body);
     public override void WakeUp()
     {
-        RegisteredEvents.Add(GameEventId.HostileInteraction, HostileInteraction);
+        RegisteredEvents.Add(GameEventId.PerformAttack, HostileInteraction);
         RegisteredEvents.Add(GameEventId.DamageTaken, DamageTaken);
 
-        foreach(var part in BodyParts)
-            part.Activate();
+        //temp
+        MainHand.Activate();
+        Offhand.Activate();
+
+        //foreach(var part in BodyParts)
+        //    part.Activate();
     }
 
     void HostileInteraction(GameEvent gameEvent)
@@ -36,8 +43,11 @@ public class BodyData : EntityComponent
             .With(EventParameter.Target, target)
             .With(EventParameter.Source, Entity.GameObject);
 
-        foreach (var equipmentSlot in BodyParts)
-            equipmentSlot.PassEventToEquipment(attack);
+        MainHand.PassEventToEquipment(gameEvent);
+        //Offhand.PassEventToEquipment(attack);
+
+        //foreach (var equipmentSlot in BodyParts)
+        //    equipmentSlot.PassEventToEquipment(attack);
 
         var takeDamage = GameEventPool.Get(GameEventId.DamageTaken)
             .With(attack.Paramters)

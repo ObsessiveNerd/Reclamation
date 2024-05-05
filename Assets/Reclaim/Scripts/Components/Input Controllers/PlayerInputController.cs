@@ -36,17 +36,24 @@ public class PlayerInputController : InputControllerBase
 
         if (Input.GetMouseButtonDown(0))
         {
-            var ray = GetComponentInChildren<Camera>().ScreenPointToRay(Input.mousePosition);
-            RaycastHit2D raycastHit2D = Physics2D.Raycast(ray.origin, ray.direction);
-            if(raycastHit2D.collider != null)
-            {
-                GameObject go = raycastHit2D.collider.gameObject;
-                if(go != null)
-                {
-                    Point selectedPoint = new Point((int)go.transform.position.x, (int)go.transform.position.y);
-                    PrimaryActionServerRpc(selectedPoint);
-                }
-            }
+            var worldPosClick = FindFirstObjectByType<Camera>().ScreenToWorldPoint(Input.mousePosition);
+            Debug.Log($"{worldPosClick.x}, {worldPosClick.y}");
+            //var directionToAttack = (transform.position - worldPosClick).normalized;
+            //var postionOfAttack = transform.position + directionToAttack;
+
+            PrimaryActionServerRpc(worldPosClick);
+
+            //var ray = GetComponentInChildren<Camera>().ScreenPointToRay(Input.mousePosition);
+            //RaycastHit2D raycastHit2D = Physics2D.Raycast(ray.origin, ray.direction);
+            //if(raycastHit2D.collider != null)
+            //{
+            //    GameObject go = raycastHit2D.collider.gameObject;
+            //    if(go != null)
+            //    {
+            //        Point selectedPoint = new Point((int)go.transform.position.x, (int)go.transform.position.y);
+            //        PrimaryActionServerRpc(selectedPoint);
+            //    }
+            //}
         }
 
         if (Input.GetMouseButtonDown(1))
@@ -64,4 +71,14 @@ public class PlayerInputController : InputControllerBase
             }
         }
     }
+
+#if UNITY_EDITOR
+    private void OnDrawGizmos()
+    {
+        var worldPos = GetComponentInChildren<Camera>().ScreenToWorldPoint(Input.mousePosition);
+        Gizmos.DrawSphere(transform.position, 0.2f);
+        Gizmos.DrawSphere(worldPos, 0.2f);
+        Gizmos.DrawLine(transform.position, worldPos);
+    }
+#endif
 }

@@ -16,6 +16,12 @@ public class Spawner : NetworkBehaviour
         Services.Register(this);
     }
 
+    public void SpawnEffect(GameObject effect, Vector3 pos, Quaternion rot)
+    {
+        var instance = Instantiate(effect, pos, rot);
+        instance.AddComponent<DestroyAfter>().Begin(1f);
+    }
+
     public GameObject SpawnGameObject(GameObject go, Vector3 position)
     {
         var instance = Instantiate(go, position, Quaternion.identity);

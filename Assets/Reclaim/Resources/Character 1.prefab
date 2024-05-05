@@ -116,7 +116,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 1962600586
+  GlobalObjectIdHash: 3514101454
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
   ActiveSceneSynchronization: 0
@@ -318,9 +318,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Component:
-    BodyParts:
-    - Equipment: {fileID: 0}
-      BodyPartType: 3
+    MainHand:
+      Equipment: {fileID: 2249876947531943163, guid: 016e3bace150d894c864f296962d3ce2,
+        type: 3}
+      BodyPartType: 0
+    Offhand:
+      Equipment: {fileID: 0}
+      BodyPartType: 0
 --- !u!114 &340925460888084830
 MonoBehaviour:
   m_ObjectHideFlags: 0

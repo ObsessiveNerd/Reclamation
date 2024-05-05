@@ -333,6 +333,7 @@ public enum EventParameter
     Immunity,
     Renderer,
     Point,
+    Position,
     Entity,
     Character,
     Item,
