@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.Drawing;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -71,14 +70,4 @@ public class PlayerInputController : InputControllerBase
             }
         }
     }
-
-#if UNITY_EDITOR
-    private void OnDrawGizmos()
-    {
-        var worldPos = GetComponentInChildren<Camera>().ScreenToWorldPoint(Input.mousePosition);
-        Gizmos.DrawSphere(transform.position, 0.2f);
-        Gizmos.DrawSphere(worldPos, 0.2f);
-        Gizmos.DrawLine(transform.position, worldPos);
-    }
-#endif
 }
