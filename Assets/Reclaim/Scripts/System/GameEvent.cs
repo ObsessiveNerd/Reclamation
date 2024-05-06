@@ -89,6 +89,7 @@ public enum GameEventId
     StartWorld,
     UpdateWorldView,
     Spawn,
+    SpawnEffect,
     Despawn,
     SelectTile,
     SelectNewTileInDirection,
@@ -197,6 +198,7 @@ public enum GameEventId
     GetEnergy,
 
     //Combat
+    PrimaryAttack,
     PerformAttack,
     PerformMeleeAttack,
     PerformRangedAttack,
@@ -334,6 +336,7 @@ public enum EventParameter
     Renderer,
     Point,
     Position,
+    Angle,
     Entity,
     Character,
     Item,

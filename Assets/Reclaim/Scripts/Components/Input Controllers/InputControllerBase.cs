@@ -62,28 +62,9 @@ public abstract class InputControllerBase : ComponentBehavior<EntityComponent>
     }
 
     [ClientRpc]
-    protected void PrimaryActionClientRpc(Vector3 point)
+    protected virtual void PrimaryActionClientRpc(Vector3 point)
     {
-        var attack = GameEventPool.Get(GameEventId.PerformAttack)
-                        .With(EventParameter.Source, transform.position)
-                        .With(EventParameter.Position, point);
-        gameObject.FireEvent(attack);
-
-        GetComponentInChildren<MeleeHitBox>().Attack(attack);
         
-        attack.Release();
-
-        //Tile t = Services.Map.GetTile(point);
-        //if (t == null)
-        //{
-        //    Debug.LogError("NULL TILE BRUH");
-        //    return;
-        //}
-
-        //var primaryAction = GameEventPool.Get(GameEventId.PrimaryInteraction)
-        //                .With(EventParameter.Source, gameObject);
-        //t.FireEvent(gameObject, primaryAction);
-        //primaryAction.Release();
     }
 
     [ServerRpc]
@@ -95,16 +76,6 @@ public abstract class InputControllerBase : ComponentBehavior<EntityComponent>
     [ClientRpc]
     protected void SecondaryActionClientRpc(Point point)
     {
-        Tile t = Services.Map.GetTile(point);
-        if (t == null)
-        {
-            Debug.LogError("NULL TILE BRUH");
-            return;
-        }
-
-        var secondaryAction = GameEventPool.Get(GameEventId.SecondaryInteraction)
-                        .With(EventParameter.Source, gameObject);
-        t.FireEvent(gameObject, secondaryAction);
-        secondaryAction.Release();
+        
     }
 }

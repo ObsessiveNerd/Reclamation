@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
@@ -68,5 +69,45 @@ public class PlayerInputController : InputControllerBase
                 }
             }
         }
+    }
+
+    [ClientRpc]
+    protected override void PrimaryActionClientRpc(Vector3 point)
+    {
+        //if(Not holding "force attack" button)
+        //{
+        var ray = GetComponentInChildren<Camera>().ScreenPointToRay(Input.mousePosition);
+        RaycastHit2D raycastHit2D = Physics2D.Raycast(ray.origin, ray.direction);
+        if (raycastHit2D.collider != null)
+        {
+            //Just checking if an object with alternate primary actions is clicked
+            var alternatePrimary = GameEventPool.Get(GameEventId.PrimaryInteraction)
+                                    .With(EventParameter.ActionList, new List<Action>());
+            raycastHit2D.collider.gameObject.FireEvent(alternatePrimary);
+
+            var actionList = alternatePrimary.GetValue<List<Action>>(EventParameter.ActionList);
+            if(actionList.Count > 0)
+            {
+                foreach(var action in actionList)
+                {
+                    action.Invoke();
+                    //gameObject.FireEvent(action);
+                    //action.Release();
+                }
+
+                return;
+            }
+        }
+        //}
+
+        //if there's no object we actively clicked on,
+        //or the object doesn't have alternate primary, we attack it
+        var attack = GameEventPool.Get(GameEventId.PrimaryAttack)
+                        .With(EventParameter.DamageList, new List<DamageData>());
+        gameObject.FireEvent(attack);
+
+        GetComponentInChildren<MeleeHitBox>().Attack(attack);
+        
+        attack.Release();
     }
 }

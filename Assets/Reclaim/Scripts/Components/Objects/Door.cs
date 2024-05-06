@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -15,7 +16,7 @@ public class DoorData : EntityComponent
 
     void PrimaryInteraction(GameEvent gameEvent)
     {
-        Open = !Open;
+        gameEvent.GetValue<List<Action>>(EventParameter.ActionList).Add(() => Open = !Open);
     }
 
     void SecondaryInteraction(GameEvent gameEvent)

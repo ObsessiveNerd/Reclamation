@@ -5,6 +5,7 @@ using UnityEngine;
 public class MeleeHitBox : MonoBehaviour
 {
     public Transform Parent;
+    public GameObject Weapon;
 
     Camera m_Camera;
     BoxCollider2D m_Collider;
@@ -40,10 +41,27 @@ public class MeleeHitBox : MonoBehaviour
 
     public void Attack(GameEvent gameEvent)
     {
-        foreach (var obj in m_ObjectsInRange)
+        //currently this damage is pulling from an event sent on the parent, which is routed through the body
+        //we can rely solely on this for knowledage about what is equipped (change needed)
+        var damageList = gameEvent.GetValue<List<DamageData>>(EventParameter.DamageList);
+
+        foreach (var damage in damageList)
         {
-            Debug.Log(obj.name);
+            int rolledDamage = damage.DamageAmount.Roll();
+            GameEvent damageEvent = GameEventPool.Get(GameEventId.ApplyDamage)
+                                    .With(EventParameter.DamageAmount, rolledDamage)
+                                    .With(EventParameter.DamageType, damage.Type);
+
+            foreach (var obj in m_ObjectsInRange)
+                obj.FireEvent(damageEvent);
+
+            damageEvent.Release();
         }
+
+        GameEvent spawnEffect = GameEventPool.Get(GameEventId.SpawnEffect)
+                                .With(EventParameter.Position, transform.position)
+                                .With(EventParameter.Angle, transform.rotation.eulerAngles.z);
+        Weapon.FireEvent(spawnEffect);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

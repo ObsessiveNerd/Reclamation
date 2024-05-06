@@ -18,7 +18,7 @@ public class BodyData : EntityComponent
     Type MonobehaviorType = typeof(Body);
     public override void WakeUp()
     {
-        RegisteredEvents.Add(GameEventId.PerformAttack, HostileInteraction);
+        RegisteredEvents.Add(GameEventId.PrimaryAttack, HostileInteraction);
         RegisteredEvents.Add(GameEventId.DamageTaken, DamageTaken);
 
         //temp
@@ -36,28 +36,8 @@ public class BodyData : EntityComponent
 
     void Attack(GameEvent gameEvent)
     {
-        var target = gameEvent.GetValue<GameObject>(EventParameter.Target);
-
-        var attack = GameEventPool.Get(GameEventId.PerformAttack)
-            .With(EventParameter.DamageList, new List<Damage>())
-            .With(EventParameter.Target, target)
-            .With(EventParameter.Source, Entity.GameObject);
-
         MainHand.PassEventToEquipment(gameEvent);
         //Offhand.PassEventToEquipment(attack);
-
-        //foreach (var equipmentSlot in BodyParts)
-        //    equipmentSlot.PassEventToEquipment(attack);
-
-        var takeDamage = GameEventPool.Get(GameEventId.DamageTaken)
-            .With(attack.Paramters)
-            .With(EventParameter.Source, Entity.GameObject);
-
-        target.FireEvent(takeDamage);
-
-        attack.Release();
-        
-        //takeDamage.Release();
     }
 
     void DamageTaken(GameEvent gameEvent)
