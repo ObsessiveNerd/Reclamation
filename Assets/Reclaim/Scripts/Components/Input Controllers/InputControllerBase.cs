@@ -68,6 +68,9 @@ public abstract class InputControllerBase : ComponentBehavior<EntityComponent>
                         .With(EventParameter.Source, transform.position)
                         .With(EventParameter.Position, point);
         gameObject.FireEvent(attack);
+
+        GetComponentInChildren<MeleeHitBox>().Attack(attack);
+        
         attack.Release();
 
         //Tile t = Services.Map.GetTile(point);

@@ -36,7 +36,6 @@ public class PlayerInputController : InputControllerBase
         if (Input.GetMouseButtonDown(0))
         {
             var worldPosClick = FindFirstObjectByType<Camera>().ScreenToWorldPoint(Input.mousePosition);
-            Debug.Log($"{worldPosClick.x}, {worldPosClick.y}");
             //var directionToAttack = (transform.position - worldPosClick).normalized;
             //var postionOfAttack = transform.position + directionToAttack;
 
