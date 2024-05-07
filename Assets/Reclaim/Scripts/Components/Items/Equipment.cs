@@ -7,7 +7,7 @@ using UnityEngine;
 public class EquipmentData : EntityComponent
 { 
     [SerializeField]
-    public BodyPartType EquipsTo;
+    public EquipmentSlotType EquipsTo;
     [SerializeField]
     public Type MonobehaviorType = typeof(Equipment);
 }

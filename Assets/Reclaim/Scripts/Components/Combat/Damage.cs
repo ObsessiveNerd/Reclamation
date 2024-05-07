@@ -16,7 +16,7 @@ public class DamageData : EntityComponent
 
     public override void WakeUp()
     {
-        RegisteredEvents.Add(GameEventId.PrimaryAttack, AddDamage);
+        RegisteredEvents.Add(GameEventId.PerformAttack, AddDamage);
     }
 
     void AddDamage(GameEvent gameEvent)

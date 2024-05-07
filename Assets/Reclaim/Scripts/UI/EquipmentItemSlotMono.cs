@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 
 public class EquipmentItemSlotMono : MonoBehaviour, IDropHandler
 {
-    public BodyPartType Part;
+    public EquipmentSlotType Part;
     public GameObject BaseImage;
 
     InventoryManagerMono inventoryManager;

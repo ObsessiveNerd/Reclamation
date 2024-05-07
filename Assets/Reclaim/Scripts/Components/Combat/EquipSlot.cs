@@ -4,23 +4,26 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
-public enum BodyPartType
+public enum EquipmentSlotType
 {
-    None,
-    Head,
-    Torso,
-    Arm,
-    Leg,
-    Finger,
-    Back,
-    Neck
+    Helmet,
+    Chest,
+    Pants,
+    Gloves,
+    Boots,
+    Ring1,
+    Ring2,
+    Necklace,
+    Cape,
+    MainHand,
+    OffHand
 }
 
 [Serializable]
-public class BodyPart
+public class EquipSlot
 {
     public GameObject Equipment;
-    public BodyPartType BodyPartType;
+    //public EquipmentSlotType EquipmentSlot;
     
     public bool CanEquip {get{ return Equipment == null; }}
 
@@ -30,7 +33,7 @@ public class BodyPart
             Equipment.GetComponent<EntityBehavior>().Activate();
     }
 
-    public void PassEventToEquipment(GameEvent gameEvent)
+    public void FireEvent(GameEvent gameEvent)
     {
         if (Equipment != null)
             Equipment.FireEvent(gameEvent);

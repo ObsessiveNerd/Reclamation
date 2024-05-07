@@ -49,7 +49,8 @@ public class AIController : InputControllerBase
 
         if(desiredDirection != MoveDirection.None && m_Energy.component.CanTakeATurn)
         {
-            MoveServerRpc(desiredDirection, 0f, 0f);
+            Vector2 direction = Services.Map.GetVector(desiredDirection);
+            MoveServerRpc(desiredDirection, direction.x, direction.y);
             m_Energy.component.TakeTurn();
         }
     }

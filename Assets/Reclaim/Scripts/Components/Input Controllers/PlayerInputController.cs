@@ -36,11 +36,13 @@ public class PlayerInputController : InputControllerBase
 
         if (Input.GetMouseButtonDown(0))
         {
-            var worldPosClick = FindFirstObjectByType<Camera>().ScreenToWorldPoint(Input.mousePosition);
+            var clickRay = FindFirstObjectByType<Camera>().ScreenPointToRay(Input.mousePosition);
+                //ScreenToWorldPoint(Input.mousePosition);
+            
             //var directionToAttack = (transform.position - worldPosClick).normalized;
             //var postionOfAttack = transform.position + directionToAttack;
 
-            PrimaryActionServerRpc(worldPosClick);
+            PrimaryActionServerRpc(clickRay.origin, clickRay.direction);
 
             //var ray = GetComponentInChildren<Camera>().ScreenPointToRay(Input.mousePosition);
             //RaycastHit2D raycastHit2D = Physics2D.Raycast(ray.origin, ray.direction);
@@ -72,12 +74,11 @@ public class PlayerInputController : InputControllerBase
     }
 
     [ClientRpc]
-    protected override void PrimaryActionClientRpc(Vector3 point)
+    protected override void PrimaryActionClientRpc(Vector3 origin, Vector3 direction)
     {
         //if(Not holding "force attack" button)
         //{
-        var ray = GetComponentInChildren<Camera>().ScreenPointToRay(Input.mousePosition);
-        RaycastHit2D raycastHit2D = Physics2D.Raycast(ray.origin, ray.direction);
+        RaycastHit2D raycastHit2D = Physics2D.Raycast(origin, direction);
         if (raycastHit2D.collider != null)
         {
             //Just checking if an object with alternate primary actions is clicked
@@ -102,12 +103,7 @@ public class PlayerInputController : InputControllerBase
 
         //if there's no object we actively clicked on,
         //or the object doesn't have alternate primary, we attack it
-        var attack = GameEventPool.Get(GameEventId.PrimaryAttack)
-                        .With(EventParameter.DamageList, new List<DamageData>());
-        gameObject.FireEvent(attack);
-
-        GetComponentInChildren<MeleeHitBox>().Attack(attack);
+        GetComponentInChildren<EquipmentBehavior>().Attack();
         
-        attack.Release();
     }
 }

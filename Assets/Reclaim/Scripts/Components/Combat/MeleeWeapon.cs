@@ -13,7 +13,7 @@ public class MeleeWeaponData : EntityComponent
     public Type MonobehaviorType = typeof(MeleeWeapon);
     public override void WakeUp()
     {
-        RegisteredEvents.Add(GameEventId.SpawnEffect, SpawnEffect);
+        RegisteredEvents.Add(GameEventId.PerformAttack, SpawnEffect);
     }
 
     void SpawnEffect(GameEvent gameEvent)

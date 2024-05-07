@@ -56,13 +56,13 @@ public abstract class InputControllerBase : ComponentBehavior<EntityComponent>
     }
 
     [ServerRpc]
-    protected void PrimaryActionServerRpc(Vector3 point)
+    protected void PrimaryActionServerRpc(Vector3 origin, Vector3 direction)
     {
-        PrimaryActionClientRpc(point);
+        PrimaryActionClientRpc(origin, direction);
     }
 
     [ClientRpc]
-    protected virtual void PrimaryActionClientRpc(Vector3 point)
+    protected virtual void PrimaryActionClientRpc(Vector3 origin, Vector3 direction)
     {
         
     }

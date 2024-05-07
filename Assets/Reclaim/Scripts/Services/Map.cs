@@ -13,6 +13,7 @@ public class Map : MonoBehaviour
 
     //Temp
     public GameObject Room;
+    public GameObject Goblin;
 
     Tile[,] tiles;
 
@@ -48,6 +49,7 @@ public class Map : MonoBehaviour
         //}
 
         Instantiate(Room, new Vector3(1, 1), Quaternion.identity, Grid);
+        Instantiate(Goblin, new Vector3(2, 2), Quaternion.identity);
     }
     
     public Tile GetTile(Vector3 position)
@@ -65,6 +67,24 @@ public class Map : MonoBehaviour
             return null;
 
         return tiles[x, y];
+    }
+
+    public Vector2 GetVector(MoveDirection direction)
+    {
+        int x = 0;
+        int y = 0;
+
+        string name = Enum.GetName(typeof(MoveDirection), direction);
+        if (name.Contains("N"))
+            y++;
+        if (name.Contains("S"))
+            y--;
+        if (name.Contains("E"))
+            x++;
+        if (name.Contains("W"))
+            x--;
+
+        return new Vector2(x, y);
     }
 
     public Point GetTilePointInDirection(Point basePoint, MoveDirection direction)

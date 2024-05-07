@@ -120,12 +120,16 @@ public class Health : ComponentBehavior<HealthData>
         var spriteRenderer = GetComponent<SpriteRenderer>();
         for (int i = 0; i < 5; i++)
         {
-            spriteRenderer.color = Color.red;
+            if(spriteRenderer != null)
+                spriteRenderer.color = Color.red;
             yield return new WaitForSeconds(0.1f);
-            spriteRenderer.color = Color.white;
+            if(spriteRenderer != null)
+                spriteRenderer.color = Color.white;
             yield return new WaitForSeconds(0.1f);
         }
-        spriteRenderer.color = Color.white;
+        if (spriteRenderer != null)
+            spriteRenderer.color = Color.white;
+
         m_IsFlickering = false;
     }
 }

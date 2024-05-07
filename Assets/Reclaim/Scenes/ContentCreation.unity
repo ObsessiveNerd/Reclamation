@@ -591,6 +591,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4075859822118966018, guid: 60394bd36f5537043818b78e6f389111,
         type: 3}
+      propertyPath: Goblin
+      value: 
+      objectReference: {fileID: 2304895449595438703, guid: b7eec314a8c72de4ab621213ae34abb3,
+        type: 3}
+    - target: {fileID: 4075859822118966018, guid: 60394bd36f5537043818b78e6f389111,
+        type: 3}
       propertyPath: Height
       value: 40
       objectReference: {fileID: 0}
