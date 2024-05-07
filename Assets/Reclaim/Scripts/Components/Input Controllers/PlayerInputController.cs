@@ -10,11 +10,14 @@ using UnityEngine;
 public class PlayerInputController : InputControllerBase
 {
     Energy m_Energy;
-
+    Camera m_Camera;
+    EquipmentBehavior m_Equipment;
     protected override void Start()
     {
         base.Start();
         m_Energy = GetComponent<Energy>();
+        m_Equipment = GetComponentInChildren<EquipmentBehavior>();
+        m_Camera = FindFirstObjectByType<Camera>();
     }
 
     void Update()
@@ -27,6 +30,8 @@ public class PlayerInputController : InputControllerBase
 
         MoveDirection desiredDirection = InputUtility.GetMoveDirection();
         MoveServerRpc(desiredDirection, inputX, inputY);
+
+        m_Equipment.UpdatePositionServerRpc(m_Camera.ScreenToWorldPoint(Input.mousePosition), transform.position);
 
         if (GameKeyInputBinder.PerformRequestedAction(RequestedAction.InteractWithCurrentTile))
         {

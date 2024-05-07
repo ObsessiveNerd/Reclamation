@@ -8,10 +8,7 @@ public class EquipmentBehavior : NetworkBehaviour
     public GameObject MainHand;
     public GameObject OffHand;
 
-    Camera m_Camera;
-
     List<GameObject> m_ObjectsInRange = new List<GameObject>();
-    NetworkObject m_ParentNetworkObject;
 
     void Awake()
     {
@@ -21,25 +18,8 @@ public class EquipmentBehavior : NetworkBehaviour
             OffHand.GetComponent<EntityBehavior>().Activate();
     }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        m_Camera = FindFirstObjectByType<Camera>();
-        m_ParentNetworkObject = GetComponentInParent<NetworkObject>();
-    }
-
-    private void Update()
-    {
-        if (!IsOwner)
-            return;
-
-        //Might re-do this so the position doesn't have to be synced over the network
-        //we could just transmit the actual damage data from the owner
-        UpdatePositionServerRpc(m_Camera.ScreenToWorldPoint(Input.mousePosition), transform.parent.position);
-    }
-
     [ServerRpc]
-    void UpdatePositionServerRpc(Vector3 target, Vector3 source)
+    public void UpdatePositionServerRpc(Vector3 target, Vector3 source)
     {
         UpdatePositionClientRpc(target, source);
     }
@@ -47,7 +27,7 @@ public class EquipmentBehavior : NetworkBehaviour
     [ClientRpc]
     void UpdatePositionClientRpc(Vector3 target, Vector3 source)
     {
-        var directionToAttack = (target - source).normalized;
+        var directionToAttack = (target - source).normalized * 0.7f;
         var postionOfAttack = (source + directionToAttack);
         postionOfAttack.z = 0f;
 
@@ -87,7 +67,7 @@ public class EquipmentBehavior : NetworkBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         GameObject collisionObject = collision.gameObject;
-        if (collisionObject.tag != "Player")
+        if (collisionObject.tag != transform.parent.gameObject.tag)
             m_ObjectsInRange.Add(collisionObject);
     }
 

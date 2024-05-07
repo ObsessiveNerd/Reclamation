@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using UnityEngine;
 
@@ -16,10 +17,42 @@ public class AgressionData : EntityComponent
 
     public override void WakeUp()
     {
-        RegisteredEvents.Add(GameEventId.GetActionToTake, GetActionToTake);
+        //RegisteredEvents.Add(GameEventId.GetActionToTake, GetActionToTake);
     }
 
-    void GetActionToTake(GameEvent gameEvent)
+    //void GetActionToTake(GameEvent gameEvent)
+    //{
+    //    CurrentLocation = Entity.GetComponent<PositionData>().Point;
+    //    GameEvent getVisiblePoints = GameEventPool.Get(GameEventId.GetVisibleTiles)
+    //                                        .With(EventParameter.VisibleTiles, new List<Point>());
+    //    List<Point> visiblePoints = Entity.FireEvent(getVisiblePoints).GetValue<List<Point>>(EventParameter.VisibleTiles);
+    //    getVisiblePoints.Release();
+
+    //    foreach (var point in visiblePoints)
+    //    {
+    //        if (point == CurrentLocation)
+    //            continue;
+
+    //        HashSet<GameObject> targets = Services.Map.GetTile(point).Objects;
+
+    //        foreach (var target in targets)
+    //        {
+    //            if (Factions.GetDemeanorForTarget(Entity.GameObject, target) != Demeanor.Hostile)
+    //                continue;
+
+    //            TargetLocation = point;
+    //            AIAction attackAction = new AIAction()
+    //            {
+    //                Priority = 2,
+    //                ActionToTake = MakeAttack
+    //            };
+    //            gameEvent.GetValue<PriorityQueue<AIAction>>(EventParameter.AIActionList).Add(attackAction);
+    //            break;
+    //        }
+    //    }
+    //}
+
+    public GameObject GetTarget()
     {
         CurrentLocation = Entity.GetComponent<PositionData>().Point;
         GameEvent getVisiblePoints = GameEventPool.Get(GameEventId.GetVisibleTiles)
@@ -39,30 +72,28 @@ public class AgressionData : EntityComponent
                 if (Factions.GetDemeanorForTarget(Entity.GameObject, target) != Demeanor.Hostile)
                     continue;
 
-                TargetLocation = point;
-                AIAction attackAction = new AIAction()
-                {
-                    Priority = 2,
-                    ActionToTake = MakeAttack
-                };
-                gameEvent.GetValue<PriorityQueue<AIAction>>(EventParameter.AIActionList).Add(attackAction);
-                break;
+                return target;
             }
         }
+        return null;
     }
 
-    MoveDirection MakeAttack()
-    {
-        var path = Services.Pathfinder.GetPath(CurrentLocation, TargetLocation);
-        if (path.Count == 0)
-            return MoveDirection.None;
+    //MoveDirection MakeAttack()
+    //{
+    //    var path = Services.Pathfinder.GetPath(CurrentLocation, TargetLocation);
+    //    if (path.Count == 0)
+    //        return MoveDirection.None;
 
-        return Services.Pathfinder.GetDirectionTo(CurrentLocation, path[0]);
-    }
+    //    return Services.Pathfinder.GetDirectionTo(CurrentLocation, path[0]);
+    //}
 }
 
 
 public class Aggression : ComponentBehavior<AgressionData>
 {
-    
+    public GameObject GetTarget()
+    {
+        return component.GetTarget();
+    }
+
 }
