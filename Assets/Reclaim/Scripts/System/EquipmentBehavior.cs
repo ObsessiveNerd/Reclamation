@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using Mono.Cecil;
 using Unity.Netcode;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 public class EquipmentBehavior : NetworkBehaviour
 {
@@ -9,23 +11,22 @@ public class EquipmentBehavior : NetworkBehaviour
     public GameObject OffHand;
 
     List<GameObject> m_ObjectsInRange = new List<GameObject>();
-
-    void Awake()
+    Camera m_Camera;
+    void Start()
     {
+        m_Camera = FindFirstObjectByType<Camera>();
     }
 
-    [ServerRpc]
-    public void UpdatePositionServerRpc(Vector3 target, Vector3 source)
+    private void Update()
     {
-        UpdatePositionClientRpc(target, source);
-    }
+        if (!IsOwner)
+            return;
 
-    [ClientRpc]
-    void UpdatePositionClientRpc(Vector3 target, Vector3 source)
-    {
-        var directionToAttack = (target - source).normalized * 0.7f;
+        Vector2 target = m_Camera.ScreenToWorldPoint(Input.mousePosition);
+        Vector2 source = transform.parent.position;
+
+        var directionToAttack = (target - source).normalized * 0.5f;
         var postionOfAttack = (source + directionToAttack);
-        postionOfAttack.z = 0f;
 
         var angle = Vector2.SignedAngle(Vector2.up, directionToAttack);
 
@@ -33,9 +34,26 @@ public class EquipmentBehavior : NetworkBehaviour
         transform.position = postionOfAttack;
     }
 
+    [ServerRpc]
+    public void UpdatePositionServerRpc(Vector3 position)
+    {
+        UpdatePositionClientRpc(position);
+    }
+
+    [ClientRpc]
+    void UpdatePositionClientRpc(Vector3 position)
+    {
+        transform.position = position;
+    }
+
     public void Attack()
     {
-        
+        if (MainHand != null)
+        {
+            var weapon = MainHand.GetComponent<Weapon>();
+            if(weapon != null )
+                weapon.Attack(gameObject, m_ObjectsInRange);
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
