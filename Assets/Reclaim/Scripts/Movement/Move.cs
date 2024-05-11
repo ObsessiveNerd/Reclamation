@@ -14,6 +14,6 @@ public class Move : MonoBehaviour, IMovement
     void IMovement.Move(float x, float y)
     {
         if(m_RigidBody2d != null)
-           m_RigidBody2d.velocity = new Vector2 (x, y);
+           m_RigidBody2d.velocity = new Vector2 (x, y) * Speed;
     }
 }

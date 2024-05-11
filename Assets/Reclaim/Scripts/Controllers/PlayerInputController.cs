@@ -13,7 +13,7 @@ public class PlayerInputController : InputControllerBase
     void Start()
     {
         m_Equipment = GetComponentInChildren<EquipmentBehavior>();
-        m_Move = GetComponent<Move>();
+        m_Move = GetComponent<IMovement>();
         m_Camera = FindFirstObjectByType<Camera>();
     }
 

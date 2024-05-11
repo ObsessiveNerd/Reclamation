@@ -29,7 +29,9 @@ public class Weapon : MonoBehaviour
 
     void ApplyDamageTo(GameObject target)
     {
-        target.GetComponent<Health>().TakeDamage(0, DamageType.None);
+        var health = target?.GetComponent<Health>() ;
+        if (health != null)
+            health.TakeDamage(0, DamageType.None);
     }
 
     void SpawnEffect(GameObject source)
