@@ -14,7 +14,6 @@ GameObject:
   - component: {fileID: -3146676728748329727}
   - component: {fileID: 2126710852692725926}
   - component: {fileID: 4872549777845325298}
-  - component: {fileID: -611971266181680567}
   - component: {fileID: -5050989622989189952}
   - component: {fileID: -2662036439430639}
   - component: {fileID: 1614740528953592009}
@@ -24,6 +23,7 @@ GameObject:
   - component: {fileID: -187292905386988124}
   - component: {fileID: 3107864272892319243}
   - component: {fileID: 450180152244234481}
+  - component: {fileID: -2954375717804996980}
   m_Layer: 0
   m_Name: Goblin
   m_TagString: Untagged
@@ -114,7 +114,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 2512797290
+  GlobalObjectIdHash: 2209436041
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
   ActiveSceneSynchronization: 0
@@ -4533,26 +4533,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5187265f5b985f4d940c687e00a6557, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &-611971266181680567
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2304895449595438703}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe62473dd13498845b2899513e7cbfa5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Component:
-    DestinationPosition: {x: 0, y: 0, z: 0}
-    Point:
-      m_x: 0
-      m_y: 0
-    TransitionTime: 20
-    Scale: {x: 1, y: 1, z: 1}
-    BlockMovementOfFlag: 3
 --- !u!114 &-5050989622989189952
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4642,13 +4622,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9904c384fbd75f74394ff2ae394a2038, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Component:
-    CurrentLocation:
-      m_x: 0
-      m_y: 0
-    TargetLocation:
-      m_x: 0
-      m_y: 0
+  CurrentLocation: {x: 0, y: 0}
+  TargetLocation: {x: 0, y: 0}
 --- !u!114 &3554405158137896349
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4702,7 +4677,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6953935c04af86440af4dafa1902bf01, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Speed: 2
+  m_Component:
+    Speed: 1
+    Rigidbody2D: {fileID: -187292905386988124}
 --- !u!70 &450180152244234481
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -4740,6 +4717,18 @@ CapsuleCollider2D:
   m_Offset: {x: -0.022906601, y: -0.11318493}
   m_Size: {x: 0.54456544, y: 0.77363014}
   m_Direction: 0
+--- !u!114 &-2954375717804996980
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2304895449595438703}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44c0d532933da0943a22425d4bf0d258, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &3983806839994079755
 GameObject:
   m_ObjectHideFlags: 0

@@ -12,10 +12,6 @@ public class EquipmentBehavior : NetworkBehaviour
 
     void Awake()
     {
-        if (MainHand != null)
-            MainHand.GetComponent<EntityBehavior>().Activate();
-        if (OffHand != null)
-            OffHand.GetComponent<EntityBehavior>().Activate();
     }
 
     [ServerRpc]
@@ -39,29 +35,7 @@ public class EquipmentBehavior : NetworkBehaviour
 
     public void Attack()
     {
-        var attack = GameEventPool.Get(GameEventId.PerformAttack)
-                        .With(EventParameter.Position, transform.position)
-                        .With(EventParameter.Angle, transform.rotation.eulerAngles.z)
-                        .With(EventParameter.DamageList, new List<DamageData>());
-        MainHand.FireEvent(attack);
-
-        var damageList = attack.GetValue<List<DamageData>>(EventParameter.DamageList);
-
-        foreach (var damage in damageList)
-        {
-            int rolledDamage = damage.DamageAmount.Roll();
-            GameEvent damageEvent = GameEventPool.Get(GameEventId.ApplyDamage)
-                                    .With(EventParameter.DamageAmount, rolledDamage)
-                                    .With(EventParameter.DamageType, damage.Type);
-
-            var objsInRangeCpy = new List<GameObject>(m_ObjectsInRange);
-            foreach (var obj in objsInRangeCpy)
-                obj.FireEvent(damageEvent);
-
-            damageEvent.Release();
-        }
-
-        attack.Release();
+        
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

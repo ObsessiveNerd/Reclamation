@@ -61,7 +61,7 @@ public class DragAndDrop : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndD
         {
             IsDragging = true;
             m_LastPosition = transform.position;
-            transform.SetParent(FindObjectOfType<Canvas>().transform);
+            transform.SetParent(FindFirstObjectByType<Canvas>().transform);
             transform.SetAsLastSibling();
             canvasGroup.blocksRaycasts = false;
         }

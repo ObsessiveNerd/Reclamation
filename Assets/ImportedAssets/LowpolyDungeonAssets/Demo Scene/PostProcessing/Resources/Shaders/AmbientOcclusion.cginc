@@ -204,7 +204,7 @@ float3 ReconstructViewPos(float2 uv, float depth, float2 p11_22, float2 p13_31)
 }
 
 // Sample point picker
-float3 PickSamplePoint(float2 uv, float index)
+float3 PickSampleVector2(float2 uv, float index)
 {
     // Uniformaly distributed points on a unit sphere http://goo.gl/X2F1Ho
 #if defined(FIX_SAMPLING_PATTERN)
@@ -278,9 +278,9 @@ half4 FragAO(VaryingsMultitex i) : SV_Target
 #if defined(SHADER_API_D3D11)
         // This 'floor(1.0001 * s)' operation is needed to avoid a NVidia
         // shader issue. This issue is only observed on DX11.
-        float3 v_s1 = PickSamplePoint(uv, floor(1.0001 * s));
+        float3 v_s1 = PickSampleVector2(uv, floor(1.0001 * s));
 #else
-        float3 v_s1 = PickSamplePoint(uv, s);
+        float3 v_s1 = PickSampleVector2(uv, s);
 #endif
         v_s1 = faceforward(v_s1, -norm_o, v_s1);
         float3 vpos_s1 = vpos_o + v_s1;
