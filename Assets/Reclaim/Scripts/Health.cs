@@ -1,21 +1,37 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 public class Health : MonoBehaviour
 {
+    public int MaxHealth;
+    public int CurrentHealth;
+
     SpriteRenderer m_SpriteRenderer;
+    EquipmentHandler m_EquipmentHandler;
     bool m_IsFlickering = false;
 
     // Start is called before the first frame update
     void Start()
     {
         m_SpriteRenderer = GetComponent<SpriteRenderer>();
+        m_EquipmentHandler = GetComponent<EquipmentHandler>();
     }
 
     public void TakeDamage(int damage, DamageType type)
     {
-        StartCoroutine(Flicker());
+        float percent = m_EquipmentHandler.GetResistances(type);
+        int adjustedDamage = (int)Mathf.Max(1, (percent / 100) * damage);
+
+        CurrentHealth -= adjustedDamage;
+        if(CurrentHealth <= 0 ) 
+        {
+            //die
+            GetComponent<NetworkObject>().Despawn();
+        }
+        else
+            StartCoroutine(Flicker());
     }
 
     IEnumerator Flicker()

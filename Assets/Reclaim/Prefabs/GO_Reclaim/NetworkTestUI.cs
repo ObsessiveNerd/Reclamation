@@ -5,6 +5,11 @@ namespace UI.Networking
 {
     public class NetworkTestUI : MonoBehaviour
     {
+        private void Start()
+        {
+            //NetworkManager.Singleton.StartHost();
+        }
+
         void OnGUI()
         {
             GUILayout.BeginArea(new Rect(10, 10, 300, 300));
@@ -24,11 +29,13 @@ namespace UI.Networking
         {
             if (GUILayout.Button("Host"))
             {
+                Destroy(FindFirstObjectByType<Camera>().gameObject);
                 NetworkManager.Singleton.StartHost();
                 //Instantiate(Resources.Load<GameObject>("Map")).GetComponent<NetworkObject>().Spawn();
             }
             if (GUILayout.Button("Client"))
             { 
+                Destroy(FindFirstObjectByType<Camera>().gameObject);
                 NetworkManager.Singleton.StartClient();
             }
 
@@ -56,7 +63,7 @@ namespace UI.Networking
             if(GUILayout.Button("Spawn Monster"))
             {
                 if (NetworkManager.Singleton.IsServer)
-                    Instantiate(Resources.Load<GameObject>("Goblin"), new Vector3(Random.Range(0, 10), Random.Range(0, 10)), Quaternion.identity)
+                    Instantiate(Resources.Load<GameObject>("Goblin"), new Vector3(2, 2), Quaternion.identity)
                         .GetComponent<NetworkObject>().Spawn();
                 else
                     Debug.LogError("Attempting to spawn from a client.");

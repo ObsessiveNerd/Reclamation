@@ -12,6 +12,8 @@ public class RPC : NetworkBehaviour
         UnityEngine.Random.InitState(0);
 
         if(IsOwner)
+        { 
             Instantiate(Camera, transform);
+        }
     }
 }

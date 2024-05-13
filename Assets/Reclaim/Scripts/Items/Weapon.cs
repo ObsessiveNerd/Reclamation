@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEditor.PlayerSettings;
 
 public enum WeaponType
 {
@@ -17,7 +16,8 @@ public class Weapon : MonoBehaviour
     public void Attack(GameObject source, List<GameObject> targets)
     {
         SpawnEffect(source);
-        foreach (GameObject target in targets)
+        var targetsCopy = new List<GameObject>(targets);
+        foreach (GameObject target in targetsCopy)
             ApplyDamageTo(target);
     }
 
@@ -31,7 +31,7 @@ public class Weapon : MonoBehaviour
     {
         var health = target?.GetComponent<Health>() ;
         if (health != null)
-            health.TakeDamage(0, DamageType.None);
+            health.TakeDamage(4, DamageType.None);
     }
 
     void SpawnEffect(GameObject source)

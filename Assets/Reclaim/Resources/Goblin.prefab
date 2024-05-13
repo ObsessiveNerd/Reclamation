@@ -18,6 +18,7 @@ GameObject:
   - component: {fileID: 8135977576101319911}
   - component: {fileID: -7931174069352321517}
   - component: {fileID: 7954052431296653812}
+  - component: {fileID: 5889848365807754243}
   m_Layer: 0
   m_Name: Goblin
   m_TagString: Untagged
@@ -64,7 +65,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -247,6 +248,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aca2fcc6c0b22e4458a5f3a0fc859a1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  MaxHealth: 10
+  CurrentHealth: 10
 --- !u!114 &7954052431296653812
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -260,14 +263,34 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gridSize: 0.5
-  speed: 1
   obstacles:
     serializedVersion: 2
     m_Bits: 64
   searchShortcut: 0
-  snapToGrid: 0
+  snapToGrid: 1
   drawDebugLines: 0
   Target: {fileID: 0}
+--- !u!114 &5889848365807754243
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2950679966334358436}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b154737ea98dbf044bc7db2a9b481df2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Helmet: {fileID: 0}
+  Chest: {fileID: 0}
+  Gloves: {fileID: 0}
+  Legs: {fileID: 0}
+  Boots: {fileID: 0}
+  Ring1: {fileID: 0}
+  Ring2: {fileID: 0}
+  Necklace: {fileID: 0}
+  Back: {fileID: 0}
 --- !u!1 &7722393343279668593
 GameObject:
   m_ObjectHideFlags: 0

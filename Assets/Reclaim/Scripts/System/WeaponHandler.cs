@@ -1,11 +1,8 @@
-using System.Collections;
 using System.Collections.Generic;
-using Mono.Cecil;
 using Unity.Netcode;
 using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
 
-public class EquipmentBehavior : NetworkBehaviour
+public class WeaponHandler : NetworkBehaviour
 {
     public GameObject MainHand;
     public GameObject OffHand;
