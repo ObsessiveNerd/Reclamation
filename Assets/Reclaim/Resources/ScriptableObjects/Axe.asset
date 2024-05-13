@@ -12,9 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 370d64e8de2858543bd545f855e887ec, type: 3}
   m_Name: Axe
   m_EditorClassIdentifier: 
-  Name: 
+  Name: Axe
+  Effect: {fileID: 1201505000128532, guid: ba1ddd059de115f44b44ff52413832aa, type: 3}
   Icon: {fileID: 0}
   Sprite: {fileID: 0}
-  Damage: []
-  WeaponType: 0
-  ValidEquipSlots: 
+  Damage:
+  - DamageAmount:
+      m_AmountOfDice: 1
+      m_DAmount: 6
+      m_Modifiers: 0
+    DamageType: 1
+  ValidEquipSlots: 0000000001000000
