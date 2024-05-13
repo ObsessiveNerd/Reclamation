@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class WeaponHandler : NetworkBehaviour
 {
-    public GameObject MainHand;
-    public GameObject OffHand;
+    public SO_Weapon MainHand;
+    public SO_Weapon OffHand;
 
     List<GameObject> m_ObjectsInRange = new List<GameObject>();
     Camera m_Camera;
@@ -47,7 +47,7 @@ public class WeaponHandler : NetworkBehaviour
     {
         if (MainHand != null)
         {
-            var weapon = MainHand.GetComponent<Weapon>();
+            var weapon = MainHand;
             if(weapon != null )
                 weapon.Attack(gameObject, m_ObjectsInRange);
         }

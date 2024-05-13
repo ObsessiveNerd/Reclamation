@@ -2,18 +2,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum WeaponType
+[CreateAssetMenu(fileName = "Weapon", menuName = "Reclaim/Weapon")]
+public class SO_Weapon : ScriptableObject
 {
-    Melee,
-    Ranged
-}
-
-public class Weapon : MonoBehaviour
-{
-    public WeaponType WeaponType;
+    public string Name; 
     public GameObject Effect;
+    public Sprite Icon;
+    public Sprite Sprite;
+    public List<Damage> Damage; 
+    public List<EquipmentSlot> ValidEquipSlots;
 
-    public void Attack(GameObject source, List<GameObject> targets)
+    public void Attack(List<GameObject> targets)
+    {
+
+    }
+     public void Attack(GameObject source, List<GameObject> targets)
     {
         SpawnEffect(source);
         var targetsCopy = new List<GameObject>(targets);

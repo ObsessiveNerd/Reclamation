@@ -1,4 +1,6 @@
-﻿public enum DamageType
+﻿using System;
+
+public enum DamageType
 {
     None,
     Slashing,
@@ -13,4 +15,11 @@
     Arcane,
     Wind,
     Poison
+}
+
+[Serializable]
+public class Damage
+{
+    public Dice DamageAmount;
+    public DamageType DamageType;
 }
