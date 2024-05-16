@@ -16,7 +16,8 @@ public abstract class InputControllerBase : NetworkBehaviour
     [ClientRpc]
     protected void MoveClientRpc(float inputX, float inputY)
     {
-        m_Move.Move(inputX, inputY);
+        if(m_Move != null)
+            m_Move.Move(inputX, inputY);
     }
 
     [ServerRpc]

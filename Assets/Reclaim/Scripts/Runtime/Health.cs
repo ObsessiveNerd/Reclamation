@@ -22,7 +22,7 @@ public class Health : MonoBehaviour
     public void TakeDamage(int damage, DamageType type)
     {
         float percent = m_EquipmentHandler.GetResistances(type);
-        int adjustedDamage = (int)Mathf.Max(1, (percent / 100) * damage);
+        int adjustedDamage = (int)Mathf.Max(1, percent * damage);
 
         CurrentHealth -= adjustedDamage;
         if(CurrentHealth <= 0 ) 
@@ -32,6 +32,11 @@ public class Health : MonoBehaviour
         }
         else
             StartCoroutine(Flicker());
+    }
+
+    public void Heal(int amount)
+    {
+        CurrentHealth = Mathf.Min(CurrentHealth + amount, MaxHealth);
     }
 
     IEnumerator Flicker()

@@ -1,0 +1,83 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Sprites_Weapons
+  m_EditorClassIdentifier: 
+  m_GroupName: Sprites_Weapons
+  m_GUID: 61307679686070243a67450e669083ea
+  m_SerializeEntries:
+  - m_GUID: 031d8b64e41b307408e9040e94225e46
+    m_Address: td_items_weapon_axe
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 615a7be89d376e74eb7303980d8a0f4d
+    m_Address: td_items_weapon_bow
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0b7df72b978b6c74bb584fcb17086f3d
+    m_Address: td_items_weapon_club
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 686283dcdf07c6044a122310bec09fb4
+    m_Address: td_items_weapon_crossbow
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 21b2e6a0711b7584086862c084e22ca6
+    m_Address: td_items_weapon_dagger
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4326dd4700c45cd4f9864df70a3c52f9
+    m_Address: td_items_weapon_hammer
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cbacbf2bd0edaff41b78c2e4e2761b75
+    m_Address: td_items_weapon_mace
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 506d6ae7c9ede5d4eae765646ed5355f
+    m_Address: td_items_weapon_quarterstaff
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1636497cc728021448932e61ea1dd854
+    m_Address: td_items_weapon_shortsword
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a1858edbf1c54a144b433cd3e17c8796
+    m_Address: td_items_weapon_sling
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 60e71b06909289547a7f212d8660b1cd
+    m_Address: td_items_weapon_staff
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d4626d06c41c70840acee8a0c90f4b99
+    m_Address: td_items_weapon_sword
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: e62147a571855454d9dd8796e9f7b1f1, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 0b635c22f69db494181a63ad513b77f2, type: 2}
+    - {fileID: 11400000, guid: 9027c151e39a5bf448c02256e53a15ec, type: 2}

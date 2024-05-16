@@ -20,6 +20,9 @@ public class PlayerInputController : InputControllerBase
     // Update is called once per frame
     void Update()
     {
+        if(!IsOwner) 
+            return;
+
         float x = Input.GetAxis("Horizontal");
         float y = Input.GetAxis("Vertical");
 

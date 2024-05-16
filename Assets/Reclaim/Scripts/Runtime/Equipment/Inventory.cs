@@ -1,26 +1,56 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
-public class Inventory : MonoBehaviour
+public class Inventory : NetworkBehaviour
 {
     public int InventoryLimit;
 
-    GameObject[] m_Inventory;
+    [SerializeField]
+    SO_Item[] m_Inventory;
     
     // Start is called before the first frame update
     void Start()
     {
-        m_Inventory = new GameObject[InventoryLimit];
+        m_Inventory = new SO_Item[InventoryLimit];
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        
+        if (!IsOwner)
+            return;
+
+        if(Input.GetKeyDown(KeyCode.Space))
+        {
+            SpawnItemServerRpc(m_Inventory[0].GetType().FullName, m_Inventory[0].Serialize());
+        }
     }
 
-    public bool AddToInventory(GameObject inventoryItem)
+    [ServerRpc(RequireOwnership = false)]
+    void SpawnItemServerRpc(string type, string data)
+    {
+        var prefab = Resources.Load<GameObject>("Item");
+        var instance = Instantiate(prefab, transform.position, Quaternion.identity);
+        var netObj = instance.GetComponent<NetworkObject>();
+        netObj.Spawn();
+        SpawnItemClientRpc(type, data, netObj.NetworkObjectId);
+    }
+
+    [ClientRpc]
+    void SpawnItemClientRpc(string type, string data, ulong itemNetID)
+    {
+        var spawnedObject = NetworkManager.SpawnManager.SpawnedObjects[itemNetID];
+        
+        var item = ScriptableObject.CreateInstance(type) as SO_Item;
+        item.Deserialize(data);
+
+        spawnedObject.GetComponent<SpriteRenderer>().color = item.GetSerializedItem().SpriteColor;
+        spawnedObject.GetComponent<Item>().Create(item);
+    }
+
+    public bool AddToInventory(SO_Item inventoryItem)
     {
         for(int i = 0; i < InventoryLimit; i++)
         {
@@ -33,7 +63,7 @@ public class Inventory : MonoBehaviour
         return false;
     }
 
-    public bool AddToInventorySpecific(GameObject inventoryItem, int index)
+    public bool AddToInventorySpecific(SO_Item inventoryItem, int index)
     {
         if(m_Inventory[index] == null)
         {
@@ -54,7 +84,7 @@ public class Inventory : MonoBehaviour
         return false;
     }
 
-    public void RemoveFromInventory(GameObject inventoryItem)
+    public void RemoveFromInventory(SO_Item inventoryItem)
     {
         for(int i = 0; i < InventoryLimit; i++)
         {
@@ -63,7 +93,7 @@ public class Inventory : MonoBehaviour
         }
     }
 
-    int GetIndex(GameObject inventoryItem)
+    int GetIndex(SO_Item inventoryItem)
     {
         for(int i = 0; i < InventoryLimit; i++)
         {

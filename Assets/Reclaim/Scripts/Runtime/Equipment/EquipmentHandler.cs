@@ -6,24 +6,24 @@ public class EquipmentHandler : MonoBehaviour
 {
     WeaponHandler m_WeaponHandler;
 
-    public Equipment Helmet;
-    public Equipment Chest;
-    public Equipment Gloves;
-    public Equipment Legs;
-    public Equipment Boots;
-    public Equipment Ring1;
-    public Equipment Ring2;
-    public Equipment Necklace;
-    public Equipment Back;
+    public SO_Equipment Helmet;
+    public SO_Equipment Chest;
+    public SO_Equipment Gloves;
+    public SO_Equipment Legs;
+    public SO_Equipment Boots;
+    public SO_Equipment Ring1;
+    public SO_Equipment Ring2;
+    public SO_Equipment Necklace;
+    public SO_Equipment Back;
 
     Inventory m_Inventory;
-    List<Equipment> m_AllEquipment;
+    List<SO_Equipment> m_AllEquipment;
 
     // Start is called before the first frame update
     void Start()
     {
         m_Inventory = GetComponent<Inventory>();
-        m_AllEquipment = new List<Equipment>()
+        m_AllEquipment = new List<SO_Equipment>()
         {
             Helmet,Chest, Gloves, Legs, Boots, Ring1,
             Ring2, Necklace, Back
@@ -36,7 +36,7 @@ public class EquipmentHandler : MonoBehaviour
 
     }
 
-    public void AutoEquip(Equipment equipment)
+    public void AutoEquip(SO_Equipment equipment)
     {
         switch (equipment.Slot)
         {
@@ -86,20 +86,20 @@ public class EquipmentHandler : MonoBehaviour
         }
     }
 
-    void SetEquipment(Equipment equipment, Equipment slot)
+    void SetEquipment(SO_Equipment equipment, SO_Equipment slot)
     {
         if (slot == null)
             slot = equipment;
         else
         {
-            m_Inventory.AddToInventory(slot.gameObject);
+            m_Inventory.AddToInventory(slot);
             slot = equipment;
         }
     }
 
-    public void Unequip(Equipment equipment)
+    public void Unequip(SO_Equipment equipment)
     {
-        if (m_Inventory.AddToInventory(equipment.gameObject))
+        if (m_Inventory.AddToInventory(equipment))
             equipment = null;
     }
 
@@ -108,10 +108,10 @@ public class EquipmentHandler : MonoBehaviour
         float totalPercent = 100.0f;
         foreach(var equipment in m_AllEquipment)
         {
-            var resistance = equipment?.GetComponent<Resistance>();
-            if(resistance != null && resistance.DamageType == damageType)
+            foreach(var resistance in equipment.Resistances)
+            if(resistance.DamageType == damageType)
                 totalPercent *= resistance.Percent;
         }
-        return totalPercent;
+        return totalPercent / 100f;
     }
 }

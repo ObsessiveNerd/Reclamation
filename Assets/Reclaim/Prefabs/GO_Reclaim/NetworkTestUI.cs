@@ -1,5 +1,6 @@
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace UI.Networking
 {
@@ -31,12 +32,25 @@ namespace UI.Networking
             {
                 Destroy(FindFirstObjectByType<Camera>().gameObject);
                 NetworkManager.Singleton.StartHost();
-                //Instantiate(Resources.Load<GameObject>("Map")).GetComponent<NetworkObject>().Spawn();
+                NetworkManager.Singleton.SceneManager.LoadScene("URPScene", LoadSceneMode.Single);
+                //SceneManager.LoadSceneAsync("URPScene").completed += (op) =>
+                //{
+
+                //    Instantiate(Resources.Load<GameObject>("Character")).GetComponent<NetworkObject>()
+                //        .SpawnAsPlayerObject(NetworkManager.Singleton.LocalClientId);
+                //};
             }
             if (GUILayout.Button("Client"))
             { 
                 Destroy(FindFirstObjectByType<Camera>().gameObject);
                 NetworkManager.Singleton.StartClient();
+                //NetworkManager.Singleton.SceneManager.LoadScene("URPScene", LoadSceneMode.Single);
+                //SceneManager.LoadSceneAsync("URPScene").completed += (op) =>
+                //{
+
+                //    Instantiate(Resources.Load<GameObject>("Character")).GetComponent<NetworkObject>()
+                //        .SpawnAsPlayerObject(NetworkManager.Singleton.LocalClientId);
+                //};
             }
 
             if (GUILayout.Button("Server")) NetworkManager.Singleton.StartServer();

@@ -16,20 +16,3 @@ public enum EquipmentSlot
     Necklace,
     Back
 }
-
-public class Equipment : MonoBehaviour
-{
-    public EquipmentSlot Slot;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-}

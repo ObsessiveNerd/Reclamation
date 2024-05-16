@@ -1,0 +1,52 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 370d64e8de2858543bd545f855e887ec, type: 3}
+  m_Name: Axe
+  m_EditorClassIdentifier: 
+  Icon: {fileID: 21300000, guid: 3730c4baf6c641c4f8d68e48d4a898ba, type: 3}
+  Sprite: {fileID: 21300000, guid: 031d8b64e41b307408e9040e94225e46, type: 3}
+  Effect: {fileID: 1201505000128532, guid: ba1ddd059de115f44b44ff52413832aa, type: 3}
+  Weapon:
+    Name: Axe
+    FlavorText: 
+    SpriteName: td_items_weapon_axe
+    IconName: axe_t_03
+    SpriteColor: {r: 0.97735846, g: 0, b: 0, a: 1}
+    MaxStack: 1
+    EffectName: FX_Slash_01
+    Damage:
+    - DamageAmount:
+        m_AmountOfDice: 1
+        m_DAmount: 6
+        m_Modifiers: 0
+      DamageType: 1
+    ValidEquipSlots: 0000000001000000
+    Spells:
+    - rid: 8932140350747705348
+    OnHitEffects:
+    - rid: 8932140350747705347
+    OnEquipEffects: []
+  references:
+    version: 2
+    RefIds:
+    - rid: 8932140350747705347
+      type: {class: Heal, ns: , asm: Assembly-CSharp}
+      data:
+        Name: 
+        ValueToHeal: 0
+        HealAmount:
+          m_AmountOfDice: 0
+          m_DAmount: 0
+          m_Modifiers: 0
+    - rid: 8932140350747705348
+      type: {class: Firebolt, ns: , asm: Assembly-CSharp}
+      data: 
