@@ -51,7 +51,7 @@ namespace DevionGames.UIWidgets
 		/// <summary>
 		/// Start is called on the frame when a script is enabled just before any of the Update methods is called the first time.
 		/// </summary>
-		private void Start ()
+		protected virtual void Start ()
 		{
 			//Find tooltip instance with name "Tooltip"
 			instance = WidgetUtility.Find<Tooltip> (instanceName);

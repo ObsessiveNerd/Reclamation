@@ -53,6 +53,8 @@ public class Dice
         string value = $"{m_AmountOfDice}d{m_DAmount}";
         if (m_Modifiers > 0)
             value += $"+{m_Modifiers}";
+        if (m_Modifiers < 0)
+            value += m_Modifiers;
         return value;
     }
 }

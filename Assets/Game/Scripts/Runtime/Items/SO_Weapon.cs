@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.ResourceManagement;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
+using System.Text;
 
 [Serializable]
 public class SerializedWeapon : SerializedItem
@@ -60,6 +61,17 @@ public class SO_Weapon : SO_Item
     public void OnUnequip(GameObject source)
     {
 
+    }
+
+    public override string GetDescription()
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.AppendLine("Damage:");
+
+        foreach (var damage in Weapon.Damage)
+            sb.AppendLine($"{damage.DamageAmount} {damage.DamageType}");
+
+        return sb.ToString();
     }
 
     void ApplyDamageTo(GameObject target)
