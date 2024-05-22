@@ -96,7 +96,7 @@ public class SubclassPropertyDrawer : PropertyDrawer
                     {
                         while (!SerializedProperty.EqualContents(curProp, lastProp))
                         {
-                            position.height = EditorGUI.GetPropertyHeight(curProp);
+                            //position.height = EditorGUI.GetPropertyHeight(curProp);
                             EditorGUI.PropertyField(position, curProp);
 
                             position.y += fieldSpacing;

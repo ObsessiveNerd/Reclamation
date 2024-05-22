@@ -17,7 +17,8 @@ public abstract class Effects
 public enum HealableValues
 {
     Health,
-    Mana
+    Mana,
+    Stamina
 }
 
 [Serializable]
@@ -30,11 +31,10 @@ public class Heal : Effects
     {
         get
         {
-            return "";
-            //string description = $"Increases {ValueToHeal} by {HealAmount.m_AmountOfDice}d{HealAmount.m_DAmount}";
-            //if (HealAmount.m_Modifiers > 0)
-            //    description += $"+{HealAmount.m_Modifiers}";
-            //return description; 
+            string description = $"Increases {ValueToHeal} by {HealAmount.m_AmountOfDice}d{HealAmount.m_DAmount}";
+            if (HealAmount.m_Modifiers > 0)
+                description += $"+{HealAmount.m_Modifiers}";
+            return description;
         }
     }
 
@@ -51,6 +51,9 @@ public class Heal : Effects
 
             case HealableValues.Mana:
 
+                break;
+
+            case HealableValues.Stamina:
                 break;
         }
     }

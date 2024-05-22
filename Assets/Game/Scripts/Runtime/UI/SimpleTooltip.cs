@@ -14,7 +14,7 @@ public class SimpleTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     // Start is called before the first frame update
     void Start()
     {
-        m_Popup = Resources.Load<GameObject>("Prefabs/UI/ItemPopup");
+        m_Popup = Resources.Load<GameObject>("UI/Tooltip");
     }
 
     void OnDisable()
