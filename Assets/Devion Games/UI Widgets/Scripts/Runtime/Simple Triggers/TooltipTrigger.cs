@@ -73,7 +73,16 @@ namespace DevionGames.UIWidgets
 		public void OnPointerEnter (PointerEventData eventData)
 		{
             //Show tooltip
-            ShowTooltip();
+			if(ShouldShowTooltip)
+				ShowTooltip();
+		}
+
+		protected virtual bool ShouldShowTooltip
+		{
+			get
+			{
+				return true;
+			}
 		}
 
 		/// <summary>

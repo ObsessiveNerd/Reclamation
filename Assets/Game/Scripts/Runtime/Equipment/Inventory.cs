@@ -10,7 +10,20 @@ public class Inventory : NetworkBehaviour
 
     [SerializeField]
     SO_Item[] m_Inventory;
-    
+
+    InventoryManager m_Manager;
+    InventoryManager Manager
+    {
+        get
+        {
+            if(m_Manager == null)
+                m_Manager = FindFirstObjectByType<InventoryManager>();
+            return m_Manager;
+        }
+    }
+
+    bool m_IsOpen = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -22,11 +35,31 @@ public class Inventory : NetworkBehaviour
         if (!IsOwner)
             return;
 
-        if(Input.GetKeyDown(KeyCode.Space))
-        { 
-            Spawner.Instance.Spawn(m_Inventory[0], transform.position);
-            RemoveFromInventory(m_Inventory[0]);
+        if(Input.GetKeyDown(KeyCode.I))
+        {
+            if (!m_IsOpen)
+                Manager.Open(gameObject);
+            else
+                Manager.Close();
+            m_IsOpen = !m_IsOpen;
         }
+
+        if(Input.GetKeyDown(KeyCode.Escape)) 
+        {
+            Manager.Close();
+            m_IsOpen = false;
+        }
+    }
+
+    public Dictionary<int, SO_Item> GetInventory()
+    {
+        Dictionary<int, SO_Item> inventory = new Dictionary<int, SO_Item>();
+        for(int i = 0; i < InventoryLimit; i++)
+        {
+            if (m_Inventory[i] != null)
+                inventory.Add(i, m_Inventory[i]);
+        }
+        return inventory;
     }
 
     public bool AddToInventory(SO_Item inventoryItem)
