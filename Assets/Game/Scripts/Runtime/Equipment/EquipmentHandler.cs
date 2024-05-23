@@ -17,13 +17,15 @@ public class EquipmentHandler : MonoBehaviour
     public SO_Equipment Back;
 
     Inventory m_Inventory;
-    List<SO_Equipment> m_AllEquipment;
+    public List<SO_Equipment> AllEquipment;
+    Dictionary<Slot, SO_Item> EquipedItems = new Dictionary<Slot, SO_Item>();
 
     // Start is called before the first frame update
     void Start()
     {
+        m_WeaponHandler = GetComponentInChildren<WeaponHandler>();
         m_Inventory = GetComponent<Inventory>();
-        m_AllEquipment = new List<SO_Equipment>()
+        AllEquipment = new List<SO_Equipment>()
         {
             Helmet,Chest, Gloves, Legs, Boots, Ring1,
             Ring2, Necklace, Back
@@ -40,50 +42,61 @@ public class EquipmentHandler : MonoBehaviour
     {
         switch (equipment.Slot)
         {
-            case EquipmentSlot.MainHand:
+            case Slot.MainHand:
                 break;
 
-            case EquipmentSlot.OffHand:
+            case Slot.OffHand:
                 break;
 
-            case EquipmentSlot.TwoHanded:
+            case Slot.TwoHanded:
                 break;
 
-            case EquipmentSlot.Helmet:
+            case Slot.Helmet:
                 SetEquipment(equipment, Helmet);
                 break;
 
-            case EquipmentSlot.Chest:
+            case Slot.Chest:
                 SetEquipment(equipment, Chest);
                 break;
 
-            case EquipmentSlot.Gloves:
+            case Slot.Gloves:
                 SetEquipment(equipment, Gloves);
                 break;
 
-            case EquipmentSlot.Legs:
+            case Slot.Legs:
                 SetEquipment(equipment, Legs);
                 break;
 
-            case EquipmentSlot.Boots:
+            case Slot.Boots:
                 SetEquipment(equipment, Boots);
                 break;
 
-            case EquipmentSlot.Ring:
+            case Slot.Ring:
                 if (Ring1 == null)
                     SetEquipment(equipment, Ring1);
                 else if (Ring2 == null)
                     SetEquipment(equipment, Ring2);
                 break;
             
-            case EquipmentSlot.Necklace:
+            case Slot.Necklace:
                 SetEquipment(equipment, Necklace);
                 break;
             
-            case EquipmentSlot.Back:
+            case Slot.Back:
                 SetEquipment(equipment, Back);
                 break;
         }
+    }
+
+    public Dictionary<Slot, SO_Item> GetWeapons()
+    {
+        EquipedItems.Clear();
+        if(m_WeaponHandler.MainHand != null)
+            EquipedItems.Add(Slot.MainHand, m_WeaponHandler.MainHand);
+        if(m_WeaponHandler.OffHand != null)
+            EquipedItems.Add(Slot.OffHand, m_WeaponHandler.OffHand);
+
+        return EquipedItems;
     }
 
     void SetEquipment(SO_Equipment equipment, SO_Equipment slot)
@@ -97,16 +110,22 @@ public class EquipmentHandler : MonoBehaviour
         }
     }
 
-    public void Unequip(SO_Equipment equipment)
+    public void Unequip(SO_Item equipment)
     {
         if (m_Inventory.AddToInventory(equipment))
-            equipment = null;
+        {
+            if (equipment == m_WeaponHandler.MainHand)
+                m_WeaponHandler.MainHand = null;
+            if(equipment == m_WeaponHandler.OffHand)
+                m_WeaponHandler.OffHand = null;
+        }
+
     }
 
     public float GetResistances(DamageType damageType)
     {
         float totalPercent = 100.0f;
-        foreach(var equipment in m_AllEquipment)
+        foreach(var equipment in AllEquipment)
         {
             foreach(var resistance in equipment.Resistances)
             if(resistance.DamageType == damageType)

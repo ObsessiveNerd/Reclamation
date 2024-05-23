@@ -11,14 +11,26 @@ public class Inventory : NetworkBehaviour
     [SerializeField]
     SO_Item[] m_Inventory;
 
-    InventoryManager m_Manager;
-    InventoryManager Manager
+    InventoryManager m_InventoryManager;
+    EquipmentManager m_EqipmentManager;
+
+    InventoryManager InventoryManager
     {
         get
         {
-            if(m_Manager == null)
-                m_Manager = FindFirstObjectByType<InventoryManager>();
-            return m_Manager;
+            if(m_InventoryManager == null)
+                m_InventoryManager = FindFirstObjectByType<InventoryManager>();
+            return m_InventoryManager;
+        }
+    }
+
+    EquipmentManager EquipmentManager
+    {
+        get
+        {
+            if(m_EqipmentManager == null)
+                m_EqipmentManager = FindFirstObjectByType<EquipmentManager>();
+            return m_EqipmentManager;
         }
     }
 
@@ -38,15 +50,22 @@ public class Inventory : NetworkBehaviour
         if(Input.GetKeyDown(KeyCode.I))
         {
             if (!m_IsOpen)
-                Manager.Open(gameObject);
+            { 
+                InventoryManager.Open(gameObject);
+                EquipmentManager.Open(gameObject);
+            }
             else
-                Manager.Close();
+            { 
+                InventoryManager.Close();
+                EquipmentManager.Close();
+            }
             m_IsOpen = !m_IsOpen;
         }
 
         if(Input.GetKeyDown(KeyCode.Escape)) 
         {
-            Manager.Close();
+            InventoryManager.Close();
+            EquipmentManager.Close();
             m_IsOpen = false;
         }
     }

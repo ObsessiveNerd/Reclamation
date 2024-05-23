@@ -5,7 +5,6 @@ using UnityEngine;
 public class InventoryManager : MonoBehaviour
 {
     public GameObject Inventory;
-    public GameObject Eqiupment;
 
     public List<GameObject> InventorySlots;
 
@@ -15,7 +14,6 @@ public class InventoryManager : MonoBehaviour
             InventorySlots[item.Key].GetComponent<InventorySlot>().SetItem(source, item.Value);
 
         Inventory.SetActive(true);
-        Eqiupment.SetActive(true);
     }
 
     public void Close()
@@ -24,6 +22,5 @@ public class InventoryManager : MonoBehaviour
             slot.GetComponent<InventorySlot>().Clear();
 
         Inventory.SetActive(false);
-        Eqiupment.SetActive(false);
     }
 }

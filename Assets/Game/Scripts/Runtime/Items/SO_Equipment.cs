@@ -5,7 +5,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Equipment", menuName = "Reclaim/Equipment")]
 public class SO_Equipment : SO_Item
 {
-    public EquipmentSlot Slot;
+    public Slot Slot;
     public List<Resistance> Resistances;
     public List<Effects> OnEquip;
 

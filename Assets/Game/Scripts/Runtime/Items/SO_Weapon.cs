@@ -14,7 +14,7 @@ public class SerializedWeapon : SerializedItem
     public string EffectName;
     
     public List<Damage> Damage; 
-    public List<EquipmentSlot> ValidEquipSlots;
+    public List<Slot> ValidEquipSlots;
     
     [SerializeReference, Subclass(IsList = true)]
     public List<Spell> Spells;

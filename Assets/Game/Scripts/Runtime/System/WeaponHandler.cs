@@ -14,6 +14,14 @@ public class WeaponHandler : NetworkBehaviour
         m_Camera = FindFirstObjectByType<Camera>();
     }
 
+    public List<SO_Item> GetWeapons()
+    {
+        return new List<SO_Item>()
+        {
+            MainHand, OffHand
+        };
+    }
+
     private void Update()
     {
         if (!IsOwner)
