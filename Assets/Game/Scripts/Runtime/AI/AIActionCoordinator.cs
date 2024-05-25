@@ -9,13 +9,13 @@ public interface IAIAction
 
 public class AIActionCoordinator : MonoBehaviour
 {
-    WeaponHandler m_Equipment;
+    MeleeArea m_Equipment;
     IAIAction m_Action;
 
     // Start is called before the first frame update
     void Start()
     {
-        m_Equipment = GetComponentInChildren<WeaponHandler>();    
+        m_Equipment = GetComponentInChildren<MeleeArea>();    
     }
 
     public IAIAction GetAction()

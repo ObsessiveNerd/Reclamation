@@ -6,13 +6,13 @@ using UnityEngine;
 
 public class PlayerInputController : InputControllerBase
 {
-    WeaponHandler m_Equipment;
+    MeleeArea m_Equipment;
     Camera m_Camera;
 
     // Start is called before the first frame update
     void Start()
     {
-        m_Equipment = GetComponentInChildren<WeaponHandler>();
+        m_Equipment = GetComponentInChildren<MeleeArea>();
         m_Move = GetComponent<IMovement>();
         m_Camera = FindFirstObjectByType<Camera>();
     }

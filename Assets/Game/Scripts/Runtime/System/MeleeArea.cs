@@ -2,24 +2,13 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
-public class WeaponHandler : NetworkBehaviour
+public class MeleeArea : NetworkBehaviour
 {
-    public SO_Weapon MainHand;
-    public SO_Weapon OffHand;
-
     List<GameObject> m_ObjectsInRange = new List<GameObject>();
     Camera m_Camera;
     void Start()
     {
         m_Camera = FindFirstObjectByType<Camera>();
-    }
-
-    public List<SO_Item> GetWeapons()
-    {
-        return new List<SO_Item>()
-        {
-            MainHand, OffHand
-        };
     }
 
     private void Update()
@@ -49,16 +38,6 @@ public class WeaponHandler : NetworkBehaviour
     void UpdatePositionClientRpc(Vector3 position)
     {
         transform.position = position;
-    }
-
-    public void Attack()
-    {
-        if (MainHand != null)
-        {
-            var weapon = MainHand;
-            if(weapon != null )
-                weapon.Attack(gameObject, m_ObjectsInRange);
-        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

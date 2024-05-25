@@ -37,8 +37,6 @@ public class EquipmentManager : MonoBehaviour
 
     public void Close()
     {
-
-
         EquipmentUI.SetActive(false);
     }
 }

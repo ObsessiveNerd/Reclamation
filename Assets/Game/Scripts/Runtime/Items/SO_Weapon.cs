@@ -21,9 +21,6 @@ public class SerializedWeapon : SerializedItem
     
     [SerializeReference, Subclass(IsList = true)]
     public List<Effects> OnHitEffects;
-    
-    [SerializeReference, Subclass(IsList = true)]
-    public List<Effects> OnEquipEffects;
 }
 
 [CreateAssetMenu(fileName = "Weapon", menuName = "Reclaim/Weapon")]
