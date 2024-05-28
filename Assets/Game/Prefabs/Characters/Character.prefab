@@ -112,7 +112,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 3514101454
+  GlobalObjectIdHash: 1962600586
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
   ActiveSceneSynchronization: 1
@@ -304,6 +304,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b154737ea98dbf044bc7db2a9b481df2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  MainHand: {fileID: 0}
+  OffHand: {fileID: 0}
   Helmet: {fileID: 0}
   Chest: {fileID: 0}
   Gloves: {fileID: 0}
@@ -493,8 +495,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37f6e125bcf068a4b945338a9454713b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MainHand: {fileID: 11400000, guid: 7f8716c7445807f47a80d20b326a874a, type: 2}
-  OffHand: {fileID: 0}
 --- !u!114 &3872079829354466098
 MonoBehaviour:
   m_ObjectHideFlags: 0

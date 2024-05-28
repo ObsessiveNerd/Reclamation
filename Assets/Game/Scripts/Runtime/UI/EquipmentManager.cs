@@ -14,10 +14,11 @@ public class EquipmentManager : MonoBehaviour
         m_Source = source;
         SetupDictionary();
 
-        var equipHandler = m_Source.GetComponent<EquipmentHandler>();
-        foreach (var item in equipHandler.GetWeapons())
+        var equipHandler = m_Source.GetComponent<Equipment>();
+        foreach (var item in equipHandler.EquipmentMap)
         {
-            m_Slots[item.Key][0].SetItem(source, item.Value);
+            if(item.Value != null)
+                m_Slots[item.Key][0].SetItem(source, item.Value);
         }
 
         EquipmentUI.SetActive(true);

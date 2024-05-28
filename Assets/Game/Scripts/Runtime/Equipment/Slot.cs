@@ -12,7 +12,8 @@ public enum Slot
     Gloves,
     Legs,
     Boots,
-    Ring,
+    Ring1,
+    Ring2,
     Necklace,
     Back
 }

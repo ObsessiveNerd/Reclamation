@@ -9,19 +9,19 @@ public class Health : MonoBehaviour
     public int CurrentHealth;
 
     SpriteRenderer m_SpriteRenderer;
-    EquipmentHandler m_EquipmentHandler;
+    Equipment m_Equipment;
     bool m_IsFlickering = false;
 
     // Start is called before the first frame update
     void Start()
     {
         m_SpriteRenderer = GetComponent<SpriteRenderer>();
-        m_EquipmentHandler = GetComponent<EquipmentHandler>();
+        m_Equipment = GetComponent<Equipment>();
     }
 
     public void TakeDamage(int damage, DamageType type)
     {
-        float percent = m_EquipmentHandler.GetResistances(type);
+        float percent = m_Equipment.GetResistances(type);
         int adjustedDamage = (int)Mathf.Max(1, percent * damage);
 
         CurrentHealth -= adjustedDamage;

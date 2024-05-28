@@ -12,11 +12,15 @@ public class EquipmentSlot : UISlotBase
         {
             this.m_ContextMenu.Clear();
             m_ContextMenu.AddMenuItem("Unequip", delegate
-            { Debug.Log("Unequip " + Item.name); });
+            { 
+                m_Source.GetComponent<Equipment>().Unequip(Item);
+                FindFirstObjectByType<InventoryManager>().Open(m_Source);
+                Clear();
+            });
 
             m_ContextMenu.AddMenuItem("Drop", delegate
             {
-                m_Source.GetComponent<EquipmentHandler>().Unequip(Item);
+                m_Source.GetComponent<Equipment>().Unequip(Item);
                 m_Source.GetComponent<Inventory>().RemoveFromInventory(Item);
                 Spawner.Instance.Spawn(Item, m_Source.transform.position);
                 Clear();

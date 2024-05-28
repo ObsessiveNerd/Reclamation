@@ -8,6 +8,7 @@ public class Equipment : MonoBehaviour
 
     public SO_Weapon MainHand;
     public SO_Weapon OffHand;
+
     public SO_Equipment Helmet;
     public SO_Equipment Chest;
     public SO_Equipment Gloves;
@@ -18,118 +19,224 @@ public class Equipment : MonoBehaviour
     public SO_Equipment Necklace;
     public SO_Equipment Back;
 
+    public Dictionary <Slot, SO_Item> EquipmentMap;
     Inventory m_Inventory;
-    public List<SO_Equipment> AllEquipment;
-    Dictionary<Slot, SO_Item> EquipedItems = new Dictionary<Slot, SO_Item>();
 
     // Start is called before the first frame update
     void Start()
     {
         m_MeleeArea = GetComponentInChildren<MeleeArea>();
         m_Inventory = GetComponent<Inventory>();
-        AllEquipment = new List<SO_Equipment>()
+        EquipmentMap = new Dictionary<Slot, SO_Item>()
         {
-            Helmet,Chest, Gloves, Legs, Boots, Ring1,
-            Ring2, Necklace, Back
+            {Slot.MainHand, MainHand },
+            {Slot.OffHand, OffHand },
+
+            {Slot.Helmet, Helmet },
+            {Slot.Chest, Chest },
+            {Slot.Gloves, Gloves },
+            {Slot.Legs, Legs },
+            {Slot.Boots, Boots },
+            {Slot.Ring1, Ring1 },
+            {Slot.Ring2, Ring2 },
+            {Slot.Necklace, Necklace },
+            {Slot.Back, Back }
         };
     }
 
-    // Update is called once per frame
-    void Update()
+    public SO_Item GetEquipedItem(Slot slot)
     {
+        return EquipmentMap[slot];
+    }
 
+    public void AutoEquip(SO_Item item)
+    {
+        if (item is SO_Equipment)
+            AutoEquip(item as SO_Equipment);
+        else if (item is SO_Weapon)
+            AutoEquip(item as SO_Weapon);
     }
 
     public void AutoEquip(SO_Weapon weapon)
     {
         SerializedWeapon sw = weapon.GetSerializedItem() as SerializedWeapon;
+        Slot initialSlot = sw.ValidEquipSlots[0];
         bool equiped = false;
         foreach (var slot in sw.ValidEquipSlots)
         {
-            switch (slot)
+            if (slot == Slot.TwoHanded)
             {
-                case Slot.MainHand:
-                    break;
-                case Slot.OffHand:
-                    break;
-                case Slot.TwoHanded:
-                    break;
+                Unequip(MainHand);
+                Unequip(OffHand);
+                SetEquipment(weapon, Slot.MainHand);
+                SetEquipment(weapon, Slot.OffHand);
+                break;
+            }
+
+            if (EquipmentMap[slot] != null)
+                continue;
+            else
+            {
+                SetEquipment(weapon, slot);
+                equiped = true;
+                break;
             }
         }
+
+        if (!equiped)
+            SetEquipment(weapon, initialSlot);
     }
 
     public void AutoEquip(SO_Equipment equipment)
     {
         SerializedEquipment se = equipment.GetSerializedItem() as SerializedEquipment;
-        switch (se.Slot)
+        Slot initialSlot = se.ValidEquipSlots[0];
+        bool equiped = false;
+        foreach (var slot in se.ValidEquipSlots)
         {
-            case Slot.Helmet:
-                SetEquipment(equipment, Helmet);
-                break;
-
-            case Slot.Chest:
-                SetEquipment(equipment, Chest);
-                break;
-
-            case Slot.Gloves:
-                SetEquipment(equipment, Gloves);
-                break;
-
-            case Slot.Legs:
-                SetEquipment(equipment, Legs);
-                break;
-
-            case Slot.Boots:
-                SetEquipment(equipment, Boots);
-                break;
-
-            case Slot.Ring:
-                if (Ring1 == null)
-                    SetEquipment(equipment, Ring1);
-                else if (Ring2 == null)
-                    SetEquipment(equipment, Ring2);
-                break;
-
-            case Slot.Necklace:
-                SetEquipment(equipment, Necklace);
-                break;
-
-            case Slot.Back:
-                SetEquipment(equipment, Back);
-                break;
+            if (EquipmentMap[slot] != null)
+                continue;
+            else
+            {
+                SetEquipment(equipment, slot);
+                equiped = true;
+            }
         }
+
+        if (!equiped)
+            SetEquipment(equipment, initialSlot);
     }
 
-    void SetEquipment(SO_Equipment equipment, SO_Equipment slot)
+    void SetEquipment(SO_Equipment equipment, Slot slot)
     {
-        if (slot == null)
-            slot = equipment;
+        if (EquipmentMap[slot] == null)
+            EquipmentMap[slot] = equipment;
         else
         {
-            m_Inventory.RemoveFromInventory(equipment);
-            slot = equipment;
+            Unequip(EquipmentMap[slot]);
+            EquipmentMap[slot] = equipment;
+        }
+
+        switch (slot)
+        {
+            case Slot.Helmet:
+                Helmet = equipment;
+                break;
+            case Slot.Chest:
+                Chest = equipment;
+                break;
+            case Slot.Gloves:
+                Gloves = equipment;
+                break;
+            case Slot.Legs:
+                Legs = equipment;
+                break;
+            case Slot.Boots:
+                Boots = equipment;
+                break;
+            case Slot.Ring1:
+                Ring1 = equipment;
+                break;
+            case Slot.Ring2:
+                Ring2 = equipment;
+                break;
+            case Slot.Necklace:
+                Necklace = equipment;
+                break;
+            case Slot.Back:
+                Back = equipment;
+                break;
         }
     }
 
-    public void Unequip(SO_Item equipment)
+    void SetEquipment(SO_Weapon weapon, Slot slot)
     {
-        if (m_Inventory.AddToInventory(equipment))
+        if (EquipmentMap[slot] == null)
+            EquipmentMap[slot] = weapon;
+        else
         {
-
+            Unequip(EquipmentMap[slot]);
+            EquipmentMap[slot] = weapon;
         }
 
+        switch (slot)
+        {
+            case Slot.MainHand:
+                MainHand = weapon;
+                break;
+            case Slot.OffHand:
+                OffHand = weapon;
+                break;
+            case Slot.TwoHanded:
+                MainHand = weapon;
+                OffHand = weapon;
+                break;
+        }
+    }
+
+    public void Unequip(SO_Item item)
+    {
+        if (item is SO_Weapon)
+            Unequip(item as SO_Weapon);
+        else if (item is SO_Equipment)
+            Unequip(item as SO_Equipment);
+    }
+
+    public void Unequip(SO_Equipment equipment)
+    {
+        if (m_Inventory.CanAddItem(equipment))
+        {
+            foreach (var validSlot in (equipment.GetSerializedItem() as SerializedEquipment).ValidEquipSlots)
+            {
+                if (EquipmentMap[validSlot] == equipment)
+                {
+                    SetEquipment(null as SO_Equipment, validSlot);
+                    m_Inventory.AddToInventory(equipment);
+                    break;
+                }
+            }
+        }
+    }
+
+    public void Unequip(SO_Weapon weapon)
+    {
+        if (m_Inventory.CanAddItem(weapon))
+        {
+            foreach (var validSlot in (weapon.GetSerializedItem() as SerializedWeapon).ValidEquipSlots)
+            {
+                if (validSlot == Slot.TwoHanded)
+                {
+                    SetEquipment(null as SO_Weapon, Slot.MainHand);
+                    SetEquipment(null as SO_Weapon, Slot.OffHand);
+                    m_Inventory.AddToInventory(weapon);
+                    break;
+                }
+
+                if (EquipmentMap[validSlot] == weapon)
+                {
+                    EquipmentMap[validSlot] = null;
+                    SetEquipment(null as SO_Weapon, validSlot);
+                    m_Inventory.AddToInventory(weapon);
+                    break;
+                }
+            }
+        }
     }
 
     public float GetResistances(DamageType damageType)
     {
         float totalPercent = 100.0f;
-        foreach (var equipment in AllEquipment)
-        {
-            var serializedEquipment = equipment.GetSerializedItem() as SerializedEquipment;
-            foreach (var resistance in serializedEquipment.Resistances)
-                if (resistance.DamageType == damageType)
-                    totalPercent *= resistance.Percent;
-        }
+        //foreach (var equipment in EquipedItems)
+        //{
+        //    var equipmentList = equipment.Value;
+        //    foreach (var e in equipmentList)
+        //    {
+        //        var serializedEquipment = e.GetSerializedItem() as SerializedEquipment;
+        //        foreach (var resistance in serializedEquipment.Resistances)
+        //            if (resistance.DamageType == damageType)
+        //                totalPercent *= resistance.Percent;
+        //    }
+        //}
         return totalPercent / 100f;
     }
 }

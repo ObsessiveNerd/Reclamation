@@ -16,7 +16,12 @@ public class InventorySlot : UISlotBase
         {
             this.m_ContextMenu.Clear();
             m_ContextMenu.AddMenuItem("Equip", delegate
-            { Debug.Log("Equip " + Item.name); });
+            {
+                m_Source.GetComponent<Equipment>().AutoEquip(Item);
+                m_Source.GetComponent<Inventory>().RemoveFromInventory(Item);
+                FindFirstObjectByType<EquipmentManager>().Open(m_Source);
+                Clear();
+            });
 
             m_ContextMenu.AddMenuItem("Drop", delegate
             {

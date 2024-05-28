@@ -6,7 +6,7 @@ using UnityEngine;
 [Serializable]
 public class SerializedEquipment : SerializedItem
 {
-    public Slot Slot;
+    public List<Slot> ValidEquipSlots;
     public List<Resistance> Resistances;
     
     [SerializeReference, Subclass(IsList = true)]

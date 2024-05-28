@@ -37,7 +37,7 @@ public class PlayerInputController : InputControllerBase
     [ClientRpc]
     protected override void PrimaryActionClientRpc(Ray interactRay)
     {
-        m_Equipment.Attack();
+
     }
 
     [ClientRpc]

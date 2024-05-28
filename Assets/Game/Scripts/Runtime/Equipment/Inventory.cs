@@ -94,6 +94,11 @@ public class Inventory : NetworkBehaviour
         return false;
     }
 
+    public bool CanAddItem(SO_Item item)
+    {
+        return true;
+    }
+
     public bool AddToInventorySpecific(SO_Item inventoryItem, int index)
     {
         if(m_Inventory[index] == null)
