@@ -17,8 +17,10 @@ public class EquipmentManager : MonoBehaviour
         var equipHandler = m_Source.GetComponent<Equipment>();
         foreach (var item in equipHandler.EquipmentMap)
         {
-            if(item.Value != null)
+            if (item.Value != null)
                 m_Slots[item.Key][0].SetItem(source, item.Value);
+            else
+                m_Slots[item.Key][0].Clear();
         }
 
         EquipmentUI.SetActive(true);
@@ -34,6 +36,12 @@ public class EquipmentManager : MonoBehaviour
             else
                 m_Slots.Add(s, new List<EquipmentSlot>() { slot });
         }
+    }
+
+    public void ClearSlot(Slot slot)
+    {
+        foreach (var equipmentSlot in m_Slots[slot])
+            equipmentSlot.Clear();   
     }
 
     public void Close()

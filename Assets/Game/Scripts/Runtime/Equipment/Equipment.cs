@@ -21,12 +21,24 @@ public class Equipment : MonoBehaviour
 
     public Dictionary <Slot, SO_Item> EquipmentMap;
     Inventory m_Inventory;
+    EquipmentManager m_EquipmentManager;
+
+    EquipmentManager EquipmentManager
+    {
+        get
+        {
+            if(m_EquipmentManager == null)
+                m_EquipmentManager = FindFirstObjectByType<EquipmentManager>();
+            return m_EquipmentManager;
+        }
+    }
 
     // Start is called before the first frame update
     void Start()
     {
         m_MeleeArea = GetComponentInChildren<MeleeArea>();
         m_Inventory = GetComponent<Inventory>();
+
         EquipmentMap = new Dictionary<Slot, SO_Item>()
         {
             {Slot.MainHand, MainHand },
@@ -66,10 +78,14 @@ public class Equipment : MonoBehaviour
         {
             if (slot == Slot.TwoHanded)
             {
-                Unequip(MainHand);
-                Unequip(OffHand);
+                if(MainHand != null)
+                    Unequip(MainHand);
+                if(OffHand != null)
+                    Unequip(OffHand);
+                
                 SetEquipment(weapon, Slot.MainHand);
                 SetEquipment(weapon, Slot.OffHand);
+                equiped = true;
                 break;
             }
 
@@ -84,7 +100,10 @@ public class Equipment : MonoBehaviour
         }
 
         if (!equiped)
+        {
+            Unequip(EquipmentMap[initialSlot]);
             SetEquipment(weapon, initialSlot);
+        }
     }
 
     public void AutoEquip(SO_Equipment equipment)
@@ -104,18 +123,16 @@ public class Equipment : MonoBehaviour
         }
 
         if (!equiped)
+        {
+            Unequip(EquipmentMap[initialSlot]);
             SetEquipment(equipment, initialSlot);
+        }
     }
 
     void SetEquipment(SO_Equipment equipment, Slot slot)
     {
-        if (EquipmentMap[slot] == null)
-            EquipmentMap[slot] = equipment;
-        else
-        {
-            Unequip(EquipmentMap[slot]);
-            EquipmentMap[slot] = equipment;
-        }
+        EquipmentManager.ClearSlot(slot);
+        EquipmentMap[slot] = equipment;
 
         switch (slot)
         {
@@ -151,13 +168,8 @@ public class Equipment : MonoBehaviour
 
     void SetEquipment(SO_Weapon weapon, Slot slot)
     {
-        if (EquipmentMap[slot] == null)
-            EquipmentMap[slot] = weapon;
-        else
-        {
-            Unequip(EquipmentMap[slot]);
-            EquipmentMap[slot] = weapon;
-        }
+        EquipmentManager.ClearSlot(slot);
+        EquipmentMap[slot] = weapon;
 
         switch (slot)
         {

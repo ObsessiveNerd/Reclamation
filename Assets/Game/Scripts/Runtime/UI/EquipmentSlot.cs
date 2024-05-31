@@ -15,7 +15,6 @@ public class EquipmentSlot : UISlotBase
             { 
                 m_Source.GetComponent<Equipment>().Unequip(Item);
                 FindFirstObjectByType<InventoryManager>().Open(m_Source);
-                Clear();
             });
 
             m_ContextMenu.AddMenuItem("Drop", delegate
@@ -23,7 +22,6 @@ public class EquipmentSlot : UISlotBase
                 m_Source.GetComponent<Equipment>().Unequip(Item);
                 m_Source.GetComponent<Inventory>().RemoveFromInventory(Item);
                 Spawner.Instance.Spawn(Item, m_Source.transform.position);
-                Clear();
             });
             this.m_ContextMenu.Show();
         }

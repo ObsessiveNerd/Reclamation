@@ -43,11 +43,11 @@ public class UISlotBase : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     public void Clear()
     {
-        m_Source = null;
+        //m_Source = null;
         Item = null;
         Icon.sprite = null;
         Icon.color = new UnityEngine.Color(Icon.color.r, Icon.color.g, Icon.color.b, 0f);
-        instance.Close();
+        instance?.Close();
     }
 
     public void OnPointerEnter(PointerEventData eventData)

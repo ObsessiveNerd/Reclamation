@@ -20,6 +20,7 @@ public class InventorySlot : UISlotBase
                 m_Source.GetComponent<Equipment>().AutoEquip(Item);
                 m_Source.GetComponent<Inventory>().RemoveFromInventory(Item);
                 FindFirstObjectByType<EquipmentManager>().Open(m_Source);
+                FindFirstObjectByType<InventoryManager>().Open(m_Source);
                 Clear();
             });
 

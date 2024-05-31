@@ -10,26 +10,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 370d64e8de2858543bd545f855e887ec, type: 3}
-  m_Name: Axe
+  m_Name: GreatAxe
   m_EditorClassIdentifier: 
-  Icon: {fileID: 21300000, guid: 760dc680be1c0c74a91d56f4a79a5590, type: 3}
+  Icon: {fileID: 21300000, guid: 3730c4baf6c641c4f8d68e48d4a898ba, type: 3}
   Sprite: {fileID: 21300000, guid: 031d8b64e41b307408e9040e94225e46, type: 3}
-  Effect: {fileID: 1201505000128532, guid: ba1ddd059de115f44b44ff52413832aa, type: 3}
+  Effect: {fileID: 0}
   Weapon:
-    Name: Axe
+    Name: Great-Axe
     FlavorText: 
-    SpriteName: td_items_weapon_axe
-    IconName: axe_t_03
+    SpriteName: 
+    IconName: 
     SpriteColor: {r: 1, g: 1, b: 1, a: 1}
-    MaxStack: 1
-    EffectName: FX_Slash_01
-    Damage:
-    - DamageAmount:
-        m_AmountOfDice: 1
-        m_DAmount: 6
-        m_Modifiers: 0
-      DamageType: 1
-    ValidEquipSlots: 0000000001000000
+    MaxStack: 0
+    EffectName: 
+    Damage: []
+    ValidEquipSlots: 02000000
     Spells: []
     OnHitEffects: []
   references:
