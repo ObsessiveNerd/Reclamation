@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Icon: {fileID: 21300000, guid: dd19f93ed72b4e14996353daf7f90f22, type: 3}
   Sprite: {fileID: 21300000, guid: a3ab5cc745f5a4c4587509bb5d4d1127, type: 3}
-  SerializedEquipment1:
+  SerializedEquipment:
     Name: Leather Chest Armor
     FlavorText: 
     SpriteName: 

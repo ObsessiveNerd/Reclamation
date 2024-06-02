@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Icon: {fileID: 21300000, guid: ffdabdbf8323d3e4ea7ca29af77d3b78, type: 3}
   Sprite: {fileID: 21300000, guid: bb2e08733a8948049b393e035b8abf11, type: 3}
-  SerializedEquipment1:
+  SerializedEquipment:
     Name: Leather Boots
     FlavorText: 
     SpriteName: 

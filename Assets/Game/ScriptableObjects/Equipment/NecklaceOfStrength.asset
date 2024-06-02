@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Icon: {fileID: 21300000, guid: a22bc82e97033cb449b9a4c4220ddbe3, type: 3}
   Sprite: {fileID: 21300000, guid: 24090138efe7cc140aec6eacc93526ba, type: 3}
-  SerializedEquipment1:
+  SerializedEquipment:
     Name: Necklace of Strength
     FlavorText: 
     SpriteName: 

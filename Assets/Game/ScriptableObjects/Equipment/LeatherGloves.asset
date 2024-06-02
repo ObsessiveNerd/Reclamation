@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Icon: {fileID: 21300000, guid: dc9bcc03dd8824645bc99570524133ee, type: 3}
   Sprite: {fileID: 21300000, guid: 0ab998237f053f7448101301b40837da, type: 3}
-  SerializedEquipment1:
+  SerializedEquipment:
     Name: Leather Gloves
     FlavorText: 
     SpriteName: 

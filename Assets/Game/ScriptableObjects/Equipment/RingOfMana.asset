@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Icon: {fileID: 21300000, guid: 4e525532678044e468df5f5c0d500db0, type: 3}
   Sprite: {fileID: 21300000, guid: 575c3dad064fb014990cbea3dca60485, type: 3}
-  SerializedEquipment1:
+  SerializedEquipment:
     Name: Ring of Mana
     FlavorText: 
     SpriteName: 

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Icon: {fileID: 21300000, guid: 95a0e901e2818374e9fea3ea58d28ce9, type: 3}
   Sprite: {fileID: 21300000, guid: 6ab9eb784193dfa469569eaf8211722a, type: 3}
-  SerializedEquipment1:
+  SerializedEquipment:
     Name: Leather Helmet
     FlavorText: 
     SpriteName: 

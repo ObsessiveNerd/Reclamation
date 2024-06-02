@@ -14,11 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Icon: {fileID: 21300000, guid: d1caaa8ffa1ac5c44baba418c1dbcac4, type: 3}
   Sprite: {fileID: 21300000, guid: 9864a951f97b13c41bc1218556b0037b, type: 3}
-  SerializedEquipment1:
-    Name: 
+  SerializedEquipment:
+    Name: Leather Pants
     FlavorText: 
-    SpriteName: 
-    IconName: 
+    SpriteName: td_items_leather_pant
+    IconName: pants_13
     SpriteColor: {r: 1, g: 1, b: 1, a: 1}
     MaxStack: 1
     ValidEquipSlots: 06000000
