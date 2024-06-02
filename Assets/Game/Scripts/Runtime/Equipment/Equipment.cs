@@ -119,6 +119,7 @@ public class Equipment : MonoBehaviour
             {
                 SetEquipment(equipment, slot);
                 equiped = true;
+                break;
             }
         }
 

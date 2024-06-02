@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 
 [Serializable]
 public class SerializedEquipment : SerializedItem
@@ -17,7 +19,8 @@ public class SerializedEquipment : SerializedItem
 public class SO_Equipment : SO_Item
 {
     [SerializeField]
-    private SerializedEquipment SerializedEquipment1;
+    private SerializedEquipment SerializedEquipment;
+    private List<AsyncOperationHandle> m_Handles = new List<AsyncOperationHandle>();
 
     public void Equip(GameObject source)
     {
@@ -31,6 +34,34 @@ public class SO_Equipment : SO_Item
 
     public override SerializedItem GetSerializedItem()
     {
-        return SerializedEquipment1;
+        return SerializedEquipment;
+    }
+
+    public override string Serialize()
+    {
+        SerializedEquipment.IconName = Icon.name;
+        SerializedEquipment.SpriteName = Sprite.name;
+
+        return JsonUtility.ToJson(SerializedEquipment);
+    }
+
+    public override void Deserialize(string json)
+    {
+        SerializedEquipment = JsonUtility.FromJson<SerializedEquipment>(json);
+
+        var spriteHandle = Addressables.LoadAssetAsync<Sprite>(SerializedEquipment.SpriteName);
+        Sprite = spriteHandle.WaitForCompletion();
+
+        var iconHandle = Addressables.LoadAssetAsync<Sprite>(SerializedEquipment.IconName);
+        Icon = iconHandle.WaitForCompletion();
+
+        m_Handles.Add(spriteHandle);
+        m_Handles.Add(iconHandle);
+    }
+
+    private void OnDestroy()
+    {
+        foreach (var handle in m_Handles)
+            Addressables.Release(handle);
     }
 }

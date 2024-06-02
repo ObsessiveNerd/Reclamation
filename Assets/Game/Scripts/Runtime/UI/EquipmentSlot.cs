@@ -12,9 +12,8 @@ public class EquipmentSlot : UISlotBase
         {
             this.m_ContextMenu.Clear();
             m_ContextMenu.AddMenuItem("Unequip", delegate
-            { 
-                m_Source.GetComponent<Equipment>().Unequip(Item);
-                FindFirstObjectByType<InventoryManager>().Open(m_Source);
+            {
+                Unequip();
             });
 
             m_ContextMenu.AddMenuItem("Drop", delegate
@@ -25,5 +24,14 @@ public class EquipmentSlot : UISlotBase
             });
             this.m_ContextMenu.Show();
         }
+
+        if (eventData.clickCount == 1)
+            Unequip();
+    }
+
+    void Unequip()
+    {
+        m_Source.GetComponent<Equipment>().Unequip(Item);
+        FindFirstObjectByType<InventoryManager>().Open(m_Source);
     }
 }

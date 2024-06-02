@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82f87057b005106449d992f4466141e7, type: 3}
+  m_Name: RingOfHealth
+  m_EditorClassIdentifier: 
+  Icon: {fileID: 21300000, guid: 7e1bcea847d84544c81393d41142caf7, type: 3}
+  Sprite: {fileID: 21300000, guid: f0b2748a8959795499d72b755f0d3910, type: 3}
+  SerializedEquipment1:
+    Name: Ring of Health
+    FlavorText: 
+    SpriteName: 
+    IconName: 
+    SpriteColor: {r: 1, g: 1, b: 1, a: 1}
+    MaxStack: 1
+    ValidEquipSlots: 0800000009000000
+    Resistances: []
+    OnEquipEffects: []
+  references:
+    version: 2
+    RefIds: []

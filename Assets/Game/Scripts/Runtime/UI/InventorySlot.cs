@@ -17,11 +17,7 @@ public class InventorySlot : UISlotBase
             this.m_ContextMenu.Clear();
             m_ContextMenu.AddMenuItem("Equip", delegate
             {
-                m_Source.GetComponent<Equipment>().AutoEquip(Item);
-                m_Source.GetComponent<Inventory>().RemoveFromInventory(Item);
-                FindFirstObjectByType<EquipmentManager>().Open(m_Source);
-                FindFirstObjectByType<InventoryManager>().Open(m_Source);
-                Clear();
+                Equip();
             });
 
             m_ContextMenu.AddMenuItem("Drop", delegate
@@ -32,5 +28,17 @@ public class InventorySlot : UISlotBase
             });
             this.m_ContextMenu.Show();
         }
+
+        if (eventData.clickCount == 1)
+            Equip();
+    }
+
+    void Equip()
+    {
+        m_Source.GetComponent<Equipment>().AutoEquip(Item);
+        m_Source.GetComponent<Inventory>().RemoveFromInventory(Item);
+        FindFirstObjectByType<EquipmentManager>().Open(m_Source);
+        FindFirstObjectByType<InventoryManager>().Open(m_Source);
+        Clear();
     }
 }

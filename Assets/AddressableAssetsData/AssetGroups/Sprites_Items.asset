@@ -1,0 +1,333 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Sprites_Items
+  m_EditorClassIdentifier: 
+  m_GroupName: Sprites_Items
+  m_GUID: acfee75cec9b12745ab68c4af412d608
+  m_SerializeEntries:
+  - m_GUID: 35071035dbf80e048a7ced38caf7d565
+    m_Address: r_bag
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 24090138efe7cc140aec6eacc93526ba
+    m_Address: td_items_amulet_gold
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 062f05f9bfb6cc749add360679748968
+    m_Address: td_items_amulet_magic
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ca1bc60f591a30d45b6c209637ed5682
+    m_Address: td_items_amulet_silver
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 67a6a938302a9e74e85bf6eca7b8bf18
+    m_Address: td_items_arrow
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 174db646bd7139b4f8a06eaad357e251
+    m_Address: td_items_bandage
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c698efc2fdfd6b8479e01bb77e47d826
+    m_Address: td_items_bolt
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 28b28656668e3a84fb264febfc096e4e
+    m_Address: td_items_book_black
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f4855eed165b0e144ac1ba4909679a7d
+    m_Address: td_items_book_brown
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fa9a07443cc4d0d44801535aea35d603
+    m_Address: td_items_book_green
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6255d3660e1935645b303df53e759438
+    m_Address: td_items_caltrops
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8e93bf9ab39361e4c97419613b5a3ead
+    m_Address: td_items_cape_leather
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 33a686eee32008240bd888199797c04c
+    m_Address: td_items_cape_magic
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 71ef03b2e9a07794d8f24834d5ecd84a
+    m_Address: td_items_cape_purple
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 23a28f6c9d10a3e4faf47742964d16b1
+    m_Address: td_items_coins_copper
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6f097f0a5da9dc04d9cc8236cfb7bc90
+    m_Address: td_items_coins_gold
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 25c6aaf13ba6dfe40ad4b93f6115f3b2
+    m_Address: td_items_coins_silver
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 79b45751bf9d73946b7f63ef9ba00407
+    m_Address: td_items_compass
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 854b73c1b2f3fe44d9f3d9f150a615cb
+    m_Address: td_items_cross
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e8aa81518200b8540badee578add60cc
+    m_Address: td_items_crown_evil
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c5f5dfc9b12a45d41b79057d4f2895f9
+    m_Address: td_items_crown_gold
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d0179f697e506104483424a809d3ca82
+    m_Address: td_items_crown_silver
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dcb61f137dfe68e4a9e10da9e9c27dca
+    m_Address: td_items_crystal_empty
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 993ae1670863fa944beea37aa5cef2a1
+    m_Address: td_items_crystal_full
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0b309840c9b8de240abfd3b743727818
+    m_Address: td_items_darts
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e89798ae7ce981e4ab70689273e22825
+    m_Address: td_items_feather
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cec354b9788d1814e9184fe04c1b0a56
+    m_Address: td_items_flask_blue
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9be258b362fe745419ff67d181f88e04
+    m_Address: td_items_flask_green
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: da1d9b08536974d4d860171091696193
+    m_Address: td_items_flask_red
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 53327b8817c906641b755ef86357c3e5
+    m_Address: td_items_gem_amethyst
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cd9e6c2bfae999c438deba0bd7ce9492
+    m_Address: td_items_gem_garnet
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4980f953564828f4d9527ea0e96269a0
+    m_Address: td_items_gem_jade
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cf52e01527a84774287200e770264bde
+    m_Address: td_items_gem_ruby
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 19a1a61e63ff5e049a78b99d97894ac3
+    m_Address: td_items_gem_sapphire
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e63ccae6771c36740aac6b8240f3031f
+    m_Address: td_items_heart_empty
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 21fef5911b7445544bf4f219a45ff4d4
+    m_Address: td_items_heart_full
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5349e4c0022ff25439b35b0078c81c03
+    m_Address: td_items_herb_gold
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e75129ae17d493f4d823fe034f29c1f7
+    m_Address: td_items_herb_green
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ad71b4dd61babb345a1a993a65e26ce4
+    m_Address: td_items_herb_red
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9ccdba33c2998fe408c624216109b937
+    m_Address: td_items_key_gold
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c56bd237897fb774da35ab30d62baf32
+    m_Address: td_items_key_magic
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 96e39392757418140b7d026e60ff954f
+    m_Address: td_items_key_skeleton
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4d37425b8109f7542919dc3b21f36ed9
+    m_Address: td_items_map
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e7b2654cd5cdc4643bfe47df6b519a89
+    m_Address: td_items_potion_black
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 243a26f5a3162d546b18d3f2ca3f188c
+    m_Address: td_items_potion_blue
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 65f8a1e85a6be4540ac694ea35d29fa8
+    m_Address: td_items_potion_green
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c58ef8c2a45114249895c8ea995c7e66
+    m_Address: td_items_potion_red
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f1bcec06ea5edf34b904e6a51aa030ab
+    m_Address: td_items_potion_yellow
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e05258991f658194990e92743e0cec0c
+    m_Address: td_items_quiver
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f0b2748a8959795499d72b755f0d3910
+    m_Address: td_items_ring_gold
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 575c3dad064fb014990cbea3dca60485
+    m_Address: td_items_ring_magic
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3dd964d9ee5849648b4529c03d81e24f
+    m_Address: td_items_ring_silver
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 406b80865cb83e945a792553b1c05a07
+    m_Address: td_items_rope
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0e50a01489f87334f8c48bdc6c6f35be
+    m_Address: td_items_sack
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8c284c92502dfa949949bddfe6ef6943
+    m_Address: td_items_scroll
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 64fdd6f78bca27d4eacd25ac967e2e04
+    m_Address: td_items_stone
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bc6395819e2a7dc41af0a7ae9ebd5e4f
+    m_Address: td_items_token_copper
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6f728452b6927004eb0634919dd0e876
+    m_Address: td_items_token_gold
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 63886290f0b8e2b4881515995f1be2e6
+    m_Address: td_items_token_silver
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ce22fd46cc27b354a8a19d76c81bedcf
+    m_Address: td_items_torch1
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b26af7b3ea4bf2c499d3662ca5d34d65
+    m_Address: td_items_torch2
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 74c568df2d82f99438fb224ea4d34e52
+    m_Address: td_items_turkey
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: e62147a571855454d9dd8796e9f7b1f1, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 0031e44828cddf541963945c96edc5e5, type: 2}
+    - {fileID: 11400000, guid: 76b63bbdf8d7f434e98393e87200b3b9, type: 2}

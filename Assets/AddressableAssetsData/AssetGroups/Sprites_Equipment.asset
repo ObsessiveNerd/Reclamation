@@ -1,0 +1,133 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Sprites_Equipment
+  m_EditorClassIdentifier: 
+  m_GroupName: Sprites_Equipment
+  m_GUID: 9f9285326fb5b5c42b07b43185d2ce68
+  m_SerializeEntries:
+  - m_GUID: 8f0e0a01cdea0f9429dd50fe9137041f
+    m_Address: td_items_dragons_claw
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ceeaa334b1d698744a5e0eae079639a8
+    m_Address: td_items_hat_leather
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 84a76741c975dca46a30776e7f5b6482
+    m_Address: td_items_hat_magic
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c33d87e2493f4604580a413a5042bfab
+    m_Address: td_items_hat_purple
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bb2e08733a8948049b393e035b8abf11
+    m_Address: td_items_leather_boot
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a3ab5cc745f5a4c4587509bb5d4d1127
+    m_Address: td_items_leather_chest
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0ab998237f053f7448101301b40837da
+    m_Address: td_items_leather_glove
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6ab9eb784193dfa469569eaf8211722a
+    m_Address: td_items_leather_helm
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9864a951f97b13c41bc1218556b0037b
+    m_Address: td_items_leather_pant
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0d3fd5525a0ad6c46bbefcb2dcce569f
+    m_Address: td_items_magic_boot
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b991f137c8831284889afeb673c7f5f7
+    m_Address: td_items_magic_chest
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7a3f9558f5c923348937685bca771727
+    m_Address: td_items_magic_glove
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 98f9a1b516e5dbd418afe633cd1eca64
+    m_Address: td_items_magic_helm
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fd1d9b6fe274c154ab51701a0cb6b80c
+    m_Address: td_items_magic_pant
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 97be30b0ea5389e44b9048678985575c
+    m_Address: td_items_shield_magic
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cf8d15d78bf1abc458f1a145faa31f13
+    m_Address: td_items_shield_steel
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 49da42249503bb7488766f57a4e1485e
+    m_Address: td_items_shield_wood
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4f65f53445aba4c4daf8d90e87819f1a
+    m_Address: td_items_steel_boot
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 46b4f905ee44f3d46a0f747af7eee000
+    m_Address: td_items_steel_chest
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4df1244307e7ed94a9067e8c16310bcf
+    m_Address: td_items_steel_glove
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 922786aba90abad438b62c6b4c34251d
+    m_Address: td_items_steel_helm
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1db41d61d4ddfa04992baff0bcef4cf0
+    m_Address: td_items_steel_pant
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: e62147a571855454d9dd8796e9f7b1f1, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 4cfb1f841c412fc4d96ee5c9bcb1486a, type: 2}
+    - {fileID: 11400000, guid: 0f98df8157a145a4081c24009d5e61b9, type: 2}

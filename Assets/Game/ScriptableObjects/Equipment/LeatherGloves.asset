@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82f87057b005106449d992f4466141e7, type: 3}
+  m_Name: LeatherGloves
+  m_EditorClassIdentifier: 
+  Icon: {fileID: 21300000, guid: dc9bcc03dd8824645bc99570524133ee, type: 3}
+  Sprite: {fileID: 21300000, guid: 0ab998237f053f7448101301b40837da, type: 3}
+  SerializedEquipment1:
+    Name: Leather Gloves
+    FlavorText: 
+    SpriteName: 
+    IconName: 
+    SpriteColor: {r: 1, g: 1, b: 1, a: 1}
+    MaxStack: 1
+    ValidEquipSlots: 05000000
+    Resistances: []
+    OnEquipEffects: []
+  references:
+    version: 2
+    RefIds: []

@@ -12,8 +12,8 @@ public class SerializedItem
     public string SpriteName;
     [HideInInspector]
     public string IconName;
-    public Color SpriteColor;
-    public int MaxStack;
+    public Color SpriteColor = Color.white;
+    public int MaxStack = 1;
 }
 
 public abstract class SO_Item : ScriptableObject
