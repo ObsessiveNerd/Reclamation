@@ -7,20 +7,28 @@ using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using System.Text;
 
+public enum AttackType
+{
+    Melee,
+    Ranged
+}
+
 [Serializable]
 public class SerializedWeapon : SerializedItem
 {
     [HideInInspector]
     public string EffectName;
-    
-    public List<Damage> Damage; 
+
+    public List<Damage> Damage;
     public List<Slot> ValidEquipSlots;
-    
+
     [SerializeReference, Subclass(IsList = true)]
     public List<Spell> Spells;
-    
+
     [SerializeReference, Subclass(IsList = true)]
     public List<Effects> OnHitEffects;
+
+    public AttackType AttackType;
 }
 
 [CreateAssetMenu(fileName = "Weapon", menuName = "Reclaim/Weapon")]
@@ -32,22 +40,21 @@ public class SO_Weapon : SO_Item
     private SerializedWeapon Weapon;
     private List<AsyncOperationHandle> m_Handles = new List<AsyncOperationHandle>();
 
-    public void Attack(List<GameObject> targets)
+    //Used for melee attacks only
+    public void Attack(GameObject source, MeleeArea meleeArea, Vector2 mousePosition)
     {
-
-    }
-     public void Attack(GameObject source, List<GameObject> targets)
-    {
-        SpawnEffect(source);
-        var targetsCopy = new List<GameObject>(targets);
-        foreach (GameObject target in targetsCopy)
-            ApplyDamageTo(target);
-    }
-
-    public void Attack(GameObject source, GameObject target)
-    {
-        SpawnEffect(source);
-        ApplyDamageTo(target);
+        if (Weapon.AttackType == AttackType.Melee)
+        {
+            var targets = meleeArea.ObjectsInRange;
+            SpawnEffect(meleeArea.gameObject); 
+            var targetsCopy = new List<GameObject>(targets);
+            foreach (GameObject target in targetsCopy)
+                ApplyDamageTo(target);
+        }
+        else
+        { 
+            //Skillshot attacks
+        }
     }
 
     public void OnEquip(GameObject target)
@@ -96,7 +103,7 @@ public class SO_Weapon : SO_Item
     public override void Deserialize(string json)
     {
         Weapon = JsonUtility.FromJson<SerializedWeapon>(json);
-        
+
         var spriteHandle = Addressables.LoadAssetAsync<Sprite>(Weapon.SpriteName);
         Sprite = spriteHandle.WaitForCompletion();
 

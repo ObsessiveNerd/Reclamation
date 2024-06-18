@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Icon: {fileID: 21300000, guid: d1405e2c3db38e742b2c9c35a2d38d2d, type: 3}
   Sprite: {fileID: 21300000, guid: d4626d06c41c70840acee8a0c90f4b99, type: 3}
-  Effect: {fileID: 0}
+  Effect: {fileID: 1201505000128532, guid: ba1ddd059de115f44b44ff52413832aa, type: 3}
   Weapon:
     Name: Sword
     FlavorText: 
@@ -27,6 +27,7 @@ MonoBehaviour:
     ValidEquipSlots: 0000000001000000
     Spells: []
     OnHitEffects: []
+    AttackType: 0
   references:
     version: 2
     RefIds: []

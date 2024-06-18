@@ -56,6 +56,17 @@ public class Equipment : MonoBehaviour
         };
     }
 
+    public void PrimaryAttack()
+    {
+        if (MainHand != null)
+            MainHand.Attack(gameObject, m_MeleeArea, Input.mousePosition);
+    }
+
+    public void SecondaryAttack()
+    {
+
+    }
+
     public SO_Item GetEquipedItem(Slot slot)
     {
         return EquipmentMap[slot];

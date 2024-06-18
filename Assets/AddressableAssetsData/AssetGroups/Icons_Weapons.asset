@@ -55,6 +55,51 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5e5ef3669df4c614cac9d2e14794752b
+    m_Address: sharp_blade_t
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d1405e2c3db38e742b2c9c35a2d38d2d
+    m_Address: swords_t_01
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7b7a967bf8089ca409a60c126f4db406
+    m_Address: swords_t_02
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3f064a646d8844d40a6ffe71a47ec537
+    m_Address: swords_t_03
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 59700b9c73b43c24c828f309c5fa84d5
+    m_Address: swords_t_04
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fb54606159305c449862e7881294fd0f
+    m_Address: swords_t_05
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 108f86f1a8e869549ac24554925e20c4
+    m_Address: swords_t_06
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 78c2f5c8c1ce1d44883eb76338da9031
+    m_Address: swords_t_07
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 63ea3a83b8fcff74286d3416d3b8b0bb
+    m_Address: swords_t_08
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: e62147a571855454d9dd8796e9f7b1f1, type: 2}
   m_SchemaSet:

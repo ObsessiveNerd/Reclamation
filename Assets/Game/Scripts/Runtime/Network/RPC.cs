@@ -6,6 +6,7 @@ using UnityEngine;
 public class RPC : NetworkBehaviour
 {
     public GameObject Camera;
+    public GameObject MeleeArea;
 
     public override void OnNetworkSpawn()
     {
@@ -14,6 +15,8 @@ public class RPC : NetworkBehaviour
         if(IsOwner)
         { 
             Instantiate(Camera, transform);
+            //var instance = Instantiate(MeleeArea);
+            //instance.transform.SetParent(transform);
         }
     }
 }

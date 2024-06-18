@@ -6,13 +6,15 @@ using UnityEngine;
 
 public class PlayerInputController : InputControllerBase
 {
-    MeleeArea m_Equipment;
+    MeleeArea m_MeleeArea;
+    Equipment m_Equipment;
     Camera m_Camera;
 
     // Start is called before the first frame update
     void Start()
     {
-        m_Equipment = GetComponentInChildren<MeleeArea>();
+        m_MeleeArea = GetComponentInChildren<MeleeArea>();
+        m_Equipment = GetComponent<Equipment>();
         m_Move = GetComponent<IMovement>();
         m_Camera = FindFirstObjectByType<Camera>();
     }
@@ -37,7 +39,7 @@ public class PlayerInputController : InputControllerBase
     [ClientRpc]
     protected override void PrimaryActionClientRpc(Ray interactRay)
     {
-
+        m_Equipment.PrimaryAttack();
     }
 
     [ClientRpc]

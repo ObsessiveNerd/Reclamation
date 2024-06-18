@@ -77,19 +77,25 @@ public class AIController : MonoBehaviour
 
     public GameObject Target;
     IMovement m_Move;
+    AIVision m_AIVision;
 
     // Start is called before the first frame update
     void Start()
     {
         pathfinder = new Pathfinder<Vector2>(GetDistance,GetNeighbourNodes,1000); //increase patience or gridSize for larger maps
         m_Move = GetComponent<Move>();
+        m_AIVision = GetComponentInChildren<AIVision>();
     }
 
     // Update is called once per frame
     void Update()
     {
+        Target = m_AIVision.GetTarget();
         if (Target == null)
+        {
+            m_Move.Move(0,0);
             return;
+        }
 
         GetMoveCommand(Target.transform.position);
 

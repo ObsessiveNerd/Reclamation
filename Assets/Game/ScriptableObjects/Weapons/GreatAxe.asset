@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Icon: {fileID: 21300000, guid: 3730c4baf6c641c4f8d68e48d4a898ba, type: 3}
   Sprite: {fileID: 21300000, guid: 031d8b64e41b307408e9040e94225e46, type: 3}
-  Effect: {fileID: 0}
+  Effect: {fileID: 1201505000128532, guid: ba1ddd059de115f44b44ff52413832aa, type: 3}
   Weapon:
     Name: Great-Axe
     FlavorText: 
@@ -27,6 +27,7 @@ MonoBehaviour:
     ValidEquipSlots: 02000000
     Spells: []
     OnHitEffects: []
+    AttackType: 0
   references:
     version: 2
     RefIds: []

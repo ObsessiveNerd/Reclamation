@@ -1,11 +1,29 @@
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class MeleeArea : NetworkBehaviour
 {
     List<GameObject> m_ObjectsInRange = new List<GameObject>();
+    public List<GameObject> ObjectsInRange
+    {
+        get
+        {
+            return m_ObjectsInRange;
+        }
+    }
+
     Camera m_Camera;
+    Camera Camera
+    {
+        get
+        {
+            if (m_Camera == null)
+                m_Camera = FindFirstObjectByType<Camera>();
+            return m_Camera;
+        }
+    }
     void Start()
     {
         m_Camera = FindFirstObjectByType<Camera>();
@@ -16,7 +34,10 @@ public class MeleeArea : NetworkBehaviour
         if (!IsOwner)
             return;
 
-        Vector2 target = m_Camera.ScreenToWorldPoint(Input.mousePosition);
+        if (Camera == null)
+            return;
+
+        Vector2 target = Camera.ScreenToWorldPoint(Input.mousePosition);
         Vector2 source = transform.parent.position;
 
         var directionToAttack = (target - source).normalized * 0.5f;
@@ -26,18 +47,24 @@ public class MeleeArea : NetworkBehaviour
 
         transform.rotation = Quaternion.Euler(0f, 0f, angle);
         transform.position = postionOfAttack;
+
+        UpdatePositionServerRpc(transform.position, transform.rotation);
     }
 
-    [ServerRpc]
-    public void UpdatePositionServerRpc(Vector3 position)
+    [ServerRpc(RequireOwnership = false)]
+    public void UpdatePositionServerRpc(Vector2 pos, Quaternion rot)
     {
-        UpdatePositionClientRpc(position);
+        UpdatePositionClientRpc(pos, rot);
     }
 
     [ClientRpc]
-    void UpdatePositionClientRpc(Vector3 position)
+    void UpdatePositionClientRpc(Vector2 pos, Quaternion rot)
     {
-        transform.position = position;
+        if(!IsOwner)
+        {
+            transform.rotation = rot;
+            transform.position = pos;
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

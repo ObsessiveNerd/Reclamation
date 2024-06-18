@@ -118,8 +118,33 @@ namespace DevionGames.UIWidgets
 
 		protected static CursorLockMode m_PreviousCursorLockMode;
 		protected static bool m_PreviousCursorVisibility;
-		protected Transform m_CameraTransform;
-		protected MonoBehaviour m_CameraController;
+
+		private Transform m_CameraTransformCached;
+		protected Transform m_CameraTransform
+		{
+			get
+			{
+				if (m_CameraTransformCached == null)
+					m_CameraTransformCached = Camera.main.transform;
+				return m_CameraTransformCached;
+			}
+		}
+
+		private MonoBehaviour m_CameraControllerCached;
+		protected MonoBehaviour m_CameraController
+		{
+			get
+			{
+				if(m_CameraTransform != null)
+				{
+					if(m_CameraControllerCached == null)
+					m_CameraControllerCached = this.m_CameraTransform.GetComponent("ThirdPersonCamera") as MonoBehaviour;
+				}
+				return m_CameraControllerCached;
+			}
+		}
+
+
 		protected MonoBehaviour m_ThirdPersonController;
 		protected static bool m_PreviousCameraControllerEnabled;
 		protected static List<UIWidget> m_CurrentVisibleWidgets=new List<UIWidget>();
@@ -168,8 +193,8 @@ namespace DevionGames.UIWidgets
 			m_RectTransform = GetComponent<RectTransform> ();
 			m_CanvasGroup = GetComponent<CanvasGroup> ();
 			this.m_Scrollbars = GetComponentsInChildren<Scrollbar>();
-			this.m_CameraTransform = Camera.main.transform;
-			this.m_CameraController = this.m_CameraTransform.GetComponent("ThirdPersonCamera") as MonoBehaviour;
+			//this.m_CameraTransform = Camera.main.transform;
+			//this.m_CameraController = this.m_CameraTransform.GetComponent("ThirdPersonCamera") as MonoBehaviour;
 			PlayerInfo playerInfo = new PlayerInfo("Player");
 
 			if (playerInfo.gameObject != null)
@@ -226,7 +251,7 @@ namespace DevionGames.UIWidgets
 		/// </summary>
 		public virtual void Show ()
 		{
-            if (this.m_IsShowing) {
+            if (this.m_IsShowing || m_CameraTransform == null) {
                 return;
             }
             this.m_IsShowing = true;
