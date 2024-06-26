@@ -2,64 +2,73 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Aoiti.Pathfinding; //import the pathfinding library 
-
-
-//public class NavigationTest: MonoBehaviour
-//{
-//    Pathfinder<Vector3> pathfinder;
-//    List<Vector3> path = new List<Vector3>();
-
-//    private void Start()
-//    {
-//        pathfinder = new Pathfinder<Vector3>(GetDistance, GetNeighbourNodes);
-//    }
-//    private void Update()
-//    {
-//        if (Input.GetMouseButtonDown(0)) //check for a new target
-//        {
-//            Vector3 target = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-//            var _path = new Vector3[0];
-//            if (pathfinder.GenerateAstarPath(transform.position, target, out _path)) //if there is a path from current position to target position reassign path.
-//                path = new List<Vector3>(_path); 
-//        }
-
-//        transform.position = path[0]; //go to next node
-//        path.RemoveAt(0); //remove the node from path
-
-//    }
-
-//    float GetDistance(Vector3 A, Vector3 B)
-//    {
-//        return (A - B).sqrMagnitude; 
-//    }
-//    Dictionary<Vector3, float> GetNeighbourNodes(Vector3 pos)
-//    {
-//        Dictionary<Vector3, float> neighbours = new Dictionary<Vector3, float>();
-//        for (int i = -1; i < 2; i++)
-//        {
-//            for (int j = -1; j < 2; j++)
-//            {
-//                for (int k=-1;k<2;k++)
-//                {
-
-//                    if (i == 0 && j == 0 && k==0) continue;
-
-//                    Vector3 dir = new Vector3(i, j,k);
-//                    if (!Physics2D.Linecast(pos, pos + dir))
-//                    {
-//                        neighbours.Add(pos + dir, dir.magnitude);
-//                    }
-//                }
-//            }
-
-//        }
-//        return neighbours;
-//    }
-
-//}
+using static UnityEngine.RuleTile.TilingRuleOutput;
+using System.IO;
+using UnityEngine.Analytics;
+using static UnityEngine.GraphicsBuffer;
 
 public class AIController : MonoBehaviour
 { 
+    public GameObject Target;
+    
+    AIVision m_AIVision;
+    AIAction m_Action;
+
+    AttackType m_AttackType;
+    MeleeArea m_MeleeArea;
+    Equipment m_Equipment;
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        gameObject.AddComponent<MoveAction>();
+        gameObject.AddComponent<AttackAction>();
+
+        m_AIVision = GetComponentInChildren<AIVision>();
+        m_AttackType = GetComponent<Equipment>().MainHand.GetAttackType();
+        m_MeleeArea = GetComponentInChildren<MeleeArea>();
+        m_Equipment = GetComponent<Equipment>();
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        Target = m_AIVision.GetTarget();
+        if(Target == null && m_Action != null)
+        {
+            m_Action.Shutdown();
+            m_Action = null;
+        }
+
+        if (Target == null)
+            return;
+
+        if (m_AttackType == AttackType.Melee && m_MeleeArea.ObjectsInRange.Count > 0)
+        {
+            var atk = GetComponent<AttackAction>();
+            atk.Set(m_Equipment.MainHand);
+            m_Action = atk;
+        }
+        else if (Vector2.Distance(transform.position, Target.transform.position) <= 1.0f)
+        {
+            //ranged
+        }
+        else
+            m_Action = GetComponent<MoveAction>();
+
+        m_MeleeArea.ManualUpdate(Camera.main.WorldToScreenPoint(Target.transform.position));
+        m_Action.Invoke(Target);
+    }
+}
+
+public abstract class AIAction : MonoBehaviour
+{
+    public virtual void Invoke(GameObject target) { }
+    public virtual void Shutdown() { }
+}
+
+public class MoveAction : AIAction
+{
     [Header("Navigator options")]
     [SerializeField] float gridSize = 0.5f; //increase patience or gridSize for larger maps
     
@@ -75,52 +84,34 @@ public class AIController : MonoBehaviour
     List<Vector2> pathLeftToGo= new List<Vector2>();
     [SerializeField] bool drawDebugLines;
 
-    public GameObject Target;
     IMovement m_Move;
-    AIVision m_AIVision;
 
-    // Start is called before the first frame update
-    void Start()
+    void Start() 
     {
         pathfinder = new Pathfinder<Vector2>(GetDistance,GetNeighbourNodes,1000); //increase patience or gridSize for larger maps
-        m_Move = GetComponent<Move>();
-        m_AIVision = GetComponentInChildren<AIVision>();
+        m_Move = GetComponent<IMovement>();
     }
-
-    // Update is called once per frame
-    void Update()
+    public override void Invoke(GameObject target)
     {
-        Target = m_AIVision.GetTarget();
-        if (Target == null)
-        {
-            m_Move.Move(0,0);
-            return;
-        }
-
-        GetMoveCommand(Target.transform.position);
+        GetMoveCommand(target.transform.position);
 
         if (pathLeftToGo.Count > 0) //if the target is not yet reached
         {
             Vector3 dir =  ((Vector3)pathLeftToGo[0]-transform.position).normalized;
             m_Move.Move(dir.x, dir.y);
-            //transform.position += dir.normalized * speed;
-            if (((Vector2)transform.position - pathLeftToGo[0]).sqrMagnitude < 0.01f) 
+            if (((Vector2)transform.position - pathLeftToGo[0]).sqrMagnitude < 0.01f)
             {
                 transform.position = pathLeftToGo[0];
                 pathLeftToGo.RemoveAt(0);
             }
         }
-
-        if (drawDebugLines)
-        {
-            for (int i=0;i<pathLeftToGo.Count-1;i++) //visualize your path in the sceneview
-            {
-                Debug.DrawLine(pathLeftToGo[i], pathLeftToGo[i+1]);
-            }
-        }
     }
 
-    
+    public override void Shutdown()
+    {
+        m_Move.Move(0f, 0f);
+    }
+
     void GetMoveCommand(Vector2 target)
     {
         Vector2 closestNode = GetClosestNode(transform.position);
@@ -133,9 +124,7 @@ public class AIController : MonoBehaviour
                 pathLeftToGo = new List<Vector2>(path);
                 if (!snapToGrid) pathLeftToGo.Add(target);
             }
-
         }
-        
     }
 
 
@@ -208,4 +197,39 @@ public class AIController : MonoBehaviour
         return newPath;
     }
 
+    //if (drawDebugLines)
+    //    {
+    //        for (int i=0;i<pathLeftToGo.Count-1;i++) //visualize your path in the sceneview
+    //        {
+    //            Debug.DrawLine(pathLeftToGo[i], pathLeftToGo[i+1]);
+    //        }
+    //    }
+}
+
+public class AttackAction : AIAction
+{
+    SO_Weapon m_Attack;
+    bool m_CanAttack = true;
+
+    public void Set(SO_Weapon attack)
+    {
+        m_Attack = attack;
+    }
+
+    public override void Invoke(GameObject target)
+    {
+        if(m_CanAttack)
+        {
+            m_Attack.Attack(transform.gameObject, transform.GetComponentInChildren<MeleeArea>(),
+                Camera.main.WorldToScreenPoint(target.transform.position));
+            m_CanAttack = false;
+            StartCoroutine(ResetAttackTimer());
+        }
+    }
+
+    IEnumerator ResetAttackTimer()
+    {
+        yield return new WaitForSeconds(0.5f);
+        m_CanAttack = true;
+    }
 }

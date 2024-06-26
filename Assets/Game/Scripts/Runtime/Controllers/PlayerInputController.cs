@@ -10,6 +10,31 @@ public class PlayerInputController : InputControllerBase
     Equipment m_Equipment;
     Camera m_Camera;
 
+    InventoryManager m_InventoryManager;
+    EquipmentManager m_EqipmentManager;
+
+    InventoryManager InventoryManager
+    {
+        get
+        {
+            if(m_InventoryManager == null)
+                m_InventoryManager = FindFirstObjectByType<InventoryManager>();
+            return m_InventoryManager;
+        }
+    }
+
+    EquipmentManager EquipmentManager
+    {
+        get
+        {
+            if(m_EqipmentManager == null)
+                m_EqipmentManager = FindFirstObjectByType<EquipmentManager>();
+            return m_EqipmentManager;
+        }
+    }
+
+    bool m_IsOpen = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -34,6 +59,30 @@ public class PlayerInputController : InputControllerBase
             var ray = m_Camera.ScreenPointToRay(Input.mousePosition);
             PrimaryActionServerRpc(ray);
         }
+        m_MeleeArea.ManualUpdate(Input.mousePosition);
+
+        if(Input.GetKeyDown(KeyCode.I))
+        {
+            if (!m_IsOpen)
+            { 
+                InventoryManager.Open(gameObject);
+                EquipmentManager.Open(gameObject);
+            }
+            else
+            { 
+                InventoryManager.Close();
+                EquipmentManager.Close();
+            }
+            m_IsOpen = !m_IsOpen;
+        }
+
+        if(Input.GetKeyDown(KeyCode.Escape)) 
+        {
+            InventoryManager.Close();
+            EquipmentManager.Close();
+            m_IsOpen = false;
+        }
+
     }
 
     [ClientRpc]

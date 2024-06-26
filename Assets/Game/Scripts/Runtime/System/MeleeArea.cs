@@ -29,7 +29,7 @@ public class MeleeArea : NetworkBehaviour
         m_Camera = FindFirstObjectByType<Camera>();
     }
 
-    private void Update()
+    public void ManualUpdate(Vector2 targetScreenPoint)
     {
         if (!IsOwner)
             return;
@@ -37,7 +37,7 @@ public class MeleeArea : NetworkBehaviour
         if (Camera == null)
             return;
 
-        Vector2 target = Camera.ScreenToWorldPoint(Input.mousePosition);
+        Vector2 target = Camera.ScreenToWorldPoint(targetScreenPoint);
         Vector2 source = transform.parent.position;
 
         var directionToAttack = (target - source).normalized * 0.5f;

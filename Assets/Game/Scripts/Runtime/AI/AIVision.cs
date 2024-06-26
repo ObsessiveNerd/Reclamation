@@ -13,6 +13,13 @@ public class AIVision : MonoBehaviour
         m_VisionCollider = GetComponent<CircleCollider2D>();
     }
 
+    public float GetVisualRange()
+    {
+        return m_VisionCollider.radius;
+    }
+
+
+
     public void SetVision(float radius) 
     {
         m_VisionCollider.radius = radius;

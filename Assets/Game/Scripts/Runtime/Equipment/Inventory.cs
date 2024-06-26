@@ -11,63 +11,10 @@ public class Inventory : NetworkBehaviour
     [SerializeField]
     SO_Item[] m_Inventory;
 
-    InventoryManager m_InventoryManager;
-    EquipmentManager m_EqipmentManager;
-
-    InventoryManager InventoryManager
-    {
-        get
-        {
-            if(m_InventoryManager == null)
-                m_InventoryManager = FindFirstObjectByType<InventoryManager>();
-            return m_InventoryManager;
-        }
-    }
-
-    EquipmentManager EquipmentManager
-    {
-        get
-        {
-            if(m_EqipmentManager == null)
-                m_EqipmentManager = FindFirstObjectByType<EquipmentManager>();
-            return m_EqipmentManager;
-        }
-    }
-
-    bool m_IsOpen = false;
-
     // Start is called before the first frame update
     void Start()
     {
         m_Inventory = new SO_Item[InventoryLimit];
-    }
-
-    private void Update()
-    {
-        if (!IsOwner)
-            return;
-
-        if(Input.GetKeyDown(KeyCode.I))
-        {
-            if (!m_IsOpen)
-            { 
-                InventoryManager.Open(gameObject);
-                EquipmentManager.Open(gameObject);
-            }
-            else
-            { 
-                InventoryManager.Close();
-                EquipmentManager.Close();
-            }
-            m_IsOpen = !m_IsOpen;
-        }
-
-        if(Input.GetKeyDown(KeyCode.Escape)) 
-        {
-            InventoryManager.Close();
-            EquipmentManager.Close();
-            m_IsOpen = false;
-        }
     }
 
     public Dictionary<int, SO_Item> GetInventory()

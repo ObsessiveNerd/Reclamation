@@ -67,6 +67,11 @@ public class SO_Weapon : SO_Item
 
     }
 
+    public AttackType GetAttackType()
+    {
+        return Weapon.AttackType;
+    }
+
     public override string GetDescription()
     {
         StringBuilder sb = new StringBuilder();

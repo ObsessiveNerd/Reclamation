@@ -87,7 +87,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 2
+  m_SortingOrder: 3
   m_Sprite: {fileID: 21300000, guid: ba7f42dfde1eb7f488216fe8369dd194, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -111,7 +111,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 1381661946
+  GlobalObjectIdHash: 1232451744
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
   ActiveSceneSynchronization: 0
@@ -251,13 +251,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1157739aa226d524da84a4c583c34223, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gridSize: 0.5
-  obstacles:
-    serializedVersion: 2
-    m_Bits: 64
-  searchShortcut: 0
-  snapToGrid: 1
-  drawDebugLines: 0
   Target: {fileID: 0}
 --- !u!114 &9050349020706985537
 MonoBehaviour:
@@ -284,7 +277,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eab2bcfaea272e04790ec1fdffb1b032, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MainHand: {fileID: 0}
+  MainHand: {fileID: 11400000, guid: 7f8716c7445807f47a80d20b326a874a, type: 2}
   OffHand: {fileID: 0}
   Helmet: {fileID: 0}
   Chest: {fileID: 0}
